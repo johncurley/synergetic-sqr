@@ -1,5 +1,7 @@
 # Synergetic Renderer (Metal-SQR)
 
+![Synergetic Renderer Demo](demo.png)
+
 **A 4D Tetrahedral Rendering Engine implementing Spread-Quadray Rotors (SQR).**
 
 This project is a high-performance proof-of-concept for **Algebraically Exact Graphics**. By utilizing Buckminster Fuller's Synergetic Geometry and Andrew Thomson's SQR framework (Feb 2026), we bypass the numerical drift inherent in standard Cartesian (XYZ) engines.
