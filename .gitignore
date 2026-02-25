@@ -1,0 +1,13 @@
+# Binaries
+synergetic-renderer
+synergeticrenderer
+
+# OS files
+.DS_Store
+
+# Build artifacts
+*.o
+*.obj
+
+# Python cache
+__pycache__/
