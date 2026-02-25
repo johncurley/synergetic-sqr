@@ -23,7 +23,7 @@ private:
     MTL::Buffer* _octBuffer;
     MTL::Buffer* _edgeBuffer;
     
-    Synergetics::SQRotor _rotor;
+    Synergetics::SurdRotor _rotor;
     simd::float4x4 _comparisonMatrix;
     float _time = 0.0f;
     

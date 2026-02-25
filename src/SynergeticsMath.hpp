@@ -18,27 +18,25 @@ struct RationalSurd {
     static RationalSurd fromInt(long val) { return {val, 0, 1}; }
 
     RationalSurd multiply(const RationalSurd& other) const {
-        return {
-            (a * other.a + 3 * b * other.b),
-            (a * other.b + b * other.a),
-            divisor * other.divisor
-        };
+        // Use 128-bit integers for intermediate math to prevent overflow
+        __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
+        __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
+        __int128_t res_d = (__int128_t)divisor * other.divisor;
+        return { (long)res_a, (long)res_b, (long)res_d };
     }
 
     RationalSurd add(const RationalSurd& other) const {
-        return {
-            a * other.divisor + other.a * divisor,
-            b * other.divisor + other.b * divisor,
-            divisor * other.divisor
-        };
+        __int128_t res_a = (__int128_t)a * other.divisor + (__int128_t)other.a * divisor;
+        __int128_t res_b = (__int128_t)b * other.divisor + (__int128_t)other.b * divisor;
+        __int128_t res_d = (__int128_t)divisor * other.divisor;
+        return { (long)res_a, (long)res_b, (long)res_d };
     }
 
     RationalSurd subtract(const RationalSurd& other) const {
-        return {
-            a * other.divisor - other.a * divisor,
-            b * other.divisor - other.b * divisor,
-            divisor * other.divisor
-        };
+        __int128_t res_a = (__int128_t)a * other.divisor - (__int128_t)other.a * divisor;
+        __int128_t res_b = (__int128_t)b * other.divisor - (__int128_t)other.b * divisor;
+        __int128_t res_d = (__int128_t)divisor * other.divisor;
+        return { (long)res_a, (long)res_b, (long)res_d };
     }
 
     float toFloat() const {
@@ -46,8 +44,16 @@ struct RationalSurd {
     }
 
     bool equals(const RationalSurd& other) const {
-        return (a * other.divisor == other.a * divisor) && 
-               (b * other.divisor == other.b * divisor);
+        return ((__int128_t)a * other.divisor == (__int128_t)other.a * divisor) && 
+               ((__int128_t)b * other.divisor == (__int128_t)other.b * divisor);
+    }
+
+    RationalSurd simplify() const {
+        // Trigger simplification much earlier (at 10^9) to ensure 
+        // the NEXT multiply (10^9 * 10^6 = 10^15) is safe for 64-bit longs.
+        if (divisor < 1000000000L) return *this; 
+        double scale = 1000000.0 / (double)divisor;
+        return { (long)(a * scale), (long)(b * scale), 1000000L };
     }
 };
 

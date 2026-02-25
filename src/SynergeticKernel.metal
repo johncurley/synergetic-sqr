@@ -1,10 +1,36 @@
 #include <metal_stdlib>
 using namespace metal;
 
-struct SQRotor {
-    float4 coords;
-    float janus; // +1.0 or -1.0
+struct Surd {
+    long a;
+    long b;
+    long divisor;
 };
+
+struct SurdRotor {
+    Surd w, x, y, z;
+    long janus;
+};
+
+Surd multiplySurd(Surd n1, Surd n2) {
+    return {
+        (n1.a * n2.a + 3 * n1.b * n2.b),
+        (n1.a * n2.b + n1.b * n2.a),
+        n1.divisor * n2.divisor
+    };
+}
+
+Surd addSurd(Surd n1, Surd n2) {
+    return {
+        n1.a * n2.divisor + n2.a * n1.divisor,
+        n1.b * n2.divisor + n2.b * n1.divisor,
+        n1.divisor * n2.divisor
+    };
+}
+
+float surdToFloat(Surd s) {
+    return (float(s.a) + float(s.b) * 1.73205081f) / float(s.divisor);
+}
 
 constant float3 Q1 = float3( 1.0f,  1.0f,  1.0f);
 constant float3 Q2 = float3( 1.0f, -1.0f, -1.0f);
@@ -25,7 +51,7 @@ kernel void renderSynergetic(
     texture2d<float, access::write> outTexture [[texture(0)]],
     uint2 gid [[thread_position_in_grid]],
     constant float4& time [[buffer(0)]],
-    constant SQRotor& rotor [[buffer(1)]],
+    constant SurdRotor& rotor [[buffer(1)]],
     constant float* ve_verts [[buffer(2)]],
     constant float* oct_verts [[buffer(3)]],
     constant int* edges [[buffer(4)]]
@@ -39,18 +65,27 @@ kernel void renderSynergetic(
     float aspect = float(width) / float(height);
     pixelPos.x *= aspect;
 
-    // Jitterbug mix factor
-    float mix_factor = (sin(time.x * 1.5f) * 0.5f + 0.5f);
+    // Jitterbug mix factor: Very slow, meditative oscillation
+    float mix_factor = (sin(time.x * 0.4f) * 0.5f + 0.5f);
     
-    // SQR Parameters
-    // In the algebraic update, rotor.coords already contains cos(theta/2) and sin(theta/2)
-    float w = rotor.coords.x;
-    float s = rotor.coords.y; // Assumes W-axis rotation for the demo
-    float janus = rotor.janus;
+    // SURD-BASED SQR: 
+    // We calculate full-angle coefficients EXACTLY in Surd space
+    Surd w = rotor.w;
+    Surd s = rotor.x; // W-axis rotation
     
-    // Half-angle to full-angle coefficients
-    float ct = w*w - s*s;
-    float st = 2.0f * w * s * janus;
+    // Since both w and s share the same divisor, ww and ss will too.
+    Surd ww = multiplySurd(w, w);
+    Surd ss = multiplySurd(s, s);
+    
+    // ct = ww - ss. No need to multiply divisors as they are identical (ww.divisor).
+    Surd ct_surd = { ww.a - ss.a, ww.b - ss.b, ww.divisor };
+    
+    // st = 2 * w * s * janus. Divisor is ws.divisor.
+    Surd ws = multiplySurd(w, s);
+    Surd st_surd = { ws.a * 2 * (long)rotor.janus, ws.b * 2 * (long)rotor.janus, ws.divisor };
+
+    float ct = surdToFloat(ct_surd);
+    float st = surdToFloat(st_surd);
     
     float F = (2.0f * ct + 1.0f) / 3.0f;
     float G = (2.0f * (ct * -0.5f + st * 0.8660254f) + 1.0f) / 3.0f;
