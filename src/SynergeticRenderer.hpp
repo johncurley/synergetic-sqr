@@ -29,6 +29,7 @@ private:
     
 public:
     void toggleJanus();
+    long getJanus() const { return _rotor.janus; }
 };
 
 #endif

@@ -15,7 +15,11 @@ using namespace Synergetics;
 - (BOOL)acceptsFirstResponder { return YES; }
 - (void)keyDown:(NSEvent *)event {
     if (event.keyCode == 49) { // Spacebar
-        if (self.renderer) self.renderer->toggleJanus();
+        if (self.renderer) {
+            self.renderer->toggleJanus();
+            // Just a little UI feedback
+            [self.window setTitle:(self.renderer->getJanus() > 0 ? @"Synergetic Renderer (Janus +)" : @"Synergetic Renderer (Janus -)")];
+        }
     } else {
         [super keyDown:event];
     }
@@ -75,10 +79,13 @@ using namespace Synergetics;
     [view setLayer:self.metalLayer];
     
     self.renderer = new SynergeticRenderer((MTL::Device*)device);
-    view.renderer = self.renderer; // Link renderer to view
+    view.renderer = self.renderer; 
     
     [self.window setContentView:view];
     [self.window makeKeyAndOrderFront:nil];
+    [self.window makeFirstResponder:view]; 
+    
+    [NSApp activateIgnoringOtherApps:YES]; // Force focus to the window
     
     // Capture self unsafely for MRC context
     __unsafe_unretained AppDelegate *weakSelf = self;
@@ -95,6 +102,7 @@ using namespace Synergetics;
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSApplication *app = [NSApplication sharedApplication];
+        [app setActivationPolicy:NSApplicationActivationPolicyRegular];
         AppDelegate *delegate = [[AppDelegate alloc] init];
         [app setDelegate:delegate];
         [app run];

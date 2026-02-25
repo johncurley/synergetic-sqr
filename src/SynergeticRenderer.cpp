@@ -71,18 +71,16 @@ void SynergeticRenderer::draw(CA::MetalLayer* layer) {
     float w = cos(angle * 0.5f);
     float s = sin(angle * 0.5f);
     
-    long D = 1000000000L; // Fixed denominator for frame-local precision
+    long D = 100000000L; // Safe 10^8 denominator
     _rotor.w = { (long)(w * D), 0, D };
     _rotor.x = { (long)(s * D), 0, D };
     _rotor.y = { 0, 0, D };
     _rotor.z = { 0, 0, D };
-    // janus remains persistent
     
-    // DRIFT CHECK: Update standard Matrix for baseline comparison
-    simd::float4x4 deltaMatrix = SQRotor::axisRotationMatrix(Axis::W, 0.001f, 1.0f);
+    // DRIFT CHECK
+    simd::float4x4 deltaMatrix = SQRotor::axisRotationMatrix(Axis::W, 0.0008f, 1.0f);
     _comparisonMatrix = simd_mul(_comparisonMatrix, deltaMatrix);
     
-    // Periodically log
     if ((int)(_time * 60.0f) % 600 == 0) { 
         std::cout << "[Meditative Surd Pipeline] Time: " << _time << "s" << std::endl;
         std::cout << "  Providing GPU with exact RationalSurd for frame " << (int)(_time*60) << std::endl;
@@ -90,7 +88,6 @@ void SynergeticRenderer::draw(CA::MetalLayer* layer) {
     }
     
     encoder->setBytes(&_rotor, sizeof(_rotor), 1);
-    
     encoder->setBuffer(_veBuffer, 0, 2);
     encoder->setBuffer(_octBuffer, 0, 3);
     encoder->setBuffer(_edgeBuffer, 0, 4);

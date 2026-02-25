@@ -108,7 +108,8 @@ kernel void renderSynergetic(
         proj_verts[i] = p.xy / (z_dist * 0.4f);
     }
 
-    float3 color = float3(0.01f, 0.01f, 0.03f);
+    // Background color shifts slightly if Janus is negative (Visual Confirm)
+    float3 color = (rotor.janus > 0) ? float3(0.01f, 0.01f, 0.03f) : float3(0.03f, 0.01f, 0.01f);
 
     float min_edge = 1e10;
     for (int i = 0; i < 24; ++i) {
