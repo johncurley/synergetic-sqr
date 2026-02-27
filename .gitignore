@@ -21,3 +21,4 @@ _deps/
 
 # Python cache
 __pycache__/
+build/

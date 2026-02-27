@@ -54,24 +54,100 @@ struct RationalSurd {
         return this->multiply(other.invert());
     }
 
-    RationalSurd simplify() const {
-        if (divisor < 1000000000L) return *this; 
-        double scale = 1000000.0 / (double)divisor;
-        return { (int64_t)(a * scale), (int64_t)(b * scale), 1000000L };
-    }
-
-    static RationalSurd oscillator(int64_t time_ms, int64_t period_ms) {
-        int64_t half_period = period_ms / 2;
-        int64_t t = time_ms % period_ms;
-        int64_t val = (t < half_period) ? t : (period_ms - t);
-        return { (val * 4) - period_ms, 0, period_ms };
-    }
-
     bool equals(const RationalSurd& other) const {
         return ((__int128_t)a * other.divisor == (__int128_t)other.a * divisor) && 
                ((__int128_t)b * other.divisor == (__int128_t)other.b * divisor);
     }
 };
+
+// SURD-FIXED-POINT (DQFA SPEC v1.4 - Silicon Ready)
+// Representing (a + b*sqrt(3)) / 2^16
+struct SurdFixed64 {
+    int32_t a, b; // 32-bit integer coefficients
+
+    static constexpr int32_t Shift = 16;
+    static constexpr int32_t One = 1 << Shift;
+
+    static SurdFixed64 fromInt(int32_t val) { return { val << Shift, 0 }; }
+    static SurdFixed64 zero() { return { 0, 0 }; }
+    static SurdFixed64 one() { return { One, 0 }; }
+    static SurdFixed64 sqrt3() { return { 0, One }; }
+
+    SurdFixed64 add(const SurdFixed64& other) const {
+        return { a + other.a, b + other.b };
+    }
+
+    SurdFixed64 subtract(const SurdFixed64& other) const {
+        return { a - other.a, b - other.b };
+    }
+
+    SurdFixed64 multiply(const SurdFixed64& other) const {
+        int64_t res_a = ((int64_t)a * other.a + (int64_t)3 * b * other.b) >> Shift;
+        int64_t res_b = ((int64_t)a * other.b + (int64_t)b * other.a) >> Shift;
+        return { (int32_t)res_a, (int32_t)res_b };
+    }
+
+    float toFloat() const {
+        return (float(a) + float(b) * 1.73205081f) / float(One);
+    }
+};
+
+struct SurdVector3 {
+    SurdFixed64 x, y, z;
+    static SurdVector3 fromInt(int64_t ix, int64_t iy, int64_t iz) {
+        return { SurdFixed64::fromInt((int32_t)ix), SurdFixed64::fromInt((int32_t)iy), SurdFixed64::fromInt((int32_t)iz) };
+    }
+};
+
+struct SurdMatrix3x3 {
+    SurdFixed64 m[9]; // Row-major
+
+    static SurdMatrix3x3 identity() {
+        return {
+            {
+                SurdFixed64::one(), SurdFixed64::zero(), SurdFixed64::zero(),
+                SurdFixed64::zero(), SurdFixed64::one(), SurdFixed64::zero(),
+                SurdFixed64::zero(), SurdFixed64::zero(), SurdFixed64::one()
+            }
+        };
+    }
+
+    SurdVector3 transform(const SurdVector3& v) const {
+        return {
+            m[0].multiply(v.x).add(m[1].multiply(v.y)).add(m[2].multiply(v.z)),
+            m[3].multiply(v.x).add(m[4].multiply(v.y)).add(m[5].multiply(v.z)),
+            m[6].multiply(v.x).add(m[7].multiply(v.y)).add(m[8].multiply(v.z))
+        };
+    }
+};
+
+// SurdLang: DualSurd for Hyper-Surd Derivatives (eps^2 = 0)
+struct DualSurd {
+    SurdFixed64 val, eps;
+
+    DualSurd add(const DualSurd& other) const {
+        return { val.add(other.val), eps.add(other.eps) };
+    }
+
+    // gstep: Leibniz product (u*v, u*v' + u'*v)
+    DualSurd multiply(const DualSurd& other) const {
+        return { 
+            val.multiply(other.val), 
+            val.multiply(other.eps).add(eps.multiply(other.val)) 
+        };
+    }
+};
+
+// Rational Oscillator (Absolute Zero Drift Triangle Wave)
+// Maps time (0 to Period) to a SurdFixed64 range [-1, 1]
+inline SurdFixed64 rationalOscillator(int64_t time_ms, int64_t period_ms) {
+    int64_t half_period = period_ms / 2;
+    int64_t t = time_ms % period_ms;
+    int64_t raw_val = (t < half_period) ? t : (period_ms - t);
+    // Normalize to [-1, 1] range in SF32.16
+    int64_t normalized = (raw_val * 4 * SurdFixed64::One / period_ms) - SurdFixed64::One;
+    return { static_cast<int32_t>(normalized), 0 };
+}
 
 struct Surd32 {
     int32_t divisor, a, b, pad;
