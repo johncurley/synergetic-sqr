@@ -1,6 +1,14 @@
 # Binaries
 synergetic-renderer
 synergeticrenderer
+synergetic-sqr
+
+# Build and Dependencies
+build/
+_deps/
+
+# Note: metal-cpp is included for a "Batteries Included" build experience
+# metal-cpp/ 
 
 # OS files
 .DS_Store
@@ -8,6 +16,8 @@ synergeticrenderer
 # Build artifacts
 *.o
 *.obj
+*.a
+*.dylib
 
 # Python cache
 __pycache__/

@@ -52,11 +52,9 @@ At startup, the engine runs a benchmark performing six $60^\circ$ rotations usin
 - **Result:** `SUCCESS: Result is BIT-EXACT to original.`
 - **Significance:** Unlike `float4x4` or Quaternions, this system returns to the *exact same bit-pattern* regardless of hardware or duration.
 
-## Acknowledgments
+## License
 
-- **R. Buckminster Fuller:** For the philosophical and geometric foundation of Synergetics.
-- **Andrew Thomson:** For the "Spread-Quadray Rotors" framework (2026).
-- **Kirby Urner:** For pioneering Quadray coordinate research.
+This project is a **free gift to the world.** It is dedicated to the public domain under the **CC0 1.0 Universal** license. You may copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.
 
 ---
-*Created as an exploration into the future of deterministic, nature-friendly computer graphics.*
+*A sovereign contribution to the global commons of deterministic computer graphics.*
