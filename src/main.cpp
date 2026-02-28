@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    std::cout << "--- Identity Closure Verification (DQFA Implementation v1.7) ---" << std::endl;
+    std::cout << "--- SPU-1 Deterministic Verification Suite v1.7 ---" << std::endl;
     // 1. Randomized Input Test: Initialize a Quadray at an arbitrary rational point
     Synergetics::Quadray4 initial_q;
     initial_q.data.v[0] = 12345; initial_q.data.v[1] = 6789; // Arbitrary (a, b) pair
@@ -73,8 +73,8 @@ int main(int argc, char* argv[]) {
     // 3. Bit-Level Comparison
     if (current_q.equals(initial_q)) {
         std::cout << "DQFA CLOSURE: PASSED (Randomized Input)" << std::endl;
-        std::cout << "  Drift: 0.0000000000000000" << std::endl;
-        std::cout << "  Bit-Exact Identity verified for arbitrary state." << std::endl;
+        std::cout << "  No drift observed within 64-bit fixed-point bounds." << std::endl;
+        std::cout << "  Identity state restored exactly." << std::endl;
     } else {
         std::cerr << "DQFA CLOSURE: FAILED" << std::endl;
     }
