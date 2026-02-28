@@ -1,68 +1,72 @@
-# synergetic-renderer (Metal-SQR) v1.7
-## Deterministic Spatial Identity Standard
+# synergetic-sqr
+## Deterministic Integer-Based Spatial Transform Engine (ℚ(√3) Fixed-Point)
 
-> "This repository implements a deterministic geometric engine built on the quadratic field extension $\mathbb{Q}(\sqrt{3})$. It provides a hardware-ready specification for bit-exact spatial computation, demonstrating that floating-point approximation is not a requirement for 3D coordinate systems. The proofs of algebraic closure are documented in the logs."
+### Overview
+**synergetic-sqr** implements a deterministic spatial transformation engine using integer arithmetic over the algebraic field $\mathbb{Q}(\sqrt{3})$. All computations are performed using fixed-point integer registers; no floating-point instructions are required.
 
-### v1.7 Milestone: Bit-Exact Identity Verified
-The **SPU-1 (Synergetic Processing Unit)** architecture utilizes **Register Shuffles** and integer-based quadratic field arithmetic to achieve absolute temporal stability. 
+The system verifies:
+*   **Closure** under repeated rotation.
+*   **Bit-exact** identity restoration.
+*   **Stability** under large iteration counts ($10^8$).
+*   **Bounded normalization** under scale growth.
+*   **Algebraic integrity** under mixed operator chains.
 
-#### The Identity Audit (The Evidence)
+### Core Representation
+Each value in $\mathbb{Q}(\sqrt{3})$ is represented as:
+$$x = \frac{a + b\sqrt{3}}{2^{16}}$$
+*   **a** and **b** are signed 32-bit integers.
+*   A fixed implicit scaling factor of $2^{16} = 65536$ is applied.
+*   All operations are integer-only.
+*   No IEEE-754 floating-point operations are used in the core logic.
+
+### Instruction Model (SPU-1)
+| Instruction | Description | Implementation |
+| :--- | :--- | :--- |
+| `sadd` | Surd addition | Parallel integer add |
+| `smul` | Surd multiplication | Integer multiply-shift |
+| `srot60` | 60° rotation | Register permutation |
+| `jinv` | Sign inversion | XOR on surd sign-bit |
+| `_spu_normalize` | Normalization | Fixed-point bounds scaling |
+
+**Note:** Rotation is implemented as a zero-gate register permutation, not matrix multiplication.
+
+### Verification Suite (v1.7)
+The suite performs the following rigorous audits:
+1.  **Long-Run Rotation Stability:** $10^8$ consecutive rotations; no drift detected; identity state preserved.
+2.  **Involution Commutativity (Janus Test):** Sign inversion operator verified under composition; algebraic consistency maintained.
+3.  **Scaling Normalization:** Repeated magnification cycles; overflow protection triggered; no state corruption detected.
+4.  **Randomized Closure Test:** Arbitrary valid states rotated through full cycles; bit-exact identity restoration confirmed.
+
+### Example Verification Output
 ```text
---- SPU-1 RIGOROUS VERIFICATION SUITE v1.7 ---
-Test 1: Long-Run Rotation Stability (10^8 iterations)
-SUCCESS: Bit-Exact Stability Verified.
+--- DQFA Rotor Closure Test ---
+DQFA CLOSURE: PASSED (Randomized Input)
+  Drift: 0.0000000000000000
+  Bit-Exact Identity verified for arbitrary state.
 
-Test 3: Fixed-Point Scaling Normalization
-SUCCESS: Algebraic Ratio Preserved (11 normalizations).
----------------------------------------
-[Identity Audit] Closure Verified at Tick: 1000 -> w.a=65536 (0x10000)
-[Identity Audit] Closure Verified at Tick: 5000 -> w.a=65536 (0x10000)
+--- DQFA Stress Bound Test ---
+STRESS TEST: PASSED
+  Overflow Safety Valve Verified (_spu_normalize).
 ```
 
-### SPU-1 Purity Guard: Zero-Tolerance Audit
-This repository includes a **Static Analysis Guardrail** in the build system (`CMakeLists.txt`) that prevents the use of floating-point logic in the algebraic core. If `float` or `double` keywords are detected in the `SPU_Core`, the build will fail. This ensures every spatial transformation remains a closed-loop algebraic operation.
+### Identity Definition
+The canonical identity state is:
+*   **a = 65536 (0x10000)**
+*   **b = 0**
+After full rotation cycles, the system returns exactly to this bit pattern. No tolerance threshold (epsilon) is used; equality is exact.
 
-### Visual Witness: The IVM Skeleton
-The renderer produces a high-contrast wireframe of the **Isotropic Vector Matrix (IVM)**. 
-*   **The Cross:** The projected 4D Quadray axes.
-*   **The Square:** The fundamental Cuboctahedron (VE) symmetry face.
-*   **The Breath:** A rational triangle-wave oscillation between the VE and Octahedron states.
-Because the engine is bit-locked, every rotation returns the edges to the **exact same pixels** with zero shimmering.
+### Design Goals
+*   Deterministic integer arithmetic.
+*   Bit-exact reproducibility across hardware platforms.
+*   No floating-point dependency.
+*   Stable behavior under repeated composition.
+*   Bounded arithmetic with self-healing normalization.
 
-### Core Architecture: SQR-ASIC
-This renderer is the software blueprint for a **Deterministic Spatial Coprocessor.**
-*   **SurdLang ALU:** Native hardware support for the quadratic field $\mathbb{Q}[\sqrt{3}]$.
-*   **Wire-Swap Rotation:** 60° rotations are implemented as zero-cycle permutations.
-*   **Hyper-Surd Calculus:** Hardware-accelerated automatic differentiation for physics.
-
-## Quick Start (macOS / Linux)
-
-```bash
-mkdir -p build && cd build && cmake ..
-make -j8
-./synergetic-sqr
-```
-
-## Documentation
-*   **[GLOSSARY.md](GLOSSARY.md):** Technical definitions and mapping geometry to logic.
-*   **[SURDLANG.md](SURDLANG.md):** Instruction Set Architecture (ISA) Spec.
-*   **[RESEARCH.md](RESEARCH.md):** The Ultrafinitist Manifesto and DQFA Proof.
-*   **[CONTRIBUTING.md](CONTRIBUTING.md):** Purity rules for the Rational Gate.
-
-## License
-
-This project is a **free gift to the world.** It is dedicated to the public domain under the **CC0 1.0 Universal** license. You may copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.
-
-### Call to Audit: Verification Protocol
-Researchers and engineers wishing to verify the claims of this architecture are encouraged to run the **Rigorous Verification Suite**:
-```bash
-make spu-verify && ./spu-verify
-```
-
-### Project Roadmap
-*   **v1.7 (Stable Basis):** Bit-exact spatial closure and self-healing scaling (SF32.16).
-*   **v1.8 (Kinetic Phase):** Implementation of **Rational Tensegrity**—stable force dynamics using Hyper-Surd calculus.
-*   **v1.9 (Hardware Phase):** RTL implementation of the SPU-1 intrinsics in **Verilog** for FPGA deployment.
+### Limitations
+*   Finite integer bounds apply.
+*   Field restricted to $\mathbb{Q}(\sqrt{3})$.
+*   No transcendental functions implemented.
+*   No claim of computational superiority over optimized GPU pipelines for perception-based tasks.
 
 ---
-*A sovereign contribution to the global commons of deterministic computer graphics.*
+*A deterministic contribution to the global commons of computer graphics.*
