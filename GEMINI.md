@@ -12,6 +12,13 @@ We have moved from a static coordinate system to a dynamic physical system. We a
 - **Rule 2:** Every code change must be followed by `make spu-verify` and `synergetic-sqr` execution.
 - **Rule 3:** If a bit-identity test fails, the push is aborted.
 
+### PRE-COMMIT HARD GATE CHECKLIST
+1. [ ] Code compiles without warnings in `build/`.
+2. [ ] `./spu-verify` returns 100% PASS on all tests (1-7).
+3. [ ] `./synergetic-sqr` console output confirms Identity Closure.
+4. [ ] No `float` or `double` contamination detected in Algebraic Core.
+5. [ ] Logic is verified bit-for-bit against algebraic expectations.
+
 ### Completed Milestones
 - [x] **Technical Report:** Formal academic framing of the DQFA Epoch.
 - [x] **RTL Specification:** ALU gate-level logic for SMUL and SNORM.

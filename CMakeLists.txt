@@ -28,16 +28,16 @@ add_executable(synergetic-sqr ${SOURCES})
 
 # 4.1 Deterministic Verification Suite
 add_executable(spu-verify tests/rigorous_verification.cpp)
-target_link_libraries(spu-verify PRIVATE "-framework Foundation") 
 if(APPLE)
+    target_link_libraries(spu-verify PRIVATE "-framework Foundation") 
     set_source_files_properties(tests/rigorous_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
 # --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---
 # Fails the build if 'float' or 'double' are found in the Algebraic Core
 add_custom_target(purity_audit ALL
-    COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/SynergeticsMath.hpp" | grep -v "toFloat" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in SynergeticsMath.hpp" && exit 1) || exit 0
-    COMMAND sed -n '1,/CARTESIAN CORNER/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/DQFA.metal" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in DQFA.metal Core" && exit 1) || exit 0
+    COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/SynergeticsMath.hpp" | grep -E 'float|double' && (echo "PURITY ERROR: Floating point contamination found in SynergeticsMath.hpp Core" && exit 1) || true
+    COMMAND sed -n '1,/CARTESIAN CORNER/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/DQFA.metal" | grep -E 'float|double' && (echo "PURITY ERROR: Floating point contamination found in DQFA.metal Core" && exit 1) || true
     COMMENT "Auditing SPU-1 Algebraic Core for floating-point contamination..."
 )
 add_dependencies(synergetic-sqr purity_audit)

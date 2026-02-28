@@ -19,7 +19,6 @@ struct SurdFixed64 {
         long res_b = ((long)a * other.b + (long)b * other.a) >> Shift;
         return { (int)res_a, (int)res_b };
     }
-    float toFloat() const { return (float(a) + float(b) * 1.73205081f) / float(One); }
 };
 
 struct SurdVector3 {
@@ -47,6 +46,10 @@ struct SPUControl {
 // --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
 
 struct DisplayCorner {
+    static float toFloat(SurdFixed64 s) {
+        return (float(s.a) + float(s.b) * 1.73205081f) / 65536.0f;
+    }
+
     static float getScale(uint tick) {
         uint period = 200; 
         uint t_cycle = tick % period;
@@ -55,7 +58,7 @@ struct DisplayCorner {
     }
 
     static float2 project(SurdVector3 sv, float scale) {
-        float3 pf = float3(sv.x.toFloat(), sv.y.toFloat(), sv.z.toFloat()) * scale;
+        float3 pf = float3(toFloat(sv.x), toFloat(sv.y), toFloat(sv.z)) * scale;
         // PERSPECTIVE: Z-offset at 20.0, Focal at 6.0
         return pf.xy / (20.0f - pf.z) * 6.0f;
     }

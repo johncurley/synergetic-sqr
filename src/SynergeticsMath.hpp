@@ -1,7 +1,14 @@
 #ifndef SYNERGETICS_MATH_HPP
 #define SYNERGETICS_MATH_HPP
 
+#ifdef __APPLE__
 #include <simd/simd.h>
+#endif
+
+#if defined(__arm64__) || defined(_M_ARM64)
+#include <arm_neon.h>
+#endif
+
 #include <cmath>
 #include <iostream>
 #include <stdint.h>
@@ -12,11 +19,6 @@ namespace Synergetics {
 // --- ARCHITECTURAL CONTRACT ---
 static_assert(sizeof(int32_t) == 4, "SPU-1 requires 32-bit int32_t");
 static_assert(sizeof(int64_t) == 8, "SPU-1 requires 64-bit int64_t");
-
-// --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---
-namespace DisplayAdapter {
-    static constexpr float SQRT3_ESTIMATE = 1.73205081f;
-}
 
 // --- SOVEREIGN CORE (Algebraic Identity - Integer Only) ---
 
@@ -53,7 +55,6 @@ struct SurdFixed64 {
     SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(const SurdFixed64& other) const { return { a - other.a, b - other.b }; }
     SurdFixed64 multiply(const SurdFixed64& other) const { return _spu_surd_mul(*this, other); }
-    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(One); }
 };
 
 struct SPU_Vector256 {
@@ -95,6 +96,16 @@ struct alignas(32) Quadray4 {
         return true;
     }
 };
+
+// --- END SOVEREIGN CORE ---
+
+// --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---
+namespace DisplayAdapter {
+    static constexpr float SQRT3_ESTIMATE = 1.73205081f;
+    static inline float toFloat(const SurdFixed64& s) {
+        return (float(s.a) + float(s.b) * SQRT3_ESTIMATE) / float(SurdFixed64::One);
+    }
+}
 
 // --- TENSEGRITY DYNAMICS (v1.8 Kinetic Logic) ---
 
@@ -144,8 +155,6 @@ struct TensegrityLink {
         }
     }
 };
-
-// --- END SOVEREIGN CORE ---
 
 // --- LEGACY SUPPORT ---
 struct RationalSurd {

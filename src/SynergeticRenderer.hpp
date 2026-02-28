@@ -2,9 +2,13 @@
 #define SYNERGETIC_RENDERER_HPP
 
 #include <SDL3/SDL.h>
+
+#ifdef __APPLE__
 #include <simd/simd.h>
 #include <QuartzCore/QuartzCore.hpp>
 #include <Metal/Metal.hpp>
+#endif
+
 #include "SynergeticsMath.hpp"
 
 namespace Synergetics {
