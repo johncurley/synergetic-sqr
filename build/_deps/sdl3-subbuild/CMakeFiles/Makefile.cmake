@@ -10,10 +10,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/4.2.3/CMakeSystem.cmake"
   "CMakeLists.txt"
   "sdl3-populate-prefix/tmp/sdl3-populate-mkdirs.cmake"
-  "/usr/local/share/cmake/Modules/CMakeDetermineSystem.cmake"
   "/usr/local/share/cmake/Modules/CMakeGenericSystem.cmake"
   "/usr/local/share/cmake/Modules/CMakeInitializeConfigs.cmake"
-  "/usr/local/share/cmake/Modules/CMakeSystem.cmake.in"
   "/usr/local/share/cmake/Modules/CMakeSystemSpecificInformation.cmake"
   "/usr/local/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake"
   "/usr/local/share/cmake/Modules/ExternalProject.cmake"
@@ -38,7 +36,6 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "CMakeFiles/4.2.3/CMakeSystem.cmake"
   "sdl3-populate-prefix/tmp/sdl3-populate-mkdirs.cmake"
   "sdl3-populate-prefix/tmp/sdl3-populate-gitclone.cmake"
   "sdl3-populate-prefix/src/sdl3-populate-stamp/sdl3-populate-gitinfo.txt"

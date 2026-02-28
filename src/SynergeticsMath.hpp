@@ -78,10 +78,12 @@ struct SurdFixed64 {
         return { static_cast<int32_t>(res_a), static_cast<int32_t>(res_b) };
     }
 
-    // _spu_normalize: Overflow Safety Valve
+    // _spu_normalize: Overflow Safety Valve (Self-Healing)
     static inline SurdFixed64 _spu_normalize(SurdFixed64 s) {
-        // Trigger right-shift if coefficients approach 32-bit ceiling (0x40000000)
-        if (std::abs(s.a) > 0x40000000 || std::abs(s.b) > 0x40000000) {
+        // SPU-1 Gate: Check if the 30th bit is set (approaching overflow)
+        // Using bitwise logic to avoid abs(INT_MIN) undefined behavior
+        uint32_t mask = 0x40000000;
+        if ((static_cast<uint32_t>(s.a) & mask) || (static_cast<uint32_t>(s.b) & mask)) {
             return { s.a >> 1, s.b >> 1 };
         }
         return s;

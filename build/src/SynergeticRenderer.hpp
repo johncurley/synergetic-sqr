@@ -35,6 +35,13 @@ private:
         int janus;
     };
 
+    // SPU-1 Control Protocol (Hardware Clock & State)
+    struct SPUControl {
+        uint32_t tick;
+        int32_t rot_count;
+        int32_t padding[2];
+    };
+
     MTL::Device* _device;
     MTL::CommandQueue* _commandQueue;
     MTL::ComputePipelineState* _computePipeline;

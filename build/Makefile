@@ -131,6 +131,32 @@ synergetic-sqr/fast:
 .PHONY : synergetic-sqr/fast
 
 #=============================================================================
+# Target rules for targets named spu-verify
+
+# Build rule for target.
+spu-verify: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-verify
+.PHONY : spu-verify
+
+# fast build rule for target.
+spu-verify/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/build
+.PHONY : spu-verify/fast
+
+#=============================================================================
+# Target rules for targets named purity_audit
+
+# Build rule for target.
+purity_audit: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 purity_audit
+.PHONY : purity_audit
+
+# fast build rule for target.
+purity_audit/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/purity_audit.dir/build.make CMakeFiles/purity_audit.dir/build
+.PHONY : purity_audit/fast
+
+#=============================================================================
 # Target rules for targets named SDL3-shared
 
 # Build rule for target.
@@ -217,6 +243,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+tests/rigorous_verification.o: tests/rigorous_verification.cpp.o
+.PHONY : tests/rigorous_verification.o
+
+# target to build an object file
+tests/rigorous_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.o
+.PHONY : tests/rigorous_verification.cpp.o
+
+tests/rigorous_verification.i: tests/rigorous_verification.cpp.i
+.PHONY : tests/rigorous_verification.i
+
+# target to preprocess a source file
+tests/rigorous_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.i
+.PHONY : tests/rigorous_verification.cpp.i
+
+tests/rigorous_verification.s: tests/rigorous_verification.cpp.s
+.PHONY : tests/rigorous_verification.s
+
+# target to generate assembly for a file
+tests/rigorous_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.s
+.PHONY : tests/rigorous_verification.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -225,9 +275,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... purity_audit"
 	@echo "... SDL3-shared"
 	@echo "... SDL3_test"
 	@echo "... SDL_uclibc"
+	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
 	@echo "... src/SynergeticRenderer.o"
 	@echo "... src/SynergeticRenderer.i"
@@ -235,6 +287,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/rigorous_verification.o"
+	@echo "... tests/rigorous_verification.i"
+	@echo "... tests/rigorous_verification.s"
 .PHONY : help
 
 

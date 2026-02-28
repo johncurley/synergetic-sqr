@@ -67,26 +67,20 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
-    // Pass the tick count as the first float in the buffer (kernel will cast to int)
-    simd::float4 timeData = {(float)_tickCount, 0, 0, 0};
-    encoder->setBytes(&timeData, sizeof(timeData), 0);
-    
-    // SPU-1 HARD-LOGIC DRIVER
-    // Rotation is a series of 60-degree register shuffles every 100 ticks.
-    int rot_count = (_tickCount / 100) % 6;
-    
-    // Identity Rotor (The base state)
-    SurdFixed64 w = { SurdFixed64::One, 0 };
-    SurdFixed64 x = { 0, 0 };
-    
-    // In a real SPU, we would simply shuffle the vertex buffer. 
-    // Here we pass the rot_count to the kernel to perform the shuffles.
-    SurdRotorFixed gpuRotor = {
-        w, x, (int)_rotor.janus
+    // SPU-1 Control Protocol: Clean timing and state
+    SPUControl control = {
+        static_cast<uint32_t>(_tickCount),
+        static_cast<int32_t>((_tickCount / 100) % 6),
+        {0, 0}
     };
+    encoder->setBytes(&control, sizeof(control), 0);
     
-    // Abuse the rotor 'x.a' to pass the discrete rotation count to the kernel
-    gpuRotor.x.a = rot_count;
+    // BIT-EXACT ROTOR (Identity State)
+    SurdRotorFixed gpuRotor = {
+        { SurdFixed64::One, 0 }, // w = 1.0 (65536)
+        { 0, 0 },                // x = 0.0
+        (int)_rotor.janus        // janus polarity
+    };
 
     encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
     
