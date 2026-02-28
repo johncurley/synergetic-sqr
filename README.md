@@ -5,11 +5,11 @@
 **synergetic-sqr** implements a deterministic spatial transformation engine using integer arithmetic over the algebraic field $\mathbb{Q}(\sqrt{3})$. All computations are performed using fixed-point integer registers; no floating-point instructions are required.
 
 The system verifies:
-*   **Closure** under repeated rotation.
+*   **Identity Closure** under repeated rotation.
 *   **Bit-exact** identity restoration.
-*   **Stability** under large iteration counts ($10^8$).
-*   **Bounded normalization** under scale growth.
-*   **Algebraic integrity** under mixed operator chains.
+*   **Stability Verified for 10^8 Iterations**.
+*   **Normalization-Based Overflow Control** under scale growth.
+*   **Algebraic Consistency Verified** under mixed operator chains.
 
 ### Core Representation
 Each value in $\mathbb{Q}(\sqrt{3})$ is represented as:
@@ -39,7 +39,7 @@ The suite performs the following rigorous audits:
 
 ### Example Verification Output
 ```text
---- DQFA Rotor Closure Test ---
+--- Identity Closure Verification (DQFA Implementation v1.7) ---
 DQFA CLOSURE: PASSED (Randomized Input)
   Drift: 0.0000000000000000
   Bit-Exact Identity verified for arbitrary state.

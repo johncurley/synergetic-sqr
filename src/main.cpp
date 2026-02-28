@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    std::cout << "--- DQFA Rotor Closure Test ---" << std::endl;
+    std::cout << "--- Identity Closure Verification (DQFA Implementation v1.7) ---" << std::endl;
     // 1. Randomized Input Test: Initialize a Quadray at an arbitrary rational point
     Synergetics::Quadray4 initial_q;
     initial_q.data.v[0] = 12345; initial_q.data.v[1] = 6789; // Arbitrary (a, b) pair

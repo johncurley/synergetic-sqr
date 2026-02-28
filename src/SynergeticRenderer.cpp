@@ -91,10 +91,9 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->presentDrawable(drawable);
     cmdBuf->commit();
     
-    // DETERMINISM AUDIT: Bit-Exact Identity Check
-    // Log identity every 600 ticks (full 360 rotation)
+    // Identity Closure Verification: Every 600 ticks
     if (_tickCount % 600 == 0) {
-        std::cout << "[Identity Audit] Closure Verified at Tick: " << _tickCount << std::endl;
+        std::cout << "[Identity Closure Verification] Closure Verified at Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
     }
 

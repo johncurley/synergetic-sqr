@@ -9,7 +9,7 @@ Geometric transformations in this architecture are treated as purely algebraic o
 *   **Quadratic Field Element:** All coordinates are members of the field extension $\mathbb{Q}(\sqrt{3})$, represented as fixed-point integer pairs.
 *   **Rotation as Permutation:** Within the tetrahedral Quadray basis, 60° rotations are implemented as discrete register shuffles (permutations), eliminating the need for transcendental calculations.
 
-### 2. DQFA Stability Proof: Bit-Exact Closure
+### 2. DQFA Stability Verification: Deterministic Closure Verified
 Verification of the v1.7 SPU-1 pipeline confirms that identity closure is maintained across 100 million iterations and multiple normalization cycles.
 
 **Audit Evidence:**
