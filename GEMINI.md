@@ -7,6 +7,11 @@ A "Unified Field Engine" built on **Buckminster Fuller's Synergetic Geometry** a
 ### Status: v1.8 KINETIC (The Tensegrity Dynamics Phase)
 We have moved from a static coordinate system to a dynamic physical system. We are now formalizing "Force" and "Tension" as integer-based Quadray vector balances within the Isotropic Vector Matrix (IVM).
 
+### THE VERIFICATION MANDATE (ZERO-TOLERANCE)
+- **Rule 1:** NO PUSHES without empirical local verification.
+- **Rule 2:** Every code change must be followed by `make spu-verify` and `synergetic-sqr` execution.
+- **Rule 3:** If a bit-identity test fails, the push is aborted.
+
 ### Completed Milestones
 - [x] **Technical Report:** Formal academic framing of the DQFA Epoch.
 - [x] **RTL Specification:** ALU gate-level logic for SMUL and SNORM.
