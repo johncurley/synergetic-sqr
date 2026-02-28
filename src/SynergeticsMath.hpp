@@ -12,7 +12,6 @@ namespace Synergetics {
 // --- ARCHITECTURAL CONTRACT ---
 static_assert(sizeof(int32_t) == 4, "SPU-1 requires 32-bit int32_t");
 static_assert(sizeof(int64_t) == 8, "SPU-1 requires 64-bit int64_t");
-// Note: We assume two's complement representation for signed integers.
 
 // --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---
 namespace DisplayAdapter {
@@ -21,24 +20,18 @@ namespace DisplayAdapter {
 
 // --- SOVEREIGN CORE (Algebraic Identity - Integer Only) ---
 
-/**
- * spu_deterministic_cast: Ensures machine-invariant wrapping behavior
- * for 64-to-32 bit downcasting, bypassing implementation-defined behavior.
- */
 static inline int32_t spu_deterministic_cast(int64_t val) {
     return static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint64_t>(val) & 0xFFFFFFFF));
 }
 
-// Represents (a + b*sqrt(3)) / 2^16
 struct SurdFixed64 {
-    int32_t a, b; // coefficients
-
+    int32_t a, b; 
     static constexpr int32_t Shift = 16;
     static constexpr int32_t One = 1 << Shift;
 
     static inline SurdFixed64 _spu_surd_mul(SurdFixed64 u, SurdFixed64 v) {
         int64_t prod_bb = (int64_t)u.b * v.b;
-        int64_t surd_term = (prod_bb << 1) + prod_bb; // *3
+        int64_t surd_term = (prod_bb << 1) + prod_bb; 
         int64_t res_a = ((int64_t)u.a * v.a + surd_term) >> Shift;
         int64_t res_b = ((int64_t)u.a * v.b + (int64_t)u.b * v.a) >> Shift;
         return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b) };
@@ -52,24 +45,15 @@ struct SurdFixed64 {
         return s;
     }
 
-    /**
-     * norm: The field norm N(a + b*sqrt(3)) = a^2 - 3b^2.
-     * This value is an invariant under rotation in the quadratic field.
-     */
     int64_t norm() const {
-        int64_t la = a;
-        int64_t lb = b;
+        int64_t la = a; int64_t lb = b;
         return la * la - 3 * lb * lb;
     }
 
     SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(const SurdFixed64& other) const { return { a - other.a, b - other.b }; }
     SurdFixed64 multiply(const SurdFixed64& other) const { return _spu_surd_mul(*this, other); }
-
-    // Display-only conversion
-    float toFloat() const {
-        return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(One);
-    }
+    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(One); }
 };
 
 struct SPU_Vector256 {
@@ -77,18 +61,11 @@ struct SPU_Vector256 {
     static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
         SPU_Vector256 res;
 #if defined(__APPLE__) && defined(__arm64__)
-        // Apple Silicon NEON Path - Using union to avoid reinterpret_cast UB
         union { int32_t arr[4]; int32x4_t vec; } lu1, lu2, lv1, lv2, lr1, lr2;
-        std::memcpy(lu1.arr, &u.v[0], 16);
-        std::memcpy(lu2.arr, &u.v[4], 16);
-        std::memcpy(lv1.arr, &v.v[0], 16);
-        std::memcpy(lv2.arr, &v.v[4], 16);
-        
-        lr1.vec = vaddq_s32(lu1.vec, lv1.vec);
-        lr2.vec = vaddq_s32(lu2.vec, lv2.vec);
-        
-        std::memcpy(&res.v[0], lr1.arr, 16);
-        std::memcpy(&res.v[4], lr2.arr, 16);
+        std::memcpy(lu1.arr, &u.v[0], 16); std::memcpy(lu2.arr, &u.v[4], 16);
+        std::memcpy(lv1.arr, &v.v[0], 16); std::memcpy(lv2.arr, &v.v[4], 16);
+        lr1.vec = vaddq_s32(lu1.vec, lv1.vec); lr2.vec = vaddq_s32(lu2.vec, lv2.vec);
+        std::memcpy(&res.v[0], lr1.arr, 16); std::memcpy(&res.v[4], lr2.arr, 16);
 #else
         for (int i = 0; i < 8; ++i) res.v[i] = u.v[i] + v.v[i];
 #endif
@@ -102,29 +79,17 @@ struct SPU_Vector256 {
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
-
-    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) {
-        return { SPU_Vector256::add(u.data, v.data) };
-    }
-
-    // _spu_jitterbug: Deterministic collapse/expansion intrinsic
-    static inline Quadray4 _spu_jitterbug(Quadray4 q, SurdFixed64 factor) {
-        return q; 
-    }
-
-    // _spu_quadrance: Integer distance squared between two Quadrays
+    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
+    static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
             int64_t da = (int64_t)u.data.v[i*2] - v.data.v[i*2];
             int64_t db = (int64_t)u.data.v[i*2+1] - v.data.v[i*2+1];
-            // Quadrance in Q(sqrt3) field: N(da + db*sqrt3) = da^2 + 3*db^2 + 2*da*db*sqrt3
-            // For a pure integer distance metric in IVM, we use the Norm.
             total += (da * da) + (db * db * 3);
         }
         return total;
     }
-
     bool equals(const Quadray4& other) const {
         for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false;
         return true;
@@ -133,56 +98,56 @@ struct alignas(32) Quadray4 {
 
 // --- TENSEGRITY DYNAMICS (v1.8 Kinetic Logic) ---
 
-struct SPU_Mass {
-    int64_t num; // Numerator
-    int64_t den; // Denominator
-};
+struct SPU_Mass { int64_t num, den; };
 
 struct SPU_TensegrityNode {
     Quadray4 position;
-    Quadray4 velocity_num; // Rational Velocity Numerator
-    int64_t  velocity_den; // Rational Velocity Denominator
+    Quadray4 prev_position; 
     SPU_Mass mass;
 
-    // Gravity: Defined as a Unit Vector toward Q4 (The Down vertex)
-    static inline Quadray4 gravityVector() {
-        return { {0, 0, 0, 0, 0, 0, SurdFixed64::One, 0} };
+    static inline void _spu_verlet_step(SPU_TensegrityNode& node, const Quadray4& a, int32_t dt_sq) {
+        Quadray4 temp = node.position;
+        Quadray4 twice_pos = { {node.position.data.v[0] << 1, node.position.data.v[1] << 1, 
+                                 node.position.data.v[2] << 1, node.position.data.v[3] << 1,
+                                 node.position.data.v[4] << 1, node.position.data.v[5] << 1,
+                                 node.position.data.v[6] << 1, node.position.data.v[7] << 1} };
+        Quadray4 neg_prev = { {-node.prev_position.data.v[0], -node.prev_position.data.v[1],
+                               -node.prev_position.data.v[2], -node.prev_position.data.v[3],
+                               -node.prev_position.data.v[4], -node.prev_position.data.v[5],
+                               -node.prev_position.data.v[6], -node.prev_position.data.v[7]} };
+        Quadray4 accel = { {a.data.v[0] * dt_sq, a.data.v[1] * dt_sq, a.data.v[2] * dt_sq, a.data.v[3] * dt_sq,
+                            a.data.v[4] * dt_sq, a.data.v[5] * dt_sq, a.data.v[6] * dt_sq, a.data.v[7] * dt_sq} };
+        node.position = Quadray4::_spu_add_q4(twice_pos, Quadray4::_spu_add_q4(neg_prev, accel));
+        node.prev_position = temp;
     }
-
-    // CheckEquilibrium: Bit-exact verification of zero net force
-    static inline bool CheckEquilibrium(const Quadray4* incident_forces, int count) {
-        Quadray4 total_force = { {0, 0, 0, 0, 0, 0, 0, 0} };
-        for (int i = 0; i < count; ++i) {
-            total_force = Quadray4::_spu_add_q4(total_force, incident_forces[i]);
-        }
-        // Bit-exact zero check in Quadray basis (k,k,k,k projects to origin)
-        int32_t a0 = total_force.data.v[0], b0 = total_force.data.v[1];
-        for (int i = 1; i < 4; ++i) {
-            if (total_force.data.v[i*2] != a0 || total_force.data.v[i*2+1] != b0) return false;
-        }
-        return true;
-    }
+    static inline Quadray4 gravityVector() { return { {0, 0, 0, 0, 0, 0, SurdFixed64::One, 0} }; }
 };
 
-struct TensegrityLink {
-    int32_t nodeA_idx;
-    int32_t nodeB_idx;
-    int64_t rest_quadrance; // Integer Distance Squared
-    int32_t stiffness;      // Integer k-factor
+enum class LinkType { Cable, Strut, Tie };
 
-    // calculateTension: Returns the integer force magnitude based on displacement
-    int64_t calculateTension(const TensegrityNode& a, const TensegrityNode& b) const {
-        int64_t current_quadrance = Quadray4::_spu_quadrance(a.position, b.position);
-        // Force F = k * (L^2 - L_rest^2) / L_rest^2 (Algebraic Spring Approximation)
-        int64_t displacement = current_quadrance - rest_quadrance;
-        return (displacement * stiffness);
+struct TensegrityLink {
+    int32_t nodeA_idx, nodeB_idx;
+    int64_t rest_quadrance; 
+    int32_t stiffness;      
+    LinkType type;
+
+    void projectConstraint(SPU_TensegrityNode& a, SPU_TensegrityNode& b) const {
+        int64_t current_q = Quadray4::_spu_quadrance(a.position, b.position);
+        if (type == LinkType::Cable && current_q <= rest_quadrance) return;
+        if (type == LinkType::Strut && current_q >= rest_quadrance) return;
+        int64_t diff = current_q - rest_quadrance;
+        if (std::abs(diff) < 16) return; 
+        for (int i = 0; i < 8; ++i) {
+            int32_t delta = (a.position.data.v[i] - b.position.data.v[i]) >> 4;
+            if (diff > 0) { a.position.data.v[i] -= delta; b.position.data.v[i] += delta; }
+            else { a.position.data.v[i] += delta; b.position.data.v[i] -= delta; }
+        }
     }
 };
 
 // --- END SOVEREIGN CORE ---
 
-// --- LEGACY SUPPORT (RationalSurd and old Rotor logic) ---
-
+// --- LEGACY SUPPORT ---
 struct RationalSurd {
     int64_t a, b, divisor;
     static RationalSurd zero() { return {0, 0, 1}; }
@@ -191,37 +156,10 @@ struct RationalSurd {
     RationalSurd multiply(const RationalSurd& other) const {
         __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
         __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
-        __int128_t res_d = (__int128_t)divisor * other.divisor;
-        return { (int64_t)res_a, (int64_t)res_b, (int64_t)res_d };
+        return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
     }
-    bool equals(const RationalSurd& other) const {
-        return ((__int128_t)a * other.divisor == (__int128_t)other.a * divisor) && 
-               ((__int128_t)b * other.divisor == (__int128_t)other.b * divisor);
-    }
-    float toFloat() const {
-        if (divisor == 0) return 0.0f;
-        return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(divisor);
-    }
-    RationalSurd project(const RationalSurd& focal, const RationalSurd& z, const RationalSurd& offset) const {
-        return { (a * focal.a) / z.a, 0, 1 }; 
-    }
-    // Added back basic project for benchmark compatibility
-    static RationalSurd project_simple(int64_t x, int64_t f, int64_t z) {
-        return { x * f, 0, z };
-    }
-};
-
-struct SurdRotor {
-    int64_t janus;
-    static SurdRotor identity() { return { 1 }; }
-};
-
-struct HyperSurd {
-    RationalSurd val, eps;
-    static HyperSurd variable(RationalSurd s) { return { s, RationalSurd::one() }; }
-    HyperSurd multiply(const HyperSurd& other) const {
-        return { val.multiply(other.val), { val.a * other.eps.a + val.b * other.eps.b * 3, 0, 1 } }; // Simplified
-    }
+    bool equals(const RationalSurd& other) const { return a * other.divisor == other.a * divisor && b * other.divisor == other.b * divisor; }
+    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(divisor); }
 };
 
 } // namespace Synergetics
