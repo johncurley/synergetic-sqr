@@ -5,8 +5,14 @@
 #include <cmath>
 #include <iostream>
 #include <stdint.h>
+#include <cstring>
 
 namespace Synergetics {
+
+// --- ARCHITECTURAL CONTRACT ---
+static_assert(sizeof(int32_t) == 4, "SPU-1 requires 32-bit int32_t");
+static_assert(sizeof(int64_t) == 8, "SPU-1 requires 64-bit int64_t");
+// Note: We assume two's complement representation for signed integers.
 
 // --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---
 namespace DisplayAdapter {
@@ -14,6 +20,14 @@ namespace DisplayAdapter {
 }
 
 // --- SOVEREIGN CORE (Algebraic Identity - Integer Only) ---
+
+/**
+ * spu_deterministic_cast: Ensures machine-invariant wrapping behavior
+ * for 64-to-32 bit downcasting, bypassing implementation-defined behavior.
+ */
+static inline int32_t spu_deterministic_cast(int64_t val) {
+    return static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint64_t>(val) & 0xFFFFFFFF));
+}
 
 // Represents (a + b*sqrt(3)) / 2^16
 struct SurdFixed64 {
@@ -27,7 +41,7 @@ struct SurdFixed64 {
         int64_t surd_term = (prod_bb << 1) + prod_bb; // *3
         int64_t res_a = ((int64_t)u.a * v.a + surd_term) >> Shift;
         int64_t res_b = ((int64_t)u.a * v.b + (int64_t)u.b * v.a) >> Shift;
-        return { static_cast<int32_t>(res_a), static_cast<int32_t>(res_b) };
+        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b) };
     }
 
     static inline SurdFixed64 _spu_normalize(SurdFixed64 s) {
@@ -36,6 +50,16 @@ struct SurdFixed64 {
             return { s.a >> 1, s.b >> 1 };
         }
         return s;
+    }
+
+    /**
+     * norm: The field norm N(a + b*sqrt(3)) = a^2 - 3b^2.
+     * This value is an invariant under rotation in the quadratic field.
+     */
+    int64_t norm() const {
+        int64_t la = a;
+        int64_t lb = b;
+        return la * la - 3 * lb * lb;
     }
 
     SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
@@ -53,8 +77,18 @@ struct SPU_Vector256 {
     static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
         SPU_Vector256 res;
 #if defined(__APPLE__) && defined(__arm64__)
-        auto uv = (int32x4x2_t*)u.v; auto vv = (int32x4x2_t*)v.v; auto rv = (int32x4x2_t*)res.v;
-        rv->val[0] = vaddq_s32(uv->val[0], vv->val[0]); rv->val[1] = vaddq_s32(uv->val[1], vv->val[1]);
+        // Apple Silicon NEON Path - Using union to avoid reinterpret_cast UB
+        union { int32_t arr[4]; int32x4_t vec; } lu1, lu2, lv1, lv2, lr1, lr2;
+        std::memcpy(lu1.arr, &u.v[0], 16);
+        std::memcpy(lu2.arr, &u.v[4], 16);
+        std::memcpy(lv1.arr, &v.v[0], 16);
+        std::memcpy(lv2.arr, &v.v[4], 16);
+        
+        lr1.vec = vaddq_s32(lu1.vec, lv1.vec);
+        lr2.vec = vaddq_s32(lu2.vec, lv2.vec);
+        
+        std::memcpy(&res.v[0], lr1.arr, 16);
+        std::memcpy(&res.v[4], lr2.arr, 16);
 #else
         for (int i = 0; i < 8; ++i) res.v[i] = u.v[i] + v.v[i];
 #endif
@@ -68,6 +102,15 @@ struct SPU_Vector256 {
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
+
+    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) {
+        return { SPU_Vector256::add(u.data, v.data) };
+    }
+
+    static inline Quadray4 _spu_rotate_60(Quadray4 q) {
+        return { SPU_Vector256::rotate60(q.data) };
+    }
+
     bool equals(const Quadray4& other) const {
         for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false;
         return true;
