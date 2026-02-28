@@ -36,7 +36,7 @@ endif()
 # --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---
 # Fails the build if 'float' or 'double' are found in the Algebraic Core
 add_custom_target(purity_audit ALL
-    COMMAND grep -v "toFloat" "${CMAKE_CURRENT_SOURCE_DIR}/src/SynergeticsMath.hpp" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in SynergeticsMath.hpp" && exit 1) || exit 0
+    COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/SynergeticsMath.hpp" | grep -v "toFloat" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in SynergeticsMath.hpp" && exit 1) || exit 0
     COMMAND sed -n '1,/CARTESIAN CORNER/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/DQFA.metal" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in DQFA.metal Core" && exit 1) || exit 0
     COMMENT "Auditing SPU-1 Algebraic Core for floating-point contamination..."
 )

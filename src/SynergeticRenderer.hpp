@@ -46,7 +46,7 @@ private:
     MTL::CommandQueue* _commandQueue;
     MTL::ComputePipelineState* _computePipeline;
     
-    SurdRotor _rotor;
+    int _janus = 1;
     uint64_t _tickCount = 0;
 };
 

@@ -47,6 +47,13 @@ struct SPUControl {
 // --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
 
 struct DisplayCorner {
+    static float getScale(uint tick) {
+        uint period = 200; 
+        uint t_cycle = tick % period;
+        float mix_factor = (t_cycle < period / 2) ? (float(t_cycle) / (period / 2.0f)) : (2.0f - float(t_cycle) / (period / 2.0f));
+        return 2.0f + 2.0f * mix_factor; 
+    }
+
     static float2 project(SurdVector3 sv, float scale) {
         float3 pf = float3(sv.x.toFloat(), sv.y.toFloat(), sv.z.toFloat()) * scale;
         // PERSPECTIVE: Z-offset at 20.0, Focal at 6.0
@@ -92,11 +99,8 @@ kernel void renderDQFA_v1_5(
         {{ {0, 0}, {0, 0}, {-SurdFixed64::One, 0}, {-SurdFixed64::One, 0} }}  
     };
     
-    // 2. RATIONAL BREATHING (ALGEBRAIC CORE)
-    uint period = 200; 
-    uint t_cycle = control.tick % period;
-    float mix_factor = (t_cycle < period / 2) ? (float(t_cycle) / (period / 2.0f)) : (2.0f - float(t_cycle) / (period / 2.0f));
-    float scale = 2.0f + 2.0f * mix_factor; 
+    // 2. OPTICAL SCALE (CARTESIAN CORNER)
+    float scale = DisplayCorner::getScale(control.tick);
 
     // 3. OPTICAL PROJECTION (CARTESIAN CORNER)
     float2 proj[12];

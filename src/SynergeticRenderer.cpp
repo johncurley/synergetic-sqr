@@ -11,7 +11,7 @@ namespace Synergetics {
 MetalRenderer::MetalRenderer(MTL::Device* device) : _device(device) {
     _commandQueue = _device->newCommandQueue();
     _computePipeline = nullptr;
-    _rotor = SurdRotor::identity();
+    _janus = 1;
     _tickCount = 0;
     buildComputePipeline();
 }
@@ -22,8 +22,8 @@ MetalRenderer::~MetalRenderer() {
 }
 
 void MetalRenderer::toggleJanus() {
-    _rotor.janus *= -1;
-    std::cout << "Janus Polarity Flipped: " << (_rotor.janus > 0 ? "+" : "-") << std::endl;
+    _janus *= -1;
+    std::cout << "Janus Polarity Flipped: " << (_janus > 0 ? "+" : "-") << std::endl;
 }
 
 void MetalRenderer::buildComputePipeline() {
@@ -79,7 +79,7 @@ void MetalRenderer::draw(void* layerPtr) {
     SurdRotorFixed gpuRotor = {
         { SurdFixed64::One, 0 }, // w = 1.0 (65536)
         { 0, 0 },                // x = 0.0
-        (int)_rotor.janus        // janus polarity
+        _janus                   // janus polarity
     };
 
     encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
@@ -110,8 +110,8 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
         return;
     }
     SDL_ClaimWindowForGPUDevice(_gpuDevice, window);
-    _rotor = SurdRotor::identity();
     _tickCount = 0;
+    _janus = 1;
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -119,8 +119,8 @@ VulkanRenderer::~VulkanRenderer() {
 }
 
 void VulkanRenderer::toggleJanus() {
-    _rotor.janus *= -1;
-    std::cout << "Janus Polarity Flipped (Vulkan): " << (_rotor.janus > 0 ? "+" : "-") << std::endl;
+    _janus *= -1;
+    std::cout << "Janus Polarity Flipped (Vulkan): " << (_janus > 0 ? "+" : "-") << std::endl;
 }
 
 void VulkanRenderer::draw(void* unused) {
