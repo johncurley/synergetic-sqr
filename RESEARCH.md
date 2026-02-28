@@ -14,8 +14,8 @@ The v1.7 SPU-1 pipeline has been verified for identity closure across $10^8$ ite
 
 **Verification Results:**
 - **Rotation Stability:** 100,000,000 iterations completed with **No state drift detected.**
-- **Involution Commutativity:** Combined reflection/rotation sequence returns to **Identity state exactly.**
-- **Fixed-Point Scaling:** 11 normalization cycles preserve the **Algebraic ratio (a:b) bit-for-bit.**
+- **Compound Integrity:** Multi-axis shuffle sequences verify **Algebraic closure under non-commutative shuffles.**
+- **Scaling Endurance:** 100 normalization cycles preserve the **Algebraic ratio (a:b) bit-for-bit**, confirming the resilience of the precision floor.
 
 ### 3. Normalization-Based Overflow Control
 The **`_spu_normalize`** routine ensures that fixed-point bounds are preserved during long-run simulations.

@@ -23,11 +23,13 @@ The **SPU-1 (Synergetic Processing Unit)** architecture utilizes **Register Shuf
 Test 1: 100,000,000 consecutive rotations
 PASS: No state drift detected within 64-bit bounds.
 
-Test 3: Fixed-Point Scaling Normalization
-PASS: Algebraic ratio preserved through 11 normalization cycles.
+Test 8: Compound Multi-Axis Rotations
+PASS: Algebraic integrity verified through non-commutative shuffles.
+
+Test 9: Scaling Normalization Endurance
+PASS: Ratio integrity preserved through 100 cycles of magnification.
 ---------------------------------------
 [Identity Verification] Closure verified at Tick: 1000 -> w.a=65536, w.b=0
-[Identity Verification] Closure verified at Tick: 5000 -> w.a=65536, w.b=0
 ```
 
 ### Core Representation
