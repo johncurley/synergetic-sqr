@@ -5,245 +5,161 @@
 #include <cmath>
 #include <iostream>
 #include <stdint.h>
+#include <cstring>
 
 namespace Synergetics {
 
-struct RationalSurd {
-    int64_t a, b, divisor;
+// --- ARCHITECTURAL CONTRACT ---
+static_assert(sizeof(int32_t) == 4, "SPU-1 requires 32-bit int32_t");
+static_assert(sizeof(int64_t) == 8, "SPU-1 requires 64-bit int64_t");
 
-    static RationalSurd zero() { return {0, 0, 1}; }
-    static RationalSurd one() { return {1, 0, 1}; }
-    static RationalSurd fromInt(int64_t val) { return {val, 0, 1}; }
+// --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---
+namespace DisplayAdapter {
+    static constexpr float SQRT3_ESTIMATE = 1.73205081f;
+}
 
-    RationalSurd multiply(const RationalSurd& other) const {
-        __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
-        __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
-        __int128_t res_d = (__int128_t)divisor * other.divisor;
-        return { (int64_t)res_a, (int64_t)res_b, (int64_t)res_d };
-    }
+// --- SOVEREIGN CORE (Algebraic Identity - Integer Only) ---
 
-    RationalSurd add(const RationalSurd& other) const {
-        __int128_t res_a = (__int128_t)a * other.divisor + (__int128_t)other.a * divisor;
-        __int128_t res_b = (__int128_t)b * other.divisor + (__int128_t)other.b * divisor;
-        __int128_t res_d = (__int128_t)divisor * other.divisor;
-        return { (int64_t)res_a, (int64_t)res_b, (int64_t)res_d };
-    }
+static inline int32_t spu_deterministic_cast(int64_t val) {
+    return static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint64_t>(val) & 0xFFFFFFFF));
+}
 
-    RationalSurd subtract(const RationalSurd& other) const {
-        __int128_t res_a = (__int128_t)a * other.divisor - (__int128_t)other.a * divisor;
-        __int128_t res_b = (__int128_t)b * other.divisor - (__int128_t)other.b * divisor;
-        __int128_t res_d = (__int128_t)divisor * other.divisor;
-        return { (int64_t)res_a, (int64_t)res_b, (int64_t)res_d };
-    }
-
-    float toFloat() const {
-        if (divisor == 0) return 0.0f;
-        return (float(a) + float(b) * 1.73205081f) / float(divisor);
-    }
-
-    RationalSurd project(const RationalSurd& focal, const RationalSurd& z, const RationalSurd& offset) const {
-        return this->multiply(focal).divide(z.add(offset));
-    }
-
-    RationalSurd invert() const {
-        int64_t norm = a * a - 3 * b * b;
-        return { a * divisor, -b * divisor, norm };
-    }
-
-    RationalSurd divide(const RationalSurd& other) const {
-        return this->multiply(other.invert());
-    }
-
-    bool equals(const RationalSurd& other) const {
-        return ((__int128_t)a * other.divisor == (__int128_t)other.a * divisor) && 
-               ((__int128_t)b * other.divisor == (__int128_t)other.b * divisor);
-    }
-};
-
-// SURD-FIXED-POINT (DQFA SPEC v1.4 - Silicon Ready)
-// Represents (a + b*sqrt(3)) / 2^16
 struct SurdFixed64 {
-    int32_t a, b; // 32-bit integer coefficients
-
+    int32_t a, b; 
     static constexpr int32_t Shift = 16;
     static constexpr int32_t One = 1 << Shift;
 
-    // _spu_surd_mul: Fused Multiply-Add with Shift-and-Add logic (no multiplier unit for *3)
     static inline SurdFixed64 _spu_surd_mul(SurdFixed64 u, SurdFixed64 v) {
         int64_t prod_bb = (int64_t)u.b * v.b;
-        // SPU-1 Gate: (x << 1) + x for *3
-        int64_t surd_term = (prod_bb << 1) + prod_bb;
+        int64_t surd_term = (prod_bb << 1) + prod_bb; 
         int64_t res_a = ((int64_t)u.a * v.a + surd_term) >> Shift;
         int64_t res_b = ((int64_t)u.a * v.b + (int64_t)u.b * v.a) >> Shift;
-        return { static_cast<int32_t>(res_a), static_cast<int32_t>(res_b) };
+        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b) };
     }
 
-    // _spu_normalize: Overflow Safety Valve
     static inline SurdFixed64 _spu_normalize(SurdFixed64 s) {
-        // Trigger right-shift if coefficients approach 32-bit ceiling (0x40000000)
-        if (std::abs(s.a) > 0x40000000 || std::abs(s.b) > 0x40000000) {
+        uint32_t mask = 0x40000000;
+        if ((static_cast<uint32_t>(s.a) & mask) || (static_cast<uint32_t>(s.b) & mask)) {
             return { s.a >> 1, s.b >> 1 };
         }
         return s;
     }
 
-    // Methods to support high-level types (DualSurd, etc.)
-    SurdFixed64 add(const SurdFixed64& other) const {
-        return { a + other.a, b + other.b };
-    }
-    SurdFixed64 subtract(const SurdFixed64& other) const {
-        return { a - other.a, b - other.b };
-    }
-    SurdFixed64 multiply(const SurdFixed64& other) const {
-        return _spu_surd_mul(*this, other);
+    int64_t norm() const {
+        int64_t la = a; int64_t lb = b;
+        return la * la - 3 * lb * lb;
     }
 
-    float toFloat() const {
-        return (float(a) + float(b) * 1.73205081f) / float(One);
-    }
+    SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
+    SurdFixed64 subtract(const SurdFixed64& other) const { return { a - other.a, b - other.b }; }
+    SurdFixed64 multiply(const SurdFixed64& other) const { return _spu_surd_mul(*this, other); }
+    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(One); }
 };
 
-// SPU-1: Universal 256-bit SIMD Wrapper (Cross-Platform Determinism)
-struct alignas(32) SPU_Vector256 {
-    int32_t v[8]; // [a1, b1, a2, b2, a3, b3, a4, b4]
-
+struct SPU_Vector256 {
+    int32_t v[8];
     static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
         SPU_Vector256 res;
 #if defined(__APPLE__) && defined(__arm64__)
-        // Apple Silicon NEON Path
-        auto uv = (int32x4x2_t*)u.v;
-        auto vv = (int32x4x2_t*)v.v;
-        auto rv = (int32x4x2_t*)res.v;
-        rv->val[0] = vaddq_s32(uv->val[0], vv->val[0]);
-        rv->val[1] = vaddq_s32(uv->val[1], vv->val[1]);
+        union { int32_t arr[4]; int32x4_t vec; } lu1, lu2, lv1, lv2, lr1, lr2;
+        std::memcpy(lu1.arr, &u.v[0], 16); std::memcpy(lu2.arr, &u.v[4], 16);
+        std::memcpy(lv1.arr, &v.v[0], 16); std::memcpy(lv2.arr, &v.v[4], 16);
+        lr1.vec = vaddq_s32(lu1.vec, lv1.vec); lr2.vec = vaddq_s32(lu2.vec, lv2.vec);
+        std::memcpy(&res.v[0], lr1.arr, 16); std::memcpy(&res.v[4], lr2.arr, 16);
 #else
-        // Deterministic Fallback (Standard C++)
         for (int i = 0; i < 8; ++i) res.v[i] = u.v[i] + v.v[i];
 #endif
         return res;
     }
-
     static inline SPU_Vector256 rotate60(const SPU_Vector256& q) {
-        // Zero-Gate Register Shuffle: {Q1, Q2, Q3, Q4} -> {Q2, Q3, Q1, Q4}
         return { q.v[2], q.v[3], q.v[4], q.v[5], q.v[0], q.v[1], q.v[6], q.v[7] };
     }
+};
 
-    static inline bool allEqual(const SPU_Vector256& u, const SPU_Vector256& v) {
-        for (int i = 0; i < 8; ++i) if (u.v[i] != v.v[i]) return false;
+struct alignas(32) Quadray4 {
+    SPU_Vector256 data;
+    static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
+    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
+    static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
+    static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
+        int64_t total = 0;
+        for (int i = 0; i < 4; ++i) {
+            int64_t da = (int64_t)u.data.v[i*2] - v.data.v[i*2];
+            int64_t db = (int64_t)u.data.v[i*2+1] - v.data.v[i*2+1];
+            total += (da * da) + (db * db * 3);
+        }
+        return total;
+    }
+    bool equals(const Quadray4& other) const {
+        for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false;
         return true;
     }
 };
 
-// SPU-1: 4-Axis Quadray Coordinate (256-bit aligned)
-struct alignas(32) Quadray4 {
-    SPU_Vector256 data;
+// --- TENSEGRITY DYNAMICS (v1.8 Kinetic Logic) ---
 
-    static Quadray4 identity() {
-        return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} };
-    }
+struct SPU_Mass { int64_t num, den; };
 
-    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) {
-        return { SPU_Vector256::add(u.data, v.data) };
-    }
+struct SPU_TensegrityNode {
+    Quadray4 position;
+    Quadray4 prev_position; 
+    SPU_Mass mass;
 
-    static inline Quadray4 _spu_rotate_60(Quadray4 q) {
-        return { SPU_Vector256::rotate60(q.data) };
+    static inline void _spu_verlet_step(SPU_TensegrityNode& node, const Quadray4& a, int32_t dt_sq) {
+        Quadray4 temp = node.position;
+        Quadray4 twice_pos = { {node.position.data.v[0] << 1, node.position.data.v[1] << 1, 
+                                 node.position.data.v[2] << 1, node.position.data.v[3] << 1,
+                                 node.position.data.v[4] << 1, node.position.data.v[5] << 1,
+                                 node.position.data.v[6] << 1, node.position.data.v[7] << 1} };
+        Quadray4 neg_prev = { {-node.prev_position.data.v[0], -node.prev_position.data.v[1],
+                               -node.prev_position.data.v[2], -node.prev_position.data.v[3],
+                               -node.prev_position.data.v[4], -node.prev_position.data.v[5],
+                               -node.prev_position.data.v[6], -node.prev_position.data.v[7]} };
+        Quadray4 accel = { {a.data.v[0] * dt_sq, a.data.v[1] * dt_sq, a.data.v[2] * dt_sq, a.data.v[3] * dt_sq,
+                            a.data.v[4] * dt_sq, a.data.v[5] * dt_sq, a.data.v[6] * dt_sq, a.data.v[7] * dt_sq} };
+        node.position = Quadray4::_spu_add_q4(twice_pos, Quadray4::_spu_add_q4(neg_prev, accel));
+        node.prev_position = temp;
     }
-
-    bool equals(const Quadray4& other) const {
-        return SPU_Vector256::allEqual(data, other.data);
-    }
+    static inline Quadray4 gravityVector() { return { {0, 0, 0, 0, 0, 0, SurdFixed64::One, 0} }; }
 };
 
-struct SurdVector3 {
-    SurdFixed64 x, y, z;
-};
+enum class LinkType { Cable, Strut, Tie };
 
-// SurdLang: DualSurd for Hyper-Surd Derivatives (eps^2 = 0)
-struct DualSurd {
-    SurdFixed64 val, eps;
+struct TensegrityLink {
+    int32_t nodeA_idx, nodeB_idx;
+    int64_t rest_quadrance; 
+    int32_t stiffness;      
+    LinkType type;
 
-    DualSurd add(const DualSurd& other) const {
-        return { val.add(other.val), eps.add(other.eps) };
-    }
-
-    // gstep: Leibniz product (u*v, u*v' + u'*v)
-    DualSurd multiply(const DualSurd& other) const {
-        return { 
-            val.multiply(other.val), 
-            val.multiply(other.eps).add(eps.multiply(other.val)) 
-        };
-    }
-};
-
-// Rational Oscillator (Absolute Zero Drift Triangle Wave)
-inline SurdFixed64 rationalOscillator(int64_t time_ms, int64_t period_ms) {
-    int64_t half_period = period_ms / 2;
-    int64_t t = time_ms % period_ms;
-    int64_t raw_val = (t < half_period) ? t : (period_ms - t);
-    int64_t normalized = (raw_val * 4 * SurdFixed64::One / period_ms) - SurdFixed64::One;
-    return { static_cast<int32_t>(normalized), 0 };
-}
-
-struct Surd32 {
-    int32_t divisor, a, b, pad;
-    static Surd32 fromSurd(RationalSurd s) { return { (int32_t)s.divisor, (int32_t)s.a, (int32_t)s.b, 0 }; }
-};
-
-enum class Axis { W, X, Y, Z };
-
-struct SQRotor {
-    simd::float4 coords;
-    float janus;
-    static SQRotor identity() { return {{1.0f, 0.0f, 0.0f, 0.0f}, 1.0f}; }
-    static simd::float4x4 axisRotationMatrix(Axis axis, float theta, float janusSign = 1.0f) {
-        float ct = cos(theta);
-        float st = sin(theta) * janusSign;
-        float F = (2.0f * ct + 1.0f) / 3.0f;
-        float G = (2.0f * (ct * -0.5f + st * 0.8660254f) + 1.0f) / 3.0f;
-        float H = (2.0f * (ct * -0.5f - st * 0.8660254f) + 1.0f) / 3.0f;
-        if (axis == Axis::W) {
-            return simd_matrix((simd::float4){1.0f, 0.0f, 0.0f, 0.0f}, (simd::float4){0.0f, F, H, G}, (simd::float4){0.0f, G, F, H}, (simd::float4){0.0f, H, G, F});
+    void projectConstraint(SPU_TensegrityNode& a, SPU_TensegrityNode& b) const {
+        int64_t current_q = Quadray4::_spu_quadrance(a.position, b.position);
+        if (type == LinkType::Cable && current_q <= rest_quadrance) return;
+        if (type == LinkType::Strut && current_q >= rest_quadrance) return;
+        int64_t diff = current_q - rest_quadrance;
+        if (std::abs(diff) < 16) return; 
+        for (int i = 0; i < 8; ++i) {
+            int32_t delta = (a.position.data.v[i] - b.position.data.v[i]) >> 4;
+            if (diff > 0) { a.position.data.v[i] -= delta; b.position.data.v[i] += delta; }
+            else { a.position.data.v[i] += delta; b.position.data.v[i] -= delta; }
         }
-        return matrix_identity_float4x4;
     }
 };
 
-struct SurdRotor {
-    RationalSurd w, x, y, z;
-    int64_t janus;
-    static SurdRotor identity() { return {RationalSurd::one(), RationalSurd::zero(), RationalSurd::zero(), RationalSurd::zero(), 1}; }
-    SurdRotor multiply(const SurdRotor& other) const {
-        return {
-            w.multiply(other.w).subtract(x.multiply(other.x)).subtract(y.multiply(other.y)).subtract(z.multiply(other.z)),
-            w.multiply(other.x).add(x.multiply(other.w)).add(y.multiply(other.z)).subtract(z.multiply(other.y)),
-            w.multiply(other.y).subtract(x.multiply(other.z)).add(y.multiply(other.w)).add(z.multiply(other.x)),
-            w.multiply(other.z).add(x.multiply(other.y)).subtract(y.multiply(other.x)).add(z.multiply(other.w)),
-            janus * other.janus
-        };
-    }
-    SQRotor toSQRotor() const { return {{w.toFloat(), x.toFloat(), y.toFloat(), z.toFloat()}, (float)janus}; }
-};
+// --- END SOVEREIGN CORE ---
 
-struct SurdRotor32 {
-    Surd32 w, x, y, z;
-    int32_t janus, p1, p2, p3;
-    static SurdRotor32 fromRotor(SurdRotor r) {
-        return { Surd32::fromSurd(r.w), Surd32::fromSurd(r.x), Surd32::fromSurd(r.y), Surd32::fromSurd(r.z), (int32_t)r.janus, 0, 0, 0 };
+// --- LEGACY SUPPORT ---
+struct RationalSurd {
+    int64_t a, b, divisor;
+    static RationalSurd zero() { return {0, 0, 1}; }
+    static RationalSurd one() { return {1, 0, 1}; }
+    static RationalSurd fromInt(int64_t val) { return {val, 0, 1}; }
+    RationalSurd multiply(const RationalSurd& other) const {
+        __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
+        __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
+        return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
     }
-};
-
-struct HyperSurd {
-    RationalSurd val, eps;
-    static HyperSurd constant(RationalSurd s) { return { s, RationalSurd::zero() }; }
-    static HyperSurd variable(RationalSurd s) { return { s, RationalSurd::one() }; }
-    HyperSurd add(const HyperSurd& other) const { return { val.add(other.val), eps.add(other.eps) }; }
-    HyperSurd multiply(const HyperSurd& other) const {
-        return { val.multiply(other.val), val.multiply(other.eps).add(eps.multiply(other.val)) };
-    }
-    static HyperSurd HookesLaw(HyperSurd displacement, RationalSurd k) {
-        return displacement.multiply(HyperSurd::constant(k));
-    }
+    bool equals(const RationalSurd& other) const { return a * other.divisor == other.a * divisor && b * other.divisor == other.b * divisor; }
+    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(divisor); }
 };
 
 } // namespace Synergetics

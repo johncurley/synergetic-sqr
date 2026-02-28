@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    std::cout << "--- DQFA Rotor Closure Test ---" << std::endl;
+    std::cout << "--- SPU-1 Deterministic Verification Suite v1.7 ---" << std::endl;
     // 1. Randomized Input Test: Initialize a Quadray at an arbitrary rational point
     Synergetics::Quadray4 initial_q;
     initial_q.data.v[0] = 12345; initial_q.data.v[1] = 6789; // Arbitrary (a, b) pair
@@ -73,8 +73,8 @@ int main(int argc, char* argv[]) {
     // 3. Bit-Level Comparison
     if (current_q.equals(initial_q)) {
         std::cout << "DQFA CLOSURE: PASSED (Randomized Input)" << std::endl;
-        std::cout << "  Drift: 0.0000000000000000" << std::endl;
-        std::cout << "  Bit-Exact Identity verified for arbitrary state." << std::endl;
+        std::cout << "  No drift observed within 64-bit fixed-point bounds." << std::endl;
+        std::cout << "  Identity state restored exactly." << std::endl;
     } else {
         std::cerr << "DQFA CLOSURE: FAILED" << std::endl;
     }
@@ -106,6 +106,57 @@ int main(int argc, char* argv[]) {
 
     std::cout << "MIXED OPERATORS: PASSED (Algebraic Integrity)" << std::endl;
     std::cout << "  Chain bitmask verified: Q2.a=" << chain_q.data.v[2] << std::endl;
+
+    // 4. Kinetic SPU: Verlet Integration Test
+    std::cout << "--- DQFA Verlet Integration Test ---" << std::endl;
+    Synergetics::SPU_TensegrityNode kinetic_node;
+    kinetic_node.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
+    kinetic_node.prev_position = { {0, 0, 0, 0, 0, 0, 0, 0} };
+    
+    // Apply constant gravity toward Q4 for 2 steps
+    Synergetics::Quadray4 g = Synergetics::SPU_TensegrityNode::gravityVector();
+    Synergetics::SPU_TensegrityNode::_spu_verlet_step(kinetic_node, g, 1);
+    Synergetics::SPU_TensegrityNode::_spu_verlet_step(kinetic_node, g, 1);
+    
+    // In Verlet: x2 = 2*x1 - x0 + a. 
+    // x1 = 0 - 0 + 65536 = 65536.
+    // x2 = 2*65536 - 0 + 65536 = 196608.
+    if (kinetic_node.position.data.v[6] == 196608) {
+        std::cout << "VERLET INTEGRATION: PASSED" << std::endl;
+        std::cout << "  Parabolic trajectory verified bit-exactly." << std::endl;
+    } else {
+        std::cerr << "VERLET INTEGRATION: FAILED" << std::endl;
+        std::cerr << "  Expected Q4=196608, Got " << kinetic_node.position.data.v[6] << std::endl;
+    }
+
+    // 5. Kinetic SPU: PBD Constraint Projection Test
+    std::cout << "--- DQFA PBD Constraint Test ---" << std::endl;
+    Synergetics::SPU_TensegrityNode nA, nB;
+    nA.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
+    nB.position = { {65536, 0, 0, 0, 0, 0, 0, 0} }; // Dist = 1.0 (Q1)
+    
+    Synergetics::TensegrityLink cable = { 0, 1, 0, 10, Synergetics::LinkType::Cable }; // Rest length 0
+    cable.projectConstraint(nA, nB);
+    
+    // Stretched cable should pull nB toward nA
+    if (nB.position.data.v[0] < 65536) {
+        std::cout << "PBD PROJECTION: PASSED" << std::endl;
+        std::cout << "  Constraint pull verified: " << nB.position.data.v[0] << std::endl;
+    } else {
+        std::cerr << "PBD PROJECTION: FAILED" << std::endl;
+    }
+
+    // 6. Kinetic SPU: Cable Gating (Slack Test)
+    std::cout << "--- DQFA Cable Gating Test ---" << std::endl;
+    nB.position = { {32768, 0, 0, 0, 0, 0, 0, 0} }; // Dist = 0.5
+    Synergetics::TensegrityLink slack_cable = { 0, 1, 65536LL * 65536LL, 10, Synergetics::LinkType::Cable }; // Rest = 1.0
+    
+    slack_cable.projectConstraint(nA, nB);
+    if (nB.position.data.v[0] == 32768) {
+        std::cout << "CABLE GATING: PASSED (Slack Ignored)" << std::endl;
+    } else {
+        std::cerr << "CABLE GATING: FAILED" << std::endl;
+    }
     std::cout << "---------------------------------------" << std::endl;
 
 #ifdef __APPLE__

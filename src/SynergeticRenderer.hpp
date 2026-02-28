@@ -24,18 +24,16 @@ public:
     
     void draw(void* layer) override;
     void toggleJanus() override;
-    long getJanus() const override { return _rotor.janus; }
+    long getJanus() const override { return _janus; }
 
 private:
     void buildComputePipeline();
 
-    // DQFA v1.4 Internal Structure (Must match src/DQFA.metal)
     struct SurdRotorFixed {
         SurdFixed64 w, x;
         int janus;
     };
 
-    // SPU-1 Control Protocol (Hardware Clock & State)
     struct SPUControl {
         uint32_t tick;
         int32_t rot_count;
@@ -57,13 +55,13 @@ public:
     
     void draw(void* unused) override;
     void toggleJanus() override;
-    long getJanus() const override { return _rotor.janus; }
+    long getJanus() const override { return _janus; }
 
 private:
     SDL_GPUDevice* _gpuDevice;
     SDL_GPUComputePipeline* _computePipeline;
     
-    SurdRotor _rotor;
+    int _janus = 1;
     uint64_t _tickCount = 0;
 };
 

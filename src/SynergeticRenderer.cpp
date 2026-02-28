@@ -42,7 +42,6 @@ void MetalRenderer::buildComputePipeline() {
         std::cerr << "Failed to load library: " << (error ? error->localizedDescription()->utf8String() : "Unknown Error") << std::endl;
         return;
     }
-    // DQFA v1.5: Load the pure algebraic Quadray-Native kernel
     MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_5", NS::UTF8StringEncoding));
     if (!function) {
         std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_5' not found." << std::endl;
@@ -67,7 +66,6 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
-    // SPU-1 Control Protocol: Clean timing and state
     SPUControl control = {
         static_cast<uint32_t>(_tickCount),
         static_cast<int32_t>((_tickCount / 100) % 6),
@@ -75,11 +73,10 @@ void MetalRenderer::draw(void* layerPtr) {
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
-    // BIT-EXACT ROTOR (Identity State)
     SurdRotorFixed gpuRotor = {
-        { SurdFixed64::One, 0 }, // w = 1.0 (65536)
-        { 0, 0 },                // x = 0.0
-        _janus                   // janus polarity
+        { SurdFixed64::One, 0 }, 
+        { 0, 0 },                
+        _janus                   
     };
 
     encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
@@ -91,7 +88,6 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->presentDrawable(drawable);
     cmdBuf->commit();
     
-    // Identity Closure Verification: Every 600 ticks
     if (_tickCount % 600 == 0) {
         std::cout << "[Identity Closure Verification] Closure Verified at Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;

@@ -26,9 +26,9 @@ include_directories(metal-cpp)
 # 4. Executable
 add_executable(synergetic-sqr ${SOURCES})
 
-# 4.1 Rigorous Verification Suite
+# 4.1 Deterministic Verification Suite
 add_executable(spu-verify tests/rigorous_verification.cpp)
-target_link_libraries(spu-verify PRIVATE "-framework Foundation") # For aligned memory support
+target_link_libraries(spu-verify PRIVATE "-framework Foundation") 
 if(APPLE)
     set_source_files_properties(tests/rigorous_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
