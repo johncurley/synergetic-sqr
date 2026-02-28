@@ -17,6 +17,9 @@ In our v1.5 SPU-1 pipeline, we have achieved **Absolute Zero Drift**, verified b
 - **Tick 1000:** `w.a = 65536 (0x10000), w.b = 0`
 - **Tick 5000:** `w.a = 65536 (0x10000), w.b = 0`
 
+**Technical Verification (The Forensic Proof):**
+The identity is maintained via the **Sovereign Permutator** (`_spu_rotate_60`). Because 60° rotations in the Quadray basis are implemented as register shuffles rather than arithmetic calculations, the bitmask never changes. The value `0x10000` represents the rational integer $1.0$ scaled by the fixed denominator $2^{16}$. The zero-value of `w.b` proves that no "surd-leakage" occurred during the transformation.
+
 Unlike IEEE-754 engines, which suffer from cumulative rounding errors, the SPU-1 architecture maintains absolute closure. Time does not degrade the geometry.
 
 ### 3. Self-Healing Scaling: Sovereign Normalization
