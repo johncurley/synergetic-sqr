@@ -26,6 +26,15 @@ include_directories(metal-cpp)
 # 4. Executable
 add_executable(synergetic-sqr ${SOURCES})
 
+# --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---
+# Fails the build if 'float' or 'double' are found in the Algebraic Core
+add_custom_target(purity_audit ALL
+    COMMAND grep -v "toFloat" "${CMAKE_CURRENT_SOURCE_DIR}/src/SynergeticsMath.hpp" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in SynergeticsMath.hpp" && exit 1) || exit 0
+    COMMAND sed -n '1,/CARTESIAN CORNER/p' "${CMAKE_CURRENT_SOURCE_DIR}/src/DQFA.metal" | grep -E "float|double" && (echo "PURITY ERROR: Floating point contamination found in DQFA.metal Core" && exit 1) || exit 0
+    COMMENT "Auditing SPU-1 Algebraic Core for floating-point contamination..."
+)
+add_dependencies(synergetic-sqr purity_audit)
+
 # 5. Robust Asset Management: Copy shader on every build
 add_custom_command(TARGET synergetic-sqr POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -32,23 +32,31 @@ Standard 3D engines rely on transcendental functions (`sin`, `cos`) and floating
 
 > "This repository contains a Deterministic Geometric Engine built on the Hyper-Surd Field $\mathbb{Q}(\sqrt{3})$. It is released into the Public Domain to prove that the 'mush' of floating-point approximation is a choice, not a necessity. Space is rational. Nature does not lie. The proofs are in the logs."
 
-### v1.5 Milestone: "Absolute Closure" Verified
+### v1.6 Milestone: "Absolute Closure" Verified
 The **SPU-1 (Synergetic Processing Unit)** architecture replaces floating-point "mush" with **Zero-Gate Register Shuffles** and bit-exact algebraic identity. In a 360° rotation cycle, we have achieved **Absolute Zero Drift.**
 
-| Metric | Floating Point (IEEE-754) | SPU-1 (SF32.16) |
-| :--- | :--- | :--- |
-| **Stability** | Drift Accumulates ($1.5 \times 10^{-5}$) | **Absolute Zero (0.0000)** |
-| **Identity** | Approximation | **Bit-Exact (65536)** |
-| **Integrity** | Non-Deterministic | **Machine-Invariant** |
-
 #### The 5,000-Tick Identity Audit (The Evidence)
-`[DQFA IDENTITY] Absolute Closure Verified at Tick: 1000 -> w.a=65536 (0x10000)`  
-`[DQFA IDENTITY] Absolute Closure Verified at Tick: 2000 -> w.a=65536 (0x10000)`  
-`[DQFA IDENTITY] Absolute Closure Verified at Tick: 3000 -> w.a=65536 (0x10000)`  
-`[DQFA IDENTITY] Absolute Closure Verified at Tick: 4000 -> w.a=65536 (0x10000)`  
-`[DQFA IDENTITY] Absolute Closure Verified at Tick: 5000 -> w.a=65536 (0x10000)`  
+> "Nature does not lie. The proofs are in the logs."
 
-*Note: The bitmask `0x10000` remained identical across all 5,000 simulation cycles. Time does not degrade the Geometry.*
+```text
+--- Sovereign Identity Proof (The DQFA Epoch) ---
+IDENTITY PROOF: PASSED
+  Drift: 0.0000000000000000
+  Sovereign Identity Verified (65536).
+---------------------------------------
+[Identity Audit] Closure Verified at Tick: 1000 -> w.a=65536 (0x10000)
+[Identity Audit] Closure Verified at Tick: 5000 -> w.a=65536 (0x10000)
+```
+
+### SPU-1 Purity Guard: Zero-Tolerance Audit
+This repository includes a **Static Analysis Guardrail** in the build system (`CMakeLists.txt`) that prevents the use of floating-point logic in the algebraic core. If `float` or `double` keywords are detected in the `SPU_Core`, the build will fail. This ensures every spatial transformation remains a closed-loop algebraic operation.
+
+### Visual Witness: The IVM Skeleton
+The renderer produces a high-contrast wireframe of the **Isotropic Vector Matrix (IVM)**. 
+*   **The Cross:** The projected 4D Quadray axes.
+*   **The Square:** The fundamental Cuboctahedron (VE) symmetry face.
+*   **The Breath:** A rational triangle-wave oscillation between the VE and Octahedron states.
+Because the engine is bit-locked, every rotation returns the edges to the **exact same pixels** with zero shimmering.
 
 ### SQR-ASIC: Silicon-Ready Architecture
 This renderer is the software blueprint for a **Deterministic Spatial Coprocessor.**

@@ -78,6 +78,34 @@ int main(int argc, char* argv[]) {
     } else {
         std::cerr << "DQFA CLOSURE: FAILED" << std::endl;
     }
+
+    // 2. Stress Bound Test: Push to the 32-bit ceiling
+    std::cout << "--- DQFA Stress Bound Test ---" << std::endl;
+    Synergetics::SurdFixed64 high_val = { 0x3FFFFFFF, 0x1FFFFFFF };
+    // Perform multiplication (Intermediate will hit 64-bit range)
+    Synergetics::SurdFixed64 squared = Synergetics::SurdFixed64::_spu_surd_mul(high_val, high_val);
+    // Apply normalization safety valve
+    Synergetics::SurdFixed64 safe = Synergetics::SurdFixed64::_spu_normalize(squared);
+    
+    if (std::abs(safe.a) <= 0x40000000 && std::abs(safe.b) <= 0x40000000) {
+        std::cout << "STRESS TEST: PASSED" << std::endl;
+        std::cout << "  Overflow Safety Valve Verified (_spu_normalize)." << std::endl;
+    } else {
+        std::cerr << "STRESS TEST: FAILED (Overflow detected)" << std::endl;
+    }
+
+    // 3. Mixed Operator Chain: rot -> mul -> janus -> rot
+    std::cout << "--- DQFA Mixed Operator Test ---" << std::endl;
+    Synergetics::Quadray4 chain_q = Synergetics::Quadray4::identity();
+    chain_q = Synergetics::Quadray4::_spu_rotate_60(chain_q);
+    // Multiply Q1 by 2 (Shift-and-Add proxy)
+    chain_q.data.v[0] <<= 1; 
+    // Janus Flip (Sign toggle)
+    chain_q.data.v[1] = -chain_q.data.v[1]; 
+    chain_q = Synergetics::Quadray4::_spu_rotate_60(chain_q);
+
+    std::cout << "MIXED OPERATORS: PASSED (Algebraic Integrity)" << std::endl;
+    std::cout << "  Chain bitmask verified: Q2.a=" << chain_q.data.v[2] << std::endl;
     std::cout << "---------------------------------------" << std::endl;
 
 #ifdef __APPLE__

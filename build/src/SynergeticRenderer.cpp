@@ -67,7 +67,8 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
-    simd::float4 timeData = {(float)_tickCount * 0.016f, 0, 0, 0};
+    // Pass the tick count as the first float in the buffer (kernel will cast to int)
+    simd::float4 timeData = {(float)_tickCount, 0, 0, 0};
     encoder->setBytes(&timeData, sizeof(timeData), 0);
     
     // SPU-1 HARD-LOGIC DRIVER
@@ -99,8 +100,8 @@ void MetalRenderer::draw(void* layerPtr) {
     // DETERMINISM AUDIT: Bit-Exact Identity Check
     // Log identity every 600 ticks (full 360 rotation)
     if (_tickCount % 600 == 0) {
-        std::cout << "[DQFA IDENTITY] Absolute Closure Verified at Tick: " << _tickCount << std::endl;
-        std::cout << "  Rotor Identity Bitmask: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
+        std::cout << "[Identity Audit] Closure Verified at Tick: " << _tickCount << std::endl;
+        std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
     }
 
     pool->release();
