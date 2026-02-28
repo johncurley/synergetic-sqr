@@ -99,8 +99,8 @@ void MetalRenderer::draw(void* layerPtr) {
     // DETERMINISM AUDIT: Bit-Exact Identity Check
     // Log identity every 600 ticks (full 360 rotation)
     if (_tickCount % 600 == 0) {
-        std::cout << "[DQFA IDENTITY] Absolute Closure Verified at Tick: " << _tickCount << std::endl;
-        std::cout << "  Rotor Identity Bitmask: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
+        std::cout << "[Identity Audit] Closure Verified at Tick: " << _tickCount << std::endl;
+        std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
     }
 
     pool->release();
