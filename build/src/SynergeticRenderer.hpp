@@ -29,17 +29,18 @@ public:
 private:
     void buildComputePipeline();
 
+    // DQFA v1.4 Internal Structure (Must match src/DQFA.metal)
+    struct SurdRotorFixed {
+        SurdFixed64 w, x;
+        int janus;
+    };
+
     MTL::Device* _device;
     MTL::CommandQueue* _commandQueue;
     MTL::ComputePipelineState* _computePipeline;
-    MTL::Buffer* _veBuffer;
-    MTL::Buffer* _octBuffer;
-    MTL::Buffer* _edgeBuffer;
     
     SurdRotor _rotor;
-    SurdRotor _velocityRotor; // The infinitesimal part of the rotor
-    simd::float4x4 _comparisonMatrix;
-    float _time = 0.0f;
+    uint64_t _tickCount = 0;
 };
 
 class VulkanRenderer : public IRenderer {
@@ -56,7 +57,7 @@ private:
     SDL_GPUComputePipeline* _computePipeline;
     
     SurdRotor _rotor;
-    float _time = 0.0f;
+    uint64_t _tickCount = 0;
 };
 
 } // namespace Synergetics

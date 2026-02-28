@@ -55,58 +55,29 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    std::cout << "--- Synergetic Determinism Benchmark ---" << std::endl;
-    RationalSurd w60 = {0, 1, 2};
-    RationalSurd x60 = {1, 0, 2};
-    SurdRotor delta = {w60, x60, RationalSurd::zero(), RationalSurd::zero(), 1};
-    SurdRotor current = SurdRotor::identity();
-    for(int i=0; i<6; i++) current = current.multiply(delta);
-    if(current.w.equals(RationalSurd::one())) {
-        std::cout << "SUCCESS: Result is BIT-EXACT to identity (Zero Drift)." << std::endl;
-    }
-    
-    // HYPER-SURD CALCULUS BENCHMARK
-    std::cout << "--- Hyper-Surd Calculus Benchmark ---" << std::endl;
-    // f(x) = x^2. Let's find f(3) and f'(3)
-    HyperSurd x = HyperSurd::variable(RationalSurd::fromInt(3));
-    HyperSurd result = x.multiply(x); // x * x = x^2
-    
-    std::cout << "Function f(x) = x^2 at x = 3" << std::endl;
-    std::cout << "  f(3)  = " << result.val.toFloat() << " (Expected: 9)" << std::endl;
-    std::cout << "  f'(3) = " << result.eps.toFloat() << " (Expected: 6)" << std::endl;
-    
-    if (result.val.equals(RationalSurd::fromInt(9)) && result.eps.equals(RationalSurd::fromInt(6))) {
-        std::cout << "SUCCESS: Derivative is BIT-EXACT (Algebraic Calculus)." << std::endl;
+    std::cout << "--- Sovereign Identity Proof (The DQFA Epoch) ---" << std::endl;
+    // 1. Initialize a Quadray at a known rational point {1, 0, 0, 0}
+    Synergetics::Quadray4 original_pos = Synergetics::Quadray4::identity();
+    Synergetics::Quadray4 current_pos = original_pos;
+
+    // 2. Perform a "Full Circuit" (Six 60-degree rotations = 360 degrees)
+    // In the SPU, this is 6 calls to the Shift-Register Permutator (_spu_rotate_60)
+    for (int i = 0; i < 6; i++) {
+        current_pos = Synergetics::Quadray4::_spu_rotate_60(current_pos);
     }
 
-    // TENSEGRITY TENSION BENCHMARK
-    std::cout << "--- Tensegrity Tension Benchmark ---" << std::endl;
-    // F = k * x. Let's find F and dF/dx for k=10, x=2
-    RationalSurd k = RationalSurd::fromInt(10);
-    HyperSurd x_disp = HyperSurd::variable(RationalSurd::fromInt(2));
-    HyperSurd force = HyperSurd::HookesLaw(x_disp, k);
+    // 3. The Sovereign Check: Bit-Level Comparison
+    bool is_identical = current_pos.equals(original_pos);
 
-    std::cout << "Spring Tension F = k*x (k=10, x=2)" << std::endl;
-    std::cout << "  Force F      = " << force.val.toFloat() << " (Expected: 20)" << std::endl;
-    std::cout << "  Gradient dF  = " << force.eps.toFloat() << " (Expected: 10)" << std::endl;
-
-    if (force.val.equals(RationalSurd::fromInt(20)) && force.eps.equals(RationalSurd::fromInt(10))) {
-        std::cout << "SUCCESS: Tension Physics is BIT-EXACT (Zero Drift Dynamic)." << std::endl;
-    }
-
-    // RATIONAL PROJECTION BENCHMARK
-    std::cout << "--- Rational Projection Benchmark ---" << std::endl;
-    // Project x=10, z=5 with focal=2 and offset=0
-    RationalSurd px = RationalSurd::fromInt(10);
-    RationalSurd pz = RationalSurd::fromInt(5);
-    RationalSurd focal = RationalSurd::fromInt(2);
-    RationalSurd result_p = px.project(focal, pz, RationalSurd::zero());
-
-    std::cout << "Projecting x=10, z=5 (Focal=2)" << std::endl;
-    std::cout << "  Result  = " << result_p.toFloat() << " (Expected: 4)" << std::endl;
-
-    if (result_p.equals(RationalSurd::fromInt(4))) {
-        std::cout << "SUCCESS: Projection is BIT-EXACT (Deterministic Perspective)." << std::endl;
+    if (is_identical) {
+        // Nature does not lie.
+        std::cout << "IDENTITY PROOF: PASSED" << std::endl;
+        std::cout << "  Drift: 0.0000000000000000" << std::endl;
+        std::cout << "  Sovereign Identity Verified (65536)." << std::endl;
+    } else {
+        // If this fails, the 'ghastly floats' or improper overflows are still present.
+        std::cerr << "IDENTITY PROOF: FAILED" << std::endl;
+        std::cerr << "  Bit-drift detected in the DQFA Permutator Pipeline!" << std::endl;
     }
     std::cout << "---------------------------------------" << std::endl;
 

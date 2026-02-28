@@ -61,30 +61,41 @@ struct RationalSurd {
 };
 
 // SURD-FIXED-POINT (DQFA SPEC v1.4 - Silicon Ready)
-// Representing (a + b*sqrt(3)) / 2^16
+// Represents (a + b*sqrt(3)) / 2^16
 struct SurdFixed64 {
     int32_t a, b; // 32-bit integer coefficients
 
     static constexpr int32_t Shift = 16;
     static constexpr int32_t One = 1 << Shift;
 
-    static SurdFixed64 fromInt(int32_t val) { return { val << Shift, 0 }; }
-    static SurdFixed64 zero() { return { 0, 0 }; }
-    static SurdFixed64 one() { return { One, 0 }; }
-    static SurdFixed64 sqrt3() { return { 0, One }; }
+    // _spu_surd_mul: Fused Multiply-Add with Shift-and-Add logic (no multiplier unit for *3)
+    static inline SurdFixed64 _spu_surd_mul(SurdFixed64 u, SurdFixed64 v) {
+        int64_t prod_bb = (int64_t)u.b * v.b;
+        // SPU-1 Gate: (x << 1) + x for *3
+        int64_t surd_term = (prod_bb << 1) + prod_bb;
+        int64_t res_a = ((int64_t)u.a * v.a + surd_term) >> Shift;
+        int64_t res_b = ((int64_t)u.a * v.b + (int64_t)u.b * v.a) >> Shift;
+        return { static_cast<int32_t>(res_a), static_cast<int32_t>(res_b) };
+    }
 
+    // _spu_normalize: Overflow Safety Valve
+    static inline SurdFixed64 _spu_normalize(SurdFixed64 s) {
+        // Trigger right-shift if coefficients approach 32-bit ceiling (0x40000000)
+        if (std::abs(s.a) > 0x40000000 || std::abs(s.b) > 0x40000000) {
+            return { s.a >> 1, s.b >> 1 };
+        }
+        return s;
+    }
+
+    // Methods to support high-level types (DualSurd, etc.)
     SurdFixed64 add(const SurdFixed64& other) const {
         return { a + other.a, b + other.b };
     }
-
     SurdFixed64 subtract(const SurdFixed64& other) const {
         return { a - other.a, b - other.b };
     }
-
     SurdFixed64 multiply(const SurdFixed64& other) const {
-        int64_t res_a = ((int64_t)a * other.a + (int64_t)3 * b * other.b) >> Shift;
-        int64_t res_b = ((int64_t)a * other.b + (int64_t)b * other.a) >> Shift;
-        return { (int32_t)res_a, (int32_t)res_b };
+        return _spu_surd_mul(*this, other);
     }
 
     float toFloat() const {
@@ -92,33 +103,60 @@ struct SurdFixed64 {
     }
 };
 
-struct SurdVector3 {
-    SurdFixed64 x, y, z;
-    static SurdVector3 fromInt(int64_t ix, int64_t iy, int64_t iz) {
-        return { SurdFixed64::fromInt((int32_t)ix), SurdFixed64::fromInt((int32_t)iy), SurdFixed64::fromInt((int32_t)iz) };
+// SPU-1: Universal 256-bit SIMD Wrapper (Cross-Platform Determinism)
+struct alignas(32) SPU_Vector256 {
+    int32_t v[8]; // [a1, b1, a2, b2, a3, b3, a4, b4]
+
+    static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
+        SPU_Vector256 res;
+#if defined(__APPLE__) && defined(__arm64__)
+        // Apple Silicon NEON Path
+        auto uv = (int32x4x2_t*)u.v;
+        auto vv = (int32x4x2_t*)v.v;
+        auto rv = (int32x4x2_t*)res.v;
+        rv->val[0] = vaddq_s32(uv->val[0], vv->val[0]);
+        rv->val[1] = vaddq_s32(uv->val[1], vv->val[1]);
+#else
+        // Deterministic Fallback (Standard C++)
+        for (int i = 0; i < 8; ++i) res.v[i] = u.v[i] + v.v[i];
+#endif
+        return res;
+    }
+
+    static inline SPU_Vector256 rotate60(const SPU_Vector256& q) {
+        // Zero-Gate Register Shuffle: {Q1, Q2, Q3, Q4} -> {Q2, Q3, Q1, Q4}
+        return { q.v[2], q.v[3], q.v[4], q.v[5], q.v[0], q.v[1], q.v[6], q.v[7] };
+    }
+
+    static inline bool allEqual(const SPU_Vector256& u, const SPU_Vector256& v) {
+        for (int i = 0; i < 8; ++i) if (u.v[i] != v.v[i]) return false;
+        return true;
     }
 };
 
-struct SurdMatrix3x3 {
-    SurdFixed64 m[9]; // Row-major
+// SPU-1: 4-Axis Quadray Coordinate (256-bit aligned)
+struct alignas(32) Quadray4 {
+    SPU_Vector256 data;
 
-    static SurdMatrix3x3 identity() {
-        return {
-            {
-                SurdFixed64::one(), SurdFixed64::zero(), SurdFixed64::zero(),
-                SurdFixed64::zero(), SurdFixed64::one(), SurdFixed64::zero(),
-                SurdFixed64::zero(), SurdFixed64::zero(), SurdFixed64::one()
-            }
-        };
+    static Quadray4 identity() {
+        return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} };
     }
 
-    SurdVector3 transform(const SurdVector3& v) const {
-        return {
-            m[0].multiply(v.x).add(m[1].multiply(v.y)).add(m[2].multiply(v.z)),
-            m[3].multiply(v.x).add(m[4].multiply(v.y)).add(m[5].multiply(v.z)),
-            m[6].multiply(v.x).add(m[7].multiply(v.y)).add(m[8].multiply(v.z))
-        };
+    static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) {
+        return { SPU_Vector256::add(u.data, v.data) };
     }
+
+    static inline Quadray4 _spu_rotate_60(Quadray4 q) {
+        return { SPU_Vector256::rotate60(q.data) };
+    }
+
+    bool equals(const Quadray4& other) const {
+        return SPU_Vector256::allEqual(data, other.data);
+    }
+};
+
+struct SurdVector3 {
+    SurdFixed64 x, y, z;
 };
 
 // SurdLang: DualSurd for Hyper-Surd Derivatives (eps^2 = 0)
@@ -139,12 +177,10 @@ struct DualSurd {
 };
 
 // Rational Oscillator (Absolute Zero Drift Triangle Wave)
-// Maps time (0 to Period) to a SurdFixed64 range [-1, 1]
 inline SurdFixed64 rationalOscillator(int64_t time_ms, int64_t period_ms) {
     int64_t half_period = period_ms / 2;
     int64_t t = time_ms % period_ms;
     int64_t raw_val = (t < half_period) ? t : (period_ms - t);
-    // Normalize to [-1, 1] range in SF32.16
     int64_t normalized = (raw_val * 4 * SurdFixed64::One / period_ms) - SurdFixed64::One;
     return { static_cast<int32_t>(normalized), 0 };
 }

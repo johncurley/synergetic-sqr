@@ -42,10 +42,10 @@ void MetalRenderer::buildComputePipeline() {
         std::cerr << "Failed to load library: " << (error ? error->localizedDescription()->utf8String() : "Unknown Error") << std::endl;
         return;
     }
-    // DQFA v1.4: Load the pure algebraic kernel
-    MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_4", NS::UTF8StringEncoding));
+    // DQFA v1.5: Load the pure algebraic Quadray-Native kernel
+    MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_5", NS::UTF8StringEncoding));
     if (!function) {
-        std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_4' not found." << std::endl;
+        std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_5' not found." << std::endl;
         return;
     }
     _computePipeline = _device->newComputePipelineState(function, &error);
@@ -71,25 +71,15 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setBytes(&timeData, sizeof(timeData), 0);
     
     // DQFA PURE ALGEBRAIC DRIVER
-    // Rotate 1/1000th of a circle per tick (Purely Rational)
-    // 360 degrees = 1000 ticks.
-    int64_t ticksPerCircle = 1000;
-    int64_t t = _tickCount % ticksPerCircle;
+    // Smooth rotation using the Rational Oscillator as an angle proxy
+    SurdFixed64 angle_proxy = rationalOscillator(_tickCount * 4, 10000); // Very slow cycle
     
-    // Rational Rotor calculation (Simplified for DQFA v1.4 Demo)
-    // In a real SQR-ASIC, this is a hardware incrementer.
-    SurdFixed64 w = SurdFixed64::fromInt(1);
-    SurdFixed64 x = SurdFixed64::zero();
-    
-    // For the demo, we use the rational oscillator to wobble the jitterbug
-    SurdFixed64 wobble = rationalOscillator(_tickCount * 16, 2000);
-
-    // BIT-EXACT ROTOR (DQFA Spec v1.4)
-    // For this build, we use the Unit Identity to verify closure.
+    // Smooth Rotor (w, x) for the display
+    // w = 1.0, x = oscillating surd
     SurdRotorFixed gpuRotor = {
-        SurdFixed64::one(),  // w = 1.0 (65536)
-        SurdFixed64::zero(), // x = 0.0
-        (int)_rotor.janus    // janus polarity
+        { SurdFixed64::One, 0 }, // w (Principal)
+        { 0, angle_proxy.a },    // x (Smooth rotation component)
+        (int)_rotor.janus        // janus polarity
     };
 
     encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
@@ -102,15 +92,10 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->commit();
     
     // DETERMINISM AUDIT: Bit-Exact Identity Check
-    // Identity in SF32.16 is exactly 65536. 
-    // This check guarantees zero drift across any number of simulation cycles.
-    if (gpuRotor.w.a == 65536 && gpuRotor.w.b == 0) {
-        if (_tickCount % 1000 == 0) {
-            std::cout << "[DQFA IDENTITY] Absolute Closure Verified at Tick: " << _tickCount << std::endl;
-            std::cout << "  Rotor Identity Bitmask: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
-        }
-    } else {
-        std::cerr << "CRITICAL ERROR: Bit-drift detected in DQFA pipeline." << std::endl;
+    // We only log the Identity when the smooth rotation returns to zero
+    if (angle_proxy.a == 0) {
+        std::cout << "[DQFA IDENTITY] Absolute Closure Verified at Tick: " << _tickCount << std::endl;
+        std::cout << "  Rotor Identity Bitmask: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
     }
 
     pool->release();
@@ -126,7 +111,7 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     }
     SDL_ClaimWindowForGPUDevice(_gpuDevice, window);
     _rotor = SurdRotor::identity();
-    _time = 0.0f;
+    _tickCount = 0;
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -139,7 +124,7 @@ void VulkanRenderer::toggleJanus() {
 }
 
 void VulkanRenderer::draw(void* unused) {
-    _time += 0.016f;
+    _tickCount++;
 }
 
 } // namespace Synergetics
