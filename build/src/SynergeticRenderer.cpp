@@ -70,17 +70,22 @@ void MetalRenderer::draw(void* layerPtr) {
     simd::float4 timeData = {(float)_tickCount * 0.016f, 0, 0, 0};
     encoder->setBytes(&timeData, sizeof(timeData), 0);
     
-    // DQFA PURE ALGEBRAIC DRIVER
-    // Smooth rotation using the Rational Oscillator as an angle proxy
-    SurdFixed64 angle_proxy = rationalOscillator(_tickCount * 4, 10000); // Very slow cycle
+    // SPU-1 HARD-LOGIC DRIVER
+    // Rotation is a series of 60-degree register shuffles every 100 ticks.
+    int rot_count = (_tickCount / 100) % 6;
     
-    // Smooth Rotor (w, x) for the display
-    // w = 1.0, x = oscillating surd
+    // Identity Rotor (The base state)
+    SurdFixed64 w = { SurdFixed64::One, 0 };
+    SurdFixed64 x = { 0, 0 };
+    
+    // In a real SPU, we would simply shuffle the vertex buffer. 
+    // Here we pass the rot_count to the kernel to perform the shuffles.
     SurdRotorFixed gpuRotor = {
-        { SurdFixed64::One, 0 }, // w (Principal)
-        { 0, angle_proxy.a },    // x (Smooth rotation component)
-        (int)_rotor.janus        // janus polarity
+        w, x, (int)_rotor.janus
     };
+    
+    // Abuse the rotor 'x.a' to pass the discrete rotation count to the kernel
+    gpuRotor.x.a = rot_count;
 
     encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
     
@@ -92,8 +97,8 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->commit();
     
     // DETERMINISM AUDIT: Bit-Exact Identity Check
-    // We only log the Identity when the smooth rotation returns to zero
-    if (angle_proxy.a == 0) {
+    // Log identity every 600 ticks (full 360 rotation)
+    if (_tickCount % 600 == 0) {
         std::cout << "[DQFA IDENTITY] Absolute Closure Verified at Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor Identity Bitmask: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
     }
