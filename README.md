@@ -102,5 +102,19 @@ This project stands on the shoulders of giants who sought a more natural, ration
 
 This project is a **free gift to the world.** It is dedicated to the public domain under the **CC0 1.0 Universal** license. You may copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.
 
+### Call to Audit: Verification Protocol
+Researchers and engineers wishing to verify the claims of this architecture are encouraged to run the **Rigorous Verification Suite**:
+```bash
+mkdir -p build && cd build && cmake ..
+make spu-verify && ./spu-verify
+```
+The identity audit must return the bitmask `0x10000` exactly, regardless of the host hardware or operating system.
+
+### Project Roadmap
+*   **v1.7 (Stable Basis):** Bit-exact spatial closure and self-healing scaling (SF32.16).
+*   **v1.8 (Kinetic Phase):** Implementation of **Rational Tensegrity**—stable force dynamics using Hyper-Surd calculus.
+*   **v1.9 (Hardware Phase):** RTL implementation of the SPU-1 intrinsics in **Verilog** for FPGA deployment.
+*   **v2.0 (Ecosystem):** Synergetic-SDK for deterministic spatial computation in robotics and aerospace.
+
 ---
 *A sovereign contribution to the global commons of deterministic computer graphics.*
