@@ -12,7 +12,7 @@ using namespace Synergetics;
  */
 
 void RunOrbitsOfInfinity() {
-    std::cout << "--- Test 1: Orbits of Infinity (100 Million Rotations) ---" << std::endl;
+    std::cout << "--- Test 1: Long-Run Rotation Stability Test (10^8 iterations) ---" << std::endl;
     Quadray4 initial = Quadray4::identity();
     Quadray4 current = initial;
     
@@ -21,20 +21,19 @@ void RunOrbitsOfInfinity() {
         current = Quadray4::_spu_rotate_60(current);
     }
     
-    // Since 6 rotations = 360 degrees, 100M mod 6 = 4 rotations (240 degrees)
-    // We rotate 2 more times to hit identity (Total 100,000,002 rotations)
+    // Identity verification (Full circle)
     current = Quadray4::_spu_rotate_60(current);
     current = Quadray4::_spu_rotate_60(current);
     
     if (current.equals(initial)) {
-        std::cout << "SUCCESS: Infinite Temporal Stability Verified (10^8 rotations)." << std::endl;
+        std::cout << "SUCCESS: Bit-Exact Stability Verified after 10^8 iterations." << std::endl;
     } else {
-        std::cerr << "FAILURE: Bit-drift detected in Infinity Test!" << std::endl;
+        std::cerr << "FAILURE: Bit-drift detected in rotation stability test!" << std::endl;
     }
 }
 
 void RunMirrorLatticeTest() {
-    std::cout << "--- Test 2: Mirror-Lattice (Janus Symmetry) ---" << std::endl;
+    std::cout << "--- Test 2: Janus Involution Commutativity Test ---" << std::endl;
     // SPU-1: Initialize with explicit [a1, b1, a2, b2, ...] array
     Quadray4 initial = { {1234, 567, 890, 123, -432, 10, 777, -99} };
     Quadray4 current = initial;
@@ -52,14 +51,14 @@ void RunMirrorLatticeTest() {
     for(int i=0; i<3; i++) current = Quadray4::_spu_rotate_60(current);
     
     if (current.equals(initial)) {
-        std::cout << "SUCCESS: Janus Commutativity Verified (Projective Integrity)." << std::endl;
+        std::cout << "SUCCESS: Commutativity Verified (Algebraic Integrity)." << std::endl;
     } else {
-        std::cerr << "FAILURE: Symmetry break detected in Mirror Test!" << std::endl;
+        std::cerr << "FAILURE: Invariant break detected in involution test!" << std::endl;
     }
 }
 
 void RunStressScaleTest() {
-    std::cout << "--- Test 3: Stress-Scale (Lossless Magnification) ---" << std::endl;
+    std::cout << "--- Test 3: Fixed-Point Scaling Normalization Test ---" << std::endl;
     // Start with a known ratio (2:1)
     SurdFixed64 original = { 1024, 512 };
     SurdFixed64 current = original;
@@ -76,21 +75,18 @@ void RunStressScaleTest() {
     }
     
     // 2. Minify: Scale back down to the original 'a' value
-    // (This reverses the bits to see if the ratio was preserved)
     while (std::abs(current.a) > 1024) {
         current.a >>= 1;
         current.b >>= 1;
     }
     
-    // 3. Ratio Check: In a rational field, 1024/512 == current.a / current.b
-    // (Allowing for 1-bit integer quantization from the shift-right)
+    // 3. Ratio Check
     if (current.a == 1024 && (current.b == 512 || current.b == 511 || current.b == 513)) {
-        std::cout << "SUCCESS: Lossless Magnification Verified (Self-Healing Scale)." << std::endl;
+        std::cout << "SUCCESS: Algebraic Ratio Preserved during normalization." << std::endl;
         std::cout << "  Normalizations triggered: " << normalize_count << std::endl;
         std::cout << "  Final State: a=" << current.a << " b=" << current.b << std::endl;
     } else {
-        std::cerr << "FAILURE: Ratio drift detected in Stress-Scale!" << std::endl;
-        std::cerr << "  Expected b=512, Got b=" << current.b << std::endl;
+        std::cerr << "FAILURE: Ratio drift detected in scaling test!" << std::endl;
     }
 }
 
