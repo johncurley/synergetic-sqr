@@ -1,20 +1,20 @@
-# CONTRIBUTING: Guarding the Rational Gate
+# CONTRIBUTING: Architectural Integrity Guidelines
 
-Welcome. If you are here, you likely recognize that the "mush" of standard floating-point approximation is a barrier to true spatial engineering. The SPU-1 project is dedicated to **Algebraic Determinism.**
+The SPU-1 project is a technical specification for deterministic spatial computation. To maintain the integrity of this architecture, all contributions must adhere to the following **Technical Purity Rules**:
 
-To maintain the integrity of this "Sovereign" architecture, all contributors must adhere to the following **Zero-Tolerance Purity Rules**:
+### 1. Integer-Only Algebraic Core
+Any Pull Request introducing the keywords `float`, `double`, or `long double` into the **Algebraic Core** logic will be rejected. All spatial logic must be implemented using integer arithmetic over the quadratic field $\mathbb{Q}(\sqrt{3})$. Floating-point usage is restricted strictly to the **DisplayCorner** (optical interface) layer.
 
-### 1. The "No-Float" Mandate
-Any Pull Request containing the keywords `float`, `double`, or `long double` in the **Algebraic Core** logic will be automatically rejected. We do not "estimate" space; we index it using the **Hyper-Surd Field** ($\mathbb{Q}[\sqrt{3}]$).
+### 2. Regression Testing for Identity Closure
+New geometric features or optimizations must pass the **Long-Run Stability Test** ($10^8$ iterations). Any modification that introduces bit-drift or numerical instability into the transformation pipeline is considered non-compliant.
 
-### 2. The Identity Requirement
-Every new geometric feature must pass the **Long-Run Rotation Stability Test** ($10^8$ iterations). If a transformation results in even a single bit of drift over $10^8$ cycles, the logic is considered "Legacy" and must be refactored to use **Rational Permutations.**
+### 3. Hardware-Targeted Optimizations
+Preference is given to logic that maps directly to SQR-Silicon gates. 
+*   Favor **Register Shuffles** over arithmetic matrices.
+*   Favor **Bit-Shifts and XOR Toggles** over general-purpose multiplier units.
 
-### 3. Symmetry First
-Favor **Bit-Shifts and XOR Toggles** over Multipliers and ALUs. If a geometric operation can be achieved via a **Wire-Swap** (Register Permutation), it is the preferred "Sovereign" path.
-
-### 4. The Unlicense Commitment
-By contributing, you agree that your work is released into the **Public Domain (CC0)**. We are not building a product; we are uncovering a Universal Constant. This work belongs to humanity, not a corporation.
+### 4. Public Domain Dedication
+By contributing, you agree that your work is dedicated to the public domain under the **CC0 1.0 Universal** license. This ensures the architecture remains an open, universal standard for spatial logic.
 
 ---
-*Hold the Identity. Guard the Bitmask.*
+*Verify the Bitmask. Maintain the Invariant.*

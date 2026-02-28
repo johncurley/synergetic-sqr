@@ -1,10 +1,10 @@
 # synergetic-renderer (Metal-SQR) v1.7
-## The Sovereign Epoch: Universal Determinism
+## Deterministic Spatial Identity Standard
 
-> "This repository contains a Deterministic Geometric Engine built on the Hyper-Surd Field $\mathbb{Q}(\sqrt{3})$. It is released into the Public Domain to prove that the 'mush' of floating-point approximation is a choice, not a necessity. Space is rational. Nature does not lie. The proofs are in the logs."
+> "This repository implements a deterministic geometric engine built on the quadratic field extension $\mathbb{Q}(\sqrt{3})$. It provides a hardware-ready specification for bit-exact spatial computation, demonstrating that floating-point approximation is not a requirement for 3D coordinate systems. The proofs of algebraic closure are documented in the logs."
 
-### v1.7 Milestone: Absolute Closure Verified
-The **SPU-1 (Synergetic Processing Unit)** architecture replaces floating-point "mush" with **Zero-Gate Register Shuffles** and bit-exact algebraic identity. In a 360° rotation cycle, we have achieved **Absolute Zero Drift**, verified across 100 million iterations and multiple hardware platforms.
+### v1.7 Milestone: Bit-Exact Identity Verified
+The **SPU-1 (Synergetic Processing Unit)** architecture utilizes **Register Shuffles** and integer-based quadratic field arithmetic to achieve absolute temporal stability. 
 
 #### The Identity Audit (The Evidence)
 ```text

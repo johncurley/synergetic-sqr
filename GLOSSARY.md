@@ -1,22 +1,22 @@
 # SPU-1 Technical Glossary (v1.7)
-## Mapping Geometry to Logic
+## Definition of Discrete Algebraic Primitives
 
-This document provides boring, technical definitions for the conceptual terms used in the Synergetic-SQR architecture.
+This document defines the technical implementation of terms used in the Synergetic-SQR architecture.
 
-| Concept | Technical Definition | Implementation |
+| Specification | Technical Definition | Hardware Implementation |
 | :--- | :--- | :--- |
-| **Self-Healing Scale** | Fixed-point normalization | Arithmetic right-shift (`>> 1`) on surd coefficients when approaching 32-bit boundaries. |
-| **Zero-Gate Rotation** | Register Shuffle / Permutation | Cyclic shift of coordinate indices in the 4D Quadray register; requires no arithmetic gates. |
-| **Sovereign Determinism** | Bit-Exact Identity | Machine-invariant output achieved by purging all IEEE-754 floating-point units from the logic path. |
-| **DQFA** | Quadratic Field Arithmetic | Fixed-point integer pairs representing $(a + b\sqrt{3}) / 2^{16}$ in the $\mathbb{Q}[\sqrt{3}]$ field. |
-| **Janus Bit** | Sign-Bit XOR | A single-bit toggle that negates the surd component (`b`) of a field element. |
-| **Hyper-Surd Calculus** | Dual-Number Automatic Differentiation | A dual-lane arithmetic path $(val, \epsilon \cdot deriv)$ where $\epsilon^2 = 0$. |
-| **IVM Skeleton** | Tetrahedral Basis Mapping | A 4-axis coordinate system stored in a 256-bit SIMD block (`SPU_Vector256`). |
-| **Rational Oscillator** | Integer Triangle Wave | A piecewise-linear scale driver derived from the frame tick count. |
-| **Computational Henosis** | Logic-Hardware Parity | The state where high-level algebraic operations map 1:1 to low-level hardware intrinsics. |
+| **Fixed-Point Scaling** | Normalization routine | Arithmetic right-shift (`>> 1`) on surd coefficients to preserve fixed-point bounds. |
+| **Register Permutation** | Index-based rotation | Cyclic shift of coordinate indices in the 4D Quadray register; requires zero arithmetic gates. |
+| **Bit-Exact Identity** | Deterministic Closure | Machine-invariant output achieved by utilizing integer arithmetic in the $\mathbb{Q}(\sqrt{3})$ field extension. |
+| **SurdFixed64** | Quadratic Field Element | A fixed-point representation of the algebraic field $\mathbb{Q}(\sqrt{3})$, stored as two 32-bit integers (a, b) with implicit denominator. |
+| **DualSurd** | Hyper-dual Number | An extension of SurdFixed64 with an infinitesimal component for derivative propagation; used for algebraic automatic differentiation. |
+| **Janus Bit** | Sign-Inversion Bit | A single bit controlling the sign inversion of the surd component. Implemented as a bitwise XOR on the surd’s sign bit. |
+| **Identity Test** | Runtime Verification | A verification procedure where repeated rotor application must return to a bit-exact starting state. |
+| **IVM Basis** | Tetrahedral Mapping | A 4-axis coordinate system stored in a memory-aligned 256-bit SIMD block (`SPU_Vector256`). |
+| **Rational Oscillator** | Piecewise-Linear Driver | A deterministic triangle-wave driver derived from the frame tick count for scale oscillation. |
 
-## SPU-1 Instruction Set Summary
-*   `_spu_rotate_60`: Index permutation of the Quadray register.
-*   `_spu_surd_mul`: Integer multiply-shift with shift-and-add `*3` optimization.
-*   `_spu_normalize`: Leading-zero count detection and right-shift.
-*   `_spu_add_q4`: SIMD parallel integer addition.
+## SPU-1 Instruction Set Architecture (ISA)
+*   `_spu_rotate_60`: Index permutation of the Quadray register wires.
+*   `_spu_surd_mul`: Integer multiply-shift with shift-and-add constant optimization.
+*   `_spu_normalize`: Leading-zero count detection and right-shift overflow handling.
+*   `_spu_add_q4`: SIMD parallel integer vector addition.
