@@ -68,5 +68,10 @@ After full rotation cycles, the system returns exactly to this bit pattern. No t
 *   No transcendental functions implemented.
 *   No claim of computational superiority over optimized GPU pipelines for perception-based tasks.
 
+### Project Roadmap
+*   **v1.7 (Stable Basis):** Bit-exact spatial closure and self-healing scaling (SF32.16). Verified.
+*   **v1.8 (Kinetic Phase):** Implementation of **Rational Tensegrity**—TensegrityNode primitives and Equilibrium verification implemented.
+*   **v1.9 (Hardware Phase):** RTL implementation of the SPU-1 intrinsics in **Verilog** for FPGA deployment.
+
 ---
 *A deterministic contribution to the global commons of computer graphics.*

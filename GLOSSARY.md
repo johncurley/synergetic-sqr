@@ -14,6 +14,9 @@ This document defines the technical implementation of terms used in the Synerget
 | **Identity Test** | Runtime Verification | A verification procedure where repeated rotor application must return to a bit-exact starting state. |
 | **IVM Basis** | Tetrahedral Mapping | A 4-axis coordinate system stored in a memory-aligned 256-bit SIMD block (`SPU_Vector256`). |
 | **Rational Oscillator** | Piecewise-Linear Driver | A deterministic triangle-wave driver derived from the frame tick count for scale oscillation. |
+| **Vector Equilibrium** | Zero-Point State | The cuboctahedron baseline where all vectors are of equal magnitude and energy. |
+| **Integer Displacement** | Quadrance Tension | Tension defined as the exact integer distance squared between lattice nodes. |
+| **Equilibrium Verification** | Force Balance Check | A node-level audit where the sum of all Quadray tension vectors must project to zero. |
 
 ## SPU-1 Instruction Set Architecture (ISA)
 *   `_spu_rotate_60`: Index permutation of the Quadray register wires.

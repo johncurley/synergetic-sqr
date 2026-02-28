@@ -106,6 +106,47 @@ int main(int argc, char* argv[]) {
 
     std::cout << "MIXED OPERATORS: PASSED (Algebraic Integrity)" << std::endl;
     std::cout << "  Chain bitmask verified: Q2.a=" << chain_q.data.v[2] << std::endl;
+
+    // 4. Tensegrity Equilibrium Test
+    std::cout << "--- DQFA Tensegrity Equilibrium Test ---" << std::endl;
+    // Set net force to zero (In Quadray space, any (k,k,k,k) is zero)
+    Synergetics::Quadray4 zero_force = { {65536, 0, 65536, 0, 65536, 0, 65536, 0} };
+    
+    if (Synergetics::SPU_TensegrityNode::CheckEquilibrium(&zero_force, 1)) {
+        std::cout << "EQUILIBRIUM: PASSED" << std::endl;
+        std::cout << "  Zero net-force verified in Quadray basis." << std::endl;
+    } else {
+        std::cerr << "EQUILIBRIUM: FAILED" << std::endl;
+    }
+
+    // 5. Gravity Identity Test
+    std::cout << "--- DQFA Gravity Identity Test ---" << std::endl;
+    Synergetics::Quadray4 g = Synergetics::SPU_TensegrityNode::gravityVector();
+    if (g.data.v[6] == 65536 && g.data.v[0] == 0) {
+        std::cout << "GRAVITY: PASSED" << std::endl;
+        std::cout << "  Gravity indexed as Unit Q4 vector." << std::endl;
+    } else {
+        std::cerr << "GRAVITY: FAILED" << std::endl;
+    }
+
+    // 6. Rational Tension Test
+    std::cout << "--- DQFA Rational Tension Test ---" << std::endl;
+    Synergetics::SPU_TensegrityNode nodeA;
+    nodeA.position = { {65536, 0, 0, 0, 0, 0, 0, 0} };
+    Synergetics::SPU_TensegrityNode nodeB;
+    nodeB.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
+    Synergetics::TensegrityLink link = { 0, 1, 0, 10 }; // Rest length 0, Stiffness 10
+    
+    int64_t tension = link.calculateTension(nodeA, nodeB);
+    int64_t expected_tension = (int64_t)65536 * 65536 * 10;
+    
+    if (tension == expected_tension) {
+        std::cout << "TENSION CALCULATION: PASSED" << std::endl;
+        std::cout << "  Bit-exact force magnitude: " << tension << std::endl;
+    } else {
+        std::cerr << "TENSION CALCULATION: FAILED" << std::endl;
+        std::cerr << "  Expected: " << expected_tension << " Got: " << tension << std::endl;
+    }
     std::cout << "---------------------------------------" << std::endl;
 
 #ifdef __APPLE__

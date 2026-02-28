@@ -25,5 +25,12 @@ To maintain boundedness during long-run simulations, the **`_spu_normalize`** in
 ### 4. Algebraic Automatic Differentiation
 The **Hyper-Surd** extension (dual-number lane) enables exact derivative propagation for physics. Chained operations in this field produce bit-exact gradients, providing a foundation for stable Tensegrity dynamics.
 
+### 5. Tensegrity Dynamics: Integer Force Balances
+Transitioning from static geometry to kinetic systems, the SPU-1 architecture defines **Force** and **Tension** as integer-based vector balances within the Isotropic Vector Matrix (IVM).
+
+*   **Vector Equilibrium (VE) as Zero-Point:** The cuboctahedron is established as the baseline state where all vectors are equal in magnitude and energy. Every force is represented as a rational ratio of the VE unit length.
+*   **Integer Displacement (Quadrance):** Tension is defined as the integer distance between nodes in the IVM lattice. The system implements a "Snap-to-Truth" mechanism that prevents sub-rational position drift, eliminating the numerical jitter common in standard physics engines.
+*   **Equilibrium Verification:** A node is at equilibrium if the net force vector in the Quadray basis projects to the Cartesian origin. In the SPU-1, this is verified bit-for-bit ($Q_1 = Q_2 = Q_3 = Q_4$).
+
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*

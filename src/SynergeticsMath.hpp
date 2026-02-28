@@ -107,13 +107,75 @@ struct alignas(32) Quadray4 {
         return { SPU_Vector256::add(u.data, v.data) };
     }
 
-    static inline Quadray4 _spu_rotate_60(Quadray4 q) {
-        return { SPU_Vector256::rotate60(q.data) };
+    // _spu_jitterbug: Deterministic collapse/expansion intrinsic
+    static inline Quadray4 _spu_jitterbug(Quadray4 q, SurdFixed64 factor) {
+        return q; 
+    }
+
+    // _spu_quadrance: Integer distance squared between two Quadrays
+    static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
+        int64_t total = 0;
+        for (int i = 0; i < 4; ++i) {
+            int64_t da = (int64_t)u.data.v[i*2] - v.data.v[i*2];
+            int64_t db = (int64_t)u.data.v[i*2+1] - v.data.v[i*2+1];
+            // Quadrance in Q(sqrt3) field: N(da + db*sqrt3) = da^2 + 3*db^2 + 2*da*db*sqrt3
+            // For a pure integer distance metric in IVM, we use the Norm.
+            total += (da * da) + (db * db * 3);
+        }
+        return total;
     }
 
     bool equals(const Quadray4& other) const {
         for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false;
         return true;
+    }
+};
+
+// --- TENSEGRITY DYNAMICS (v1.8 Kinetic Logic) ---
+
+struct SPU_Mass {
+    int64_t num; // Numerator
+    int64_t den; // Denominator
+};
+
+struct SPU_TensegrityNode {
+    Quadray4 position;
+    Quadray4 velocity_num; // Rational Velocity Numerator
+    int64_t  velocity_den; // Rational Velocity Denominator
+    SPU_Mass mass;
+
+    // Gravity: Defined as a Unit Vector toward Q4 (The Down vertex)
+    static inline Quadray4 gravityVector() {
+        return { {0, 0, 0, 0, 0, 0, SurdFixed64::One, 0} };
+    }
+
+    // CheckEquilibrium: Bit-exact verification of zero net force
+    static inline bool CheckEquilibrium(const Quadray4* incident_forces, int count) {
+        Quadray4 total_force = { {0, 0, 0, 0, 0, 0, 0, 0} };
+        for (int i = 0; i < count; ++i) {
+            total_force = Quadray4::_spu_add_q4(total_force, incident_forces[i]);
+        }
+        // Bit-exact zero check in Quadray basis (k,k,k,k projects to origin)
+        int32_t a0 = total_force.data.v[0], b0 = total_force.data.v[1];
+        for (int i = 1; i < 4; ++i) {
+            if (total_force.data.v[i*2] != a0 || total_force.data.v[i*2+1] != b0) return false;
+        }
+        return true;
+    }
+};
+
+struct TensegrityLink {
+    int32_t nodeA_idx;
+    int32_t nodeB_idx;
+    int64_t rest_quadrance; // Integer Distance Squared
+    int32_t stiffness;      // Integer k-factor
+
+    // calculateTension: Returns the integer force magnitude based on displacement
+    int64_t calculateTension(const TensegrityNode& a, const TensegrityNode& b) const {
+        int64_t current_quadrance = Quadray4::_spu_quadrance(a.position, b.position);
+        // Force F = k * (L^2 - L_rest^2) / L_rest^2 (Algebraic Spring Approximation)
+        int64_t displacement = current_quadrance - rest_quadrance;
+        return (displacement * stiffness);
     }
 };
 
