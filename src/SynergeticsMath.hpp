@@ -97,6 +97,23 @@ struct alignas(32) Quadray4 {
     }
 };
 
+// SurdLang: DualSurd for Hyper-Surd Derivatives (eps^2 = 0)
+struct DualSurd {
+    SurdFixed64 val, eps;
+
+    DualSurd add(const DualSurd& other) const {
+        return { val.add(other.val), eps.add(other.eps) };
+    }
+
+    // gstep: Leibniz product (u*v, u*v' + u'*v)
+    DualSurd multiply(const DualSurd& other) const {
+        return { 
+            val.multiply(other.val), 
+            val.multiply(other.eps).add(eps.multiply(other.val)) 
+        };
+    }
+};
+
 // --- END SOVEREIGN CORE ---
 
 // --- DISPLAY ADAPTER (Cartesian Corner - Estimations Allowed) ---

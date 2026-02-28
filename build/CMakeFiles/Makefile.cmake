@@ -135,6 +135,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/synergetic-sqr.dir/DependInfo.cmake"
   "CMakeFiles/spu-verify.dir/DependInfo.cmake"
+  "CMakeFiles/spu-collision.dir/DependInfo.cmake"
   "CMakeFiles/purity_audit.dir/DependInfo.cmake"
   "_deps/sdl3-build/CMakeFiles/SDL3-shared.dir/DependInfo.cmake"
   "_deps/sdl3-build/CMakeFiles/SDL3_test.dir/DependInfo.cmake"
