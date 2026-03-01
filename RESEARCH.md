@@ -90,5 +90,23 @@ Every hardware update is split into two phases:
 
 **Result:** This mechanism ensures that the state of the lattice is perfectly consistent at every tick. No node can see a "partial update" from a neighbor, effectively eliminating race conditions and ensuring that the discrete Laplacian is applied to a frozen snapshot of the universe.
 
+### 6. Future Work: Silicon Realization Hurdles
+While the SPU-1 has achieved functional parity in simulation, physical realization in silicon (ASIC/FPGA) requires addressing the following physical constraints:
+
+#### 6.1 Formal Equivalence (LEC)
+Moving beyond empirical verification to formal mathematical proof. We plan to utilize Logic Equivalence Checking (LEC) to prove that the synthesizable RTL matches the algebraic Golden Model across all $2^{256}$ possible input states.
+
+#### 6.2 Routing Congestion and NoC
+The 12-neighbor isotropic connectivity represents a significant routing challenge for high-density lattices. Future work involves exploring Network-on-Chip (NoC) architectures to replace the parallel 3072-bit neighbor bus with high-speed serialized links.
+
+#### 6.3 ECC and Reliability
+To ensure deterministic stability in high-radiation environments, we intend to implement Error Correction Code (ECC) across the Quadray registers. This enables the hardware to detect and correct single-bit flips (Single Event Upsets) without breaking symmetry.
+
+#### 6.4 Power Analysis and Clock Gating
+Pipelined reduction trees exhibit high switching activity. Physical synthesis will require detailed power analysis and the implementation of clock gating to disable the Lattice Relaxation unit when equilibrium is detected.
+
+#### 6.5 Metastability Mitigation
+Massively parallel lattices on physical silicon are susceptible to clock skew. Future RTL will include multi-stage synchronizers at the 12-neighbor boundaries to prevent metastable states during cross-node reads.
+
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*
