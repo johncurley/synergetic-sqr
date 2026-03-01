@@ -53,3 +53,16 @@ The SPU-1 utilizes a **256-bit Parallel Quadray Bus**.
 - 4 Lanes x 64-bit per lane.
 - Single-cycle dispatch for `SADD` and `SPERM`.
 - Pipelined execution for `SMUL`.
+
+### 5. RTL Implementation (Verilog)
+The functional logic for this specification is implemented in the following modules:
+*   **`hardware/verilog/spu_smul.v`**: The Surd Multiplier Unit.
+*   **`hardware/verilog/spu_permute.v`**: The Zero-Gate Permutator.
+*   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
+
+#### 5.1 Opcode Specification
+| Opcode | Instruction | Hardware Path |
+| :--- | :--- | :--- |
+| `01` | **`SPERM`** | `spu_permute` (Bus Shuffle) |
+| `10` | **`SMUL`** | `spu_smul` (Integer ALU) |
+| `00` | `NOP` | Bypass |
