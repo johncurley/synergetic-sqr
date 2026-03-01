@@ -7,9 +7,8 @@ This document defines the technical implementation of terms used in the Synerget
 | :--- | :--- | :--- |
 | **Fixed-Point Scaling** | Normalization routine | Arithmetic right-shift (`>> 1`) on surd coefficients to preserve fixed-point bounds. Includes a precision floor (threshold: 256) to prevent state collapse during repeated scaling cycles. |
 | **Register Permutation** | Index-based rotation | Cyclic shift of coordinate indices in the 4D Quadray register; requires zero arithmetic gates. |
-| **Bit-Exact Identity** | Deterministic Closure | Machine-invariant output achieved by utilizing integer arithmetic in the $\mathbb{Q}(\sqrt{3})$ field extension. |
-| **SurdFixed64** | Quadratic Field Element | A fixed-point representation of the algebraic field $\mathbb{Q}(\sqrt{3})$, stored as two 32-bit integers (a, b) with implicit denominator. |
-| **DualSurd** | Hyper-dual Number | An extension of SurdFixed64 with an infinitesimal component for derivative propagation; used for algebraic automatic differentiation. |
+| **Deterministic Identity** | Machine-Invariant Closure | Bit-exact output achieved by utilizing integer arithmetic in the $\mathbb{Q}(\sqrt{3})$ field extension. |
+| **DQFA** | Quadratic Field Arithmetic | Fixed-point integer pairs representing $(a + b\sqrt{3}) / 2^{16}$ in the $\mathbb{Q}(\sqrt{3})$ field. |
 | **Janus Bit** | Sign-Inversion Bit | A single bit controlling the sign inversion of the surd component. Implemented as a bitwise XOR on the surd’s sign bit. |
 | **Identity Test** | Runtime Verification | A verification procedure where repeated rotor application must return to a bit-exact starting state. |
 | **IVM Basis** | Tetrahedral Mapping | A 4-axis coordinate system stored in a memory-aligned 256-bit SIMD block (`SPU_Vector256`). |
