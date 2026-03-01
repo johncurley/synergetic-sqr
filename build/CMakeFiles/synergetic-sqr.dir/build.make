@@ -86,38 +86,39 @@ CMakeFiles/synergetic-sqr.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/synergetic-sqr.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -S /Users/johncurley/Projects/desktop/synergeticrenderer/src/main.cpp -o CMakeFiles/synergetic-sqr.dir/src/main.cpp.s
 
-CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o: CMakeFiles/synergetic-sqr.dir/flags.make
-CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o: /Users/johncurley/Projects/desktop/synergeticrenderer/src/SynergeticRenderer.cpp
-CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o: CMakeFiles/synergetic-sqr.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -MD -MT CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o -MF CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o.d -o CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o -c /Users/johncurley/Projects/desktop/synergeticrenderer/src/SynergeticRenderer.cpp
+CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o: CMakeFiles/synergetic-sqr.dir/flags.make
+CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o: /Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src/SynergeticRenderer.cpp
+CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o: CMakeFiles/synergetic-sqr.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -MD -MT CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o -MF CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o.d -o CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o -c /Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src/SynergeticRenderer.cpp
 
-CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -E /Users/johncurley/Projects/desktop/synergeticrenderer/src/SynergeticRenderer.cpp > CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.i
+CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -E /Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src/SynergeticRenderer.cpp > CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.i
 
-CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -S /Users/johncurley/Projects/desktop/synergeticrenderer/src/SynergeticRenderer.cpp -o CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.s
+CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -x objective-c++ -S /Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src/SynergeticRenderer.cpp -o CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.s
 
 # Object files for target synergetic-sqr
 synergetic__sqr_OBJECTS = \
 "CMakeFiles/synergetic-sqr.dir/src/main.cpp.o" \
-"CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o"
+"CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o"
 
 # External object files for target synergetic-sqr
 synergetic__sqr_EXTERNAL_OBJECTS =
 
 synergetic-sqr: CMakeFiles/synergetic-sqr.dir/src/main.cpp.o
-synergetic-sqr: CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o
+synergetic-sqr: CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o
 synergetic-sqr: CMakeFiles/synergetic-sqr.dir/build.make
 synergetic-sqr: _deps/sdl3-build/libSDL3.0.dylib
 synergetic-sqr: _deps/sdl3-src/src/dynapi/SDL_dynapi.sym
 synergetic-sqr: CMakeFiles/synergetic-sqr.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable synergetic-sqr"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/synergetic-sqr.dir/link.txt --verbose=$(VERBOSE)
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Syncing shader source to build directory..."
-	/usr/local/bin/cmake -E copy_directory /Users/johncurley/Projects/desktop/synergeticrenderer/src /Users/johncurley/Projects/desktop/synergeticrenderer/build/src
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Syncing shaders to build directory..."
+	/usr/local/bin/cmake -E make_directory /Users/johncurley/Projects/desktop/synergeticrenderer/build/src
+	/usr/local/bin/cmake -E copy /Users/johncurley/Projects/desktop/synergeticrenderer/renderer/metal/DQFA.metal /Users/johncurley/Projects/desktop/synergeticrenderer/build/src/DQFA.metal
 
 # Rule to build all files generated by this target.
 CMakeFiles/synergetic-sqr.dir/build: synergetic-sqr

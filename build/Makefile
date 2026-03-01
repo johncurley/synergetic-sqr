@@ -234,29 +234,29 @@ SDL_uclibc/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build.make _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build
 .PHONY : SDL_uclibc/fast
 
-src/SynergeticRenderer.o: src/SynergeticRenderer.cpp.o
-.PHONY : src/SynergeticRenderer.o
+renderer/src/SynergeticRenderer.o: renderer/src/SynergeticRenderer.cpp.o
+.PHONY : renderer/src/SynergeticRenderer.o
 
 # target to build an object file
-src/SynergeticRenderer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o
-.PHONY : src/SynergeticRenderer.cpp.o
+renderer/src/SynergeticRenderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o
+.PHONY : renderer/src/SynergeticRenderer.cpp.o
 
-src/SynergeticRenderer.i: src/SynergeticRenderer.cpp.i
-.PHONY : src/SynergeticRenderer.i
+renderer/src/SynergeticRenderer.i: renderer/src/SynergeticRenderer.cpp.i
+.PHONY : renderer/src/SynergeticRenderer.i
 
 # target to preprocess a source file
-src/SynergeticRenderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.i
-.PHONY : src/SynergeticRenderer.cpp.i
+renderer/src/SynergeticRenderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.i
+.PHONY : renderer/src/SynergeticRenderer.cpp.i
 
-src/SynergeticRenderer.s: src/SynergeticRenderer.cpp.s
-.PHONY : src/SynergeticRenderer.s
+renderer/src/SynergeticRenderer.s: renderer/src/SynergeticRenderer.cpp.s
+.PHONY : renderer/src/SynergeticRenderer.s
 
 # target to generate assembly for a file
-src/SynergeticRenderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.s
-.PHONY : src/SynergeticRenderer.cpp.s
+renderer/src/SynergeticRenderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.s
+.PHONY : renderer/src/SynergeticRenderer.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -282,101 +282,101 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-tests/bulletproof_verification.o: tests/bulletproof_verification.cpp.o
-.PHONY : tests/bulletproof_verification.o
+tests/suites/bulletproof_verification.o: tests/suites/bulletproof_verification.cpp.o
+.PHONY : tests/suites/bulletproof_verification.o
 
 # target to build an object file
-tests/bulletproof_verification.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.o
-.PHONY : tests/bulletproof_verification.cpp.o
+tests/suites/bulletproof_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/suites/bulletproof_verification.cpp.o
+.PHONY : tests/suites/bulletproof_verification.cpp.o
 
-tests/bulletproof_verification.i: tests/bulletproof_verification.cpp.i
-.PHONY : tests/bulletproof_verification.i
+tests/suites/bulletproof_verification.i: tests/suites/bulletproof_verification.cpp.i
+.PHONY : tests/suites/bulletproof_verification.i
 
 # target to preprocess a source file
-tests/bulletproof_verification.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.i
-.PHONY : tests/bulletproof_verification.cpp.i
+tests/suites/bulletproof_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/suites/bulletproof_verification.cpp.i
+.PHONY : tests/suites/bulletproof_verification.cpp.i
 
-tests/bulletproof_verification.s: tests/bulletproof_verification.cpp.s
-.PHONY : tests/bulletproof_verification.s
+tests/suites/bulletproof_verification.s: tests/suites/bulletproof_verification.cpp.s
+.PHONY : tests/suites/bulletproof_verification.s
 
 # target to generate assembly for a file
-tests/bulletproof_verification.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.s
-.PHONY : tests/bulletproof_verification.cpp.s
+tests/suites/bulletproof_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/suites/bulletproof_verification.cpp.s
+.PHONY : tests/suites/bulletproof_verification.cpp.s
 
-tests/chaos_verification.o: tests/chaos_verification.cpp.o
-.PHONY : tests/chaos_verification.o
+tests/suites/chaos_verification.o: tests/suites/chaos_verification.cpp.o
+.PHONY : tests/suites/chaos_verification.o
 
 # target to build an object file
-tests/chaos_verification.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.o
-.PHONY : tests/chaos_verification.cpp.o
+tests/suites/chaos_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.o
+.PHONY : tests/suites/chaos_verification.cpp.o
 
-tests/chaos_verification.i: tests/chaos_verification.cpp.i
-.PHONY : tests/chaos_verification.i
+tests/suites/chaos_verification.i: tests/suites/chaos_verification.cpp.i
+.PHONY : tests/suites/chaos_verification.i
 
 # target to preprocess a source file
-tests/chaos_verification.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.i
-.PHONY : tests/chaos_verification.cpp.i
+tests/suites/chaos_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.i
+.PHONY : tests/suites/chaos_verification.cpp.i
 
-tests/chaos_verification.s: tests/chaos_verification.cpp.s
-.PHONY : tests/chaos_verification.s
+tests/suites/chaos_verification.s: tests/suites/chaos_verification.cpp.s
+.PHONY : tests/suites/chaos_verification.s
 
 # target to generate assembly for a file
-tests/chaos_verification.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.s
-.PHONY : tests/chaos_verification.cpp.s
+tests/suites/chaos_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.s
+.PHONY : tests/suites/chaos_verification.cpp.s
 
-tests/collision_verification.o: tests/collision_verification.cpp.o
-.PHONY : tests/collision_verification.o
+tests/suites/collision_verification.o: tests/suites/collision_verification.cpp.o
+.PHONY : tests/suites/collision_verification.o
 
 # target to build an object file
-tests/collision_verification.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/collision_verification.cpp.o
-.PHONY : tests/collision_verification.cpp.o
+tests/suites/collision_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/suites/collision_verification.cpp.o
+.PHONY : tests/suites/collision_verification.cpp.o
 
-tests/collision_verification.i: tests/collision_verification.cpp.i
-.PHONY : tests/collision_verification.i
+tests/suites/collision_verification.i: tests/suites/collision_verification.cpp.i
+.PHONY : tests/suites/collision_verification.i
 
 # target to preprocess a source file
-tests/collision_verification.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/collision_verification.cpp.i
-.PHONY : tests/collision_verification.cpp.i
+tests/suites/collision_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/suites/collision_verification.cpp.i
+.PHONY : tests/suites/collision_verification.cpp.i
 
-tests/collision_verification.s: tests/collision_verification.cpp.s
-.PHONY : tests/collision_verification.s
+tests/suites/collision_verification.s: tests/suites/collision_verification.cpp.s
+.PHONY : tests/suites/collision_verification.s
 
 # target to generate assembly for a file
-tests/collision_verification.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/collision_verification.cpp.s
-.PHONY : tests/collision_verification.cpp.s
+tests/suites/collision_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/suites/collision_verification.cpp.s
+.PHONY : tests/suites/collision_verification.cpp.s
 
-tests/rigorous_verification.o: tests/rigorous_verification.cpp.o
-.PHONY : tests/rigorous_verification.o
+tests/suites/rigorous_verification.o: tests/suites/rigorous_verification.cpp.o
+.PHONY : tests/suites/rigorous_verification.o
 
 # target to build an object file
-tests/rigorous_verification.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.o
-.PHONY : tests/rigorous_verification.cpp.o
+tests/suites/rigorous_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/suites/rigorous_verification.cpp.o
+.PHONY : tests/suites/rigorous_verification.cpp.o
 
-tests/rigorous_verification.i: tests/rigorous_verification.cpp.i
-.PHONY : tests/rigorous_verification.i
+tests/suites/rigorous_verification.i: tests/suites/rigorous_verification.cpp.i
+.PHONY : tests/suites/rigorous_verification.i
 
 # target to preprocess a source file
-tests/rigorous_verification.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.i
-.PHONY : tests/rigorous_verification.cpp.i
+tests/suites/rigorous_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/suites/rigorous_verification.cpp.i
+.PHONY : tests/suites/rigorous_verification.cpp.i
 
-tests/rigorous_verification.s: tests/rigorous_verification.cpp.s
-.PHONY : tests/rigorous_verification.s
+tests/suites/rigorous_verification.s: tests/suites/rigorous_verification.cpp.s
+.PHONY : tests/suites/rigorous_verification.s
 
 # target to generate assembly for a file
-tests/rigorous_verification.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/rigorous_verification.cpp.s
-.PHONY : tests/rigorous_verification.cpp.s
+tests/suites/rigorous_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/suites/rigorous_verification.cpp.s
+.PHONY : tests/suites/rigorous_verification.cpp.s
 
 # Help Target
 help:
@@ -395,24 +395,24 @@ help:
 	@echo "... spu-collision"
 	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
-	@echo "... src/SynergeticRenderer.o"
-	@echo "... src/SynergeticRenderer.i"
-	@echo "... src/SynergeticRenderer.s"
+	@echo "... renderer/src/SynergeticRenderer.o"
+	@echo "... renderer/src/SynergeticRenderer.i"
+	@echo "... renderer/src/SynergeticRenderer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... tests/bulletproof_verification.o"
-	@echo "... tests/bulletproof_verification.i"
-	@echo "... tests/bulletproof_verification.s"
-	@echo "... tests/chaos_verification.o"
-	@echo "... tests/chaos_verification.i"
-	@echo "... tests/chaos_verification.s"
-	@echo "... tests/collision_verification.o"
-	@echo "... tests/collision_verification.i"
-	@echo "... tests/collision_verification.s"
-	@echo "... tests/rigorous_verification.o"
-	@echo "... tests/rigorous_verification.i"
-	@echo "... tests/rigorous_verification.s"
+	@echo "... tests/suites/bulletproof_verification.o"
+	@echo "... tests/suites/bulletproof_verification.i"
+	@echo "... tests/suites/bulletproof_verification.s"
+	@echo "... tests/suites/chaos_verification.o"
+	@echo "... tests/suites/chaos_verification.i"
+	@echo "... tests/suites/chaos_verification.s"
+	@echo "... tests/suites/collision_verification.o"
+	@echo "... tests/suites/collision_verification.i"
+	@echo "... tests/suites/collision_verification.s"
+	@echo "... tests/suites/rigorous_verification.o"
+	@echo "... tests/suites/rigorous_verification.i"
+	@echo "... tests/suites/rigorous_verification.s"
 .PHONY : help
 
 

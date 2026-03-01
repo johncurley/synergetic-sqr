@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/johncurley/Projects/desktop/synergeticrenderer/src/SynergeticRenderer.cpp" "CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o" "gcc" "CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o.d"
+  "/Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src/SynergeticRenderer.cpp" "CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o" "gcc" "CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o.d"
   "/Users/johncurley/Projects/desktop/synergeticrenderer/src/main.cpp" "CMakeFiles/synergetic-sqr.dir/src/main.cpp.o" "gcc" "CMakeFiles/synergetic-sqr.dir/src/main.cpp.o.d"
   )
 

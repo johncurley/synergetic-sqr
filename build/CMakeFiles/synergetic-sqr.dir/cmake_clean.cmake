@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o"
-  "CMakeFiles/synergetic-sqr.dir/src/SynergeticRenderer.cpp.o.d"
+  "CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o"
+  "CMakeFiles/synergetic-sqr.dir/renderer/src/SynergeticRenderer.cpp.o.d"
   "CMakeFiles/synergetic-sqr.dir/src/main.cpp.o"
   "CMakeFiles/synergetic-sqr.dir/src/main.cpp.o.d"
   "synergetic-sqr"
