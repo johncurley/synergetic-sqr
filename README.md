@@ -84,12 +84,20 @@ iverilog -o spu_sim hardware/verilog/spu_smul.v hardware/verilog/spu_smul_tb.v
 vvp spu_sim
 ```
 
+## 🌐 Theoretical Lineage
+The SPU-1 is the functional synthesis of a multi-generational lineage of geometric and mathematical thinkers:
+- **Algebra:** [Rational-Spread Theory](https://www.researchgate.net/profile/Andrew-Thomson) (Thomson, 2026)
+- **Geometry:** [Quadray Coordinate Systems](http://www.4dsolutions.net/synergetics/quadrays.html) (Urner/Fuller)
+- **Physics:** [Field Reciprocation](https://youtube.com/@KenTheoriaApophasis) (Wheeler)
+- **Calculus:** [Non-Standard Analysis](https://en.wikipedia.org/wiki/Non-standard_analysis) (Robinson/Wildberger)
+
 ## Documentation
 *   **[RESEARCH.md](RESEARCH.md):** Data-driven analysis of rotation stability and forensic logs.
 *   **[SPECIFICATION.md](hardware/specs/SPECIFICATION.md):** Formal SPU-1 ISA and register layout.
 *   **[SURDLANG.md](hardware/specs/SURDLANG.md):** The formal language of the SPU-1.
 *   **[GLOSSARY.md](docs/GLOSSARY.md):** Technical definitions of algebraic primitives.
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
+*   **[JANUS_MANIFESTO.md](docs/JANUS_MANIFESTO.md):** The role of field reciprocation in the SPU-1.
 *   **[SQR_LANG_SYNTAX.md](docs/SQR_LANG_SYNTAX.md):** Specification for static data-flow topology.
 *   **[CONTRIBUTING.md](CONTRIBUTING.md):** Architectural integrity guidelines.
 
