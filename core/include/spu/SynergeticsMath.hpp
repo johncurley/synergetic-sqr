@@ -101,13 +101,11 @@ struct SPU_Vector256 {
 #endif
         return res;
     }
-    static inline SPU_Vector256 prime_permute(const SPU_Vector256& q, int phase) {
-        switch (phase) {
-            case 1: return { q.v[4], q.v[5], q.v[2], q.v[3], q.v[6], q.v[7], q.v[0], q.v[1] }; // P3: 60 deg
-            case 2: return { q.v[2], q.v[3], q.v[6], q.v[7], q.v[4], q.v[5], q.v[0], q.v[1] }; // P5: 120 deg
-            case 3: return { q.v[0], q.v[1], q.v[2], q.v[3], q.v[4], q.v[5], q.v[6], q.v[7] }; // P7 Placeholder: needs sync with Verilog
-            default: return q; // P1: Identity
-        }
+    static inline SPU_Vector256 rotate60(const SPU_Vector256& q) {
+        return { q.v[2], q.v[3], q.v[4], q.v[5], q.v[0], q.v[1], q.v[6], q.v[7] };
+    }
+    static inline SPU_Vector256 permute_q1(const SPU_Vector256& q) {
+        return { q.v[0], q.v[1], q.v[4], q.v[5], q.v[6], q.v[7], q.v[2], q.v[3] };
     }
 };
 
@@ -123,10 +121,6 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
     
-    /**
-     * _spu_prime_permute: Implementation of Thomson's 4D Prime Projection.
-     * Selects basis shift based on the Prime Phase (P1, P3, P5, P7).
-     */
     static inline Quadray4 _spu_prime_permute(Quadray4 q, int phase) {
         switch (phase) {
             case 1: // P3: 60 deg Pin-A (a, d, b, c)
@@ -139,6 +133,7 @@ struct alignas(32) Quadray4 {
                 return q;
         }
     }
+
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
@@ -224,8 +219,6 @@ struct RationalSurd {
     static RationalSurd fromInt(int64_t val) { return {val, 0, 1}; }
     RationalSurd multiply(const RationalSurd& other) const {
 #if defined(_MSC_VER) && !defined(__clang__)
-        // MSVC fallback: Use high-precision long double for legacy multiply 
-        // to avoid __int128_t missing type error. This is acceptable for LEGACY ONLY.
         long double res_a = (long double)a * other.a + (long double)3 * b * other.b;
         long double res_b = (long double)a * other.b + (long double)b * other.a;
         return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
