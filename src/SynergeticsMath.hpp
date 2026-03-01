@@ -39,8 +39,10 @@ struct SurdFixed64 {
         return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b) };
     }
 
-    static inline SurdFixed64 _spu_normalize(SurdFixed64 s) {
+    static inline SurdFixed64 _spu_safe_normalize(SurdFixed64 s) {
         uint32_t mask = 0x40000000;
+        // Floor protection: Do not shift if precision would be lost (threshold: 2^8)
+        if (std::abs(s.a) < 256 && std::abs(s.b) < 256) return s;
         if ((static_cast<uint32_t>(s.a) & mask) || (static_cast<uint32_t>(s.b) & mask)) {
             return { s.a >> 1, s.b >> 1 };
         }
@@ -55,6 +57,26 @@ struct SurdFixed64 {
     SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(const SurdFixed64& other) const { return { a - other.a, b - other.b }; }
     SurdFixed64 multiply(const SurdFixed64& other) const { return _spu_surd_mul(*this, other); }
+};
+
+struct SurdVector3 {
+    SurdFixed64 x, y, z;
+
+    static inline void _spu_safe_normalize_vector(SurdVector3& v) {
+        v.x = SurdFixed64::_spu_safe_normalize(v.x);
+        v.y = SurdFixed64::_spu_safe_normalize(v.y);
+        v.z = SurdFixed64::_spu_safe_normalize(v.z);
+    }
+};
+
+struct SurdMatrix3x3 {
+    SurdVector3 row[3];
+
+    static inline void _spu_safe_normalize_matrix(SurdMatrix3x3& m) {
+        SurdVector3::_spu_safe_normalize_vector(m.row[0]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[1]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[2]);
+    }
 };
 
 struct SPU_Vector256 {

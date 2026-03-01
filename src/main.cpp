@@ -84,12 +84,12 @@ int main(int argc, char* argv[]) {
     Synergetics::SurdFixed64 high_val = { 0x3FFFFFFF, 0x1FFFFFFF };
     // Perform multiplication (Intermediate will hit 64-bit range)
     Synergetics::SurdFixed64 squared = Synergetics::SurdFixed64::_spu_surd_mul(high_val, high_val);
-    // Apply normalization safety valve
-    Synergetics::SurdFixed64 safe = Synergetics::SurdFixed64::_spu_normalize(squared);
+    // Apply safe normalization safety valve
+    Synergetics::SurdFixed64 safe = Synergetics::SurdFixed64::_spu_safe_normalize(squared);
     
     if (std::abs(safe.a) <= 0x40000000 && std::abs(safe.b) <= 0x40000000) {
         std::cout << "STRESS TEST: PASSED" << std::endl;
-        std::cout << "  Overflow Safety Valve Verified (_spu_normalize)." << std::endl;
+        std::cout << "  Overflow Safety Valve Verified (_spu_safe_normalize)." << std::endl;
     } else {
         std::cerr << "STRESS TEST: FAILED (Overflow detected)" << std::endl;
     }

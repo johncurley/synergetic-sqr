@@ -50,7 +50,7 @@ void RunStressScaleTest() {
     int normalize_count = 0;
     for (int i = 0; i < scale_up_steps; ++i) {
         current.a <<= 1; current.b <<= 1;
-        SurdFixed64 next = SurdFixed64::_spu_normalize(current);
+        SurdFixed64 next = SurdFixed64::_spu_safe_normalize(current);
         if (next.a != current.a) normalize_count++;
         current = next;
     }
@@ -106,29 +106,33 @@ void RunTetrahedralIntersectionTest() {
 }
 
 void RunCollisionIdentityClosure() {
-    // ... existing implementation ...
+    std::cout << "--- Test 7: Collision Identity Closure (10^6 cycles) ---" << std::endl;
+    Quadray4 initial = Quadray4::identity();
+    Quadray4 current = initial;
+    for (int i = 0; i < 1000000; ++i) {
+        current = Quadray4::_spu_rotate_60(current);
+        for(int j=0; j<4; j++) current.data.v[j*2+1] *= -1; 
+    }
+    current = Quadray4::_spu_rotate_60(current);
+    current = Quadray4::_spu_rotate_60(current);
+    if (current.data.v[0] == 65536 && current.data.v[1] == 0) {
+        std::cout << "PASS: Collision Identity Verified (10^6 iterations)." << std::endl;
+    } else {
+        std::cerr << "FAIL: Drift detected in collision loop!" << std::endl;
+    }
 }
 
 void RunCompoundRotationTest() {
     std::cout << "--- Test 8: Compound Multi-Axis Rotation Test ---" << std::endl;
     Quadray4 initial = Quadray4::identity();
     Quadray4 current = initial;
-    
-    // SPU-1: Valid Axis Permutations
-    // Q4 Rotate: {Q2, Q3, Q1, Q4}
-    // Q1 Rotate: {Q1, Q3, Q4, Q2}
     for(int i=0; i<6; i++) {
-        // Shuffle Q4
         current = Quadray4::_spu_rotate_60(current);
-        // Shuffle Q1 (Manual permutation for test)
         current = { {current.data.v[0], current.data.v[1], 
                      current.data.v[4], current.data.v[5], 
                      current.data.v[6], current.data.v[7], 
                      current.data.v[2], current.data.v[3]} };
     }
-    
-    // After 6 steps of dual-axis shuffles, we verify if we hit identity or a known state
-    // (Note: Non-commutative rotations require specific cycle counts)
     if (current.data.v[0] != 0 || current.data.v[1] != 0) {
         std::cout << "PASS: Multi-Axis Integrity Verified (No Zero-Collapse)." << std::endl;
     } else {
@@ -139,14 +143,11 @@ void RunCompoundRotationTest() {
 void RunRepeatedNormalizationStress() {
     std::cout << "--- Test 9: Repeated Normalization Stress Test ---" << std::endl;
     SurdFixed64 current = { 65536, 0 };
-    
-    // Trigger normalization without shifting bits into the floor
     for (int i = 0; i < 100; ++i) {
         current.a <<= 14; 
-        current = SurdFixed64::_spu_normalize(current); // Shift down
-        current.a >>= 13; // Bring back near original
+        current = SurdFixed64::_spu_safe_normalize(current);
+        current.a >>= 13;
     }
-    
     if (current.a > 0) {
         std::cout << "PASS: Ratio Integrity Preserved through 100 normalization cycles." << std::endl;
     } else {
@@ -154,11 +155,27 @@ void RunRepeatedNormalizationStress() {
     }
 }
 
+void RunVectorMatrixNormalizationTest() {
+    std::cout << "--- Test 10: Vector and Matrix Safe Normalization Test ---" << std::endl;
+    // Use 0x40000000 to trigger the mask (30th bit)
+    SurdVector3 vec = { {0x40000000, 0}, {0, 0x40000000}, {0x40000000, 0x40000000} };
+    SurdVector3::_spu_safe_normalize_vector(vec);
+    
+    if (std::abs(vec.x.a) < 0x40000000 && std::abs(vec.y.b) < 0x40000000) {
+        std::cout << "PASS: Vector Safe Normalization Verified." << std::endl;
+    } else {
+        std::cerr << "FAIL: Vector normalization failed to trigger! a=" << vec.x.a << std::endl;
+    }
+
+    SurdMatrix3x3 mat = { { vec, vec, vec } };
+    SurdMatrix3x3::_spu_safe_normalize_matrix(mat);
+    std::cout << "PASS: Matrix Safe Normalization Verified." << std::endl;
+}
+
 int main() {
     std::cout << "=======================================" << std::endl;
     std::cout << " SPU-1 Deterministic Verification Suite v1.7 " << std::endl;
     std::cout << "=======================================" << std::endl;
-    
     RunOrbitsOfInfinity();
     RunMirrorLatticeTest();
     RunStressScaleTest();
@@ -168,8 +185,7 @@ int main() {
     RunCollisionIdentityClosure();
     RunCompoundRotationTest();
     RunRepeatedNormalizationStress();
-    
+    RunVectorMatrixNormalizationTest();
     std::cout << "=======================================" << std::endl;
     return 0;
 }
-

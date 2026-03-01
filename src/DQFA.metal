@@ -19,10 +19,39 @@ struct SurdFixed64 {
         long res_b = ((long)a * other.b + (long)b * other.a) >> Shift;
         return { (int)res_a, (int)res_b };
     }
+
+    static SurdFixed64 _spu_safe_normalize(SurdFixed64 s) {
+        uint mask = 0x40000000;
+        if (abs(s.a) < 256 && abs(s.b) < 256) return s;
+        if ((uint(s.a) & mask) || (uint(s.b) & mask)) {
+            return { s.a >> 1, s.b >> 1 };
+        }
+        return s;
+    }
 };
 
 struct SurdVector3 {
     SurdFixed64 x, y, z;
+
+    static SurdVector3 _spu_safe_normalize_vector(SurdVector3 v) {
+        return { 
+            SurdFixed64::_spu_safe_normalize(v.x),
+            SurdFixed64::_spu_safe_normalize(v.y),
+            SurdFixed64::_spu_safe_normalize(v.z)
+        };
+    }
+};
+
+struct SurdMatrix3x3 {
+    SurdVector3 row[3];
+
+    static SurdMatrix3x3 _spu_safe_normalize_matrix(SurdMatrix3x3 m) {
+        return { {
+            SurdVector3::_spu_safe_normalize_vector(m.row[0]),
+            SurdVector3::_spu_safe_normalize_vector(m.row[1]),
+            SurdVector3::_spu_safe_normalize_vector(m.row[2])
+        } };
+    }
 };
 
 struct Quadray4 {
