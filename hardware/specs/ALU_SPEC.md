@@ -61,12 +61,12 @@ The functional logic for this specification is implemented in the following modu
 *   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
 
 #### 5.1 Opcode Specification (v2.0)
-| Opcode | Instruction | Hardware Path | Description |
-| :--- | :--- | :--- | :--- |
-| `01` | **`SPERM`** | `spu_permute` | 60° rotation (Bus Shuffle). |
-| `10` | **`SMUL`** | `spu_smul` | Surd multiplication (Integer ALU). |
-| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | Dynamic Equilibrium Restoration. |
-| `00` | `NOP` | Bypass | No operation. |
+| Opcode | Instruction | Hardware Path | Latency | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `01` | **`SPERM`** | `spu_permute` | 1 Cycle | 60° rotation (Bus Shuffle). |
+| `10` | **`SMUL`** | `spu_smul` | 1 Cycle | Surd multiplication (Integer ALU). |
+| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | 3 Cycles | Pipelined Discrete Laplacian Relaxation. |
+| `00` | `NOP` | Bypass | 0 Cycles | No operation. |
 
 ### 6. Kinetic Acceleration & Equilibrium
 The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. 
@@ -77,3 +77,8 @@ To eliminate bit-width overflow and maintain stability during lattice relaxation
 *   **Scaling ($\alpha = 1/16$):** The output correction is scaled by a power-of-two approximation ($1/16$) of the ideal Laplacian average ($1/12$). This conservative scaling improves the spectral stability of the relaxation step.
 *   **Deterministic Bias:** Arithmetic right-shifting (`>>>`) introduces a deterministic truncation bias toward negative infinity ($-\infty$). While negligible in balanced lattices, this bias is documented as a machine-invariant property of the SPU-1.
 *   **Operator Form:** The balancer implements the discrete Laplacian $\sum_{j \in N(i)} (u_j - u_i)$, where the input bus carries relational displacements.
+
+#### 6.2 Atomic Pipelined Sync
+To ensure deterministic results in massively parallel lattices, the SPU-1 implements the following synchronization primitives:
+*   **Pipelined Reduction:** The 12-neighbor summation is pipelined over 3 clock cycles to ensure timing closure at high frequencies.
+*   **Double-Buffered Commit:** State updates utilize a Ping-Pong register scheme. Nodes read from a stable snapshot (Bank A) and commit to a separate dormant bank (Bank B), eliminating race conditions between adjacent nodes.

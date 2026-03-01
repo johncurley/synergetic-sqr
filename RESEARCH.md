@@ -76,19 +76,19 @@ We define the **Structural Invariant** as the preservation of the quadratic fiel
 #### 5.2 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
-#### 5.4 Contractive Stability and Damping
-The SPU-1 Lattice Relaxer is formally characterized as an **Energy-Dissipating Contractive Operator.**
+#### 5.5 Atomicity and Double-Buffering
+To ensure machine-invariant results in a massively parallel hardware environment, the SPU-1 architecture utilizes **Synchronous Double-Buffering (Ping-Pong Registers)**.
 
-**1. Damping Analysis:**
-For a uniform field where all nodes possess a constant value $C$, the update rule $u'_i = u_i - \alpha(12C)$ with $\alpha = 1/16$ yields:
-$$u'_i = C - \frac{12}{16}C = 0.25C$$
-This represents a **75% attenuation** of uniform modes per clock cycle.
+**1. Topological Isolation:**
+The Honeycomb Memory Map ensures that nodes only interact with their immediate 12-neighbor shell. This eliminates the need for global locks or complex bus arbitration.
 
-**2. Global Boundedness:**
-Because the operator is contractive ($\|L\| < 1$ for uniform modes), the system is inherently stable. It strongly damps high-frequency oscillations and prevents the "energy explosions" common in floating-point Euler or Verlet integrators.
+**2. Atomic Update Cycle:**
+Every hardware update is split into two phases:
+- **Phase 1 (Read):** All nodes read neighbor states from the current active bank (Bank A).
+- **Phase 2 (Commit):** All nodes write their updated state to the dormant bank (Bank B).
+- **Swap:** The banks are toggled at the end of the global clock cycle.
 
-**3. Constraint Enforcement:**
-In the context of tensegrity, this dissipative force acts as a **Deterministic Restoring Pull.** When external forces displace a node from its rational rest-length, the relaxer pulls the system back toward the bit-stable equilibrium point. The "stillness" of the lattice is a mathematical consequence of the contractive scaling factor.
+**Result:** This mechanism ensures that the state of the lattice is perfectly consistent at every tick. No node can see a "partial update" from a neighbor, effectively eliminating race conditions and ensuring that the discrete Laplacian is applied to a frozen snapshot of the universe.
 
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*

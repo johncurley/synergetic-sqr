@@ -1,17 +1,26 @@
-// SPU-1 Combinational Tensegrity Balancer (v2.0.24)
-// Input: 12 Neighbor Relational Bond Vectors (3072 bits)
-// Output: Combinational Scaled Residual (alpha = 1/16)
-// This module is a purely combinational reduction network.
+// SPU-1 Pipelined Tensegrity Balancer (v2.0.26)
+// Implements a 3-stage reduction tree for 12-neighbor Laplacian relaxation.
+// Pipelining ensures timing closure at high clock frequencies.
 
 module spu_tensegrity_balancer (
-    input [3071:0] neighbors, 
-    output [255:0] scaled_residual
+    input  clk,
+    input  reset,
+    input  [3071:0] neighbors, 
+    output reg [255:0] scaled_residual
 );
+
+    // Stage 1 Registers (6 intermediates per lane)
+    reg signed [63:0] s1 [0:7][0:5];
+    // Stage 2 Registers (3 intermediates per lane)
+    reg signed [63:0] s2 [0:7][0:2];
+    // Stage 3 Registers (Final sum per lane)
+    reg signed [63:0] s3 [0:7];
 
     genvar i;
     generate
         for (i = 0; i < 8; i = i + 1) begin : lane_logic
             wire signed [31:0] n[0:11];
+            // Extract neighbors for this lane
             assign n[0]  = neighbors[0*256 + i*32 +: 32];
             assign n[1]  = neighbors[1*256 + i*32 +: 32];
             assign n[2]  = neighbors[2*256 + i*32 +: 32];
@@ -25,15 +34,33 @@ module spu_tensegrity_balancer (
             assign n[10] = neighbors[10*256 + i*32 +: 32];
             assign n[11] = neighbors[11*256 + i*32 +: 32];
 
-            // Combinational 64-bit Summation
-            wire signed [63:0] full_sum = 
-                $signed(n[0]) + $signed(n[1]) + $signed(n[2]) + $signed(n[3]) +
-                $signed(n[4]) + $signed(n[5]) + $signed(n[6]) + $signed(n[7]) +
-                $signed(n[8]) + $signed(n[9]) + $signed(n[10]) + $signed(n[11]);
+            always @(posedge clk or posedge reset) begin
+                if (reset) begin
+                    s1[i][0] <= 64'd0; s1[i][1] <= 64'd0; s1[i][2] <= 64'd0;
+                    s1[i][3] <= 64'd0; s1[i][4] <= 64'd0; s1[i][5] <= 64'd0;
+                    s2[i][0] <= 64'd0; s2[i][1] <= 64'd0; s2[i][2] <= 64'd0;
+                    s3[i]    <= 64'd0;
+                end else begin
+                    // Stage 1: Initial reduction (6 sums)
+                    s1[i][0] <= $signed(n[0])  + $signed(n[1]);
+                    s1[i][1] <= $signed(n[2])  + $signed(n[3]);
+                    s1[i][2] <= $signed(n[4])  + $signed(n[5]);
+                    s1[i][3] <= $signed(n[6])  + $signed(n[7]);
+                    s1[i][4] <= $signed(n[8])  + $signed(n[9]);
+                    s1[i][5] <= $signed(n[10]) + $signed(n[11]);
 
-            // Combinational Isotropic Scaling (alpha = 1/16)
-            wire signed [63:0] scaled = full_sum >>> 4;
-            assign scaled_residual[i*32 +: 32] = scaled[31:0];
+                    // Stage 2: Intermediate reduction (3 sums)
+                    s2[i][0] <= s1[i][0] + s1[i][1];
+                    s2[i][1] <= s1[i][2] + s1[i][3];
+                    s2[i][2] <= s1[i][4] + s1[i][5];
+
+                    // Stage 3: Final reduction
+                    s3[i] <= s2[i][0] + s2[i][1] + s2[i][2];
+                end
+            end
+
+            // Output scaling (alpha = 1/16)
+            assign scaled_residual[i*32 +: 32] = s3[i] >>> 4;
         end
     endgenerate
 
