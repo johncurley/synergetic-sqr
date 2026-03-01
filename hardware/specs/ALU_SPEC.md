@@ -60,13 +60,13 @@ The functional logic for this specification is implemented in the following modu
 *   **`hardware/verilog/spu_permute.v`**: The Zero-Gate Permutator.
 *   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
 
-#### 5.1 Opcode Specification
+#### 5.1 Opcode Specification (v2.0)
 | Opcode | Instruction | Hardware Path | Description |
 | :--- | :--- | :--- | :--- |
 | `01` | **`SPERM`** | `spu_permute` | 60° rotation (Bus Shuffle). |
 | `10` | **`SMUL`** | `spu_smul` | Surd multiplication (Integer ALU). |
-| `11` | **`OP_VERLET`** | `spu_tensegrity` | Kinetic step: $x_{next} = 2x - x_{prev} + a$. |
+| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | Dynamic Equilibrium Restoration. |
 | `00` | `NOP` | Bypass | No operation. |
 
-### 6. Kinetic Acceleration
-The SPU-1 includes a dedicated **Tensegrity Accelerator** for deterministic physics. It operates on three parallel 256-bit buses representing the current state, previous state, and instantaneous acceleration.
+### 6. Kinetic Acceleration & Equilibrium
+The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. It takes 12 parallel 256-bit registers (representing the Isotropic neighborhood) and calculates the **Restoration Vector** in a single clock cycle. This allows for distributed, real-time tensegrity simulation without CPU overhead.
