@@ -52,6 +52,36 @@ This implementation provides the functional blueprint for a deterministic spatia
 *   **Zero-Gate Rotation:** 60° rotations are implemented as bitfield permutations of Quadray registers.
 *   **Algebraic Integrity:** Multiplication maintains closure within the quadratic field extension.
 
+### Full-Stack Deterministic Parity
+The SPU-1 architecture has achieved **bit-exact functional parity** across four distinct implementation layers:
+*   **Software Golden Model:** C++ (SF32.16)
+*   **High-Performance Kernels:** Metal (macOS) and GLSL (Linux/Windows)
+*   **Hardware Realization:** Synthesizable Verilog RTL
+*   **Cloud Verification:** Universal OS parity via GitHub Actions
+
+### Hardware Realization (SQR-ASIC)
+The repository includes synthesizable RTL for the SPU-1 core primitives in the `hardware/verilog/` directory:
+*   **`spu_smul.v`**: The Surd Multiplier Unit (Integer ALU).
+*   **`spu_permute.v`**: The Zero-Gate Permutator (Wire-Swap Rotation).
+*   **`spu_core.v`**: The top-level 256-bit register pipeline.
+
+### Running the Verification Suites
+To verify the deterministic integrity of the SPU-1 on your local machine:
+
+#### 1. Software Verification (C++)
+```bash
+cmake -B build -S . -DBUILD_RENDERER=OFF
+cmake --build build --target spu-verify spu-extreme-chaos
+./build/spu-verify
+```
+
+#### 2. Hardware Simulation (Verilog)
+*Requires Icarus Verilog (`iverilog`)*
+```bash
+iverilog -o spu_sim hardware/verilog/spu_smul.v hardware/verilog/spu_smul_tb.v
+vvp spu_sim
+```
+
 ## Documentation
 *   **[RESEARCH.md](RESEARCH.md):** Data-driven analysis of rotation stability and forensic logs.
 *   **[SPECIFICATION.md](hardware/specs/SPECIFICATION.md):** Formal SPU-1 ISA and register layout.
