@@ -13,8 +13,19 @@
 #include <iostream>
 #include <stdint.h>
 #include <cstring>
+#include <type_traits>
 
 namespace Synergetics {
+
+// --- TYPE-LEVEL PURITY GUARD ---
+// This template ensures that no floating-point types can be instantiated 
+// within the Sovereign Core.
+template <typename T>
+struct PurityCheck {
+    static_assert(!std::is_floating_point<T>::value, 
+        "PURITY VIOLATION: Floating-point types are prohibited in the SPU-1 Core.");
+    typedef T type;
+};
 
 // --- ARCHITECTURAL CONTRACT ---
 static_assert(sizeof(int32_t) == 4, "SPU-1 requires 32-bit int32_t");

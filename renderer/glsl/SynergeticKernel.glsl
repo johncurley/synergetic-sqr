@@ -9,7 +9,6 @@ struct SurdFixed64 {
     int b; // coefficient of sqrt(3)
 };
 
-// Shift is 16. One = 65536.
 const int SPU_SHIFT = 16;
 const int SPU_ONE = 1 << 16;
 
@@ -19,16 +18,15 @@ SurdFixed64 spu_neg(SurdFixed64 s) { return SurdFixed64(-s.a, -s.b); }
 
 SurdFixed64 spu_mul(SurdFixed64 u, SurdFixed64 v) {
     int64_t prod_bb = int64_t(u.b) * v.b;
-    int64_t surd_term = (prod_bb << 1) + prod_bb; // *3 logic
+    int64_t surd_term = (prod_bb << 1) + prod_bb; 
     int64_t res_a = (int64_t(u.a) * v.a + surd_term) >> SPU_SHIFT;
     int64_t res_b = (int64_t(u.a) * v.b + int64_t(u.b) * v.a) >> SPU_SHIFT;
     return SurdFixed64(int(res_a), int(res_b));
 }
 
-// _spu_safe_normalize: Overflow Safety Valve (Self-Healing) with floor protection
 SurdFixed64 spu_safe_normalize(SurdFixed64 s) {
     uint mask = 0x40000000;
-    if (abs(s.a) < 256 && abs(s.b) < 256) return s; // Floor protection
+    if (abs(s.a) < 256 && abs(s.b) < 256) return s; 
     if ((uint(s.a) & mask) != 0 || (uint(s.b) & mask) != 0) {
         return SurdFixed64(s.a >> 1, s.b >> 1);
     }
@@ -47,17 +45,11 @@ struct SurdVector3 {
     SurdFixed64 x, y, z;
 };
 
-void spu_safe_normalize_vector(inout SurdVector3 v) {
-    v.x = spu_safe_normalize(v.x);
-    v.y = spu_safe_normalize(v.y);
-    v.z = spu_safe_normalize(v.z);
-}
-
 SurdVector3 spu_to_cartesian(Quadray4 q) {
     return SurdVector3(
-        spu_add(spu_sub(spu_sub(q.q[0], q.q[1]), q.q[2]), q.q[3]), // X = Q1-Q2-Q3+Q4
-        spu_add(spu_sub(spu_add(spu_neg(q.q[0]), q.q[1]), q.q[2]), q.q[3]), // Y = -Q1+Q2-Q3+Q4
-        spu_add(spu_add(spu_sub(spu_neg(q.q[0]), q.q[1]), q.q[2]), q.q[3])  // Z = -Q1-Q2+Q3+Q4
+        spu_add(spu_sub(spu_sub(q.q[0], q.q[1]), q.q[2]), q.q[3]), 
+        spu_add(spu_sub(spu_add(spu_neg(q.q[0]), q.q[1]), q.q[2]), q.q[3]),
+        spu_add(spu_add(spu_sub(spu_neg(q.q[0]), q.q[1]), q.q[2]), q.q[3]) 
     );
 }
 
@@ -68,25 +60,34 @@ layout(std430, binding = 1) buffer SPUControl {
     int rot_count;
 };
 
-// --- CARTESIAN CORNER (Optical Interface) ---
+// --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
 
 layout(rgba8, binding = 0) writeonly uniform image2D outTexture;
 
-float spu_to_float(SurdFixed64 s) {
-    return (float(s.a) + float(s.b) * 1.73205081) / float(SPU_ONE);
-}
+struct DisplayCorner {
+    static float toFloat(SurdFixed64 s) {
+        return (float(s.a) + float(s.b) * 1.73205081) / 65536.0;
+    }
 
-vec2 display_project(SurdVector3 sv, float scale) {
-    vec3 pf = vec3(spu_to_float(sv.x), spu_to_float(sv.y), spu_to_float(sv.z)) * scale;
-    return pf.xy / (20.0 - pf.z) * 6.0;
-}
+    static float getScale(uint tick) {
+        uint period = 200; 
+        uint t_cycle = tick % period;
+        float mix_factor = (t_cycle < period / 2) ? (float(t_cycle) / (period / 2.0)) : (2.0 - float(t_cycle) / (period / 2.0));
+        return 2.0 + 2.0 * mix_factor; 
+    }
 
-float display_draw_edge(vec2 uv, vec2 a, vec2 b) {
-    vec2 pa = uv - a, ba = b - a;
-    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-    float d = length(pa - ba * h);
-    return smoothstep(0.01, 0.005, d);
-}
+    static vec2 project(SurdVector3 sv, float scale) {
+        vec3 pf = vec3(toFloat(sv.x), toFloat(sv.y), toFloat(sv.z)) * scale;
+        return pf.xy / (20.0 - pf.z) * 6.0;
+    }
+
+    static float drawEdge(vec2 uv, vec2 a, vec2 b) {
+        vec2 pa = uv - a, ba = b - a;
+        float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+        float d = length(pa - ba * h);
+        return smoothstep(0.01, 0.005, d);
+    }
+};
 
 void main() {
     ivec2 gid = ivec2(gl_GlobalInvocationID.xy);
@@ -118,18 +119,15 @@ void main() {
         Quadray4(SurdFixed64[](zero, zero, neg_one, neg_one))
     );
 
-    // 2. RATIONAL BREATHING (ALGEBRAIC CORE)
-    uint period = 200;
-    uint t_cycle = tick % period;
-    float mix_factor = (t_cycle < period / 2) ? (float(t_cycle) / (period / 2.0)) : (2.0 - float(t_cycle) / (period / 2.0));
-    float scale = 2.0 + 2.0 * mix_factor;
+    // 2. OPTICAL SCALE (CARTESIAN CORNER)
+    float scale = DisplayCorner::getScale(tick);
 
     // 3. OPTICAL PROJECTION (CARTESIAN CORNER)
     vec2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
         for(int r=0; r<rot_count; r++) { qv = spu_rotate60(qv); }
-        proj[i] = display_project(spu_to_cartesian(qv), scale);
+        proj[i] = DisplayCorner::project(spu_to_cartesian(qv), scale);
     }
 
     // 4. ZERO-JITTER WIREFRAME (CARTESIAN CORNER)
@@ -137,7 +135,7 @@ void main() {
     int edges[48] = int[]( 0,1, 0,2, 0,3, 0,4, 1,2, 1,3, 1,5, 2,4, 2,5, 3,4, 3,5, 4,5, 
                            6,7, 6,8, 6,9, 6,10, 7,8, 7,9, 7,11, 8,10, 8,11, 9,10, 9,11, 10,11 );
     for(int i=0; i<24; i++) {
-        wire = max(wire, display_draw_edge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
     }
 
     imageStore(outTexture, gid, vec4(vec3(wire), 1.0));

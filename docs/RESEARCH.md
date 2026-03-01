@@ -38,5 +38,14 @@ The **`_spu_normalize`** routine ensures that fixed-point bounds are preserved d
 ### 4. Algebraic Automatic Differentiation
 The **Hyper-Surd** extension (dual-number lane) enables deterministic derivative propagation. Because the underlying field is bit-exact, the resulting gradients are machine-invariant, providing a stable foundation for tensegrity physics.
 
+### 5. Formal Verification Roadmap
+To move beyond empirical verification, the SPU-1 project follows a formal proof roadmap:
+
+#### 5.1 The Invariance Theorem
+We define the **Structural Invariant** as the preservation of the quadratic field norm $N(a, b) = a^2 - 3b^2$. Future work involves utilizing SMT solvers (e.g., Z3) to prove that for all possible inputs $[a, b] \in \mathbb{Z}^{32}$, the `SMUL` and `SPERM` operations maintain this invariant relative to the fixed-point scaling factor.
+
+#### 5.2 Field Extension Mismatch Guard
+The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
+
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*
