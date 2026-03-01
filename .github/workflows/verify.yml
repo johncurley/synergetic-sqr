@@ -7,18 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake g++ libsdl3-dev
       - name: Build and Verify
         run: |
           mkdir build && cd build
-          cmake ..
-          make spu-verify spu-chaos spu-collision
+          cmake .. -DBUILD_RENDERER=OFF
+          make spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
           ./spu-verify
-          ./spu-chaos
+          ./spu-extreme-chaos
           ./spu-collision
+          ./spu-sdk-verify
 
   verify-macos:
     runs-on: macos-latest
@@ -27,11 +24,12 @@ jobs:
       - name: Build and Verify
         run: |
           mkdir build && cd build
-          cmake ..
-          make spu-verify spu-chaos spu-collision
+          cmake .. -DBUILD_RENDERER=OFF
+          make spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
           ./spu-verify
-          ./spu-chaos
+          ./spu-extreme-chaos
           ./spu-collision
+          ./spu-sdk-verify
 
   verify-windows:
     runs-on: windows-latest
@@ -40,8 +38,9 @@ jobs:
       - name: Build and Verify
         run: |
           mkdir build && cd build
-          cmake ..
-          cmake --build . --target spu-verify spu-chaos spu-collision --config Release
+          cmake .. -DBUILD_RENDERER=OFF
+          cmake --build . --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify --config Release
           .\Release\spu-verify.exe
-          .\Release\spu-chaos.exe
+          .\Release\spu-extreme-chaos.exe
           .\Release\spu-collision.exe
+          .\Release\spu-sdk-verify.exe
