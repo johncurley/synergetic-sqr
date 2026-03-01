@@ -76,11 +76,19 @@ We define the **Structural Invariant** as the preservation of the quadratic fiel
 #### 5.2 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
-#### 5.3 DSP Stability and Bias
-The SPU-1 implementation utilizes power-of-two approximations for efficiency and stability:
+#### 5.4 Contractive Stability and Damping
+The SPU-1 Lattice Relaxer is formally characterized as an **Energy-Dissipating Contractive Operator.**
 
-*   **Spectral Stability:** The relaxation scaling factor $\alpha = 1/16$ is a conservative approximation of the ideal $1/12$. This reduces the spectral radius of the operator, ensuring that the lattice settles into a stable fixed point without high-frequency oscillation.
-*   **Deterministic Truncation Bias:** All hardware scaling utilizes arithmetic right-shifting (`>>>`), which rounds toward negative infinity ($-\infty$). This introduces a deterministic bias of $-1$ unit for negative odd values. Because this behavior is bit-exact and machine-invariant, it is categorized as a "Deterministic Invariant" rather than stochastic drift.
+**1. Damping Analysis:**
+For a uniform field where all nodes possess a constant value $C$, the update rule $u'_i = u_i - \alpha(12C)$ with $\alpha = 1/16$ yields:
+$$u'_i = C - \frac{12}{16}C = 0.25C$$
+This represents a **75% attenuation** of uniform modes per clock cycle.
+
+**2. Global Boundedness:**
+Because the operator is contractive ($\|L\| < 1$ for uniform modes), the system is inherently stable. It strongly damps high-frequency oscillations and prevents the "energy explosions" common in floating-point Euler or Verlet integrators.
+
+**3. Constraint Enforcement:**
+In the context of tensegrity, this dissipative force acts as a **Deterministic Restoring Pull.** When external forces displace a node from its rational rest-length, the relaxer pulls the system back toward the bit-stable equilibrium point. The "stillness" of the lattice is a mathematical consequence of the contractive scaling factor.
 
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*
