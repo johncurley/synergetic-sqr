@@ -105,8 +105,37 @@ struct SPU_Vector256 {
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
+    
+    // Parity Guard: Global invariant sum(a,b,c,d) == 0
+    // In Quadray space, this ensures the vector remains within the IVM manifold.
+    bool checkParity() const {
+        int32_t sum_a = 0, sum_b = 0;
+        for (int i = 0; i < 4; ++i) {
+            sum_a += data.v[i*2];
+            sum_b += data.v[i*2+1];
+        }
+        return (sum_a == 0 && sum_b == 0);
+    }
+
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
-    static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
+    
+    // OP_PERMUTE (Q1-Axis): Wire-swap (a,b,c,d) -> (a,c,d,b)
+    static inline Quadray4 _spu_permute_q1(Quadray4 q) {
+        return { {q.data.v[0], q.data.v[1], q.data.v[4], q.data.v[5], q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3]} };
+    }
+
+    // OP_PULSE: Rational Scaling in Q(sqrt3)
+    // factor: represented as SurdFixed64
+    static inline Quadray4 _spu_pulse(Quadray4 q, SurdFixed64 factor) {
+        Quadray4 res;
+        for(int i=0; i<4; i++) {
+            SurdFixed64 lane = { q.data.v[i*2], q.data.v[i*2+1] };
+            SurdFixed64 scaled = lane.multiply(factor);
+            res.data.v[i*2] = scaled.a;
+            res.data.v[i*2+1] = scaled.b;
+        }
+        return res;
+    }
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {

@@ -61,5 +61,12 @@ This implementation provides the functional blueprint for a deterministic spatia
 ## License
 Dedicated to the public domain under **CC0 1.0 Universal**. Free for any use without restriction.
 
+## Project Roadmap
+*   **v1.7 (Stable Basis):** Bit-exact spatial closure and scaling normalization (SF32.16). Verified.
+*   **v1.8 (Kinetic Primitives):** Implementation of TensegrityNode and Equilibrium logic. Verified.
+*   **v1.9 (Formalization):** Technical Whitepaper and ISA Specification published. Verified.
+*   **v1.10 (Hardware/SDK):** Synthesizable Verilog RTL and Developer SDK implemented. Verified.
+*   **v2.0 (Public Release):** Hardware-software co-simulation and outreach to the research community.
+
 ---
 *A deterministic contribution to the global commons of computer graphics.*
