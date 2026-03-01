@@ -80,5 +80,11 @@ To eliminate bit-width overflow and maintain stability during lattice relaxation
 
 #### 6.2 Atomic Pipelined Sync
 To ensure deterministic results in massively parallel lattices, the SPU-1 implements the following synchronization primitives:
-*   **Pipelined Reduction:** The 12-neighbor summation is pipelined over 3 clock cycles to ensure timing closure at high frequencies.
+*   **Pipelined Reduction:** The 12-neighbor summation is pipelined over 4 clocked stages to ensure timing closure at high frequencies (target: 500MHz+). Each stage breaks the logic depth to a maximum of 3 serialized additions.
 *   **Double-Buffered Commit:** State updates utilize a Ping-Pong register scheme. Nodes read from a stable snapshot (Bank A) and commit to a separate dormant bank (Bank B), eliminating race conditions between adjacent nodes.
+
+### 7. Timing Closure & Static Timing Analysis (STA)
+All SPU-1 hardware implementations must satisfy the following timing mandates:
+*   **Critical Path Mitigation:** Combinational depth between registers must not exceed the delay of a 32-bit carry-lookahead adder plus routing overhead.
+*   **Register-to-Register Path:** The `EQUILIBRATE` instruction's 5-cycle total latency (4 balancer stages + 1 core commit) is non-negotiable to prevent metastability.
+*   **Verification:** Final synthesis must pass Static Timing Analysis (STA) for the target clock frequency without setup or hold-time violations.
