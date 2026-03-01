@@ -7,7 +7,7 @@ struct SurdFixed64 {
     int a; // coefficient of 1
     int b; // coefficient of sqrt(3)
     static constexpr constant int Shift = 16;
-    static constexpr constant int One = 1 << 16;
+    static constexpr constant int One = 1 << Shift;
 
     SurdFixed64 add(SurdFixed64 other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(SurdFixed64 other) const { return { a - other.a, b - other.b }; }
@@ -69,7 +69,8 @@ struct Quadray4 {
 struct SPUControl {
     uint tick;
     int rot_count;
-    int padding[2];
+    uint prime_phase; // REG_P: 0=P1, 1=P3, 2=P5, 3=P7
+    uint padding;
 };
 
 // --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
@@ -138,7 +139,17 @@ kernel void renderDQFA_v1_5(
     float2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
+        
+        // Apply Legacy Rotations
         for(int r=0; r<control.rot_count; r++) { qv = Quadray4::rotate60(qv); }
+        
+        // Apply Thomson Prime-Axis Phase (Refined Mapping)
+        switch(control.prime_phase) {
+            case 1: qv = { qv.q[0], qv.q[3], qv.q[1], qv.q[2] }; break; // P3 (60°)
+            case 2: qv = { qv.q[0], qv.q[2], qv.q[3], qv.q[1] }; break; // P5 (120°)
+            case 3: qv = { qv.q[3], qv.q[1], qv.q[2], qv.q[0] }; break; // P7 (Flip)
+        }
+
         proj[i] = DisplayCorner::project(qv.toCartesian(), scale);
     }
 

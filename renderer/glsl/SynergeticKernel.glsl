@@ -5,8 +5,8 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 // --- SPU-1 ALGEBRAIC CORE (Integer Only) ---
 
 struct SurdFixed64 {
-    int a; // coefficient of 1
-    int b; // coefficient of sqrt(3)
+    int a; 
+    int b; 
 };
 
 const int SPU_SHIFT = 16;
@@ -20,17 +20,8 @@ SurdFixed64 spu_mul(SurdFixed64 u, SurdFixed64 v) {
     int64_t prod_bb = int64_t(u.b) * v.b;
     int64_t surd_term = (prod_bb << 1) + prod_bb; 
     int64_t res_a = (int64_t(u.a) * v.a + surd_term) >> SPU_SHIFT;
-    int64_t res_b = (int64_t(u.a) * v.b + int64_t(u.b) * v.a) >> SPU_SHIFT;
+    int64_t res_b = (int64_t(u.a) * v.b + (int64_t)u.b * v.a) >> SPU_SHIFT;
     return SurdFixed64(int(res_a), int(res_b));
-}
-
-SurdFixed64 spu_safe_normalize(SurdFixed64 s) {
-    uint mask = 0x40000000;
-    if (abs(s.a) < 256 && abs(s.b) < 256) return s; 
-    if ((uint(s.a) & mask) != 0 || (uint(s.b) & mask) != 0) {
-        return SurdFixed64(s.a >> 1, s.b >> 1);
-    }
-    return s;
 }
 
 struct Quadray4 {
@@ -39,6 +30,13 @@ struct Quadray4 {
 
 Quadray4 spu_rotate60(Quadray4 q) {
     return Quadray4(SurdFixed64[](q.q[1], q.q[2], q.q[0], q.q[3]));
+}
+
+Quadray4 spu_prime_permute(Quadray4 q, uint phase) {
+    if (phase == 1) return Quadray4(SurdFixed64[](q.q[0], q.q[3], q.q[1], q.q[2])); // P3
+    if (phase == 2) return Quadray4(SurdFixed64[](q.q[0], q.q[2], q.q[3], q.q[1])); // P5
+    if (phase == 3) return Quadray4(SurdFixed64[](q.q[3], q.q[1], q.q[2], q.q[0])); // P7
+    return q;
 }
 
 struct SurdVector3 {
@@ -58,9 +56,11 @@ SurdVector3 spu_to_cartesian(Quadray4 q) {
 layout(std430, binding = 1) buffer SPUControl {
     uint tick;
     int rot_count;
+    uint prime_phase; // REG_P
+    uint padding;
 };
 
-// --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
+// --- CARTESIAN CORNER (Optical Interface) ---
 
 layout(rgba8, binding = 0) writeonly uniform image2D outTexture;
 
@@ -127,6 +127,7 @@ void main() {
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
         for(int r=0; r<rot_count; r++) { qv = spu_rotate60(qv); }
+        qv = spu_prime_permute(qv, prime_phase);
         proj[i] = DisplayCorner::project(spu_to_cartesian(qv), scale);
     }
 

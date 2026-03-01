@@ -41,7 +41,8 @@ private:
     struct SPUControl {
         uint32_t tick;
         int32_t rot_count;
-        int32_t padding[2];
+        uint32_t prime_phase; // REG_P: 0=P1, 1=P3, 2=P5, 3=P7
+        uint32_t padding;
     };
 
     MTL::Device* _device;

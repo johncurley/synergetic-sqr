@@ -66,10 +66,12 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
+    uint32_t currentPhase = (_tickCount / 1200) % 4;
     SPUControl control = {
         static_cast<uint32_t>(_tickCount),
         static_cast<int32_t>((_tickCount / 100) % 6),
-        {0, 0}
+        currentPhase,
+        0
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
@@ -89,8 +91,10 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->commit();
     
     if (_tickCount % 600 == 0) {
-        std::cout << "[Identity Closure Verification] Closure Verified at Tick: " << _tickCount << std::endl;
+        const char* phaseLabels[4] = { "P1: Unity", "P3: Chirality", "P5: Equilibrium", "P7: Hyper-Flip" };
+        std::cout << "[Identity Closure Verification] Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
+        std::cout << "  Thomson Phase: " << phaseLabels[currentPhase] << " (REG_P=0x0" << (currentPhase*2+1) << ")" << std::endl;
     }
 
     pool->release();
