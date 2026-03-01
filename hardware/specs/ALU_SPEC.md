@@ -61,8 +61,12 @@ The functional logic for this specification is implemented in the following modu
 *   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
 
 #### 5.1 Opcode Specification
-| Opcode | Instruction | Hardware Path |
-| :--- | :--- | :--- |
-| `01` | **`SPERM`** | `spu_permute` (Bus Shuffle) |
-| `10` | **`SMUL`** | `spu_smul` (Integer ALU) |
-| `00` | `NOP` | Bypass |
+| Opcode | Instruction | Hardware Path | Description |
+| :--- | :--- | :--- | :--- |
+| `01` | **`SPERM`** | `spu_permute` | 60° rotation (Bus Shuffle). |
+| `10` | **`SMUL`** | `spu_smul` | Surd multiplication (Integer ALU). |
+| `11` | **`OP_VERLET`** | `spu_tensegrity` | Kinetic step: $x_{next} = 2x - x_{prev} + a$. |
+| `00` | `NOP` | Bypass | No operation. |
+
+### 6. Kinetic Acceleration
+The SPU-1 includes a dedicated **Tensegrity Accelerator** for deterministic physics. It operates on three parallel 256-bit buses representing the current state, previous state, and instantaneous acceleration.
