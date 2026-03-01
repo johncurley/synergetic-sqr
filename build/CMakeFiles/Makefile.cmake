@@ -137,7 +137,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/spu-verify.dir/DependInfo.cmake"
   "CMakeFiles/spu-collision.dir/DependInfo.cmake"
   "CMakeFiles/spu-bulletproof.dir/DependInfo.cmake"
-  "CMakeFiles/spu-chaos.dir/DependInfo.cmake"
   "CMakeFiles/spu-extreme-chaos.dir/DependInfo.cmake"
   "CMakeFiles/purity_audit.dir/DependInfo.cmake"
   "_deps/sdl3-build/CMakeFiles/SDL3-shared.dir/DependInfo.cmake"

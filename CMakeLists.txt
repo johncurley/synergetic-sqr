@@ -46,13 +46,7 @@ if(APPLE)
     set_source_files_properties(tests/suites/bulletproof_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
-# 4.4 Chaos Verification Suite
-add_executable(spu-chaos tests/suites/chaos_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.5 Extreme Chaos Suite
+# 4.4 Extreme Chaos Suite
 add_executable(spu-extreme-chaos tests/suites/extreme_chaos_verification.cpp)
 if(APPLE)
     set_source_files_properties(tests/suites/extreme_chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")

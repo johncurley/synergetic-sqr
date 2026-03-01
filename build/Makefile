@@ -170,19 +170,6 @@ spu-bulletproof/fast:
 .PHONY : spu-bulletproof/fast
 
 #=============================================================================
-# Target rules for targets named spu-chaos
-
-# Build rule for target.
-spu-chaos: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-chaos
-.PHONY : spu-chaos
-
-# fast build rule for target.
-spu-chaos/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/build
-.PHONY : spu-chaos/fast
-
-#=============================================================================
 # Target rules for targets named spu-extreme-chaos
 
 # Build rule for target.
@@ -319,30 +306,6 @@ tests/suites/bulletproof_verification.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/suites/bulletproof_verification.cpp.s
 .PHONY : tests/suites/bulletproof_verification.cpp.s
 
-tests/suites/chaos_verification.o: tests/suites/chaos_verification.cpp.o
-.PHONY : tests/suites/chaos_verification.o
-
-# target to build an object file
-tests/suites/chaos_verification.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.o
-.PHONY : tests/suites/chaos_verification.cpp.o
-
-tests/suites/chaos_verification.i: tests/suites/chaos_verification.cpp.i
-.PHONY : tests/suites/chaos_verification.i
-
-# target to preprocess a source file
-tests/suites/chaos_verification.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.i
-.PHONY : tests/suites/chaos_verification.cpp.i
-
-tests/suites/chaos_verification.s: tests/suites/chaos_verification.cpp.s
-.PHONY : tests/suites/chaos_verification.s
-
-# target to generate assembly for a file
-tests/suites/chaos_verification.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/suites/chaos_verification.cpp.s
-.PHONY : tests/suites/chaos_verification.cpp.s
-
 tests/suites/collision_verification.o: tests/suites/collision_verification.cpp.o
 .PHONY : tests/suites/collision_verification.o
 
@@ -428,7 +391,6 @@ help:
 	@echo "... SDL3_test"
 	@echo "... SDL_uclibc"
 	@echo "... spu-bulletproof"
-	@echo "... spu-chaos"
 	@echo "... spu-collision"
 	@echo "... spu-extreme-chaos"
 	@echo "... spu-verify"
@@ -442,9 +404,6 @@ help:
 	@echo "... tests/suites/bulletproof_verification.o"
 	@echo "... tests/suites/bulletproof_verification.i"
 	@echo "... tests/suites/bulletproof_verification.s"
-	@echo "... tests/suites/chaos_verification.o"
-	@echo "... tests/suites/chaos_verification.i"
-	@echo "... tests/suites/chaos_verification.s"
 	@echo "... tests/suites/collision_verification.o"
 	@echo "... tests/suites/collision_verification.i"
 	@echo "... tests/suites/collision_verification.s"
