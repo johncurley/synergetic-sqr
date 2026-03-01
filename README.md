@@ -63,7 +63,8 @@ The SPU-1 architecture has achieved **bit-exact functional parity** across four 
 The repository includes synthesizable RTL for the SPU-1 core primitives in the `hardware/verilog/` directory:
 *   **`spu_smul.v`**: The Surd Multiplier Unit (Integer ALU).
 *   **`spu_permute.v`**: The Zero-Gate Permutator (Wire-Swap Rotation).
-*   **`spu_core.v`**: The top-level 256-bit register pipeline.
+*   **`spu_tensegrity_balancer.v`**: The Isotropic Tension Solver (Equilibrium).
+*   **`spu_core.v`**: The integrated SPU-1 processing unit.
 
 ### Running the Verification Suites
 To verify the deterministic integrity of the SPU-1 on your local machine:
@@ -113,6 +114,7 @@ Our system uses **discrete integer buckets**. A rotation is not a calculation th
 | **`SMUL`** | Pipelined Multiplier | Surd multiplication with 64-bit intermediate protection. |
 | **`SPERM`** | Zero-Gate Shuffle | 60° rotation implemented as a wiring permutation. |
 | **`JINV`** | XOR Sign Toggle | Projective polarity control (Janus Bit). |
+| **`EQUILIBRATE`**| Isotropic Balancer | Resolves 12-neighbor tension in 1 clock cycle. |
 | **`SNORM`** | Bit-Mask Scaling | Normalization-based overflow control. |
 
 ### Edge-Case Forensic Audit
