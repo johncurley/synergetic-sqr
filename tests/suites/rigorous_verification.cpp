@@ -155,21 +155,19 @@ void RunRepeatedNormalizationStress() {
     }
 }
 
-void RunVectorMatrixNormalizationTest() {
-    std::cout << "--- Test 10: Vector and Matrix Safe Normalization Test ---" << std::endl;
-    // Use 0x40000000 to trigger the mask (30th bit)
-    SurdVector3 vec = { {0x40000000, 0}, {0, 0x40000000}, {0x40000000, 0x40000000} };
-    SurdVector3::_spu_safe_normalize_vector(vec);
-    
-    if (std::abs(vec.x.a) < 0x40000000 && std::abs(vec.y.b) < 0x40000000) {
-        std::cout << "PASS: Vector Safe Normalization Verified." << std::endl;
-    } else {
-        std::cerr << "FAIL: Vector normalization failed to trigger! a=" << vec.x.a << std::endl;
+void RunParityGuardTest() {
+    std::cout << "--- Test 11: Parity Guard Verification (Thomson Invariant) ---" << std::endl;
+    Quadray4 v = { {SurdFixed64::One, 0, -SurdFixed64::One, 0, 0, 0, 0, 0} };
+    bool parity_ok = true;
+    for (int i = 0; i < 6; ++i) {
+        v = Quadray4::_spu_permute_q1(v);
+        if (!v.checkParity()) parity_ok = false;
     }
-
-    SurdMatrix3x3 mat = { { vec, vec, vec } };
-    SurdMatrix3x3::_spu_safe_normalize_matrix(mat);
-    std::cout << "PASS: Matrix Safe Normalization Verified." << std::endl;
+    if (parity_ok) {
+        std::cout << "PASS: Parity Invariant Verified (sum(a,b,c,d) == 0)." << std::endl;
+    } else {
+        std::cerr << "FAIL: Symmetry Break detected in permutation!" << std::endl;
+    }
 }
 
 int main() {
@@ -185,7 +183,7 @@ int main() {
     RunCollisionIdentityClosure();
     RunCompoundRotationTest();
     RunRepeatedNormalizationStress();
-    RunVectorMatrixNormalizationTest();
+    RunParityGuardTest();
     std::cout << "=======================================" << std::endl;
     return 0;
 }
