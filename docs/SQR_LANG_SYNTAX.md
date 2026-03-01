@@ -1,4 +1,4 @@
-# SQR-Lang: The Language of the Lattice (v1.12)
+# SQR-Lang: The Language of the Lattice (v2.0)
 ## Specification for Static Data-Flow Topology
 
 SQR-Lang rejects the sequential "Linear Heap" model of standard programming. It establishes a **Honeycomb Memory Map** where logic is enforced by the geometry of the IVM (Isotropic Vector Matrix).

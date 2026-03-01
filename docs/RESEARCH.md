@@ -1,4 +1,4 @@
-# Synergetic Research: DQFA Specification (v1.8)
+# Synergetic Research: DQFA Specification (v2.0)
 ## Deterministic Quadratic Field Arithmetic for Spatial Computation
 
 ### Abstract
