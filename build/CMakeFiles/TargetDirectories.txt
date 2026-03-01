@@ -1,6 +1,7 @@
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/synergetic-sqr.dir
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/spu-verify.dir
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/spu-collision.dir
+/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/spu-bulletproof.dir
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/purity_audit.dir
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/edit_cache.dir
 /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles/rebuild_cache.dir

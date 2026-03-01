@@ -157,6 +157,19 @@ spu-collision/fast:
 .PHONY : spu-collision/fast
 
 #=============================================================================
+# Target rules for targets named spu-bulletproof
+
+# Build rule for target.
+spu-bulletproof: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-bulletproof
+.PHONY : spu-bulletproof
+
+# fast build rule for target.
+spu-bulletproof/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/build
+.PHONY : spu-bulletproof/fast
+
+#=============================================================================
 # Target rules for targets named purity_audit
 
 # Build rule for target.
@@ -256,6 +269,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+tests/bulletproof_verification.o: tests/bulletproof_verification.cpp.o
+.PHONY : tests/bulletproof_verification.o
+
+# target to build an object file
+tests/bulletproof_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.o
+.PHONY : tests/bulletproof_verification.cpp.o
+
+tests/bulletproof_verification.i: tests/bulletproof_verification.cpp.i
+.PHONY : tests/bulletproof_verification.i
+
+# target to preprocess a source file
+tests/bulletproof_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.i
+.PHONY : tests/bulletproof_verification.cpp.i
+
+tests/bulletproof_verification.s: tests/bulletproof_verification.cpp.s
+.PHONY : tests/bulletproof_verification.s
+
+# target to generate assembly for a file
+tests/bulletproof_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.s
+.PHONY : tests/bulletproof_verification.cpp.s
+
 tests/collision_verification.o: tests/collision_verification.cpp.o
 .PHONY : tests/collision_verification.o
 
@@ -316,6 +353,7 @@ help:
 	@echo "... SDL3-shared"
 	@echo "... SDL3_test"
 	@echo "... SDL_uclibc"
+	@echo "... spu-bulletproof"
 	@echo "... spu-collision"
 	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
@@ -325,6 +363,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/bulletproof_verification.o"
+	@echo "... tests/bulletproof_verification.i"
+	@echo "... tests/bulletproof_verification.s"
 	@echo "... tests/collision_verification.o"
 	@echo "... tests/collision_verification.i"
 	@echo "... tests/collision_verification.s"

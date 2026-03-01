@@ -39,6 +39,12 @@ if(APPLE)
     set_source_files_properties(tests/collision_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
+# 4.3 Bulletproof Verification Suite
+add_executable(spu-bulletproof tests/bulletproof_verification.cpp)
+if(APPLE)
+    set_source_files_properties(tests/bulletproof_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+endif()
+
 # --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---
 # Fails the build if 'float' or 'double' are found in the Algebraic Core
 add_custom_target(purity_audit ALL
