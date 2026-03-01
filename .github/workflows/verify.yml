@@ -7,40 +7,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build and Verify
+      - name: Install Dependencies
         run: |
-          mkdir build && cd build
-          cmake .. -DBUILD_RENDERER=OFF
-          make spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
-          ./spu-verify
-          ./spu-extreme-chaos
-          ./spu-collision
-          ./spu-sdk-verify
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ build-essential
+      - name: Configure
+        run: cmake -B build -S . -DBUILD_RENDERER=OFF
+      - name: Build
+        run: cmake --build build --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
+      - name: Run Tests
+        run: |
+          ./build/spu-verify
+          ./build/spu-extreme-chaos
+          ./build/spu-collision
+          ./build/spu-sdk-verify
 
   verify-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build and Verify
+      - name: Configure
+        run: cmake -B build -S . -DBUILD_RENDERER=OFF
+      - name: Build
+        run: cmake --build build --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
+      - name: Run Tests
         run: |
-          mkdir build && cd build
-          cmake .. -DBUILD_RENDERER=OFF
-          make spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
-          ./spu-verify
-          ./spu-extreme-chaos
-          ./spu-collision
-          ./spu-sdk-verify
+          ./build/spu-verify
+          ./build/spu-extreme-chaos
+          ./build/spu-collision
+          ./build/spu-sdk-verify
 
   verify-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build and Verify
+      - name: Configure
+        run: cmake -B build -S . -DBUILD_RENDERER=OFF
+      - name: Build
+        run: cmake --build build --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify --config Release
+      - name: Run Tests
         run: |
-          mkdir build && cd build
-          cmake .. -DBUILD_RENDERER=OFF
-          cmake --build . --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify --config Release
-          .\Release\spu-verify.exe
-          .\Release\spu-extreme-chaos.exe
-          .\Release\spu-collision.exe
-          .\Release\spu-sdk-verify.exe
+          .\build\Release\spu-verify.exe
+          .\build\Release\spu-extreme-chaos.exe
+          .\build\Release\spu-collision.exe
+          .\build\Release\spu-sdk-verify.exe
