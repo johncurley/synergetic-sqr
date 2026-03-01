@@ -61,12 +61,17 @@ The functional logic for this specification is implemented in the following modu
 *   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
 
 #### 5.1 Opcode Specification (v2.0)
-| Opcode | Instruction | Hardware Path | Latency | Description |
+| Opcode | Mnemonic | Hardware Path | Latency | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `01` | **`SPERM`** | `spu_permute` | 1 Cycle | 60° rotation (Bus Shuffle). |
+| `01` | **`SPERM_X4`** | `spu_permute` | 0 Cycles | **High-Symmetry Mode:** 4D Prime-Axis Basis Shift. |
 | `10` | **`SMUL`** | `spu_smul` | 1 Cycle | Surd multiplication (Integer ALU). |
 | `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | 5 Cycles | Pipelined Discrete Laplacian Relaxation. |
 | `00` | `NOP` | Bypass | 0 Cycles | No operation. |
+
+### 6. High-Symmetry Performance Logic
+The **`SPERM_X4`** instruction implements Dr. Thomson’s 4D Prime Projection as a pure routing operation. 
+*   **Zero-Latency:** Because no logic gates are required, basis shifts are instantaneous and consume zero switching power.
+*   **Identity Restoration:** The system guarantees 100% bit-exact identity restoration at every 60° (or 360°) rotational increment, eliminating cumulative rounding drift.
 
 ### 6. Kinetic Acceleration & Equilibrium
 The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. 

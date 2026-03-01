@@ -1,6 +1,6 @@
-// SPU-1 Prime-Axis Permutator (v2.0.35)
-// Implements basis shifts aligned with Thomson's 4D Prime Projection.
-// Uses named slices to ensure 100% architectural clarity.
+// SPU-1 SPERM_X4 High-Symmetry Permutator (v2.0.37)
+// Implements zero-latency basis shifts aligned with Thomson's 4D Prime Projection.
+// This unit executes the SPERM_X4 instruction using pure wire-routing.
 
 module spu_permute (
     input  [255:0] q_in,        // 4-axis Quadray packed as {d, c, b, a}

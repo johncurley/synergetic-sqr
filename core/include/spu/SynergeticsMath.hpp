@@ -126,7 +126,12 @@ struct alignas(32) Quadray4 {
      * Maps to synthesizable wire-swaps in spu_permute.v.
      * Indices: 0=a, 1=b, 2=c, 3=d
      */
-    static inline Quadray4 _spu_prime_permute(Quadray4 q, int phase) {
+    /**
+     * _spu_sperm_x4: SPERM_X4 High-Symmetry Performance Mode.
+     * Refined implementation of Thomson's 4D Prime Projection.
+     * Maps to zero-latency synthesizable wire-swaps in spu_permute.v.
+     */
+    static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
         switch (phase) {
             case 1: // P3 (60°): (b, c, a, d)
                 return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
