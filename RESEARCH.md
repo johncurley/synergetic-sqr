@@ -48,19 +48,19 @@ The SPU-1 implements a **Hardware Lattice Relaxation Unit** utilizing a 12-neigh
 ### 5. Formal Verification & Fixed-Point Proof
 
 #### 5.1 Theorem: Fixed-Point Invariance of the IVM State
-We define the SPU-1 Lattice Relaxation as a discrete operator acting on a 12-connected lattice where each node $u_i$ holds a vector in the integer Quadray space $\mathbb{Z}^n$.
+We define the SPU-1 Lattice Relaxation as a discrete operator acting on a 12-connected lattice where each node $u_i$ is connected to its neighbors via **Relational Bond Vectors** $\vec{b}_{ij} = (u_j - u_i)$.
 
 **1. Operator Definition:**
-Let $N(i)$ be the set of 12 neighbors for node $i$. We define the hardware residual operator $R_i$ as:
-$$R_i = \sum_{j \in N(i)} u_j$$
+Let $N(i)$ be the set of 12 neighbors. We define the hardware residual operator $R_i$ as the sum of local bond tensions (the discrete Laplacian):
+$$R_i = \sum_{j \in N(i)} \vec{b}_{ij}$$
 The SPU-1 correction step is defined as:
-$$u_i' = u_i + \alpha \cdot (-R_i)$$
+$$u_i' = u_i + \alpha \cdot R_i$$
 where $\alpha$ is the scaling factor and all arithmetic is bit-locked integer logic.
 
 **2. Equilibrium Condition:**
-In the Isotropic Vector Matrix (IVM), the state of perfect equilibrium for a centered node is defined explicitly as:
-$$\sum_{j \in N(i)} u_j = 0$$
-(In this symmetric configuration, opposite vectors cancel pairwise).
+In the Isotropic Vector Matrix (IVM), the state of perfect equilibrium is reached when the vector sum of all incident bond tensions is bit-zero:
+$$\sum_{j \in N(i)} \vec{b}_{ij} \equiv 0$$
+(At this state, the isotropic pull from all 12 directions cancels perfectly).
 
 **3. Proof of Invariance:**
 If the equilibrium condition holds, then $R_i = 0$. Substituting into the correction step:

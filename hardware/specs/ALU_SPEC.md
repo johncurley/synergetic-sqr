@@ -69,4 +69,4 @@ The functional logic for this specification is implemented in the following modu
 | `00` | `NOP` | Bypass | No operation. |
 
 ### 6. Kinetic Acceleration & Equilibrium
-The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. It takes 12 parallel 256-bit registers (representing the Isotropic neighborhood) and calculates the **Restoration Vector** in a single clock cycle. This allows for distributed, real-time tensegrity simulation without CPU overhead.
+The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. It takes 12 parallel 256-bit registers—representing **Relational Bond Vectors** ($\vec{b}_{ij} = u_j - u_i$)—and calculates the **Restoration Vector** in a single clock cycle. This implements a discrete Laplacian operator that allows for distributed, real-time lattice relaxation without CPU overhead.
