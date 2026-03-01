@@ -1,0 +1,47 @@
+name: Universal Parity Verification
+
+on: [push, pull_request]
+
+jobs:
+  verify-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsdl3-dev
+      - name: Build and Verify
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make spu-verify spu-chaos spu-collision
+          ./spu-verify
+          ./spu-chaos
+          ./spu-collision
+
+  verify-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and Verify
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make spu-verify spu-chaos spu-collision
+          ./spu-verify
+          ./spu-chaos
+          ./spu-collision
+
+  verify-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and Verify
+        run: |
+          mkdir build && cd build
+          cmake ..
+          cmake --build . --target spu-verify spu-chaos spu-collision --config Release
+          .\Release\spu-verify.exe
+          .\Release\spu-chaos.exe
+          .\Release\spu-collision.exe

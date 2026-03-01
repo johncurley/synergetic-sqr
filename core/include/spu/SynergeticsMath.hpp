@@ -18,8 +18,6 @@
 namespace Synergetics {
 
 // --- TYPE-LEVEL PURITY GUARD ---
-// This template ensures that no floating-point types can be instantiated 
-// within the Sovereign Core.
 template <typename T>
 struct PurityCheck {
     static_assert(!std::is_floating_point<T>::value, 
@@ -160,6 +158,7 @@ struct SPU_Mass { int64_t num, den; };
 struct SPU_TensegrityNode {
     Quadray4 position;
     Quadray4 prev_position; 
+    SPU_Mass mass; // Restored
     static inline void _spu_verlet_step(SPU_TensegrityNode& node, const Quadray4& a, int32_t dt_sq) {
         Quadray4 temp = node.position;
         Quadray4 twice_pos = { {node.position.data.v[0] << 1, node.position.data.v[1] << 1, 

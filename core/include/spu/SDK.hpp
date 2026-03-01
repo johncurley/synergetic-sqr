@@ -3,14 +3,12 @@
 
 #include "spu/SynergeticsMath.hpp"
 #include <vector>
-#include <map>
 
 namespace Synergetics {
 namespace SDK {
 
 /**
  * Bond: A structural identity between two nodes.
- * Enforces the Isotropic Vector Matrix (IVM) connectivity.
  */
 struct Bond {
     int32_t a_idx;
@@ -20,7 +18,6 @@ struct Bond {
 
 /**
  * Lattice: The Honeycomb Memory Map.
- * Manages nodes and bonds with topological isolation.
  */
 struct Lattice {
     std::vector<SPU_TensegrityNode> nodes;
@@ -28,7 +25,12 @@ struct Lattice {
 
     void AddNode(Quadray4 pos) {
         if (pos.checkParity()) {
-            nodes.push_back({ pos, pos, {1, 1} });
+            SPU_TensegrityNode n;
+            n.position = pos;
+            n.prev_position = pos;
+            n.mass.num = 1;
+            n.mass.den = 1;
+            nodes.push_back(n);
         }
     }
 
@@ -37,20 +39,38 @@ struct Lattice {
         bonds.push_back({ i, j, q });
     }
 
-    // Step: Performs one deterministic kinetic cycle
     void Step() {
-        // 1. Resolve Bonds (Topology-native interaction)
         for (const auto& b : bonds) {
             TensegrityLink link = { b.a_idx, b.b_idx, b.rest_quadrance, 10, LinkType::Tie };
             link.projectConstraint(nodes[b.a_idx], nodes[b.b_idx]);
         }
-        // 2. Integration (Verlet)
         Quadray4 g = SPU_TensegrityNode::gravityVector();
         for (auto& n : nodes) {
             SPU_TensegrityNode::_spu_verlet_step(n, g, 1);
         }
     }
 };
+
+/**
+ * Geometric Primitives: Pre-verified structural units.
+ */
+struct TetraUnit {
+    std::vector<Quadray4> vertices;
+    static TetraUnit Create() {
+        return { {
+            { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }, 
+            { {0, 0, SurdFixed64::One, 0, 0, 0, 0, 0} }, 
+            { {0, 0, 0, 0, SurdFixed64::One, 0, 0, 0} }, 
+            { {0, 0, 0, 0, 0, 0, SurdFixed64::One, 0} }  
+        } };
+    }
+};
+
+static inline void RotateObject(std::vector<Quadray4>& vertices, int steps = 1) {
+    for (auto& v : vertices) {
+        for (int i = 0; i < steps; ++i) v = Quadray4::_spu_rotate_60(v);
+    }
+}
 
 static inline Quadray4 RationalSnap(float x, float y, float z) {
     float scale = float(SurdFixed64::One);
