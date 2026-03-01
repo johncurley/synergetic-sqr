@@ -76,19 +76,18 @@ We define the **Structural Invariant** as the preservation of the quadratic fiel
 #### 5.2 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
-#### 5.5 Atomicity and Double-Buffering
-To ensure machine-invariant results in a massively parallel hardware environment, the SPU-1 architecture utilizes **Synchronous Double-Buffering (Ping-Pong Registers)**.
+#### 5.6 Prime-Axis Locking and 4D Projection
+The SPU-1 implements Thomson’s **4D Prime Projection Conjecture**, which identifies rotations as discrete jumps between prime-linked symmetry states. 
 
-**1. Topological Isolation:**
-The Honeycomb Memory Map ensures that nodes only interact with their immediate 12-neighbor shell. This eliminates the need for global locks or complex bus arbitration.
+**1. Prime Phase Mapping:**
+Spatial basis shifts are indexed by the Prime Phase ($P$):
+*   **P1 (Identity):** Standard IVM orientation $(a, b, c, d)$.
+*   **P3 (60°):** Rotational lock on the primary simplex edges.
+*   **P5 (120°):** Secondary symmetry lock.
+*   **P7 (Hyper-Flip):** Projection of the 4th dimensional extremity into the 3D basis.
 
-**2. Atomic Update Cycle:**
-Every hardware update is split into two phases:
-- **Phase 1 (Read):** All nodes read neighbor states from the current active bank (Bank A).
-- **Phase 2 (Commit):** All nodes write their updated state to the dormant bank (Bank B).
-- **Swap:** The banks are toggled at the end of the global clock cycle.
-
-**Result:** This mechanism ensures that the state of the lattice is perfectly consistent at every tick. No node can see a "partial update" from a neighbor, effectively eliminating race conditions and ensuring that the discrete Laplacian is applied to a frozen snapshot of the universe.
+**2. Hyper-Dimensional Tracking:**
+By utilizing zero-latency wire-swaps for these phases, the SPU-1 tracks the movement of a 4D Pentachoron (5-cell) through its 3D IVM shadow. Because each phase is a bit-exact permutation, the system maintains absolute algebraic closure across hyper-dimensional state transitions.
 
 ### 6. Future Work: Silicon Realization Hurdles
 While the SPU-1 has achieved functional parity in simulation, physical realization in silicon (ASIC/FPGA) requires addressing the following physical constraints:

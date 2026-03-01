@@ -101,11 +101,13 @@ struct SPU_Vector256 {
 #endif
         return res;
     }
-    static inline SPU_Vector256 rotate60(const SPU_Vector256& q) {
-        return { q.v[2], q.v[3], q.v[4], q.v[5], q.v[0], q.v[1], q.v[6], q.v[7] };
-    }
-    static inline SPU_Vector256 permute_q1(const SPU_Vector256& q) {
-        return { q.v[0], q.v[1], q.v[4], q.v[5], q.v[6], q.v[7], q.v[2], q.v[3] };
+    static inline SPU_Vector256 prime_permute(const SPU_Vector256& q, int phase) {
+        switch (phase) {
+            case 1: return { q.v[4], q.v[5], q.v[2], q.v[3], q.v[6], q.v[7], q.v[0], q.v[1] }; // P3: 60 deg
+            case 2: return { q.v[2], q.v[3], q.v[6], q.v[7], q.v[4], q.v[5], q.v[0], q.v[1] }; // P5: 120 deg
+            case 3: return { q.v[0], q.v[1], q.v[2], q.v[3], q.v[4], q.v[5], q.v[6], q.v[7] }; // P7 Placeholder: needs sync with Verilog
+            default: return q; // P1: Identity
+        }
     }
 };
 
@@ -120,6 +122,23 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
+    
+    /**
+     * _spu_prime_permute: Implementation of Thomson's 4D Prime Projection.
+     * Selects basis shift based on the Prime Phase (P1, P3, P5, P7).
+     */
+    static inline Quadray4 _spu_prime_permute(Quadray4 q, int phase) {
+        switch (phase) {
+            case 1: // P3: 60 deg Pin-A (a, d, b, c)
+                return { {q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5]} };
+            case 2: // P5: 120 deg Pin-A (a, c, d, b)
+                return { {q.data.v[0], q.data.v[1], q.data.v[4], q.data.v[5], q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3]} };
+            case 3: // P7: Hyper-Flip (d, b, c, a)
+                return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
+            default: // P1: Identity (a, b, c, d)
+                return q;
+        }
+    }
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
