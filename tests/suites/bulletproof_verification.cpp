@@ -3,7 +3,7 @@
 #include <cmath>
 #include <random>
 #include <iomanip>
-#include "SynergeticsMath.hpp"
+#include "spu/SynergeticsMath.hpp"
 
 using namespace Synergetics;
 

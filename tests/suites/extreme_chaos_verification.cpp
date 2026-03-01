@@ -2,7 +2,7 @@
 #include <vector>
 #include <random>
 #include <cmath>
-#include "SynergeticsMath.hpp"
+#include "spu/SynergeticsMath.hpp"
 
 using namespace Synergetics;
 

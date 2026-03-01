@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/Users/johncurley/Projects/desktop/synergeticrenderer/core/include/spu -I/Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src -I/Users/johncurley/Projects/desktop/synergeticrenderer/metal-cpp -I/Users/johncurley/Projects/desktop/synergeticrenderer/build/_deps/sdl3-build/include-revision -I/Users/johncurley/Projects/desktop/synergeticrenderer/build/_deps/sdl3-src/include
+CXX_INCLUDES = -I/Users/johncurley/Projects/desktop/synergeticrenderer/core/include -I/Users/johncurley/Projects/desktop/synergeticrenderer/renderer/src -I/Users/johncurley/Projects/desktop/synergeticrenderer/metal-cpp -I/Users/johncurley/Projects/desktop/synergeticrenderer/build/_deps/sdl3-build/include-revision -I/Users/johncurley/Projects/desktop/synergeticrenderer/build/_deps/sdl3-src/include
 
 CXX_FLAGS = -std=gnu++17
 

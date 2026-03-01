@@ -183,6 +183,19 @@ spu-extreme-chaos/fast:
 .PHONY : spu-extreme-chaos/fast
 
 #=============================================================================
+# Target rules for targets named spu-sdk-verify
+
+# Build rule for target.
+spu-sdk-verify: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-sdk-verify
+.PHONY : spu-sdk-verify
+
+# fast build rule for target.
+spu-sdk-verify/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-sdk-verify.dir/build.make CMakeFiles/spu-sdk-verify.dir/build
+.PHONY : spu-sdk-verify/fast
+
+#=============================================================================
 # Target rules for targets named purity_audit
 
 # Build rule for target.
@@ -378,6 +391,30 @@ tests/suites/rigorous_verification.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-verify.dir/build.make CMakeFiles/spu-verify.dir/tests/suites/rigorous_verification.cpp.s
 .PHONY : tests/suites/rigorous_verification.cpp.s
 
+tests/suites/sdk_verification.o: tests/suites/sdk_verification.cpp.o
+.PHONY : tests/suites/sdk_verification.o
+
+# target to build an object file
+tests/suites/sdk_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-sdk-verify.dir/build.make CMakeFiles/spu-sdk-verify.dir/tests/suites/sdk_verification.cpp.o
+.PHONY : tests/suites/sdk_verification.cpp.o
+
+tests/suites/sdk_verification.i: tests/suites/sdk_verification.cpp.i
+.PHONY : tests/suites/sdk_verification.i
+
+# target to preprocess a source file
+tests/suites/sdk_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-sdk-verify.dir/build.make CMakeFiles/spu-sdk-verify.dir/tests/suites/sdk_verification.cpp.i
+.PHONY : tests/suites/sdk_verification.cpp.i
+
+tests/suites/sdk_verification.s: tests/suites/sdk_verification.cpp.s
+.PHONY : tests/suites/sdk_verification.s
+
+# target to generate assembly for a file
+tests/suites/sdk_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-sdk-verify.dir/build.make CMakeFiles/spu-sdk-verify.dir/tests/suites/sdk_verification.cpp.s
+.PHONY : tests/suites/sdk_verification.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -393,6 +430,7 @@ help:
 	@echo "... spu-bulletproof"
 	@echo "... spu-collision"
 	@echo "... spu-extreme-chaos"
+	@echo "... spu-sdk-verify"
 	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
 	@echo "... renderer/src/SynergeticRenderer.o"
@@ -413,6 +451,9 @@ help:
 	@echo "... tests/suites/rigorous_verification.o"
 	@echo "... tests/suites/rigorous_verification.i"
 	@echo "... tests/suites/rigorous_verification.s"
+	@echo "... tests/suites/sdk_verification.o"
+	@echo "... tests/suites/sdk_verification.i"
+	@echo "... tests/suites/sdk_verification.s"
 .PHONY : help
 
 

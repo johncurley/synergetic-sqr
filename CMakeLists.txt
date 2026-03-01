@@ -19,8 +19,8 @@ set(SOURCES
     renderer/src/SynergeticRenderer.cpp
 )
 
-# 3. Include Directories
-include_directories(core/include/spu)
+# 3. Global Include Directories
+include_directories(core/include)
 include_directories(renderer/src)
 include_directories(metal-cpp)
 
@@ -50,6 +50,12 @@ endif()
 add_executable(spu-extreme-chaos tests/suites/extreme_chaos_verification.cpp)
 if(APPLE)
     set_source_files_properties(tests/suites/extreme_chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+endif()
+
+# 4.5 SDK Verification Suite
+add_executable(spu-sdk-verify tests/suites/sdk_verification.cpp)
+if(APPLE)
+    set_source_files_properties(tests/suites/sdk_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
 # --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---

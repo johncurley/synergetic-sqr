@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
-#include "SynergeticsMath.hpp"
+#include "spu/SynergeticsMath.hpp"
 
 using namespace Synergetics;
 
