@@ -34,17 +34,17 @@ Shift Basis(Q1, Q3, Q4, Q2) -> v1;
 ```
 
 ### 4. Kinetic Equilibrium: The `Equilibrate` Instruction
-SQR-Lang provides a native keyword for resolving physical tension: `Equilibrate`.
+SQR-Lang provides a native keyword for **Lattice Relaxation**: `Equilibrate`.
 
 ```sqr
 Cell jitterbug_cell = { ... };
 Node center = jitterbug_cell.center;
 
-// Resolves tension of 12 neighbors in 1 cycle
-Vector pull = center.Equilibrate(); 
+// Performs a discrete Laplacian update in 1 cycle
+Vector residual = center.Equilibrate(); 
 ```
 
-**Hardware Mapping:** This instruction dispatches the `OP_EQUILIBRATE` opcode to the **Tensegrity Balancer** (`spu_tensegrity_balancer.v`). It functions as a hardware-level servomechanism, returning the exact restoration vector required to maintain the Isotropic Vector Matrix (IVM) symmetry.
+**Hardware Mapping:** This instruction dispatches the `OP_EQUILIBRATE` opcode to the **Lattice Relaxation Unit** (`spu_tensegrity_balancer.v`). It functions as a parallel adder tree that computes the bit-exact integer residual from equilibrium, eliminating stochastic divergence in kinetic simulations.
 
 ### 5. Deterministic Parallelism (Collision-Free)
 SQR-Lang eliminates race conditions via **Geometric Isolation.**

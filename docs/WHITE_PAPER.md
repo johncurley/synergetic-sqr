@@ -20,13 +20,13 @@ Coordinates are represented as rational combinations of $(a + b\sqrt{3}) / 2^{16
 #### 2.2 Spread-Quadray Rotors (SQR)
 Utilizing a 4-axis tetrahedral coordinate system, rotations are mapped as index permutations of Quadray registers combined with a Janus Bit for projective polarity control. This eliminates the need for transcendental $\sin$ and $\cos$ approximations.
 
-#### 2.3 Hyper-Surd Calculus
-A dual-number extension ($H = val + eps \cdot \epsilon$, where $\epsilon^2 = 0$) enables deterministic physics (velocities, forces) with zero truncation error.
+#### 2.3 Discrete Lattice Relaxation
+A hardware-level **Lattice Relaxation Unit** implements a discrete Laplacian operator over the 12-neighbor IVM adjacency. This enables deterministic stabilization of structural networks without **floating-point rounding noise** or **accumulation error**.
 
 ### 3. SPU-1 Architecture Overview
 *   **Registers:** 256-bit SIMD blocks (SF32.16) for Quadray vectors.
-*   **ALU Operations:** sadd, ssub, smul, srot60, jinv, gstep.
-*   **Safety Features:** Normalization-based overflow control with integer quantization safeguards (precision floor).
+*   **ALU Operations:** sadd, ssub, smul, srot60, jinv, sequil.
+*   **Equilibrium Unit:** 12-port parallel adder tree for single-cycle lattice relaxation.
 
 ### 4. Verification & Stress Test Summary
 | Test | Iterations | Result | Notes |

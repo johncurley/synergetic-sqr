@@ -64,7 +64,7 @@ The SPU-1 architecture has achieved **bit-exact functional parity** across four 
 The repository includes synthesizable RTL for the SPU-1 core primitives in the `hardware/verilog/` directory:
 *   **`spu_smul.v`**: The Surd Multiplier Unit (Integer ALU).
 *   **`spu_permute.v`**: The Zero-Gate Permutator (Wire-Swap Rotation).
-*   **`spu_tensegrity_balancer.v`**: The Isotropic Tension Solver (Equilibrium).
+*   **`spu_tensegrity_balancer.v`**: The Lattice Relaxation Unit (Laplacian).
 *   **`spu_core.v`**: The integrated SPU-1 processing unit.
 
 ### Running the Verification Suites
@@ -103,10 +103,10 @@ Dedicated to the public domain under **CC0 1.0 Universal**. Free for any use wit
 *   **v1.10 (Hardware/SDK):** Synthesizable Verilog RTL and Developer SDK implemented. Verified.
 *   **v2.0 (Public Release):** Hardware-software co-simulation and forensic audit suite. **COMPLETED.**
 
-### Executive Summary: Why the SPU-1 Never Drifts
-Standard 3D engines use floating-point numbers, which are like **leaky pipes**—every time you perform a calculation, a tiny bit of precision "leaks" out, leading to cumulative drift. The SPU-1 architecture replaces these with **Deterministic Quadratic Field Arithmetic (DQFA)**. 
+### Executive Summary: Deterministic Spatial Computation
+Standard 3D engines utilize floating-point arithmetic, which introduces cumulative rounding noise and stochastic drift. The SPU-1 architecture replaces these with **Deterministic Quadratic Field Arithmetic (DQFA)** and a hardware-level **Lattice Relaxation Unit**.
 
-Our system uses **discrete integer buckets**. A rotation is not a calculation that might lose bits; it is a **Register Permutation** (a literal wire-swap). Because the logic never leaves the integer field, there is no physical mechanism for drift to occur. Identity is not approximated; it is **restored exactly.**
+By utilizing discrete integer registers and a parallel 12-neighbor summation tree, the SPU-1 implements a bit-exact **Discrete Laplacian Operator**. Because the logic never leaves the integer field, there is no mechanism for accumulation error. Identity is not approximated; the equilibrium state is a fixed point of the operator.
 
 ### SPU-1 Instruction Set (SurdLang ISA)
 | Instruction | Hardware Operation | Description |
@@ -115,7 +115,7 @@ Our system uses **discrete integer buckets**. A rotation is not a calculation th
 | **`SMUL`** | Pipelined Multiplier | Surd multiplication with 64-bit intermediate protection. |
 | **`SPERM`** | Zero-Gate Shuffle | 60° rotation implemented as a wiring permutation. |
 | **`JINV`** | XOR Sign Toggle | Projective polarity control (Janus Bit). |
-| **`EQUILIBRATE`**| Isotropic Balancer | Resolves 12-neighbor tension in 1 clock cycle. |
+| **`EQUILIBRATE`**| Lattice Relaxer | Discrete Laplacian update in 1 clock cycle. |
 | **`SNORM`** | Bit-Mask Scaling | Normalization-based overflow control. |
 
 ### Edge-Case Forensic Audit

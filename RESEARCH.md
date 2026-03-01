@@ -35,8 +35,15 @@ The **`_spu_normalize`** routine ensures that fixed-point bounds are preserved d
 - **Mechanism:** When a coefficient reaches the $2^{29}$ threshold, a simultaneous arithmetic right-shift is performed.
 - **Result:** Normalization maintains bounded integer representation without altering the canonical state or ratio.
 
-### 4. Algebraic Automatic Differentiation
-The **Hyper-Surd** extension (dual-number lane) enables deterministic derivative propagation. Because the underlying field is bit-exact, the resulting gradients are machine-invariant, providing a stable foundation for tensegrity physics.
+### 4. Hardware Lattice Relaxation (The Tensegrity Core)
+The SPU-1 implements a **Hardware Lattice Relaxation Unit** utilizing a 12-neighbor parallel adder tree. This unit functions as a **Discrete Laplacian Operator** ($\Delta u_i$) over the 12-connected IVM adjacency.
+
+**Operation Dynamics:**
+- **Summation:** 12 neighboring registers are summed in a single clock cycle via a parallel tree.
+- **Residual Correction:** The unit computes the bit-exact integer residual from equilibrium.
+- **Identity Maintenance:** Because the operation is purely integer-based, the system eliminates **floating-point rounding noise** and **accumulation error**.
+
+**Result:** The equilibrium state is a fixed point of the operator. Kinetic simulations exhibit zero stochastic divergence, ensuring that the lattice remains topologically stable across arbitrarily long time horizons.
 
 ### 5. Formal Verification Roadmap
 To move beyond empirical verification, the SPU-1 project follows a formal proof roadmap:
