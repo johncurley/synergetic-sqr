@@ -83,8 +83,20 @@ To ensure deterministic results in massively parallel lattices, the SPU-1 implem
 *   **Pipelined Reduction:** The 12-neighbor summation is pipelined over 4 clocked stages to ensure timing closure at high frequencies (target: 500MHz+). Each stage breaks the logic depth to a maximum of 3 serialized additions.
 *   **Double-Buffered Commit:** State updates utilize a Ping-Pong register scheme. Nodes read from a stable snapshot (Bank A) and commit to a separate dormant bank (Bank B), eliminating race conditions between adjacent nodes.
 
-### 7. Timing Closure & Static Timing Analysis (STA)
-All SPU-1 hardware implementations must satisfy the following timing mandates:
-*   **Critical Path Mitigation:** Combinational depth between registers must not exceed the delay of a 32-bit carry-lookahead adder plus routing overhead.
-*   **Register-to-Register Path:** The `EQUILIBRATE` instruction's 5-cycle total latency (4 balancer stages + 1 core commit) is non-negotiable to prevent metastability.
-*   **Verification:** Final synthesis must pass Static Timing Analysis (STA) for the target clock frequency without setup or hold-time violations.
+### 7. Systolic Lattice Scaling (SPU-Cluster)
+The SPU-1 is designed for massive parallelization via **Topological Tiling**. Individual cores are arranged in an IVM-compliant grid to form an SPU-Cluster.
+
+#### 7.1 Shared-Nothing Architecture
+Unlike von Neumann architectures, SPU clusters utilize a **Shared-Nothing Data Flow**:
+*   **Private State:** Each core maintains its own Quadray register and ECC logic.
+*   **Read-Only Adjacency:** Cores access neighbor states via a dedicated 12-neighbor bus without bus arbitration or memory locking.
+*   **No Cache Coherency:** Because nodes only interact with topological neighbors, the "Cache Invalidation" problem is physically non-existent.
+
+#### 7.2 Global Synchronous Breath
+Parallel synchronization is enforced by the global clock cycle and dual-bank registers:
+1.  **Read Phase:** All cores sample Bank A neighbor states.
+2.  **Compute Phase:** Pipelined logic (SMUL/EQUILIBRATE) executes.
+3.  **Commit Phase:** All cores write results to Bank B.
+4.  **Bank Swap:** The global tick toggles the active bank.
+
+This mechanism ensures that the entire lattice remains bit-perfectly synchronized across millions of independent compute units, enabling deterministic simulation at planetary scales.
