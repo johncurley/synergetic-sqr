@@ -67,6 +67,7 @@ all: CMakeFiles/synergetic-sqr.dir/all
 all: CMakeFiles/spu-verify.dir/all
 all: CMakeFiles/spu-collision.dir/all
 all: CMakeFiles/spu-bulletproof.dir/all
+all: CMakeFiles/spu-chaos.dir/all
 all: CMakeFiles/purity_audit.dir/all
 all: _deps/sdl3-build/all
 .PHONY : all
@@ -76,6 +77,7 @@ codegen: CMakeFiles/synergetic-sqr.dir/codegen
 codegen: CMakeFiles/spu-verify.dir/codegen
 codegen: CMakeFiles/spu-collision.dir/codegen
 codegen: CMakeFiles/spu-bulletproof.dir/codegen
+codegen: CMakeFiles/spu-chaos.dir/codegen
 codegen: CMakeFiles/purity_audit.dir/codegen
 codegen: _deps/sdl3-build/codegen
 .PHONY : codegen
@@ -89,6 +91,7 @@ clean: CMakeFiles/synergetic-sqr.dir/clean
 clean: CMakeFiles/spu-verify.dir/clean
 clean: CMakeFiles/spu-collision.dir/clean
 clean: CMakeFiles/spu-bulletproof.dir/clean
+clean: CMakeFiles/spu-chaos.dir/clean
 clean: CMakeFiles/purity_audit.dir/clean
 clean: _deps/sdl3-build/clean
 .PHONY : clean
@@ -122,8 +125,8 @@ _deps/sdl3-build/clean: _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/clean
 # Target rules for target CMakeFiles/synergetic-sqr.dir
 
 # All Build rule for target.
-CMakeFiles/synergetic-sqr.dir/all: CMakeFiles/purity_audit.dir/all
 CMakeFiles/synergetic-sqr.dir/all: _deps/sdl3-build/CMakeFiles/SDL3-shared.dir/all
+CMakeFiles/synergetic-sqr.dir/all: CMakeFiles/purity_audit.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/synergetic-sqr.dir/build.make CMakeFiles/synergetic-sqr.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=99,100 "Built target synergetic-sqr"
@@ -222,12 +225,12 @@ CMakeFiles/spu-collision.dir/clean:
 CMakeFiles/spu-bulletproof.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=97 "Built target spu-bulletproof"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num= "Built target spu-bulletproof"
 .PHONY : CMakeFiles/spu-bulletproof.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/spu-bulletproof.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/spu-bulletproof.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
 .PHONY : CMakeFiles/spu-bulletproof.dir/rule
@@ -239,7 +242,7 @@ spu-bulletproof: CMakeFiles/spu-bulletproof.dir/rule
 # codegen rule for target.
 CMakeFiles/spu-bulletproof.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=97 "Finished codegen for target spu-bulletproof"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num= "Finished codegen for target spu-bulletproof"
 .PHONY : CMakeFiles/spu-bulletproof.dir/codegen
 
 # clean rule for target.
@@ -248,18 +251,50 @@ CMakeFiles/spu-bulletproof.dir/clean:
 .PHONY : CMakeFiles/spu-bulletproof.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/spu-chaos.dir
+
+# All Build rule for target.
+CMakeFiles/spu-chaos.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=97 "Built target spu-chaos"
+.PHONY : CMakeFiles/spu-chaos.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/spu-chaos.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 1
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/spu-chaos.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
+.PHONY : CMakeFiles/spu-chaos.dir/rule
+
+# Convenience name for target.
+spu-chaos: CMakeFiles/spu-chaos.dir/rule
+.PHONY : spu-chaos
+
+# codegen rule for target.
+CMakeFiles/spu-chaos.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=97 "Finished codegen for target spu-chaos"
+.PHONY : CMakeFiles/spu-chaos.dir/codegen
+
+# clean rule for target.
+CMakeFiles/spu-chaos.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/clean
+.PHONY : CMakeFiles/spu-chaos.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/purity_audit.dir
 
 # All Build rule for target.
 CMakeFiles/purity_audit.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/purity_audit.dir/build.make CMakeFiles/purity_audit.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/purity_audit.dir/build.make CMakeFiles/purity_audit.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num= "Built target purity_audit"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=96 "Built target purity_audit"
 .PHONY : CMakeFiles/purity_audit.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/purity_audit.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 1
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/purity_audit.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
 .PHONY : CMakeFiles/purity_audit.dir/rule
@@ -271,7 +306,7 @@ purity_audit: CMakeFiles/purity_audit.dir/rule
 # codegen rule for target.
 CMakeFiles/purity_audit.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/purity_audit.dir/build.make CMakeFiles/purity_audit.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num= "Finished codegen for target purity_audit"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=96 "Finished codegen for target purity_audit"
 .PHONY : CMakeFiles/purity_audit.dir/codegen
 
 # clean rule for target.
@@ -291,7 +326,7 @@ _deps/sdl3-build/CMakeFiles/SDL3-shared.dir/all: _deps/sdl3-build/CMakeFiles/SDL
 
 # Build rule for subdir invocation for target.
 _deps/sdl3-build/CMakeFiles/SDL3-shared.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 92
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 91
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sdl3-build/CMakeFiles/SDL3-shared.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
 .PHONY : _deps/sdl3-build/CMakeFiles/SDL3-shared.dir/rule
@@ -350,12 +385,12 @@ _deps/sdl3-build/CMakeFiles/SDL3_test.dir/clean:
 _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/all:
 	$(MAKE) $(MAKESILENT) -f _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build.make _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build.make _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=87,88,89,90,91,92,93,94,95,96 "Built target SDL_uclibc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=87,88,89,90,91,92,93,94,95 "Built target SDL_uclibc"
 .PHONY : _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles 0
 .PHONY : _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/rule
@@ -367,7 +402,7 @@ SDL_uclibc: _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/rule
 # codegen rule for target.
 _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/build.make _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=87,88,89,90,91,92,93,94,95,96 "Finished codegen for target SDL_uclibc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/johncurley/Projects/desktop/synergeticrenderer/build/CMakeFiles --progress-num=87,88,89,90,91,92,93,94,95 "Finished codegen for target SDL_uclibc"
 .PHONY : _deps/sdl3-build/CMakeFiles/SDL_uclibc.dir/codegen
 
 # clean rule for target.

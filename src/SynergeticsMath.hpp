@@ -57,6 +57,9 @@ struct SurdFixed64 {
     SurdFixed64 add(const SurdFixed64& other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(const SurdFixed64& other) const { return { a - other.a, b - other.b }; }
     SurdFixed64 multiply(const SurdFixed64& other) const { return _spu_surd_mul(*this, other); }
+    
+    // _spu_janus_flip: Projective Reflection (Sign-bit XOR)
+    SurdFixed64 janusFlip() const { return { a, -b }; }
 };
 
 struct SurdVector3 {

@@ -170,6 +170,19 @@ spu-bulletproof/fast:
 .PHONY : spu-bulletproof/fast
 
 #=============================================================================
+# Target rules for targets named spu-chaos
+
+# Build rule for target.
+spu-chaos: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-chaos
+.PHONY : spu-chaos
+
+# fast build rule for target.
+spu-chaos/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/build
+.PHONY : spu-chaos/fast
+
+#=============================================================================
 # Target rules for targets named purity_audit
 
 # Build rule for target.
@@ -293,6 +306,30 @@ tests/bulletproof_verification.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-bulletproof.dir/build.make CMakeFiles/spu-bulletproof.dir/tests/bulletproof_verification.cpp.s
 .PHONY : tests/bulletproof_verification.cpp.s
 
+tests/chaos_verification.o: tests/chaos_verification.cpp.o
+.PHONY : tests/chaos_verification.o
+
+# target to build an object file
+tests/chaos_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.o
+.PHONY : tests/chaos_verification.cpp.o
+
+tests/chaos_verification.i: tests/chaos_verification.cpp.i
+.PHONY : tests/chaos_verification.i
+
+# target to preprocess a source file
+tests/chaos_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.i
+.PHONY : tests/chaos_verification.cpp.i
+
+tests/chaos_verification.s: tests/chaos_verification.cpp.s
+.PHONY : tests/chaos_verification.s
+
+# target to generate assembly for a file
+tests/chaos_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-chaos.dir/build.make CMakeFiles/spu-chaos.dir/tests/chaos_verification.cpp.s
+.PHONY : tests/chaos_verification.cpp.s
+
 tests/collision_verification.o: tests/collision_verification.cpp.o
 .PHONY : tests/collision_verification.o
 
@@ -354,6 +391,7 @@ help:
 	@echo "... SDL3_test"
 	@echo "... SDL_uclibc"
 	@echo "... spu-bulletproof"
+	@echo "... spu-chaos"
 	@echo "... spu-collision"
 	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
@@ -366,6 +404,9 @@ help:
 	@echo "... tests/bulletproof_verification.o"
 	@echo "... tests/bulletproof_verification.i"
 	@echo "... tests/bulletproof_verification.s"
+	@echo "... tests/chaos_verification.o"
+	@echo "... tests/chaos_verification.i"
+	@echo "... tests/chaos_verification.s"
 	@echo "... tests/collision_verification.o"
 	@echo "... tests/collision_verification.i"
 	@echo "... tests/collision_verification.s"
