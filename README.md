@@ -53,9 +53,12 @@ This implementation provides the functional blueprint for a deterministic spatia
 *   **Algebraic Integrity:** Multiplication maintains closure within the quadratic field extension.
 
 ## Documentation
-*   **[SPECIFICATION.md](SPECIFICATION.md):** Formal SPU-1 ISA and register layout.
-*   **[GLOSSARY.md](GLOSSARY.md):** Technical definitions of algebraic primitives.
-*   **[RESEARCH.md](RESEARCH.md):** Data-driven analysis of rotation stability.
+*   **[RESEARCH.md](RESEARCH.md):** Data-driven analysis of rotation stability and forensic logs.
+*   **[SPECIFICATION.md](hardware/specs/SPECIFICATION.md):** Formal SPU-1 ISA and register layout.
+*   **[SURDLANG.md](hardware/specs/SURDLANG.md):** The formal language of the SPU-1.
+*   **[GLOSSARY.md](docs/GLOSSARY.md):** Technical definitions of algebraic primitives.
+*   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
+*   **[SQR_LANG_SYNTAX.md](docs/SQR_LANG_SYNTAX.md):** Specification for static data-flow topology.
 *   **[CONTRIBUTING.md](CONTRIBUTING.md):** Architectural integrity guidelines.
 
 ## License

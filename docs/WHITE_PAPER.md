@@ -53,6 +53,6 @@ The SPU-1 pipeline is a bit-exact, Hyper-Surd-native engine that operationalizes
 
 ---
 ### Appendices
-*   **A. Glossary of Terms:** See `docs/GLOSSARY.md`.
-*   **B. Verification Logs:** Full logs available in `tests/logs/`.
+*   **A. Glossary of Terms:** See [GLOSSARY.md](GLOSSARY.md).
+*   **B. Forensic Evidence:** Full stability data and logs available in [RESEARCH.md](../RESEARCH.md).
 *   **C. Source References:** Thomson (2026), Wildberger (Rational Trigonometry), Fuller (Synergetics).
