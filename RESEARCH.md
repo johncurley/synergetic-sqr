@@ -76,5 +76,11 @@ We define the **Structural Invariant** as the preservation of the quadratic fiel
 #### 5.2 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
+#### 5.3 DSP Stability and Bias
+The SPU-1 implementation utilizes power-of-two approximations for efficiency and stability:
+
+*   **Spectral Stability:** The relaxation scaling factor $\alpha = 1/16$ is a conservative approximation of the ideal $1/12$. This reduces the spectral radius of the operator, ensuring that the lattice settles into a stable fixed point without high-frequency oscillation.
+*   **Deterministic Truncation Bias:** All hardware scaling utilizes arithmetic right-shifting (`>>>`), which rounds toward negative infinity ($-\infty$). This introduces a deterministic bias of $-1$ unit for negative odd values. Because this behavior is bit-exact and machine-invariant, it is categorized as a "Deterministic Invariant" rather than stochastic drift.
+
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*

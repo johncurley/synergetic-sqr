@@ -72,9 +72,8 @@ The functional logic for this specification is implemented in the following modu
 The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. 
 
 #### 6.1 Precision Contract (Signal Integrity)
-To eliminate bit-width overflow during large displacements, the balancer implements the following hardware constraints:
-*   **Intermediate Accumulation:** 64-bit signed accumulators per lane (32-bit headroom).
-*   **Sign Preservation:** Arithmetic right-shifting (`>>>`) and two's complement inversion for the restoration vector.
-*   **Isotropic Scaling:** The output correction is scaled by $\alpha = 1/16$ via bit-shift to maintain fixed-point stability.
-
-This implements a bit-exact **Discrete Laplacian Operator** that eliminates rounding noise and accumulation error, ensuring the equilibrium state remains a fixed point.
+To eliminate bit-width overflow and maintain stability during lattice relaxation, the balancer implements the following constraints:
+*   **Headroom:** Utilizing 64-bit signed accumulators per lane exceeds the theoretical maximum width for 12-neighbor summation ($\lceil \log_2(12) \rceil = 4$ bits) by over 28 bits of margin.
+*   **Scaling ($\alpha = 1/16$):** The output correction is scaled by a power-of-two approximation ($1/16$) of the ideal Laplacian average ($1/12$). This conservative scaling improves the spectral stability of the relaxation step.
+*   **Deterministic Bias:** Arithmetic right-shifting (`>>>`) introduces a deterministic truncation bias toward negative infinity ($-\infty$). While negligible in balanced lattices, this bias is documented as a machine-invariant property of the SPU-1.
+*   **Operator Form:** The balancer implements the discrete Laplacian $\sum_{j \in N(i)} (u_j - u_i)$, where the input bus carries relational displacements.
