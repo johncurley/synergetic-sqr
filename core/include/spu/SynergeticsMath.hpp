@@ -121,15 +121,20 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
     
+    /**
+     * _spu_prime_permute: Refined implementation of Thomson's 4D Prime Projection.
+     * Maps to synthesizable wire-swaps in spu_permute.v.
+     * Indices: 0=a, 1=b, 2=c, 3=d
+     */
     static inline Quadray4 _spu_prime_permute(Quadray4 q, int phase) {
         switch (phase) {
-            case 1: // P3: 60 deg Pin-A (a, d, b, c)
-                return { {q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5]} };
-            case 2: // P5: 120 deg Pin-A (a, c, d, b)
-                return { {q.data.v[0], q.data.v[1], q.data.v[4], q.data.v[5], q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3]} };
-            case 3: // P7: Hyper-Flip (d, b, c, a)
+            case 1: // P3 (60°): (b, c, a, d)
+                return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
+            case 2: // P5 (120°): (c, a, b, d)
+                return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
+            case 3: // P7 (Flip): (d, b, c, a)
                 return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
-            default: // P1: Identity (a, b, c, d)
+            default: // P1 (Identity): (a, b, c, d)
                 return q;
         }
     }

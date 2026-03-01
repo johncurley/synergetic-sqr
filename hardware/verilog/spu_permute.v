@@ -1,32 +1,38 @@
-// SPU-1 Prime-Axis Permutator (v2.0.33)
-// Based on Thomson's 4D Prime Projection Conjecture v2.0
-// Implements zero-latency basis shifts aligned with 5-cell symmetry.
+// SPU-1 Prime-Axis Permutator (v2.0.35)
+// Implements basis shifts aligned with Thomson's 4D Prime Projection.
+// Uses named slices to ensure 100% architectural clarity.
 
 module spu_permute (
-    input [255:0] q_in,      // 4-axis Quadray [a,b,c,d]
-    input [1:0] prime_phase, // 0=P1 (ID), 1=P3 (60deg), 2=P5 (120deg), 3=P7 (Flip)
+    input  [255:0] q_in,        // 4-axis Quadray packed as {d, c, b, a}
+    input  [1:0]   prime_phase, // 0=P1, 1=P3, 2=P5, 3=P7
     output reg [255:0] q_out
 );
 
-    // Quadray Lane Mapping (LSB to MSB):
-    // q_in[63:0]   = Q1 (a)
-    // q_in[127:64]  = Q2 (b)
-    // q_in[191:128] = Q3 (c)
-    // q_in[255:192] = Q4 (d)
+    // Named Lane Extractions (64-bit lanes)
+    // Endianness: q_in[63:0] is 'a', q_in[255:192] is 'd'
+    wire [63:0] a = q_in[63:0];
+    wire [127:64] b = q_in[127:64];
+    wire [191:128] c = q_in[191:128];
+    wire [255:192] d = q_in[255:192];
 
     always @(*) begin
         case (prime_phase)
             // Prime 1: Identity (a, b, c, d)
-            2'b00: q_out = q_in;                       
+            2'd0: q_out = {d, c, b, a}; 
             
-            // Prime 3: 60 deg Pin-A (a, d, b, c) 
-            2'b01: q_out = {q_in[191:128], q_in[127:64], q_in[255:192], q_in[63:0]}; 
+            // Prime 3: 60° (b, c, a, d)
+            // Mapping: out[0]=b, out[1]=c, out[2]=a, out[3]=d
+            2'd1: q_out = {d, a, c, b}; 
             
-            // Prime 5: 120 deg Pin-A (a, c, d, b)
-            2'b10: q_out = {q_in[127:64], q_in[255:192], q_in[191:128], q_in[63:0]}; 
+            // Prime 5: 120° (c, a, b, d)
+            // Mapping: out[0]=c, out[1]=a, out[2]=b, out[3]=d
+            2'd2: q_out = {d, b, a, c}; 
             
-            // Prime 7: Hyper-Flip (d, b, c, a) - 4th axis enters the fray
-            2'b11: q_out = {q_in[63:0], q_in[127:64], q_in[191:128], q_in[255:192]}; 
+            // Prime 7: Hyper-Flip (d, b, c, a)
+            // Mapping: out[0]=d, out[1]=b, out[2]=c, out[3]=a
+            2'd3: q_out = {a, c, b, d}; 
+            
+            default: q_out = {d, c, b, a};
         endcase
     end
 endmodule
