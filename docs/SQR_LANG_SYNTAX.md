@@ -33,7 +33,20 @@ Shift Basis(Q1, Q3, Q4, Q2) -> v1;
 // The electricity is rerouted; the result is instantaneous.
 ```
 
-### 4. Deterministic Parallelism (Collision-Free)
+### 4. Kinetic Equilibrium: The `Equilibrate` Instruction
+SQR-Lang provides a native keyword for resolving physical tension: `Equilibrate`.
+
+```sqr
+Cell jitterbug_cell = { ... };
+Node center = jitterbug_cell.center;
+
+// Resolves tension of 12 neighbors in 1 cycle
+Vector pull = center.Equilibrate(); 
+```
+
+**Hardware Mapping:** This instruction dispatches the `OP_EQUILIBRATE` opcode to the **Tensegrity Balancer** (`spu_tensegrity_balancer.v`). It functions as a hardware-level servomechanism, returning the exact restoration vector required to maintain the Isotropic Vector Matrix (IVM) symmetry.
+
+### 5. Deterministic Parallelism (Collision-Free)
 SQR-Lang eliminates race conditions via **Geometric Isolation.**
 *   Nodes can only interact if they share a `Bond`.
 *   Asynchronous updates are safe because the IVM topology defines the interaction boundaries.
