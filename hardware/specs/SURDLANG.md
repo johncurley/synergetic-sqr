@@ -31,3 +31,10 @@ The SPU-1 implements the following operations in hardware:
 
 ### 4. Deterministic Identity
 By replacing transcendental functions with **Register Shuffles** and the **Rational Oscillator**, the SPU-1 achieves bit-exact identity closure. Under repeated transformation, the identity state $w=65536, x=0$ is preserved with zero drift.
+
+### 5. Operating Bounds and Safety
+To ensure algebraic integrity across extreme dynamic ranges, the SurdLang ISA enforces the following constraints:
+
+*   **Normalization Trigger (Ceiling):** The `SNORM` intrinsic triggers when the 30th bit of a coefficient is set, performing a simultaneous arithmetic right-shift to prevent 32-bit overflow.
+*   **Precision Safeguard (Floor):** A hardware-level threshold (256) prevents normalization if precision would be lost, ensuring state stability during repeated scaling cycles.
+*   **Deterministic Contract:** In the event of 64-to-32 bit downcasting, bitwise wrapping (truncation) is mandated to ensure machine-invariant results across all compliant hardware.
