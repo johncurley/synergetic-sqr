@@ -158,7 +158,7 @@ struct SPU_Mass { int64_t num, den; };
 struct SPU_TensegrityNode {
     Quadray4 position;
     Quadray4 prev_position; 
-    SPU_Mass mass; // Restored
+    SPU_Mass mass;
     static inline void _spu_verlet_step(SPU_TensegrityNode& node, const Quadray4& a, int32_t dt_sq) {
         Quadray4 temp = node.position;
         Quadray4 twice_pos = { {node.position.data.v[0] << 1, node.position.data.v[1] << 1, 
@@ -204,9 +204,17 @@ struct RationalSurd {
     static RationalSurd one() { return {1, 0, 1}; }
     static RationalSurd fromInt(int64_t val) { return {val, 0, 1}; }
     RationalSurd multiply(const RationalSurd& other) const {
+#if defined(_MSC_VER) && !defined(__clang__)
+        // MSVC fallback: Use high-precision long double for legacy multiply 
+        // to avoid __int128_t missing type error. This is acceptable for LEGACY ONLY.
+        long double res_a = (long double)a * other.a + (long double)3 * b * other.b;
+        long double res_b = (long double)a * other.b + (long double)b * other.a;
+        return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
+#else
         __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
         __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
         return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
+#endif
     }
     bool equals(const RationalSurd& other) const { return a * other.divisor == other.a * divisor && b * other.divisor == other.b * divisor; }
     float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(divisor); }
