@@ -59,6 +59,24 @@ struct SurdFixed64 {
     SurdFixed64 janusFlip() const { return { a, -b }; }
 };
 
+struct SurdVector3 {
+    SurdFixed64 x, y, z;
+    static inline void _spu_safe_normalize_vector(SurdVector3& v) {
+        v.x = SurdFixed64::_spu_safe_normalize(v.x);
+        v.y = SurdFixed64::_spu_safe_normalize(v.y);
+        v.z = SurdFixed64::_spu_safe_normalize(v.z);
+    }
+};
+
+struct SurdMatrix3x3 {
+    SurdVector3 row[3];
+    static inline void _spu_safe_normalize_matrix(SurdMatrix3x3& m) {
+        SurdVector3::_spu_safe_normalize_vector(m.row[0]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[1]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[2]);
+    }
+};
+
 struct SPU_Vector256 {
     int32_t v[8];
     static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
@@ -85,19 +103,14 @@ struct SPU_Vector256 {
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
-    
     bool checkParity() const {
         int32_t sum_a = 0, sum_b = 0;
-        for (int i = 0; i < 4; ++i) {
-            sum_a += data.v[i*2]; sum_b += data.v[i*2+1];
-        }
+        for (int i = 0; i < 4; ++i) { sum_a += data.v[i*2]; sum_b += data.v[i*2+1]; }
         return (sum_a == 0 && sum_b == 0);
     }
-
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
-    
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
@@ -172,6 +185,21 @@ struct TensegrityLink {
             else { a.position.data.v[i] += delta; b.position.data.v[i] -= delta; }
         }
     }
+};
+
+// --- LEGACY SUPPORT ---
+struct RationalSurd {
+    int64_t a, b, divisor;
+    static RationalSurd zero() { return {0, 0, 1}; }
+    static RationalSurd one() { return {1, 0, 1}; }
+    static RationalSurd fromInt(int64_t val) { return {val, 0, 1}; }
+    RationalSurd multiply(const RationalSurd& other) const {
+        __int128_t res_a = (__int128_t)a * other.a + (__int128_t)3 * b * other.b;
+        __int128_t res_b = (__int128_t)a * other.b + (__int128_t)b * other.a;
+        return { (int64_t)res_a, (int64_t)res_b, divisor * other.divisor };
+    }
+    bool equals(const RationalSurd& other) const { return a * other.divisor == other.a * divisor && b * other.divisor == other.b * divisor; }
+    float toFloat() const { return (float(a) + float(b) * DisplayAdapter::SQRT3_ESTIMATE) / float(divisor); }
 };
 
 } // namespace Synergetics
