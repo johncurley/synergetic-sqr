@@ -183,6 +183,19 @@ spu-chaos/fast:
 .PHONY : spu-chaos/fast
 
 #=============================================================================
+# Target rules for targets named spu-extreme-chaos
+
+# Build rule for target.
+spu-extreme-chaos: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spu-extreme-chaos
+.PHONY : spu-extreme-chaos
+
+# fast build rule for target.
+spu-extreme-chaos/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-extreme-chaos.dir/build.make CMakeFiles/spu-extreme-chaos.dir/build
+.PHONY : spu-extreme-chaos/fast
+
+#=============================================================================
 # Target rules for targets named purity_audit
 
 # Build rule for target.
@@ -354,6 +367,30 @@ tests/suites/collision_verification.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-collision.dir/build.make CMakeFiles/spu-collision.dir/tests/suites/collision_verification.cpp.s
 .PHONY : tests/suites/collision_verification.cpp.s
 
+tests/suites/extreme_chaos_verification.o: tests/suites/extreme_chaos_verification.cpp.o
+.PHONY : tests/suites/extreme_chaos_verification.o
+
+# target to build an object file
+tests/suites/extreme_chaos_verification.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-extreme-chaos.dir/build.make CMakeFiles/spu-extreme-chaos.dir/tests/suites/extreme_chaos_verification.cpp.o
+.PHONY : tests/suites/extreme_chaos_verification.cpp.o
+
+tests/suites/extreme_chaos_verification.i: tests/suites/extreme_chaos_verification.cpp.i
+.PHONY : tests/suites/extreme_chaos_verification.i
+
+# target to preprocess a source file
+tests/suites/extreme_chaos_verification.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-extreme-chaos.dir/build.make CMakeFiles/spu-extreme-chaos.dir/tests/suites/extreme_chaos_verification.cpp.i
+.PHONY : tests/suites/extreme_chaos_verification.cpp.i
+
+tests/suites/extreme_chaos_verification.s: tests/suites/extreme_chaos_verification.cpp.s
+.PHONY : tests/suites/extreme_chaos_verification.s
+
+# target to generate assembly for a file
+tests/suites/extreme_chaos_verification.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spu-extreme-chaos.dir/build.make CMakeFiles/spu-extreme-chaos.dir/tests/suites/extreme_chaos_verification.cpp.s
+.PHONY : tests/suites/extreme_chaos_verification.cpp.s
+
 tests/suites/rigorous_verification.o: tests/suites/rigorous_verification.cpp.o
 .PHONY : tests/suites/rigorous_verification.o
 
@@ -393,6 +430,7 @@ help:
 	@echo "... spu-bulletproof"
 	@echo "... spu-chaos"
 	@echo "... spu-collision"
+	@echo "... spu-extreme-chaos"
 	@echo "... spu-verify"
 	@echo "... synergetic-sqr"
 	@echo "... renderer/src/SynergeticRenderer.o"
@@ -410,6 +448,9 @@ help:
 	@echo "... tests/suites/collision_verification.o"
 	@echo "... tests/suites/collision_verification.i"
 	@echo "... tests/suites/collision_verification.s"
+	@echo "... tests/suites/extreme_chaos_verification.o"
+	@echo "... tests/suites/extreme_chaos_verification.i"
+	@echo "... tests/suites/extreme_chaos_verification.s"
 	@echo "... tests/suites/rigorous_verification.o"
 	@echo "... tests/suites/rigorous_verification.i"
 	@echo "... tests/suites/rigorous_verification.s"

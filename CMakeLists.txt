@@ -52,6 +52,12 @@ if(APPLE)
     set_source_files_properties(tests/suites/chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
+# 4.5 Extreme Chaos Suite
+add_executable(spu-extreme-chaos tests/suites/extreme_chaos_verification.cpp)
+if(APPLE)
+    set_source_files_properties(tests/suites/extreme_chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+endif()
+
 # --- SPU-1 PURITY GUARD (Zero-Tolerance Audit) ---
 add_custom_target(purity_audit ALL
     COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/core/include/spu/SynergeticsMath.hpp" | grep -E 'float|double' && (echo "PURITY ERROR: Contamination in Core" && exit 1) || true
