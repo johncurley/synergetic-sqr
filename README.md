@@ -45,6 +45,7 @@ $$x = \frac{a + b\sqrt{3}}{2^{16}}$$
 | `smul` | Surd multiplication | Integer multiply-shift |
 | `srot60` | 60° rotation | Register permutation |
 | `jinv` | Sign inversion | XOR on surd sign-bit |
+| `equilibrate` | Equilibrium solver | Isotropic balancer unit |
 | `snorm` | Normalization | Fixed-point bounds scaling |
 
 ### SQR-ASIC: Hardware Specification
