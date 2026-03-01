@@ -47,18 +47,28 @@ The SPU-1 implements a **Hardware Lattice Relaxation Unit** utilizing a 12-neigh
 
 ### 5. Formal Verification & Fixed-Point Proof
 
-#### 5.1 Theorem 1: Fixed-Point Convergence
-We formally define the SPU-1 Lattice Relaxation operator $L(u)$ as:
-$$u_{i}^{t+1} = u_{i}^{t} + \mathcal{F}\left(\sum_{j \in N(i)} (u_j^t - u_i^t)\right)$$
-where $\mathcal{F}$ is the bit-exact integer inversion and scaling function.
+#### 5.1 Theorem: Fixed-Point Invariance of the IVM State
+We define the SPU-1 Lattice Relaxation as a discrete operator acting on a 12-connected lattice where each node $u_i$ holds a vector in the integer Quadray space $\mathbb{Z}^n$.
 
-**Proof of Fixed Point:**
-1. **Representability:** In the Isotropic Vector Matrix (IVM), the displacement vectors between adjacent nodes are members of the integer-basis set. Therefore, the state of perfect equilibrium ($\sum \Delta u = 0$) is exactly representable in $\mathbb{Q}(\sqrt{3})$ with zero truncation error.
-2. **Identity of Summation:** If $\sum \Delta u \equiv 0$, then the hardware correction vector $c = \text{inv}(0) + 1$ is bit-zero in 2's complement logic.
-3. **Invariance:** If $c = 0$, then $u^{t+1} = u^t$. Thus, the equilibrium state is a fixed point of the operator.
+**1. Operator Definition:**
+Let $N(i)$ be the set of 12 neighbors for node $i$. We define the hardware residual operator $R_i$ as:
+$$R_i = \sum_{j \in N(i)} u_j$$
+The SPU-1 correction step is defined as:
+$$u_i' = u_i + \alpha \cdot (-R_i)$$
+where $\alpha$ is the scaling factor and all arithmetic is bit-locked integer logic.
 
-**Elimination of Jitter:**
-Unlike floating-point systems, which oscillate infinitely around sub-rational fixed points, the SPU-1 enforces a **Precision Floor**. If the residual tension falls below the defined threshold (default: 16 units), the operator returns the identity. This ensures that the simulation converges to a bit-stable state within a finite number of cycles.
+**2. Equilibrium Condition:**
+In the Isotropic Vector Matrix (IVM), the state of perfect equilibrium for a centered node is defined explicitly as:
+$$\sum_{j \in N(i)} u_j = 0$$
+(In this symmetric configuration, opposite vectors cancel pairwise).
+
+**3. Proof of Invariance:**
+If the equilibrium condition holds, then $R_i = 0$. Substituting into the correction step:
+$$u_i' = u_i + \alpha \cdot (0)$$
+$$u_i' = u_i$$
+
+**Conclusion:**
+The equilibrium configuration is a fixed point of the SPU-1 operator. Because the implementation utilizes bit-exact integer arithmetic, this fixed point is absolute and free from stochastic divergence or rounding noise.
 
 #### 5.2 The Invariance Theorem
 We define the **Structural Invariant** as the preservation of the quadratic field norm $N(a, b) = a^2 - 3b^2$. Future work involves utilizing SMT solvers (e.g., Z3) to prove that for all possible inputs $[a, b] \in \mathbb{Z}^{32}$, the `SMUL` and `SPERM` operations maintain this invariant relative to the fixed-point scaling factor.
