@@ -25,7 +25,9 @@ Where $a, b \in \mathbb{Z} \cap [-2^{31}, 2^{31}-1]$.
     - $A_{out} = (a_1 a_2 + 3 b_1 b_2) \gg 16$
     - $B_{out} = (a_1 b_2 + b_1 a_2) \gg 16$
     - *Optimization:* Multiplication by 3 is implemented as $(x \ll 1) + x$.
-*   **`SNORM` (Surd Normalize):** Monitors the 30th bit of all coefficients. If triggered, performs a simultaneous arithmetic right-shift (`>> 1`) on $a$ and $b$ to preserve rational ratios within 32-bit bounds.
+*   **`SNORM` (Surd Normalize):** Monitors the 30th bit of coefficients. If triggered, performs a simultaneous arithmetic right-shift (`>> 1`) on $a$ and $b$ to preserve rational ratios within 32-bit bounds. 
+    - *Precision Floor:* A hardware-level safeguard (threshold: 256) prevents normalization if precision would be lost, ensuring state stability under repeated scaling.
+    - *Vector/Matrix Lanes:* Normalization propagates across all lanes in 256-bit registers to maintain structural symmetry.
 
 #### 3.2 Geometric Instructions
 *   **`SPERM` (SQR Permute):** Implements 60° rotations as zero-cycle register shuffles.

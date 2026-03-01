@@ -25,8 +25,14 @@ SurdFixed64 spu_mul(SurdFixed64 u, SurdFixed64 v) {
     return SurdFixed64(int(res_a), int(res_b));
 }
 
-float spu_to_float(SurdFixed64 s) {
-    return (float(s.a) + float(s.b) * 1.73205081) / float(SPU_ONE);
+// _spu_safe_normalize: Overflow Safety Valve (Self-Healing) with floor protection
+SurdFixed64 spu_safe_normalize(SurdFixed64 s) {
+    uint mask = 0x40000000;
+    if (abs(s.a) < 256 && abs(s.b) < 256) return s; // Floor protection
+    if ((uint(s.a) & mask) != 0 || (uint(s.b) & mask) != 0) {
+        return SurdFixed64(s.a >> 1, s.b >> 1);
+    }
+    return s;
 }
 
 struct Quadray4 {
@@ -40,6 +46,12 @@ Quadray4 spu_rotate60(Quadray4 q) {
 struct SurdVector3 {
     SurdFixed64 x, y, z;
 };
+
+void spu_safe_normalize_vector(inout SurdVector3 v) {
+    v.x = spu_safe_normalize(v.x);
+    v.y = spu_safe_normalize(v.y);
+    v.z = spu_safe_normalize(v.z);
+}
 
 SurdVector3 spu_to_cartesian(Quadray4 q) {
     return SurdVector3(
@@ -59,6 +71,10 @@ layout(std430, binding = 1) buffer SPUControl {
 // --- CARTESIAN CORNER (Optical Interface) ---
 
 layout(rgba8, binding = 0) writeonly uniform image2D outTexture;
+
+float spu_to_float(SurdFixed64 s) {
+    return (float(s.a) + float(s.b) * 1.73205081) / float(SPU_ONE);
+}
 
 vec2 display_project(SurdVector3 sv, float scale) {
     vec3 pf = vec3(spu_to_float(sv.x), spu_to_float(sv.y), spu_to_float(sv.z)) * scale;

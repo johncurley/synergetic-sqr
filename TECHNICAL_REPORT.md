@@ -34,7 +34,8 @@ $$(a_1 + b_1\sqrt{3})(a_2 + b_2\sqrt{3}) = (a_1 a_2 + 3 b_1 b_2) + (a_1 b_2 + b_
 The constant multiplication by 3 is optimized as $(x \ll 1) + x$.
 
 #### 4.3 Normalization (Self-Healing)
-Fixed-point growth is handled via the `SNORM` intrinsic. When a coefficient exceeds the 30-bit threshold, an arithmetic right-shift is applied to all components, preserving the rational ratio while maintaining register bounds.
+Fixed-point growth is handled via the `SNORM` intrinsic. When a coefficient exceeds the 30-bit threshold, an arithmetic right-shift is applied to all components, preserving the rational ratio while maintaining register bounds. 
+- **Precision Floor:** The SPU-1 implements a precision safeguard (threshold: 256) that prevents further normalization if significant digits would be lost. This ensures that the system can survive millions of scaling cycles without collapsing to a zero-state.
 
 ### 5. Empirical Verification
 The architecture is verified via the **Rigorous Verification Suite**:

@@ -5,7 +5,7 @@ This document defines the technical implementation of terms used in the Synerget
 
 | Specification | Technical Definition | Hardware Implementation |
 | :--- | :--- | :--- |
-| **Fixed-Point Scaling** | Normalization routine | Arithmetic right-shift (`>> 1`) on surd coefficients to preserve fixed-point bounds. |
+| **Fixed-Point Scaling** | Normalization routine | Arithmetic right-shift (`>> 1`) on surd coefficients to preserve fixed-point bounds. Includes a precision floor (threshold: 256) to prevent state collapse during repeated scaling cycles. |
 | **Register Permutation** | Index-based rotation | Cyclic shift of coordinate indices in the 4D Quadray register; requires zero arithmetic gates. |
 | **Bit-Exact Identity** | Deterministic Closure | Machine-invariant output achieved by utilizing integer arithmetic in the $\mathbb{Q}(\sqrt{3})$ field extension. |
 | **SurdFixed64** | Quadratic Field Element | A fixed-point representation of the algebraic field $\mathbb{Q}(\sqrt{3})$, stored as two 32-bit integers (a, b) with implicit denominator. |
