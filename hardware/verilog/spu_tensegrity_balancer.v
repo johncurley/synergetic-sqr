@@ -1,6 +1,6 @@
-// SPU-1 Pipelined Tensegrity Balancer (v2.0.26)
-// Implements a 3-stage reduction tree for 12-neighbor Laplacian relaxation.
-// Pipelining ensures timing closure at high clock frequencies.
+// SPU-1 Pipelined Tensegrity Balancer (v2.0.27)
+// Implements a 4-stage reduction tree for 12-neighbor Laplacian relaxation.
+// Stage 4 registers the final output for clean bus timing.
 
 module spu_tensegrity_balancer (
     input  clk,
@@ -9,18 +9,15 @@ module spu_tensegrity_balancer (
     output reg [255:0] scaled_residual
 );
 
-    // Stage 1 Registers (6 intermediates per lane)
-    reg signed [63:0] s1 [0:7][0:5];
-    // Stage 2 Registers (3 intermediates per lane)
-    reg signed [63:0] s2 [0:7][0:2];
-    // Stage 3 Registers (Final sum per lane)
-    reg signed [63:0] s3 [0:7];
+    // Intermediate registers for pipelining
+    reg signed [63:0] s1 [0:7][0:5]; // Stage 1
+    reg signed [63:0] s2 [0:7][0:2]; // Stage 2
+    reg signed [63:0] s3 [0:7];      // Stage 3
 
     genvar i;
     generate
         for (i = 0; i < 8; i = i + 1) begin : lane_logic
             wire signed [31:0] n[0:11];
-            // Extract neighbors for this lane
             assign n[0]  = neighbors[0*256 + i*32 +: 32];
             assign n[1]  = neighbors[1*256 + i*32 +: 32];
             assign n[2]  = neighbors[2*256 + i*32 +: 32];
@@ -40,8 +37,9 @@ module spu_tensegrity_balancer (
                     s1[i][3] <= 64'd0; s1[i][4] <= 64'd0; s1[i][5] <= 64'd0;
                     s2[i][0] <= 64'd0; s2[i][1] <= 64'd0; s2[i][2] <= 64'd0;
                     s3[i]    <= 64'd0;
+                    scaled_residual[i*32 +: 32] <= 32'd0;
                 end else begin
-                    // Stage 1: Initial reduction (6 sums)
+                    // Stage 1: Reduction 1
                     s1[i][0] <= $signed(n[0])  + $signed(n[1]);
                     s1[i][1] <= $signed(n[2])  + $signed(n[3]);
                     s1[i][2] <= $signed(n[4])  + $signed(n[5]);
@@ -49,18 +47,18 @@ module spu_tensegrity_balancer (
                     s1[i][4] <= $signed(n[8])  + $signed(n[9]);
                     s1[i][5] <= $signed(n[10]) + $signed(n[11]);
 
-                    // Stage 2: Intermediate reduction (3 sums)
+                    // Stage 2: Reduction 2
                     s2[i][0] <= s1[i][0] + s1[i][1];
                     s2[i][1] <= s1[i][2] + s1[i][3];
                     s2[i][2] <= s1[i][4] + s1[i][5];
 
                     // Stage 3: Final reduction
                     s3[i] <= s2[i][0] + s2[i][1] + s2[i][2];
+
+                    // Stage 4: Register Output with Scaling (alpha = 1/16)
+                    scaled_residual[i*32 +: 32] <= s3[i] >>> 4;
                 end
             end
-
-            // Output scaling (alpha = 1/16)
-            assign scaled_residual[i*32 +: 32] = s3[i] >>> 4;
         end
     endgenerate
 

@@ -65,7 +65,7 @@ The functional logic for this specification is implemented in the following modu
 | :--- | :--- | :--- | :--- | :--- |
 | `01` | **`SPERM`** | `spu_permute` | 1 Cycle | 60° rotation (Bus Shuffle). |
 | `10` | **`SMUL`** | `spu_smul` | 1 Cycle | Surd multiplication (Integer ALU). |
-| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | 3 Cycles | Pipelined Discrete Laplacian Relaxation. |
+| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | 5 Cycles | Pipelined Discrete Laplacian Relaxation. |
 | `00` | `NOP` | Bypass | 0 Cycles | No operation. |
 
 ### 6. Kinetic Acceleration & Equilibrium
