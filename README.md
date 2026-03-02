@@ -135,4 +135,11 @@ By utilizing discrete integer registers and a parallel 12-neighbor summation tre
 | **Recursive Feedback** | $10^7$ recursive steps | **PASS** | Identity restores exactly to `0x10000`. |
 
 ---
+### ⚠️ Perceptual Safety Warning
+The SPU-1 architecture produces **zero-drift spatial projections** with a level of geometric coherence that exceeds standard digital media. Observation of raw, bit-exact motion may cause **Topological Vertigo** or disorientation in sensitive individuals.
+
+*   **Optical Damper (DSS):** Enabled by default to provide a perceptual buffer for standard display hardware.
+*   **Forensic Mode:** Press **'S'** to disable the damper and observe the raw, uncompromising bit-identities. Use with caution.
+
+---
 *A deterministic contribution to the global commons of computer graphics.*

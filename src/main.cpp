@@ -55,6 +55,9 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
+    // Initial Window Title
+    SDL_SetWindowTitle(window, "SPU-1 [Janus +] | Damper [ON]");
+
     std::cout << "--- SPU-1 Deterministic Verification Suite v1.7 ---" << std::endl;
     // 1. Randomized Input Test: Initialize a Quadray at an arbitrary rational point
     Synergetics::Quadray4 initial_q;

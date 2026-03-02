@@ -12,7 +12,7 @@ MetalRenderer::MetalRenderer(MTL::Device* device) : _device(device) {
     _commandQueue = _device->newCommandQueue();
     _computePipeline = nullptr;
     _janus = 1;
-    _dssEnabled = false;
+    _dssEnabled = true; // SAFETY DEFAULT: ON
     _tickCount = 0;
     buildComputePipeline();
 }
@@ -118,7 +118,7 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     SDL_ClaimWindowForGPUDevice(_gpuDevice, window);
     _tickCount = 0;
     _janus = 1;
-    _dssEnabled = false;
+    _dssEnabled = true; // SAFETY DEFAULT: ON
 }
 
 VulkanRenderer::~VulkanRenderer() {
