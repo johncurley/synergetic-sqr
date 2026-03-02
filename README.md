@@ -38,14 +38,22 @@ $$x = \frac{a + b\sqrt{3}}{2^{16}}$$
 *   **a** and **b** are signed 32-bit integers.
 *   All operations are integer-only; no IEEE-754 floating-point operations are used in the transformation logic.
 
-### Instruction Model (SPU-1)
+### Polytope Core (SPU-11)
+The engine is extensible to the **Prime-11 basis**, enabling bit-exact tracking of high-dimensional polytopes. By utilizing **Topological Data Folding**, the SPU-11 can rotate complex datasets through 11 symmetric axes with zero memory latency and zero logic-drift.
+
+### Rational Dampening Lattice
+The SPU-1 implements a hardware-native **A-Domain Filter** for kinetic stability. Unlike transcendental Laplace decay, the **Rational Damper** utilizes discrete shell contraction to force oscillating systems into **Absolute Inertial Rest** (bit-zero) within a finite number of cycles.
+
+### Instruction Model (SPU-1 / SPU-11)
 | Instruction | Description | Implementation |
 | :--- | :--- | :--- |
 | `sadd` | Surd addition | Parallel integer add |
 | `smul` | Surd multiplication | Integer multiply-shift |
-| `srot60` | 60° rotation | Register permutation |
-| `jinv` | Sign inversion | XOR on surd sign-bit |
-| `equilibrate` | Equilibrium solver | Isotropic balancer unit |
+| `srot_x4` | 4D Prime-Axis Shift | 0-cycle wire permutation |
+| `srot_11` | 11D Topological Fold | High-order cyclic shuffle |
+| `damp` | A-Domain Relaxer | Discrete shell contraction |
+| `equilibrate`| Lattice Balancer | Discrete Laplacian Unit |
+| `clamp` | Dimensional Gate | 4D/11D pathway isolation |
 | `snorm` | Normalization | Fixed-point bounds scaling |
 
 ### SQR-ASIC: Hardware Specification
