@@ -131,17 +131,19 @@ struct alignas(32) Quadray4 {
      * Refined implementation of Thomson's 4D Prime Projection.
      * Maps to zero-latency synthesizable wire-swaps in spu_permute.v.
      */
-    static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
-        switch (phase) {
-            case 1: // P3 (60°): (b, c, a, d)
-                return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
-            case 2: // P5 (120°): (c, a, b, d)
-                return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
-            case 3: // P7 (Flip): (d, b, c, a)
-                return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
-            default: // P1 (Identity): (a, b, c, d)
-                return q;
+    /**
+     * _spu_damp: The Rational Damper (A-Domain Step-Down).
+     * Performs discrete shell contraction toward the inertial center.
+     */
+    static inline Quadray4 _spu_damp(Quadray4 q) {
+        Quadray4 scaled;
+        for (int i = 0; i < 8; ++i) {
+            int32_t val = q.data.v[i];
+            if (val == 1 || val == -1) scaled.data.v[i] = 0;
+            else scaled.data.v[i] = val >> 1;
         }
+        // Sink energy into P7 Hyper-Flip
+        return _spu_sperm_x4(scaled, 3);
     }
 
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {

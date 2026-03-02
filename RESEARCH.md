@@ -76,18 +76,16 @@ We define the **Structural Invariant** as the preservation of the quadratic fiel
 #### 5.2 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
-#### 5.6 Prime-Axis Locking and 4D Projection
-The SPU-1 implements Thomson’s **4D Prime Projection Conjecture**, which identifies rotations as discrete jumps between prime-linked symmetry states. 
+#### 5.7 Rational Laplace and A-Domain Filtering
+The SPU-1 replaces the transcendental Laplace transform with a hardware-native **Rational Damper**. This primitive operates entirely in the **A-Domain (Algebraic Domain)**, utilizing **Discrete Shell Contraction** to stabilize kinetic systems.
 
-**1. Prime Phase Mapping:**
-Spatial basis shifts are indexed by the Prime Phase ($P$):
-*   **P1 (Identity):** Standard IVM orientation $(a, b, c, d)$.
-*   **P3 (60°):** Rotational lock on the primary simplex edges.
-*   **P5 (120°):** Secondary symmetry lock.
-*   **P7 (Hyper-Flip):** Projection of the 4th dimensional extremity into the 3D basis.
+**1. The Mechanism of Decay:**
+Instead of a continuous curve ($e^{-kt}$), the SPU-1 reduces energy through discrete steps:
+*   **Rational Scaling:** Bit-exact division by 2 ($1/2$ step) ensures that values stay within the rational field.
+*   **Permutational Sink:** The remaining energy is "rotated" into the 4th dimension via the **P7 Hyper-Flip**, preventing high-frequency residue in the 3D basis.
 
-**2. Hyper-Dimensional Tracking:**
-By utilizing zero-latency wire-swaps for these phases, the SPU-1 tracks the movement of a 4D Pentachoron (5-cell) through its 3D IVM shadow. Because each phase is a bit-exact permutation, the system maintains absolute algebraic closure across hyper-dimensional state transitions.
+**2. Absolute Convergence:**
+By implementing a **Step-Down Guard** at the unit-bit level, the SPU-1 ensures that oscillating signals eventually reach the bit-zero state ($0+0\sqrt{3}$). This eliminates the infinitesimal "ringing" and motor jitter inherent in floating-point PID controllers and Laplace filters.
 
 ### 6. Future Work: Silicon Realization Hurdles
 While the SPU-1 has achieved functional parity in simulation, physical realization in silicon (ASIC/FPGA) requires addressing the following physical constraints:
