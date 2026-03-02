@@ -180,10 +180,16 @@ int main(int argc, char* argv[]) {
             } else if (e.type == SDL_EVENT_KEY_DOWN) {
                 if (e.key.key == SDLK_SPACE) {
                     renderer->toggleJanus();
-                    const char* title = (renderer->getJanus() > 0) ? 
-                        "Synergetic Renderer (Janus +)" : "Synergetic Renderer (Janus -)";
-                    SDL_SetWindowTitle(window, title);
+                } else if (e.key.key == SDLK_S) {
+                    renderer->toggleDSS();
                 }
+                
+                // Update Window Title with Status
+                char title[128];
+                snprintf(title, sizeof(title), "SPU-1 [%s] | Damper [%s]", 
+                    (renderer->getJanus() > 0 ? "Janus +" : "Janus -"),
+                    (renderer->getDSS() ? "ON" : "OFF"));
+                SDL_SetWindowTitle(window, title);
             }
         }
 

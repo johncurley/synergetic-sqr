@@ -4,10 +4,10 @@ using namespace metal;
 // --- SOVEREIGN ALGEBRAIC CORE (Integer Only) ---
 
 struct SurdFixed64 {
-    int a; // coefficient of 1
-    int b; // coefficient of sqrt(3)
+    int a; 
+    int b; 
     static constexpr constant int Shift = 16;
-    static constexpr constant int One = 1 << Shift;
+    static constexpr constant int One = 1 << 16;
 
     SurdFixed64 add(SurdFixed64 other) const { return { a + other.a, b + other.b }; }
     SurdFixed64 subtract(SurdFixed64 other) const { return { a - other.a, b - other.b }; }
@@ -19,39 +19,10 @@ struct SurdFixed64 {
         long res_b = ((long)a * other.b + (long)b * other.a) >> Shift;
         return { (int)res_a, (int)res_b };
     }
-
-    static SurdFixed64 _spu_safe_normalize(SurdFixed64 s) {
-        uint mask = 0x40000000;
-        if (abs(s.a) < 256 && abs(s.b) < 256) return s;
-        if ((uint(s.a) & mask) || (uint(s.b) & mask)) {
-            return { s.a >> 1, s.b >> 1 };
-        }
-        return s;
-    }
 };
 
 struct SurdVector3 {
     SurdFixed64 x, y, z;
-
-    static SurdVector3 _spu_safe_normalize_vector(SurdVector3 v) {
-        return { 
-            SurdFixed64::_spu_safe_normalize(v.x),
-            SurdFixed64::_spu_safe_normalize(v.y),
-            SurdFixed64::_spu_safe_normalize(v.z)
-        };
-    }
-};
-
-struct SurdMatrix3x3 {
-    SurdVector3 row[3];
-
-    static SurdMatrix3x3 _spu_safe_normalize_matrix(SurdMatrix3x3 m) {
-        return { {
-            SurdVector3::_spu_safe_normalize_vector(m.row[0]),
-            SurdVector3::_spu_safe_normalize_vector(m.row[1]),
-            SurdVector3::_spu_safe_normalize_vector(m.row[2])
-        } };
-    }
 };
 
 struct Quadray4 {
@@ -69,11 +40,11 @@ struct Quadray4 {
 struct SPUControl {
     uint tick;
     int rot_count;
-    uint prime_phase; // REG_P: 0=P1, 1=P3, 2=P5, 3=P7
-    uint padding;
+    uint prime_phase; // REG_P
+    uint dss_enabled; // REG_DSS
 };
 
-// --- CARTESIAN CORNER (Optical Interface - Floats Allowed) ---
+// --- CARTESIAN CORNER (Optical Interface) ---
 
 struct DisplayCorner {
     static float toFloat(SurdFixed64 s) {
@@ -89,7 +60,6 @@ struct DisplayCorner {
 
     static float2 project(SurdVector3 sv, float scale) {
         float3 pf = float3(toFloat(sv.x), toFloat(sv.y), toFloat(sv.z)) * scale;
-        // PERSPECTIVE: Z-offset at 20.0, Focal at 6.0
         return pf.xy / (20.0f - pf.z) * 6.0f;
     }
 
@@ -105,7 +75,7 @@ kernel void renderDQFA_v1_5(
     texture2d<float, access::write> outTexture [[texture(0)]],
     uint2 gid [[thread_position_in_grid]],
     constant SPUControl& control [[buffer(0)]],
-    constant int4& dummy [[buffer(1)]] // Rotor ignored in Hard-Step mode
+    constant int4& dummy [[buffer(1)]]
 ) {
     uint width = outTexture.get_width();
     uint height = outTexture.get_height();
@@ -117,48 +87,54 @@ kernel void renderDQFA_v1_5(
     uv.x *= aspect;
 
     // 1. JITTERBUG GEOMETRY (ALGEBRAIC CORE)
+    SurdFixed64 one = { SurdFixed64::One, 0 };
+    SurdFixed64 zero = { 0, 0 };
+    SurdFixed64 neg_one = { -SurdFixed64::One, 0 };
+
     Quadray4 v_base[12] = {
-        {{ {SurdFixed64::One, 0}, {SurdFixed64::One, 0}, {0, 0}, {0, 0} }}, 
-        {{ {SurdFixed64::One, 0}, {0, 0}, {SurdFixed64::One, 0}, {0, 0} }}, 
-        {{ {SurdFixed64::One, 0}, {0, 0}, {0, 0}, {SurdFixed64::One, 0} }}, 
-        {{ {0, 0}, {SurdFixed64::One, 0}, {SurdFixed64::One, 0}, {0, 0} }}, 
-        {{ {0, 0}, {SurdFixed64::One, 0}, {0, 0}, {SurdFixed64::One, 0} }}, 
-        {{ {0, 0}, {0, 0}, {SurdFixed64::One, 0}, {SurdFixed64::One, 0} }}, 
-        {{ {-SurdFixed64::One, 0}, {-SurdFixed64::One, 0}, {0, 0}, {0, 0} }}, 
-        {{ {-SurdFixed64::One, 0}, {0, 0}, {-SurdFixed64::One, 0}, {0, 0} }}, 
-        {{ {-SurdFixed64::One, 0}, {0, 0}, {0, 0}, {-SurdFixed64::One, 0} }}, 
-        {{ {0, 0}, {-SurdFixed64::One, 0}, {-SurdFixed64::One, 0}, {0, 0} }}, 
-        {{ {0, 0}, {-SurdFixed64::One, 0}, {0, 0}, {-SurdFixed64::One, 0} }}, 
-        {{ {0, 0}, {0, 0}, {-SurdFixed64::One, 0}, {-SurdFixed64::One, 0} }}  
+        {{ one, one, zero, zero }}, {{ one, zero, one, zero }}, {{ one, zero, zero, one }},
+        {{ zero, one, one, zero }}, {{ zero, one, zero, one }}, {{ zero, zero, one, one }},
+        {{ neg_one, neg_one, zero, zero }}, {{ neg_one, zero, neg_one, zero }}, {{ neg_one, zero, zero, neg_one }},
+        {{ zero, neg_one, neg_one, zero }}, {{ zero, neg_one, zero, neg_one }}, {{ zero, zero, neg_one, neg_one }}
     };
     
-    // 2. OPTICAL SCALE (CARTESIAN CORNER)
+    // 2. OPTICAL SCALE
     float scale = DisplayCorner::getScale(control.tick);
 
-    // 3. OPTICAL PROJECTION (CARTESIAN CORNER)
+    // 3. OPTICAL PROJECTION
     float2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
-        
-        // Apply Legacy Rotations
         for(int r=0; r<control.rot_count; r++) { qv = Quadray4::rotate60(qv); }
         
-        // Apply Thomson Prime-Axis Phase (Refined Mapping)
         switch(control.prime_phase) {
-            case 1: qv = { qv.q[0], qv.q[3], qv.q[1], qv.q[2] }; break; // P3 (60°)
-            case 2: qv = { qv.q[0], qv.q[2], qv.q[3], qv.q[1] }; break; // P5 (120°)
-            case 3: qv = { qv.q[3], qv.q[1], qv.q[2], qv.q[0] }; break; // P7 (Flip)
+            case 1: qv = { qv.q[0], qv.q[3], qv.q[1], qv.q[2] }; break; // P3
+            case 2: qv = { qv.q[0], qv.q[2], qv.q[3], qv.q[1] }; break; // P5
+            case 3: qv = { qv.q[3], qv.q[1], qv.q[2], qv.q[0] }; break; // P7
         }
-
         proj[i] = DisplayCorner::project(qv.toCartesian(), scale);
     }
 
-    // 4. ZERO-JITTER WIREFRAME (CARTESIAN CORNER)
-    float wire = 0.0;
+    // 4. DETERMINISTIC RENDERING (HARD-EDGE OR OPTICAL DAMPER)
     int edges[48] = { 0,1, 0,2, 0,3, 0,4, 1,2, 1,3, 1,5, 2,4, 2,5, 3,4, 3,5, 4,5, 
                       6,7, 6,8, 6,9, 6,10, 7,8, 7,9, 7,11, 8,10, 8,11, 9,10, 9,11, 10,11 };
-    for(int i=0; i<24; i++) {
-        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+
+    float wire = 0.0;
+    if (control.dss_enabled == 1) {
+        float2 offsets[4] = { float2(0.25, 0.25), float2(0.75, 0.25), float2(0.25, 0.75), float2(0.75, 0.75) };
+        for(int s=0; s<4; s++) {
+            float2 sub_uv = uv + (offsets[s] / float2(width, height));
+            float sub_wire = 0.0;
+            for(int i=0; i<24; i++) {
+                sub_wire = max(sub_wire, DisplayCorner::drawEdge(sub_uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+            }
+            wire += sub_wire * 0.25;
+        }
+    } else {
+        for(int i=0; i<24; i++) {
+            wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+        }
     }
+
     outTexture.write(float4(float3(wire), 1.0f), gid);
 }

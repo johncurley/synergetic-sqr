@@ -12,6 +12,7 @@ MetalRenderer::MetalRenderer(MTL::Device* device) : _device(device) {
     _commandQueue = _device->newCommandQueue();
     _computePipeline = nullptr;
     _janus = 1;
+    _dssEnabled = false;
     _tickCount = 0;
     buildComputePipeline();
 }
@@ -24,6 +25,11 @@ MetalRenderer::~MetalRenderer() {
 void MetalRenderer::toggleJanus() {
     _janus *= -1;
     std::cout << "Janus Polarity Flipped: " << (_janus > 0 ? "+" : "-") << std::endl;
+}
+
+void MetalRenderer::toggleDSS() {
+    _dssEnabled = !_dssEnabled;
+    std::cout << "Optical Damper (DSS): " << (_dssEnabled ? "ENABLED" : "DISABLED") << std::endl;
 }
 
 void MetalRenderer::buildComputePipeline() {
@@ -71,7 +77,7 @@ void MetalRenderer::draw(void* layerPtr) {
         static_cast<uint32_t>(_tickCount),
         static_cast<int32_t>((_tickCount / 100) % 6),
         currentPhase,
-        0
+        _dssEnabled ? 1u : 0u
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
@@ -95,6 +101,7 @@ void MetalRenderer::draw(void* layerPtr) {
         std::cout << "[Identity Closure Verification] Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
         std::cout << "  Thomson Phase: " << phaseLabels[currentPhase] << " (REG_P=0x0" << (currentPhase*2+1) << ")" << std::endl;
+        std::cout << "  Optical Damper: " << (_dssEnabled ? "ON" : "OFF") << std::endl;
     }
 
     pool->release();
@@ -111,6 +118,7 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     SDL_ClaimWindowForGPUDevice(_gpuDevice, window);
     _tickCount = 0;
     _janus = 1;
+    _dssEnabled = false;
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -120,6 +128,11 @@ VulkanRenderer::~VulkanRenderer() {
 void VulkanRenderer::toggleJanus() {
     _janus *= -1;
     std::cout << "Janus Polarity Flipped (Vulkan): " << (_janus > 0 ? "+" : "-") << std::endl;
+}
+
+void VulkanRenderer::toggleDSS() {
+    _dssEnabled = !_dssEnabled;
+    std::cout << "Optical Damper (Vulkan DSS): " << (_dssEnabled ? "ENABLED" : "DISABLED") << std::endl;
 }
 
 void VulkanRenderer::draw(void* unused) {

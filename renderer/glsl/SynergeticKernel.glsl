@@ -56,8 +56,8 @@ SurdVector3 spu_to_cartesian(Quadray4 q) {
 layout(std430, binding = 1) buffer SPUControl {
     uint tick;
     int rot_count;
-    uint prime_phase; // REG_P
-    uint padding;
+    uint prime_phase; 
+    uint dss_enabled; // REG_DSS
 };
 
 // --- CARTESIAN CORNER (Optical Interface) ---
@@ -119,10 +119,10 @@ void main() {
         Quadray4(SurdFixed64[](zero, zero, neg_one, neg_one))
     );
 
-    // 2. OPTICAL SCALE (CARTESIAN CORNER)
+    // 2. OPTICAL SCALE
     float scale = DisplayCorner::getScale(tick);
 
-    // 3. OPTICAL PROJECTION (CARTESIAN CORNER)
+    // 3. OPTICAL PROJECTION
     vec2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
@@ -131,12 +131,25 @@ void main() {
         proj[i] = DisplayCorner::project(spu_to_cartesian(qv), scale);
     }
 
-    // 4. ZERO-JITTER WIREFRAME (CARTESIAN CORNER)
-    float wire = 0.0;
+    // 4. DETERMINISTIC RENDERING (HARD-EDGE OR OPTICAL DAMPER)
     int edges[48] = int[]( 0,1, 0,2, 0,3, 0,4, 1,2, 1,3, 1,5, 2,4, 2,5, 3,4, 3,5, 4,5, 
                            6,7, 6,8, 6,9, 6,10, 7,8, 7,9, 7,11, 8,10, 8,11, 9,10, 9,11, 10,11 );
-    for(int i=0; i<24; i++) {
-        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+
+    float wire = 0.0;
+    if (dss_enabled == 1) {
+        vec2 offsets[4] = vec2[]( vec2(0.25, 0.25), vec2(0.75, 0.25), vec2(0.25, 0.75), vec2(0.75, 0.75) );
+        for(int s=0; s<4; s++) {
+            vec2 sub_uv = uv + (offsets[s] / vec2(size));
+            float sub_wire = 0.0;
+            for(int i=0; i<24; i++) {
+                sub_wire = max(sub_wire, DisplayCorner::drawEdge(sub_uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+            }
+            wire += sub_wire * 0.25;
+        }
+    } else {
+        for(int i=0; i<24; i++) {
+            wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+        }
     }
 
     imageStore(outTexture, gid, vec4(vec3(wire), 1.0));
