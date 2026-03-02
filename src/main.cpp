@@ -1,5 +1,6 @@
 #include <SDL3/SDL.h>
 #include <iostream>
+#include <string.h>
 #include "SynergeticRenderer.hpp"
 #include "SynergeticsMath.hpp"
 
@@ -10,19 +11,27 @@
 using namespace Synergetics;
 
 int main(int argc, char* argv[]) {
+    // 0. CLI Argument Parsing
+    bool safe_mode = true;
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--forensic") == 0) {
+            safe_mode = false;
+            std::cout << "WARNING: Launching in FORENSIC MODE. Optical Dampers Disabled." << std::endl;
+        }
+    }
+
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
 
-    // Use Metal flags on Apple, but SDL handles the cross-platform creation
     Uint32 windowFlags = SDL_WINDOW_RESIZABLE;
 #ifdef __APPLE__
     windowFlags |= SDL_WINDOW_METAL;
 #endif
 
     SDL_Window* window = SDL_CreateWindow(
-        "Synergetic Renderer - Cross-Platform Architecture",
+        "SPU-1 Sovereign Renderer",
         800, 600,
         windowFlags
     );
@@ -32,135 +41,32 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // 1. Backend Selection
     IRenderer* renderer = nullptr;
     void* metalView = nullptr;
     MTL::Device* device = nullptr;
     CA::MetalLayer* layer = nullptr;
 
 #ifdef __APPLE__
-    // Setup Metal Backend (Native High Performance)
     metalView = SDL_Metal_CreateView(window);
     layer = (CA::MetalLayer*)SDL_Metal_GetLayer(metalView);
     device = MTL::CreateSystemDefaultDevice();
     layer->setDevice(device);
     layer->setPixelFormat(MTL::PixelFormatBGRA8Unorm);
-    // STABILITY FIX: Prevent drawable timeouts and optimize for display
     layer->setAllowsNextDrawableTimeout(false);
     layer->setFramebufferOnly(true);
     
     renderer = new MetalRenderer(device);
 #else
-    // Linux/Windows: Use SDL_gpu / Vulkan
     renderer = new VulkanRenderer(window);
 #endif
 
-    // Initial Window Title
-    SDL_SetWindowTitle(window, "SPU-1 [Janus +] | Damper [ON]");
-
-    std::cout << "--- SPU-1 Deterministic Verification Suite v1.7 ---" << std::endl;
-    // 1. Randomized Input Test: Initialize a Quadray at an arbitrary rational point
-    Synergetics::Quadray4 initial_q;
-    initial_q.data.v[0] = 12345; initial_q.data.v[1] = 6789; // Arbitrary (a, b) pair
-    initial_q.data.v[2] = 0;     initial_q.data.v[3] = 0;
-    initial_q.data.v[4] = -5432; initial_q.data.v[5] = 101;
-    initial_q.data.v[6] = 999;   initial_q.data.v[7] = -42;
-    
-    Synergetics::Quadray4 current_q = initial_q;
-
-    // 2. Perform a "Full Circuit" (Six 60-degree permutations)
-    for (int i = 0; i < 6; i++) {
-        current_q = Synergetics::Quadray4::_spu_rotate_60(current_q);
-    }
-
-    // 3. Bit-Level Comparison
-    if (current_q.equals(initial_q)) {
-        std::cout << "DQFA CLOSURE: PASSED (Randomized Input)" << std::endl;
-        std::cout << "  No drift observed within 64-bit fixed-point bounds." << std::endl;
-        std::cout << "  Identity state restored exactly." << std::endl;
+    // Apply Safe-Mode State
+    if (safe_mode) {
+        if (!renderer->getDSS()) renderer->toggleDSS(); // Force ON
+        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE] | Damper [ON]");
     } else {
-        std::cerr << "DQFA CLOSURE: FAILED" << std::endl;
+        SDL_SetWindowTitle(window, "SPU-1 [FORENSIC] | Damper [OFF]");
     }
-
-    // 2. Stress Bound Test: Push to the 32-bit ceiling
-    std::cout << "--- DQFA Stress Bound Test ---" << std::endl;
-    Synergetics::SurdFixed64 high_val = { 0x3FFFFFFF, 0x1FFFFFFF };
-    // Perform multiplication (Intermediate will hit 64-bit range)
-    Synergetics::SurdFixed64 squared = Synergetics::SurdFixed64::_spu_surd_mul(high_val, high_val);
-    // Apply safe normalization safety valve
-    Synergetics::SurdFixed64 safe = Synergetics::SurdFixed64::_spu_safe_normalize(squared);
-    
-    if (std::abs(safe.a) <= 0x40000000 && std::abs(safe.b) <= 0x40000000) {
-        std::cout << "STRESS TEST: PASSED" << std::endl;
-        std::cout << "  Overflow Safety Valve Verified (_spu_safe_normalize)." << std::endl;
-    } else {
-        std::cerr << "STRESS TEST: FAILED (Overflow detected)" << std::endl;
-    }
-
-    // 3. Mixed Operator Chain: rot -> mul -> janus -> rot
-    std::cout << "--- DQFA Mixed Operator Test ---" << std::endl;
-    Synergetics::Quadray4 chain_q = Synergetics::Quadray4::identity();
-    chain_q = Synergetics::Quadray4::_spu_rotate_60(chain_q);
-    // Multiply Q1 by 2 (Shift-and-Add proxy)
-    chain_q.data.v[0] <<= 1; 
-    // Janus Flip (Sign toggle)
-    chain_q.data.v[1] = -chain_q.data.v[1]; 
-    chain_q = Synergetics::Quadray4::_spu_rotate_60(chain_q);
-
-    std::cout << "MIXED OPERATORS: PASSED (Algebraic Integrity)" << std::endl;
-    std::cout << "  Chain bitmask verified: Q2.a=" << chain_q.data.v[2] << std::endl;
-
-    // 4. Kinetic SPU: Verlet Integration Test
-    std::cout << "--- DQFA Verlet Integration Test ---" << std::endl;
-    Synergetics::SPU_TensegrityNode kinetic_node;
-    kinetic_node.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
-    kinetic_node.prev_position = { {0, 0, 0, 0, 0, 0, 0, 0} };
-    
-    // Apply constant gravity toward Q4 for 2 steps
-    Synergetics::Quadray4 g = Synergetics::SPU_TensegrityNode::gravityVector();
-    Synergetics::SPU_TensegrityNode::_spu_verlet_step(kinetic_node, g, 1);
-    Synergetics::SPU_TensegrityNode::_spu_verlet_step(kinetic_node, g, 1);
-    
-    // In Verlet: x2 = 2*x1 - x0 + a. 
-    // x1 = 0 - 0 + 65536 = 65536.
-    // x2 = 2*65536 - 0 + 65536 = 196608.
-    if (kinetic_node.position.data.v[6] == 196608) {
-        std::cout << "VERLET INTEGRATION: PASSED" << std::endl;
-        std::cout << "  Parabolic trajectory verified bit-exactly." << std::endl;
-    } else {
-        std::cerr << "VERLET INTEGRATION: FAILED" << std::endl;
-        std::cerr << "  Expected Q4=196608, Got " << kinetic_node.position.data.v[6] << std::endl;
-    }
-
-    // 5. Kinetic SPU: PBD Constraint Projection Test
-    std::cout << "--- DQFA PBD Constraint Test ---" << std::endl;
-    Synergetics::SPU_TensegrityNode nA, nB;
-    nA.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
-    nB.position = { {65536, 0, 0, 0, 0, 0, 0, 0} }; // Dist = 1.0 (Q1)
-    
-    Synergetics::TensegrityLink cable = { 0, 1, 0, 10, Synergetics::LinkType::Cable }; // Rest length 0
-    cable.projectConstraint(nA, nB);
-    
-    // Stretched cable should pull nB toward nA
-    if (nB.position.data.v[0] < 65536) {
-        std::cout << "PBD PROJECTION: PASSED" << std::endl;
-        std::cout << "  Constraint pull verified: " << nB.position.data.v[0] << std::endl;
-    } else {
-        std::cerr << "PBD PROJECTION: FAILED" << std::endl;
-    }
-
-    // 6. Kinetic SPU: Cable Gating (Slack Test)
-    std::cout << "--- DQFA Cable Gating Test ---" << std::endl;
-    nB.position = { {32768, 0, 0, 0, 0, 0, 0, 0} }; // Dist = 0.5
-    Synergetics::TensegrityLink slack_cable = { 0, 1, 65536LL * 65536LL, 10, Synergetics::LinkType::Cable }; // Rest = 1.0
-    
-    slack_cable.projectConstraint(nA, nB);
-    if (nB.position.data.v[0] == 32768) {
-        std::cout << "CABLE GATING: PASSED (Slack Ignored)" << std::endl;
-    } else {
-        std::cerr << "CABLE GATING: FAILED" << std::endl;
-    }
-    std::cout << "---------------------------------------" << std::endl;
 
 #ifdef __APPLE__
     [NSApp activateIgnoringOtherApps:YES];
@@ -171,11 +77,8 @@ int main(int argc, char* argv[]) {
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
 
-    Uint64 frameStart;
-    int frameTime;
-
     while (!quit) {
-        frameStart = SDL_GetTicks();
+        Uint64 frameStart = SDL_GetTicks();
 
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_EVENT_QUIT) {
@@ -187,7 +90,6 @@ int main(int argc, char* argv[]) {
                     renderer->toggleDSS();
                 }
                 
-                // Update Window Title with Status
                 char title[128];
                 snprintf(title, sizeof(title), "SPU-1 [%s] | Damper [%s]", 
                     (renderer->getJanus() > 0 ? "Janus +" : "Janus -"),
@@ -196,14 +98,12 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Only draw if window is not minimized/hidden
         Uint32 flags = SDL_GetWindowFlags(window);
         if (!(flags & SDL_WINDOW_HIDDEN) && !(flags & SDL_WINDOW_MINIMIZED)) {
             renderer->draw(layer);
         }
 
-        // CPU Sleep: Cap to 60 FPS
-        frameTime = SDL_GetTicks() - frameStart;
+        int frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
         }

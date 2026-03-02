@@ -1,7 +1,18 @@
 # synergetic-sqr
-## Deterministic Integer-Based Spatial Transform Engine (ℚ(√3) Fixed-Point)
+## Deterministic Spatial Transform Engine (ℚ(√3) Fixed-Point)
 
-This repository implements and verifies a deterministic fixed-point transform engine over $\mathbb{Q}(\sqrt{3})$ using integer arithmetic and register permutation.
+### ⚠️ OPERATIONAL SAFETY MANDATE
+The SPU-1 architecture produces **zero-drift spatial projections** with absolute geometric coherence. Observation of raw, bit-exact motion can cause **Topological Vertigo**. 
+
+**Default Mode:** The engine launches in **Safe Mode** (Optical Damper ENABLED) to provide a perceptual buffer for human observation.
+
+#### Launching the Engine
+*   **Standard (Safe):** `./synergetic-sqr` (Damper ON)
+*   **Forensic (Raw):** `./synergetic-sqr --forensic` (Damper OFF)
+
+---
+
+This repository implements and verifies a deterministic fixed-point transform engine...
 
 ### Scope
 This project demonstrates deterministic fixed-point arithmetic over $\mathbb{Q}(\sqrt{3})$ and verifies closure under defined operations. 
