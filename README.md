@@ -99,6 +99,7 @@ The SPU-1 is the functional synthesis of a multi-generational lineage of geometr
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
 *   **[JANUS_MANIFESTO.md](docs/JANUS_MANIFESTO.md):** The role of field reciprocation in the SPU-1.
 *   **[SQR_LANG_SYNTAX.md](docs/SQR_LANG_SYNTAX.md):** Specification for static data-flow topology.
+*   **[SAFETY.md](docs/SAFETY.md):** Operational guidelines for high-symmetry computing.
 *   **[CONTRIBUTING.md](CONTRIBUTING.md):** Architectural integrity guidelines.
 
 ## License
