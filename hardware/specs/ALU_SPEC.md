@@ -97,11 +97,17 @@ Unlike von Neumann architectures, SPU clusters utilize a **Shared-Nothing Data F
 *   **Read-Only Adjacency:** Cores access neighbor states via a dedicated 12-neighbor bus without bus arbitration or memory locking.
 *   **No Cache Coherency:** Because nodes only interact with topological neighbors, the "Cache Invalidation" problem is physically non-existent.
 
-#### 7.2 Global Synchronous Breath
-Parallel synchronization is enforced by the global clock cycle and dual-bank registers:
-1.  **Read Phase:** All cores sample Bank A neighbor states.
-2.  **Compute Phase:** Pipelined logic (SMUL/EQUILIBRATE) executes.
-3.  **Commit Phase:** All cores write results to Bank B.
-4.  **Bank Swap:** The global tick toggles the active bank.
+### 8. Prime Projection Presets (PPROJ)
+The SPU-1 includes a hard-coded **Prime Projection Table** based on Thomson’s v2.0 Conjecture. These presets allow the machine to snap to the specific **Rational Spreads** required to generate prime n-gon hulls from the 4D simplex.
 
-This mechanism ensures that the entire lattice remains bit-perfectly synchronized across millions of independent compute units, enabling deterministic simulation at planetary scales.
+#### 8.1 Prime Mapping Table (Tier 1)
+| Instruction | Target Hull | Rational Spread ($s$) | Radical Family |
+| :--- | :--- | :--- | :--- |
+| **`PPROJ_7`** | 7-gon (Heptagon) | $(\frac{1}{2}, \frac{1}{2}, \frac{1}{2})$ | $\sqrt{2}$ |
+| **`PPROJ_11`** | 11-gon (Hendecagon) | $(\frac{3}{4}, \frac{1}{4}, \frac{1}{2})$ | $\sqrt{2}, \sqrt{3}$ |
+
+#### 8.2 The Asymmetry Mandate
+To ensure non-degenerate projections, the `PPROJ` instruction must be applied to **Asymmetric Polytopes** (e.g., the truncated tetrahedron). Centrally symmetric inputs are flagged as "Degenerate" ($180^{\circ}$ interior angles) and will not yield clean prime symmetries.
+
+#### 8.3 Field Extension Roadmap (Tier 3)
+Synthesis of the **13-gon** (Tridecagon) requires the golden ratio family ($\sqrt{5}$). Future iterations of the SPU core (v3.0) will implement the $\mathbb{Q}(\sqrt{3}, \sqrt{5})$ field extension to enable Tier 3 prime projections.
