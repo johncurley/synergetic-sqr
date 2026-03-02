@@ -88,5 +88,17 @@ A single SPU-13 register packs 13 symmetric axes into a 832-bit block, optimized
 #### 11.2 Dimension-Clamp (OP_CLAMP)
 Default State = `CLAMP 4`. Restricts active pathways to the 4-axis spatial basis ($Q_1 \dots Q_4$) to prevent cognitive load and high-velocity switching noise.
 
----
-*Status: FORMALIZED. Verified for Prime-13 Aperiodic Growth.*
+### 12. Mandatory Physical Safety (Hardware-Level)
+To ensure the protection of both the hardware fabric and the human observer, all SPU-13 compliant implementations MUST include the following physical safeguards.
+
+#### 12.1 Optical Safety Governor
+All high-dimensional projections (7D+) sent to an optical display MUST be processed by a non-optional **16x Anti-Aliasing (DSS)** and **Motion Blur** stage. This ensures that the infinite sharpness of the algebraic core is perceptually dampened to prevent neurological disorientation.
+
+#### 12.2 Display Dimensionality Cap
+The hardware must implement a hard-wired **DISPLAY_CLAMP**. While the core may compute in 13 dimensions, the optical output boundary is physically restricted to a maximum projection of 7 axes. 13D visualization is strictly prohibited in real-time hardware.
+
+#### 12.3 Thermal Runaway Detection
+Operating in 13D Prime-Axis mode creates significant switching activity. The silicon must include integrated thermal sensors that trigger a global **ASIC_HALT** if temperature or power-draw exceed pre-defined safety envelopes.
+
+#### 12.4 Physical Kill-Switch
+Compliant SPU-13 hardware must provide an external, high-priority **GPIO Interrupt (Panic Button)**. This physical switch bypasses all software control to force an immediate `HALT` and register zero-out.

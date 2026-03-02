@@ -25,5 +25,13 @@ The SPU-1 architecture operates at a level of geometric coherence that can be ph
 *   **Mechanism:** Static analysis and template poisoning prevent the instantiation of `float` or `double` types within the Algebraic Core.
 *   **Purpose:** To ensure 100% deterministic, machine-invariant results across all platforms.
 
+### 5. Mandatory Hardware Safety (v2.4.5)
+The SPU-13 architecture (Phi-Core) requires the following physical safeguards to be active during operation.
+
+*   **16x AA + Motion Blur:** Non-optional perceptual dampening for all 7D+ displays to ensure "Perceptual Grounding."
+*   **7D Dimensionality Governor:** Hard-wired cap restricting the optical output to a maximum of 7 axes to prevent "Neuro-Breaks."
+*   **Thermal Runaway Detection:** Automatic hardware `HALT` if 13D compute density causes temperature or voltage instability.
+*   **Physical Kill Switch:** An external hardware button providing a high-priority interrupt to force an immediate system zero-out.
+
 ---
-*Status: HARDENED. Safety protocols are active.*
+*Status: HARDENED. Safety protocols are active and mandatory.*
