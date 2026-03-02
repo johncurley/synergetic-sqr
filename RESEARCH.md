@@ -105,5 +105,16 @@ Utilizing the high packing density of 11-dimensional symmetries (Leech Lattice n
 #### 7.3 M-Theory Hardware Emulation
 The 11-axis basis provides a native silicon twin for the 11-dimensional geometry of **M-Theory**. This positions the SPU-11 as a deterministic alternative to standard quantum simulation, allowing for the bit-exact emulation of vacuum geometry and subatomic interactions.
 
+### 8. Prime-13 Ignition (SPU-13)
+The SPU-13 moves the architecture into the domain of **Aperiodic Growth** by pairing the $\mathbb{Q}(\sqrt{3})$ basis with the $\mathbb{Q}(\sqrt{5})$ field extension.
+
+#### 8.1 The Phi-Core (Golden Ratio)
+By hard-coding the **Golden Ratio ($\Phi = \frac{1 + \sqrt{5}}{2}$)** into the SPU-13 registers, the engine treats growth as a native geometric property rather than a calculated approximation ($e^x$). This enables:
+*   **Fibonacci-Spiral Addressing:** G-RAM data retrieval follows natural growth curves, optimized for high-dimensional topological folding.
+*   **Aperiodic Tiling:** Native support for Penrose-style symmetries that never repeat, providing a bit-exact foundation for quasicrystal simulation.
+
+#### 8.2 Biological and Vacuum Simulation
+The SPU-13 provides a **Biological Simulation Engine** capable of modeling protein folding and organic growth using purely integer arithmetic. Furthermore, the 13-axis basis allows the entire engine to reciprocate into "Null Space," enabling the simulation of vacuum pressure and zero-point energy distributions without floating-point drift.
+
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*

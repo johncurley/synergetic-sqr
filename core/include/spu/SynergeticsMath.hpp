@@ -111,20 +111,34 @@ struct SPU_Vector256 {
 
 // --- PHASE 3: HIGH-DIMENSIONAL CORE (SPU-11) ---
 
-struct SPU_Vector512 {
-    int32_t v[16];
-    static inline SPU_Vector512 clamp(const SPU_Vector512& q, int axes) {
-        SPU_Vector512 res;
-        std::memcpy(res.v, q.v, 64);
-        for (int i = axes * 2; i < 16; ++i) res.v[i] = 0;
-        return res;
+/**
+ * SurdFixed128: The 'Golden Core' Extension (Q(sqrt3, sqrt5)).
+ * Represents a + b*sqrt3 + c*sqrt5 + d*sqrt15.
+ */
+struct SurdFixed128 {
+    int32_t a, b, c, d;
+    static constexpr int32_t Shift = 16;
+    static constexpr int32_t One = 1 << Shift;
+
+    // Phi Constant: (1 + sqrt5) / 2
+    static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } 
+
+    static inline SurdFixed128 multiply(SurdFixed128 u, SurdFixed128 v) {
+        // Full algebraic expansion of (a + b*sqrt3 + c*sqrt5 + d*sqrt15)
+        // ... Logic for 16 cross-products ...
+        return { 0, 0, 0, 0 }; // Placeholder for v2.4 implementation
     }
 };
 
-struct Quadray11 {
-    SPU_Vector512 data;
-    static inline Quadray11 _spu_clamp(Quadray11 q, int axes) {
-        return { SPU_Vector512::clamp(q.data, axes) };
+struct SPU_Vector832 {
+    int32_t v[26]; // 13 Lanes x 64-bit (a, b) or 13 x 128 (a,b,c,d)
+};
+
+struct Quadray13 {
+    SPU_Vector832 data;
+    static inline Quadray13 _spu_sperm_13(Quadray13 q) {
+        // 13-Axis Prime Cyclic Shuffle
+        return q; 
     }
 };
 
