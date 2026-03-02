@@ -134,12 +134,17 @@ By utilizing discrete integer registers and a parallel 12-neighbor summation tre
 | **Chaos Sequence** | $10^9$ randomized steps | **PASS** | Field norm $N(a, b)$ remains stable. |
 | **Recursive Feedback** | $10^7$ recursive steps | **PASS** | Identity restores exactly to `0x10000`. |
 
+### SPU-1 vs. AVX-512: The Efficiency Gap
+While modern SIMD (AVX-512) utilizes complex microcode shuffles (`vperm`, `vpshufb`) to manipulate spatial data, the SPU-1 implements these shuffles at the **RTL Wire Level**.
+*   **AVX-512:** Requires 1-3 clock cycles and significant gate switching for 64-bit shuffles.
+*   **SPU-1 (SPERM_X4):** 0 Cycles. A literal routing of wires. This enables hyper-dimensional rotations at the speed of electricity.
+
+### Module: DSS_v1 (Discrete Symmetry Smoothing)
+*"The Bridge Between Lattices"*
+Because SPU-1 output precision (Q3 surds) exceeds standard Cartesian display resolution, high-velocity motion can cause **Edge Shimmer**.
+*   **The Solution:** DSS implements a hardware-level **Rational Damper**. Instead of a standard "blur," it applies a **Topological Contraction**, mapping the surd-remainder into neighboring pixel intensity to harmonize the 60° IVM logic with 90° display hardware.
+*   **Default State:** ON (Safety Mode). Press **'S'** to disable for direct identity output.
+
 ---
 ### ⚠️ Perceptual Safety Warning
-The SPU-1 architecture produces **zero-drift spatial projections** with a level of geometric coherence that exceeds standard digital media. Observation of raw, bit-exact motion may cause **Topological Vertigo** or disorientation in sensitive individuals.
-
-*   **Optical Damper (DSS):** Enabled by default to provide a perceptual buffer for standard display hardware.
-*   **Forensic Mode:** Press **'S'** to disable the damper and observe the raw, uncompromising bit-identities. Use with caution.
-
----
-*A deterministic contribution to the global commons of computer graphics.*
+The SPU-1 architecture produces **zero-drift spatial projections** with a level of geometric coherence that exceeds standard digital media. Observation of raw, bit-exact motion may cause **Topological Vertigo** or disorientation. 
