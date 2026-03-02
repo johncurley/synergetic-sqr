@@ -91,5 +91,34 @@ To eliminate bit-width overflow and maintain stability during lattice relaxation
 ### 7. Reliability & Self-Healing
 The core includes **SECDED ECC** protection for all 32-bit lane coefficients. High-dimensional lattices (SPU-11) enable **Lattice-Native Error Correction** by utilizing the high packing density of the 11D symmetry to identify and correct bit corruption.
 
+### 8. Isotropic RAM Packing Topology
+The SPU-1 architecture utilizes **Lattice-Mapped Physical Tiling** to optimize memory throughput and signal integrity.
+
+#### 8.1 Vector Equilibrium (VE) Tiling
+Memory cells are physically arranged in a 12-connected isotropic grid (Vector Equilibrium). This ensures that the distance from any central node to its 12 neighbor registers is **spatially identical**, resulting in:
+*   **Uniform Propagation Delay:** Signals from all 12 neighbors arrive at the parallel adder tree simultaneously.
+*   **Minimal Routing Congestion:** Eliminates the central bus bottlenecks of standard SIMD architectures.
+
+#### 8.2 Lattice-Mapped Addressing
+Addressing is derived from the **Honeycomb Memory Map**. Instead of linear row/column pointers, the memory controller utilizes Quadray indices. This enables hardware-level **Geometric Data Retrieval**, where a single instruction can fetch an entire 12-neighbor shell without address calculation overhead.
+
+### 9. Deterministic Hull & Geodesic Unit (PATH C)
+To support the synthesis of non-constructible prime hulls, the SPU-1 implements the **Path C Exact Arithmetic** protocol.
+
+#### 9.1 Geodesic Subdivision (OP_GEODESIC)
+The SPU-1 includes a hardware primitive for Fuller-frequency subdivision of the tetrahedral basis.
+*   **Function:** Recursively splits Quadray edges into $f$ segments.
+*   **Rationality:** Every generated vertex maintains a purely rational Quadray coordinate.
+
+#### 9.2 Path C Deterministic Hull (OP_HULL)
+The `OP_HULL` instruction utilizes 64-bit integer cross-products to compute the convex hull boundary.
+*   **Degeneracy Guard:** The hardware explicitly checks for collinearity using bit-exact comparison.
+*   **Hitchhiker Exclusion:** Vertices with an interior angle of exactly $180^{\circ}$ (cross-product $\equiv 0$) are deterministically excluded.
+
+### 10. Thomson Gate Coefficients (REG_FGH)
+Rotation in the Quadray system is driven by three coefficients derived from rational spreads:
+$$F = \frac{2\cos\theta + 1}{3}, \quad G = \frac{1 - \cos\theta + \sqrt{3}\sin\theta}{3}, \quad H = \frac{1 - \cos\theta - \sqrt{3}\sin\theta}{3}$$
+For Tier 1 spreads, these are hard-coded as SPU-1 bitmasks using $\sqrt{2}$ and $\sqrt{3}$ surds.
+
 ---
 *Status: FORMALIZED. Verified for Prime-11 High-Dimensional Parity.*
