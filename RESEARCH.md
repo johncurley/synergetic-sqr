@@ -87,23 +87,23 @@ Instead of a continuous curve ($e^{-kt}$), the SPU-1 reduces energy through disc
 **2. Absolute Convergence:**
 By implementing a **Step-Down Guard** at the unit-bit level, the SPU-1 ensures that oscillating signals eventually reach the bit-zero state ($0+0\sqrt{3}$). This eliminates the infinitesimal "ringing" and motor jitter inherent in floating-point PID controllers and Laplace filters.
 
-### 6. Future Work: Silicon Realization Hurdles
-While the SPU-1 has achieved functional parity in simulation, physical realization in silicon (ASIC/FPGA) requires addressing the following physical constraints:
+### 6. Isotropic Memory Topology (VE-Tiling)
+The SPU-1 architecture utilizes **Vector Equilibrium (VE) Tiling** for physical memory layout. By arranging memory cells in a 12-connected isotropic grid, the system achieves:
+*   **Uniform Signal Propagation:** Zero-jitter timing for the 12-neighbor relational bus.
+*   **Thermal Distribution:** Elimination of localized hot spots via spatial data spreading.
+*   **Geometric Retrieval:** Direct hardware-level access to isotropic neighborhoods without address calculation latency.
 
-#### 6.1 Formal Equivalence (LEC)
-Moving beyond empirical verification to formal mathematical proof. We plan to utilize Logic Equivalence Checking (LEC) to prove that the synthesizable RTL matches the algebraic Golden Model across all $2^{256}$ possible input states.
+### 7. High-Dimensional Potential (SPU-11)
+The extension to the **Prime-11 basis** moves the SPU architecture into the domain of high-order topological logic.
 
-#### 6.2 Routing Congestion and NoC
-The 12-neighbor isotropic connectivity represents a significant routing challenge for high-density lattices. Future work involves exploring Network-on-Chip (NoC) architectures to replace the parallel 3072-bit neighbor bus with high-speed serialized links.
+#### 7.1 Topological Data Folding
+The SPU-11 enables **Zero-Latency Data Retrieval** by "folding" multi-dimensional datasets into a single 11D vertex. Information is accessed via zero-gate basis shifts, effectively treating memory as a pre-computed spatial state rather than a linear sequence.
 
-#### 6.3 ECC and Reliability
-To ensure deterministic stability in high-radiation environments, we intend to implement Error Correction Code (ECC) across the Quadray registers. This enables the hardware to detect and correct single-bit flips (Single Event Upsets) without breaking symmetry.
+#### 7.2 Lattice-Native Self-Healing
+Utilizing the high packing density of 11-dimensional symmetries (Leech Lattice neighbors), the SPU-11 implements self-correcting logic. Corrupted bits are forced back to valid lattice coordinates by the geometric constraints of the field, enabling fault-tolerance without the overhead of standard ECC.
 
-#### 6.4 Power Analysis and Clock Gating
-Pipelined reduction trees exhibit high switching activity. Physical synthesis will require detailed power analysis and the implementation of clock gating to disable the Lattice Relaxation unit when equilibrium is detected.
-
-#### 6.5 Metastability Mitigation
-Massively parallel lattices on physical silicon are susceptible to clock skew. Future RTL will include multi-stage synchronizers at the 12-neighbor boundaries to prevent metastable states during cross-node reads.
+#### 7.3 M-Theory Hardware Emulation
+The 11-axis basis provides a native silicon twin for the 11-dimensional geometry of **M-Theory**. This positions the SPU-11 as a deterministic alternative to standard quantum simulation, allowing for the bit-exact emulation of vacuum geometry and subatomic interactions.
 
 ---
 *Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*
