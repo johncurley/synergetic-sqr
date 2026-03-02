@@ -1,4 +1,4 @@
-# SurdLang Language Specification (v2.0)
+# SurdLang Language Specification (v2.3.3)
 ## The Language of Deterministic Spatial Computation
 
 ### 1. Introduction

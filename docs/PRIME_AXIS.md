@@ -1,5 +1,5 @@
 # Prime-Axis Permutation Specification
-## 4D-to-3D Projection Logic (v2.0)
+## 4D-to-3D Projection Logic (v2.3.3)
 
 This document defines the discrete basis shifts implemented in the SPU-1 `SPERM` instruction, based on Dr. Andrew Thomson's 4D Prime Projection Conjecture.
 

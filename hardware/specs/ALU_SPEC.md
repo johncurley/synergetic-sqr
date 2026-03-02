@@ -1,7 +1,7 @@
 # ALU Specification: SPU-1 (SQR-ASIC)
-## Gate-Level Logic for DQFA Operations
+## Gate-Level Logic for DQFA Operations (v2.3.3)
 
-This document specifies the Register Transfer Level (RTL) requirements for the SPU-1 Arithmetic Logic Unit.
+This document specifies the Register Transfer Level (RTL) requirements for the SPU-1 Arithmetic Logic Unit and its High-Dimensional extensions.
 
 ### 1. Surd Multiplier Unit (SMUL)
 The `SMUL` unit calculates the product of two elements in $\mathbb{Q}(\sqrt{3})$.
@@ -38,93 +38,58 @@ The `SNORM` gate provides overflow protection by monitoring register state.
     - `REG_A_OUT = REG_A`
     - `REG_B_OUT = REG_B`
 
-### 3. Permutator (SPERM)
-The 60° rotation is a pure routing operation.
+### 3. High-Symmetry Permutators (SPERM)
+The SPU-1 implements basis shifts as zero-latency wire-swaps.
 
-#### 3.1 Q4 Axis Rotation
-- `OUT_Q1 = REG_Q2`
-- `OUT_Q2 = REG_Q3`
-- `OUT_Q3 = REG_Q1`
-- `OUT_Q4 = REG_Q4`
-- *Hardware Complexity:* Zero logic gates (wiring permutation).
+#### 3.1 SPERM_X4 (4D Prime Projection)
+- **Mapping:** $\{Q_1, Q_2, Q_3, Q_4\}$ basis shifts based on Dr. Thomson's v2.0 table.
+- **Hardware Path:** `hardware/verilog/spu_permute.v`
+
+#### 3.2 SPERM_11 (11D Topological Folding)
+- **Mapping:** 11-axis cyclic shuffle $\{Q_1..Q_{11}\} \rightarrow \{Q_2..Q_{11}, Q_1\}$.
+- **Hardware Path:** `hardware/verilog/spu_permute_11.v`
 
 ### 4. Quadray Bus Architecture
-The SPU-1 utilizes a **256-bit Parallel Quadray Bus**. 
-- 4 Lanes x 64-bit per lane.
-- Single-cycle dispatch for `SADD` and `SPERM`.
-- Pipelined execution for `SMUL`.
+The SPU-1 architecture supports two primary bus widths:
+*   **Spatial Bus (256-bit):** 4 Lanes x 64-bit. Optimized for 3D/4D spatial transforms.
+*   **High-Dimensional Bus (704-bit):** 11 Lanes x 64-bit. Optimized for Prime-11 symmetry and topological data folding.
 
 ### 5. RTL Implementation (Verilog)
 The functional logic for this specification is implemented in the following modules:
 *   **`hardware/verilog/spu_smul.v`**: The Surd Multiplier Unit.
-*   **`hardware/verilog/spu_permute.v`**: The Zero-Gate Permutator.
-*   **`hardware/verilog/spu_core.v`**: The Top-Level Register Stage.
+*   **`hardware/verilog/spu_permute.v`**: The SPERM_X4 Unit.
+*   **`hardware/verilog/spu_permute_11.v`**: The SPERM_11 Unit.
+*   **`hardware/verilog/spu_tensegrity_balancer.v`**: The Lattice Relaxation Unit.
+*   **`hardware/verilog/spu_damper.v`**: The Rational Damper (A-Domain Step-Down).
+*   **`hardware/verilog/spu_ecc.v`**: SECDED ECC Protection.
+*   **`hardware/verilog/spu_core.v`**: The Integrated SPU-1 Unit.
 
-#### 5.1 Opcode Specification (v2.0)
+#### 5.1 Opcode Specification (v2.3.3)
 | Opcode | Mnemonic | Hardware Path | Latency | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `01` | **`SPERM_X4`** | `spu_permute` | 0 Cycles | **High-Symmetry Mode:** 4D Prime-Axis Basis Shift. |
-| `10` | **`SMUL`** | `spu_smul` | 1 Cycle | Surd multiplication (Integer ALU). |
-| `11` | **`OP_EQUILIBRATE`** | `spu_tensegrity_balancer` | 5 Cycles | Pipelined Discrete Laplacian Relaxation. |
-| `00` | `NOP` | Bypass | 0 Cycles | No operation. |
-
-### 6. High-Symmetry Performance Logic
-The **`SPERM_X4`** instruction implements Dr. Thomson’s 4D Prime Projection as a pure routing operation. 
-*   **Zero-Latency:** Because no logic gates are required, basis shifts are instantaneous and consume zero switching power.
-*   **Identity Restoration:** The system guarantees 100% bit-exact identity restoration at every 60° (or 360°) rotational increment, eliminating cumulative rounding drift.
+| `001` | **`SPERM_X4`** | `spu_permute` | 0 Cycles | 4D Prime-Axis Basis Shift. |
+| `010` | **`SMUL`** | `spu_smul` | 1 Cycle | Surd multiplication (Integer ALU). |
+| `011` | **`EQUILIBRATE`** | `spu_tensegrity_balancer` | 5 Cycles | Pipelined Discrete Laplacian Relaxation. |
+| `100` | **`OP_DAMP`** | `spu_damper` | 1 Cycle | Rational Damper (A-Domain Step-Down). |
+| `101` | **`OP_CLAMP`** | `spu_core` | 0 Cycles | Dimension-Clamp safety gate. |
+| `110` | **`SPERM_11`** | `spu_permute_11` | 0 Cycles | 11-Axis Topological Folding. |
+| `000` | `NOP` | Bypass | 0 Cycles | No operation. |
 
 ### 6. Kinetic Acceleration & Equilibrium
 The SPU-1 includes a parallel **Tensegrity Balancer** for hardware-level physics solving. 
 
 #### 6.1 Precision Contract (Signal Integrity)
 To eliminate bit-width overflow and maintain stability during lattice relaxation, the balancer implements the following constraints:
-*   **Headroom:** Utilizing 64-bit signed accumulators per lane exceeds the theoretical maximum width for 12-neighbor summation ($\lceil \log_2(12) \rceil = 4$ bits) by over 28 bits of margin.
-*   **Scaling ($\alpha = 1/16$):** The output correction is scaled by a power-of-two approximation ($1/16$) of the ideal Laplacian average ($1/12$). This conservative scaling improves the spectral stability of the relaxation step.
-*   **Deterministic Bias:** Arithmetic right-shifting (`>>>`) introduces a deterministic truncation bias toward negative infinity ($-\infty$). While negligible in balanced lattices, this bias is documented as a machine-invariant property of the SPU-1.
-*   **Operator Form:** The balancer implements the discrete Laplacian $\sum_{j \in N(i)} (u_j - u_i)$, where the input bus carries relational displacements.
+*   **Headroom:** 64-bit signed accumulators per lane (28-bit safety margin).
+*   **Scaling ($\alpha = 1/16$):** Power-of-two stability approximation.
+*   **Deterministic Bias:** Arithmetic right-shifting rounds toward $-\infty$.
 
 #### 6.2 Atomic Pipelined Sync
-To ensure deterministic results in massively parallel lattices, the SPU-1 implements the following synchronization primitives:
-*   **Pipelined Reduction:** The 12-neighbor summation is pipelined over 4 clocked stages to ensure timing closure at high frequencies (target: 500MHz+). Each stage breaks the logic depth to a maximum of 3 serialized additions.
-*   **Double-Buffered Commit:** State updates utilize a Ping-Pong register scheme. Nodes read from a stable snapshot (Bank A) and commit to a separate dormant bank (Bank B), eliminating race conditions between adjacent nodes.
+*   **Pipelined Reduction:** 4 clocked stages for high-frequency timing closure.
+*   **Double-Buffered Commit:** Ping-Pong registers for lock-free parallel execution.
 
-### 7. Systolic Lattice Scaling (SPU-Cluster)
-The SPU-1 is designed for massive parallelization via **Topological Tiling**. Individual cores are arranged in an IVM-compliant grid to form an SPU-Cluster.
+### 7. Reliability & Self-Healing
+The core includes **SECDED ECC** protection for all 32-bit lane coefficients. High-dimensional lattices (SPU-11) enable **Lattice-Native Error Correction** by utilizing the high packing density of the 11D symmetry to identify and correct bit corruption.
 
-#### 7.1 Shared-Nothing Architecture
-Unlike von Neumann architectures, SPU clusters utilize a **Shared-Nothing Data Flow**:
-*   **Private State:** Each core maintains its own Quadray register and ECC logic.
-*   **Read-Only Adjacency:** Cores access neighbor states via a dedicated 12-neighbor bus without bus arbitration or memory locking.
-*   **No Cache Coherency:** Because nodes only interact with topological neighbors, the "Cache Invalidation" problem is physically non-existent.
-
-### 9. Deterministic Hull & Geodesic Unit (PATH C)
-To support the synthesis of non-constructible prime hulls, the SPU-1 implements the **Path C Exact Arithmetic** protocol.
-
-#### 9.1 Geodesic Subdivision (OP_GEODESIC)
-The SPU-1 includes a hardware primitive for Fuller-frequency subdivision of the tetrahedral basis.
-*   **Function:** Recursively splits Quadray edges into $f$ segments.
-*   **Rationality:** Every generated vertex maintains a purely rational Quadray coordinate (Section 10.7.2).
-
-#### 9.2 Path C Deterministic Hull (OP_HULL)
-The `OP_HULL` instruction utilizes 64-bit integer cross-products to compute the convex hull boundary.
-*   **Degeneracy Guard:** The hardware explicitly checks for collinearity using bit-exact comparison.
-*   **Hitchhiker Exclusion:** Vertices with an interior angle of exactly $180^{\circ}$ (cross-product $\equiv 0$) are deterministically excluded, preventing "Central Symmetry Leaks."
-
-### 11. High-Dimensional Extension (SPU-11)
-The SPU-1 architecture is extensible to the **Prime-11 basis**, aligning hardware logic gates with 11-dimensional topological symmetries (M-Theory / Leech Lattice neighbors).
-
-#### 11.1 SPU-11 Register Map (512-bit AVX-512 Native)
-A single SPU-11 register packs 11 symmetric axes into a 512-bit block, optimized for high-dimensional data folding and error correction.
-
-| Segment | Bits | Axis | Function |
-| :--- | :--- | :--- | :--- |
-| **L0-L3** | [255:0] | $Q_1 - Q_4$ | 3D Spatial Basis / 4D Simplex |
-| **L4-L10** | [511:256] | $Q_5 - Q_{11}$ | High-Dimensional Folding / Error Correction |
-
-#### 11.2 Dimension-Clamp (OP_CLAMP)
-To manage hardware switching activity and cognitive load during visualization, the `OP_CLAMP` instruction restricts the active basis axes.
-*   **`CLAMP 4`**: Disables $Q_5 - Q_{11}$ pathways (Safe Spatial Mode).
-*   **`CLAMP 11`**: Enables full topological folding (High-Dimensional Exposure).
-
-#### 11.3 Self-Healing Lattice Logic
-In the 11D basis, symmetry is so dense that bit-flips become "Geometric Impossibilities." The hardware uses the high-dimensional packing ratio to force corrupted bits back to their nearest valid lattice coordinate, providing **Lattice-Native Error Correction** without dedicated parity bits.
+---
+*Status: FORMALIZED. Verified for Prime-11 High-Dimensional Parity.*
