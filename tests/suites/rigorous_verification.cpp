@@ -170,6 +170,22 @@ void RunParityGuardTest() {
     }
 }
 
+void RunRationalDamperTest() {
+    std::cout << "--- Test 12: Rational Damper Convergence (A-Domain Step-Down) ---" << std::endl;
+    Quadray4 v = { {65536, 0, 65536, 0, 65536, 0, 65536, 0} };
+    // Step down 20 times (2^20 attenuation > 2^16 resolution)
+    for (int i = 0; i < 20; ++i) {
+        v = Quadray4::_spu_damp(v);
+    }
+    bool is_zero = true;
+    for (int i = 0; i < 8; ++i) if (v.data.v[i] != 0) is_zero = false;
+    if (is_zero) {
+        std::cout << "PASS: Absolute Convergence to Zero verified." << std::endl;
+    } else {
+        std::cerr << "FAIL: Energy leak in damper! Residue detected." << std::endl;
+    }
+}
+
 int main() {
     std::cout << "=======================================" << std::endl;
     std::cout << " SPU-1 Deterministic Verification Suite v1.7 " << std::endl;
@@ -184,6 +200,7 @@ int main() {
     RunCompoundRotationTest();
     RunRepeatedNormalizationStress();
     RunParityGuardTest();
+    RunRationalDamperTest();
     std::cout << "=======================================" << std::endl;
     return 0;
 }

@@ -22,8 +22,8 @@ module spu_damper (
     endgenerate
 
     // 2. Permutational Sink (Thomson Prime-7 Flip)
-    // Rotates the remaining energy into the 4D basis to facilitate "Dissipative Invariance"
-    spu_prime_permute sink (
+    // Rotates the remaining energy into the 4D basis
+    spu_permute sink (
         .q_in(scaled_q),
         .prime_phase(2'b11), // P7: Hyper-Flip
         .q_out(q_out)
