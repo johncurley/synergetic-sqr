@@ -116,6 +116,7 @@ The SPU-1 is the functional synthesis of a multi-generational lineage of geometr
 *   **[SURDLANG.md](hardware/specs/SURDLANG.md):** The formal language of the SPU-1.
 *   **[GLOSSARY.md](docs/GLOSSARY.md):** Technical definitions of algebraic primitives.
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
+*   **[ETHICS.md](docs/ETHICS.md):** Ethical guidelines for high-dimensional computing.
 *   **[JANUS_MANIFESTO.md](docs/JANUS_MANIFESTO.md):** The role of field reciprocation in the SPU-1.
 *   **[SQR_LANG_SYNTAX.md](docs/SQR_LANG_SYNTAX.md):** Specification for static data-flow topology.
 *   **[DISPLAY_ROADMAP.md](docs/DISPLAY_ROADMAP.md):** Future requirements for isotropic display hardware.

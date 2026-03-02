@@ -1,4 +1,4 @@
-# Synergetic Research: DQFA Specification (v2.3.3)
+# Synergetic Research: DQFA Specification (v2.4.3)
 ## Deterministic Quadratic Field Arithmetic for Spatial Computation
 
 ### Abstract
@@ -26,9 +26,10 @@ To rigorously verify the deterministic integrity of the SPU-1 architecture, we e
 4. **Field Norm Invariance:** Confirmed that $N(a, b) = a^2 - 3b^2$ is preserved under all tested operations. Result: **PASS**.
 5. **Long-Term Energy Conservation (10^7 ticks):** Verified zero energy drift in tensegrity simulations using Hyper-Surd automatic differentiation. Result: **PASS**.
 6. **Tetrahedral Field Interaction (10^6 cycles):** Verified bit-exact boundary detection and collision determinism in particle networks. Result: **PASS**.
+7. **SPU-13 13-Axis Identity Audit (10^6 cycles):** Verified bit-exact cyclic closure across the Prime-13 basis ($\mathbb{Q}(\sqrt{3}, \sqrt{5})$) in visual silence mode. Result: **PASS**.
 
 **Conclusion:**
-The SPU-1 pipeline demonstrates absolute deterministic stability under conditions that would cause conventional floating-point systems to fail. Identity verification logs confirm that all rotations, scaling, recursive derivatives, and boundary operations maintain algebraic closure. This establishes the SPU-1 as a robust, drift-free computational architecture suitable for hardware implementation.
+The SPU-1/SPU-13 pipeline demonstrates absolute deterministic stability under conditions that would cause conventional floating-point systems to fail. Identity verification logs confirm that all rotations, scaling, recursive derivatives, and boundary operations maintain algebraic closure. This establishes the SPU-1 as a robust, drift-free computational architecture suitable for hardware implementation.
 
 ### 3. Normalization-Based Overflow Control
 The **`_spu_normalize`** routine ensures that fixed-point bounds are preserved during long-run simulations.
@@ -73,15 +74,15 @@ The equilibrium configuration is a fixed point of the SPU-1 operator. Because th
 #### 5.2 The Invariance Theorem
 We define the **Structural Invariant** as the preservation of the quadratic field norm $N(a, b) = a^2 - 3b^2$. Future work involves utilizing SMT solvers (e.g., Z3) to prove that for all possible inputs $[a, b] \in \mathbb{Z}^{32}$, the `SMUL` and `SPERM` operations maintain this invariant relative to the fixed-point scaling factor.
 
-#### 5.2 Field Extension Mismatch Guard
+#### 5.3 Field Extension Mismatch Guard
 The system is bit-locked to $\mathbb{Q}(\sqrt{3})$. The introduction of non-compatible irrationals (e.g., $\sqrt{2}, \pi, e$) is classified as a **Field Extension Mismatch**. The architecture enforces strict algebraic closure within $\mathbb{Q}(\sqrt{3})$, ensuring that no "external mush" can penetrate the logic core.
 
-#### 5.7 Rational Laplace and A-Domain Filtering
+#### 5.4 Rational Laplace and A-Domain Filtering
 The SPU-1 replaces the transcendental Laplace transform with a hardware-native **Rational Damper**. This primitive operates entirely in the **A-Domain (Algebraic Domain)**, utilizing **Discrete Shell Contraction** to stabilize kinetic systems.
 
 **1. The Mechanism of Decay:**
 Instead of a continuous curve ($e^{-kt}$), the SPU-1 reduces energy through discrete steps:
-*   **Rational Scaling:** Bit-exact division by 2 ($1/2$ step) ensures that values stay within the rational field.
+*   **Rational Scaling:** Bit-exact division by 2 ensures that values stay within the rational field.
 *   **Permutational Sink:** The remaining energy is "rotated" into the 4th dimension via the **P7 Hyper-Flip**, preventing high-frequency residue in the 3D basis.
 
 **2. Absolute Convergence:**
