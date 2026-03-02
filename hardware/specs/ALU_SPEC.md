@@ -97,17 +97,20 @@ Unlike von Neumann architectures, SPU clusters utilize a **Shared-Nothing Data F
 *   **Read-Only Adjacency:** Cores access neighbor states via a dedicated 12-neighbor bus without bus arbitration or memory locking.
 *   **No Cache Coherency:** Because nodes only interact with topological neighbors, the "Cache Invalidation" problem is physically non-existent.
 
-### 8. Prime Projection Presets (PPROJ)
-The SPU-1 includes a hard-coded **Prime Projection Table** based on Thomson’s v2.0 Conjecture. These presets allow the machine to snap to the specific **Rational Spreads** required to generate prime n-gon hulls from the 4D simplex.
+### 9. Deterministic Hull & Geodesic Unit (PATH C)
+To support the synthesis of non-constructible prime hulls, the SPU-1 implements the **Path C Exact Arithmetic** protocol.
 
-#### 8.1 Prime Mapping Table (Tier 1)
-| Instruction | Target Hull | Rational Spread ($s$) | Radical Family |
-| :--- | :--- | :--- | :--- |
-| **`PPROJ_7`** | 7-gon (Heptagon) | $(\frac{1}{2}, \frac{1}{2}, \frac{1}{2})$ | $\sqrt{2}$ |
-| **`PPROJ_11`** | 11-gon (Hendecagon) | $(\frac{3}{4}, \frac{1}{4}, \frac{1}{2})$ | $\sqrt{2}, \sqrt{3}$ |
+#### 9.1 Geodesic Subdivision (OP_GEODESIC)
+The SPU-1 includes a hardware primitive for Fuller-frequency subdivision of the tetrahedral basis.
+*   **Function:** Recursively splits Quadray edges into $f$ segments.
+*   **Rationality:** Every generated vertex maintains a purely rational Quadray coordinate (Section 10.7.2).
 
-#### 8.2 The Asymmetry Mandate
-To ensure non-degenerate projections, the `PPROJ` instruction must be applied to **Asymmetric Polytopes** (e.g., the truncated tetrahedron). Centrally symmetric inputs are flagged as "Degenerate" ($180^{\circ}$ interior angles) and will not yield clean prime symmetries.
+#### 9.2 Path C Deterministic Hull (OP_HULL)
+The `OP_HULL` instruction utilizes 64-bit integer cross-products to compute the convex hull boundary.
+*   **Degeneracy Guard:** The hardware explicitly checks for collinearity using bit-exact comparison.
+*   **Hitchhiker Exclusion:** Vertices with an interior angle of exactly $180^{\circ}$ (cross-product $\equiv 0$) are deterministically excluded, preventing "Central Symmetry Leaks."
 
-#### 8.3 Field Extension Roadmap (Tier 3)
-Synthesis of the **13-gon** (Tridecagon) requires the golden ratio family ($\sqrt{5}$). Future iterations of the SPU core (v3.0) will implement the $\mathbb{Q}(\sqrt{3}, \sqrt{5})$ field extension to enable Tier 3 prime projections.
+### 10. Thomson Gate Coefficients (REG_FGH)
+Rotation in the Quadray system is driven by three coefficients derived from rational spreads:
+$$F = \frac{2\cos\theta + 1}{3}, \quad G = \frac{1 - \cos\theta + \sqrt{3}\sin\theta}{3}, \quad H = \frac{1 - \cos\theta - \sqrt{3}\sin\theta}{3}$$
+For Tier 1 spreads, these are hard-coded as SPU-1 bitmasks using $\sqrt{2}$ and $\sqrt{3}$ surds.
