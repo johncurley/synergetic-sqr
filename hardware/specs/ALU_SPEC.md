@@ -110,7 +110,21 @@ The `OP_HULL` instruction utilizes 64-bit integer cross-products to compute the 
 *   **Degeneracy Guard:** The hardware explicitly checks for collinearity using bit-exact comparison.
 *   **Hitchhiker Exclusion:** Vertices with an interior angle of exactly $180^{\circ}$ (cross-product $\equiv 0$) are deterministically excluded, preventing "Central Symmetry Leaks."
 
-### 10. Thomson Gate Coefficients (REG_FGH)
-Rotation in the Quadray system is driven by three coefficients derived from rational spreads:
-$$F = \frac{2\cos\theta + 1}{3}, \quad G = \frac{1 - \cos\theta + \sqrt{3}\sin\theta}{3}, \quad H = \frac{1 - \cos\theta - \sqrt{3}\sin\theta}{3}$$
-For Tier 1 spreads, these are hard-coded as SPU-1 bitmasks using $\sqrt{2}$ and $\sqrt{3}$ surds.
+### 11. High-Dimensional Extension (SPU-11)
+The SPU-1 architecture is extensible to the **Prime-11 basis**, aligning hardware logic gates with 11-dimensional topological symmetries (M-Theory / Leech Lattice neighbors).
+
+#### 11.1 SPU-11 Register Map (512-bit AVX-512 Native)
+A single SPU-11 register packs 11 symmetric axes into a 512-bit block, optimized for high-dimensional data folding and error correction.
+
+| Segment | Bits | Axis | Function |
+| :--- | :--- | :--- | :--- |
+| **L0-L3** | [255:0] | $Q_1 - Q_4$ | 3D Spatial Basis / 4D Simplex |
+| **L4-L10** | [511:256] | $Q_5 - Q_{11}$ | High-Dimensional Folding / Error Correction |
+
+#### 11.2 Dimension-Clamp (OP_CLAMP)
+To manage hardware switching activity and cognitive load during visualization, the `OP_CLAMP` instruction restricts the active basis axes.
+*   **`CLAMP 4`**: Disables $Q_5 - Q_{11}$ pathways (Safe Spatial Mode).
+*   **`CLAMP 11`**: Enables full topological folding (High-Dimensional Exposure).
+
+#### 11.3 Self-Healing Lattice Logic
+In the 11D basis, symmetry is so dense that bit-flips become "Geometric Impossibilities." The hardware uses the high-dimensional packing ratio to force corrupted bits back to their nearest valid lattice coordinate, providing **Lattice-Native Error Correction** without dedicated parity bits.

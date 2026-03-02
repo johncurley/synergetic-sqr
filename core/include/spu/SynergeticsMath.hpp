@@ -109,6 +109,27 @@ struct SPU_Vector256 {
     }
 };
 
+// --- PHASE 3: HIGH-DIMENSIONAL CORE (SPU-11) ---
+
+struct SPU_Vector512 {
+    int32_t v[16];
+    static inline SPU_Vector512 clamp(const SPU_Vector512& q, int axes) {
+        SPU_Vector512 res;
+        std::memcpy(res.v, q.v, 64);
+        for (int i = axes * 2; i < 16; ++i) res.v[i] = 0;
+        return res;
+    }
+};
+
+struct Quadray11 {
+    SPU_Vector512 data;
+    static inline Quadray11 _spu_clamp(Quadray11 q, int axes) {
+        return { SPU_Vector512::clamp(q.data, axes) };
+    }
+};
+
+// --- END HIGH-DIMENSIONAL CORE ---
+
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
@@ -121,9 +142,6 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
     
-    /**
-     * _spu_sperm_x4: SPERM_X4 High-Symmetry Performance Mode.
-     */
     static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
         switch (phase) {
             case 1: // P3 (60°): (b, c, a, d)
@@ -137,9 +155,6 @@ struct alignas(32) Quadray4 {
         }
     }
 
-    /**
-     * _spu_damp: The Rational Damper (A-Domain Step-Down).
-     */
     static inline Quadray4 _spu_damp(Quadray4 q) {
         Quadray4 scaled;
         for (int i = 0; i < 8; ++i) {
