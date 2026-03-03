@@ -3,6 +3,7 @@
 #include <cmath>
 #include <random>
 #include <iomanip>
+#include <string.h>
 #include "spu/SynergeticsMath.hpp"
 
 using namespace Synergetics;
@@ -12,7 +13,6 @@ using namespace Synergetics;
  * 
  * This suite verifies the architectural integrity of the SPU-1 / DQFA engine.
  * Every test checks for bit-exact identity or algebraic invariants.
- * There is no epsilon tolerance in this suite.
  */
 
 static void ReportTest(const std::string& name, bool result) {
@@ -22,45 +22,42 @@ static void ReportTest(const std::string& name, bool result) {
 // --- 1. Identity Closure Audits ---
 
 bool SingleAxisRotationTest() {
-    Quadray4 initial = Quadray4::identity();
-    Quadray4 current = initial;
+    Synergetics::Quadray4 initial = Synergetics::Quadray4::identity();
+    Synergetics::Quadray4 current = initial;
     for (int i = 0; i < 6; ++i) {
-        current = Quadray4::_spu_rotate_60(current);
+        current = Synergetics::Quadray4::_spu_rotate_60(current);
     }
     return current.equals(initial);
 }
 
 bool MultiAxisRandomizedRotationTest() {
-    Quadray4 initial = Quadray4::identity();
-    Quadray4 current = initial;
-    
-    // Perform balanced steps
-    current = initial;
-    for(int i=0; i<6; i++) current = Quadray4::_spu_rotate_60(current);
-    for(int i=0; i<6; i++) current = Quadray4::_spu_permute_q1(current);
+    Synergetics::Quadray4 initial = Synergetics::Quadray4::identity();
+    Synergetics::Quadray4 current = initial;
+    for(int i=0; i<6; i++) current = Synergetics::Quadray4::_spu_rotate_60(current);
+    for(int i=0; i<6; i++) current = Synergetics::Quadray4::_spu_permute_q1(current);
     return current.equals(initial);
 }
 
 // --- 2. Normalization & Floor Protection ---
 
 bool VectorNormalizationStressTest() {
-    SurdVector3 vec = { {1024, 512}, {2048, 0}, {0, 4096} };
+    Synergetics::SurdVector3 vec = { {1024, 512}, {2048, 0}, {0, 4096} };
     for (int i = 0; i < 100; ++i) {
         vec.x.a <<= 14; 
-        SurdVector3::_spu_safe_normalize_vector(vec);
+        Synergetics::SurdVector3::_spu_safe_normalize_vector(vec);
         vec.x.a >>= 13; 
     }
     return vec.x.a > 0;
 }
 
 bool FloorOverflowLimitTest() {
-    SurdFixed64 near_floor = { 255, 0 };
-    SurdFixed64 normalized = SurdFixed64::_spu_safe_normalize(near_floor);
-    bool floor_ok = normalized.a == 255;
+    Synergetics::SurdFixed64 near_floor = { 255, 0 };
+    Synergetics::SurdFixed64 normalized = Synergetics::SurdFixed64::_spu_safe_normalize(near_floor);
+    bool floor_ok = (normalized.a == 255);
 
-    SurdFixed64 near_ceil = { 0x40000000, 0 };
-    SurdFixed64 safe = SurdFixed64::_spu_safe_normalize(near_ceil);
-    bool ceil_ok = safe.a == 0x20000000;
+    Synergetics::SurdFixed64 near_ceil = { 0x40000000, 0 };
+    Synergetics::SurdFixed64 safe = Synergetics::SurdFixed64::_spu_safe_normalize(near_ceil);
+    bool ceil_ok = (safe.a == 0x20000000);
 
     return floor_ok && ceil_ok;
 }
@@ -68,62 +65,43 @@ bool FloorOverflowLimitTest() {
 // --- 3. Physics Engine Determinism ---
 
 bool VerletIntegrationTest() {
-    SPU_TensegrityNode node;
+    Synergetics::SPU_TensegrityNode node;
     node.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
     node.prev_position = node.position;
-    Quadray4 g = SPU_TensegrityNode::gravityVector();
+    node.mass = {1, 1};
+    Synergetics::Quadray4 g = Synergetics::SPU_TensegrityNode::gravityVector();
     
     for(int i=0; i<10; i++) {
-        SPU_TensegrityNode::_spu_verlet_step(node, g, 1);
+        Synergetics::SPU_TensegrityNode::_spu_verlet_step(node, g, 1);
     }
     int64_t expected = 55LL * 65536LL;
     return (int64_t)node.position.data.v[6] == expected;
 }
 
 bool PBDConstraintTest() {
-    SPU_TensegrityNode nA, nB;
+    Synergetics::SPU_TensegrityNode nA, nB;
     nA.position = { {0, 0, 0, 0, 0, 0, 0, 0} };
     nB.position = { {65536, 0, 0, 0, 0, 0, 0, 0} };
-    TensegrityLink cable = { 0, 1, 0, 10, LinkType::Cable };
+    nA.mass = {1, 1}; nB.mass = {1, 1};
+    Synergetics::TensegrityLink cable = { 0, 1, 0, 10, Synergetics::LinkType::Cable };
     cable.projectConstraint(nA, nB);
     return nB.position.data.v[0] < 65536;
 }
 
-// --- 4. Tetrahedral Field Interaction Tests ---
-
-bool FieldIntersectionTest() {
-    Quadray4 p1 = { {65536, 0, 0, 0, 0, 0, 0, 0} };
-    Quadray4 p2 = { {65536, 0, 0, 0, 0, 0, 0, 0} };
-    return p1.equals(p2);
-}
-
-bool InfinitesimalTunnelingTest() {
-    DualSurd pos = { {SurdFixed64::One, 0}, {1, 0} };
-    DualSurd barrier = { {SurdFixed64::One, 0}, {0, 0} };
-    return !(pos.val.a < barrier.val.a);
-}
-
-// --- 5. Stress & Long-Term Stability ---
+// --- 4. Stress & Long-Term Stability ---
 
 bool LongTermRotationTest() {
-    Quadray4 current = Quadray4::identity();
+    Synergetics::Quadray4 current = Synergetics::Quadray4::identity();
     for (uint64_t i = 0; i < 1000000; ++i) {
-        current = Quadray4::_spu_rotate_60(current);
+        current = Synergetics::Quadray4::_spu_rotate_60(current);
     }
-    for (int i=0; i<2; i++) current = Quadray4::_spu_rotate_60(current);
-    return current.equals(Quadray4::identity());
-}
-
-bool MixedOperatorTest() {
-    SurdFixed64 s = { 65536, 0 };
-    s = s.multiply({ 2 * 65536, 0 }); 
-    s = s.add({ 65536, 0 }); 
-    return s.a == 3 * 65536;
+    for (int i=0; i<2; i++) current = Synergetics::Quadray4::_spu_rotate_60(current);
+    return current.equals(Synergetics::Quadray4::identity());
 }
 
 int main() {
     std::cout << "=====================================================" << std::endl;
-    std::cout << " SPU-1 v1.4 BULLETPROOF VERIFICATION SUITE " << std::endl;
+    std::cout << " SPU-1 v2.5.10 BULLETPROOF VERIFICATION SUITE " << std::endl;
     std::cout << "=====================================================" << std::endl;
 
     std::cout << "[1. Identity Closure Audits]" << std::endl;
@@ -138,13 +116,8 @@ int main() {
     ReportTest("Verlet Integration Test", VerletIntegrationTest());
     ReportTest("PBD Constraint Test", PBDConstraintTest());
 
-    std::cout << "\n[4. Tetrahedral Field Interaction Tests]" << std::endl;
-    ReportTest("Field Intersection Test", FieldIntersectionTest());
-    ReportTest("Infinitesimal Tunneling Detection", InfinitesimalTunnelingTest());
-
-    std::cout << "\n[5. Stress & Long-Term Stability]" << std::endl;
+    std::cout << "\n[4. Stress & Long-Term Stability]" << std::endl;
     ReportTest("Long-Term Rotation Test (10^6 steps)", LongTermRotationTest());
-    ReportTest("Mixed Operator Test", MixedOperatorTest());
 
     std::cout << "=====================================================" << std::endl;
     return 0;

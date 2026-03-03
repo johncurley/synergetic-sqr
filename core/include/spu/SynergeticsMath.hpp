@@ -68,72 +68,46 @@ struct SurdFixed64 {
     SurdFixed64 janusFlip() const { return { a, -b }; }
 };
 
-/**
- * SurdFixed128: The 'Golden Core' Element (Q(sqrt3, sqrt5)).
- * Represents a + b*sqrt3 + c*sqrt5 + d*sqrt15.
- */
+struct SurdVector3 {
+    SurdFixed64 x, y, z;
+    static inline void _spu_safe_normalize_vector(SurdVector3& v) {
+        v.x = SurdFixed64::_spu_safe_normalize(v.x);
+        v.y = SurdFixed64::_spu_safe_normalize(v.y);
+        v.z = SurdFixed64::_spu_safe_normalize(v.z);
+    }
+};
+
+struct SurdMatrix3x3 {
+    SurdVector3 row[3];
+    static inline void _spu_safe_normalize_matrix(SurdMatrix3x3& m) {
+        SurdVector3::_spu_safe_normalize_vector(m.row[0]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[1]);
+        SurdVector3::_spu_safe_normalize_vector(m.row[2]);
+    }
+};
+
 struct SurdFixed128 {
     int32_t a, b, c, d;
     static constexpr int32_t Shift = 16;
     static constexpr int32_t One = 1 << Shift;
-
-    static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } // (1 + sqrt5)/2
-
+    static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } 
     SurdFixed128 add(const SurdFixed128& other) const { return { a + other.a, b + other.b, c + other.c, d + other.d }; }
     SurdFixed128 subtract(const SurdFixed128& other) const { return { a - other.a, b - other.b, c - other.c, d - other.d }; }
-    SurdFixed128 janusFlip() const { return { a, -b, -c, d }; } // Flips both surd polarities
-
+    SurdFixed128 janusFlip() const { return { a, -b, -c, d }; }
     static inline SurdFixed128 multiply(SurdFixed128 u, SurdFixed128 v) {
-        int64_t aa = (int64_t)u.a * v.a;
-        int64_t ab = (int64_t)u.a * v.b;
-        int64_t ac = (int64_t)u.a * v.c;
-        int64_t ad = (int64_t)u.a * v.d;
-        int64_t ba = (int64_t)u.b * v.a;
-        int64_t bb = (int64_t)u.b * v.b;
-        int64_t bc = (int64_t)u.b * v.c;
-        int64_t bd = (int64_t)u.b * v.d;
-        int64_t ca = (int64_t)u.c * v.a;
-        int64_t cb = (int64_t)u.c * v.b;
-        int64_t cc = (int64_t)u.c * v.c;
-        int64_t cd = (int64_t)u.c * v.d;
-        int64_t da = (int64_t)u.d * v.a;
-        int64_t db = (int64_t)u.d * v.b;
-        int64_t dc = (int64_t)u.d * v.c;
-        int64_t dd = (int64_t)u.d * v.d;
-
-        int64_t res_a = (aa + (bb*3) + (cc*5) + (dd*15)) >> Shift;
-        int64_t res_b = (ab + ba + (cd*5) + (dc*5)) >> Shift;
-        int64_t res_c = (ac + ca + (bd*3) + (db*3)) >> Shift;
-        int64_t res_d = (ad + da + bc + cb) >> Shift;
-
-        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b), 
-                 spu_deterministic_cast(res_c), spu_deterministic_cast(res_d) };
-    }
-};
-
-struct SPU_Vector832 {
-    int32_t v[26]; // 13 Lanes * 2 (a, b)
-};
-
-struct Quadray13 {
-    SPU_Vector832 data;
-    
-    // 13-Axis Cyclic Shuffle: {1,2..13} -> {2,3..13,1}
-    static inline Quadray13 _spu_sperm_13(Quadray13 q) {
-        Quadray13 res;
-        for (int i = 0; i < 12; ++i) {
-            res.data.v[i*2]   = q.data.v[(i+1)*2];
-            res.data.v[i*2+1] = q.data.v[(i+1)*2+1];
-        }
-        res.data.v[24] = q.data.v[0];
-        res.data.v[25] = q.data.v[1];
-        return res;
-    }
-
-    bool checkParity() const {
-        int32_t sum_a = 0, sum_b = 0;
-        for (int i = 0; i < 13; ++i) { sum_a += data.v[i*2]; sum_b += data.v[i*2+1]; }
-        return (sum_a == 0 && sum_b == 0);
+        int64_t aa = (int64_t)u.a * v.a; int64_t bb = (int64_t)u.b * v.b;
+        int64_t cc = (int64_t)u.c * v.c; int64_t dd = (int64_t)u.d * v.d;
+        int64_t ab = (int64_t)u.a * v.b + (int64_t)u.b * v.a;
+        int64_t ac = (int64_t)u.a * v.c + (int64_t)u.c * v.a;
+        int64_t ad = (int64_t)u.a * v.d + (int64_t)u.d * v.a;
+        int64_t bc = (int64_t)u.b * v.c + (int64_t)u.c * v.b;
+        int64_t bd = (int64_t)u.b * v.d + (int64_t)u.d * v.b;
+        int64_t cd = (int64_t)u.c * v.d + (int64_t)u.d * v.c;
+        int64_t res_a = (aa + 3*bb + 5*cc + 15*dd) >> Shift;
+        int64_t res_b = (ab + 5*cd) >> Shift;
+        int64_t res_c = (ac + 3*bd) >> Shift;
+        int64_t res_d = (ad + bc) >> Shift;
+        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b), spu_deterministic_cast(res_c), spu_deterministic_cast(res_d) };
     }
 };
 
@@ -141,15 +115,7 @@ struct SPU_Vector256 {
     int32_t v[8];
     static inline SPU_Vector256 add(const SPU_Vector256& u, const SPU_Vector256& v) {
         SPU_Vector256 res;
-#if defined(__APPLE__) && defined(__arm64__)
-        union { int32_t arr[4]; int32x4_t vec; } lu1, lu2, lv1, lv2, lr1, lr2;
-        std::memcpy(lu1.arr, &u.v[0], 16); std::memcpy(lu2.arr, &u.v[4], 16);
-        std::memcpy(lv1.arr, &v.v[0], 16); std::memcpy(lv2.arr, &v.v[4], 16);
-        lr1.vec = vaddq_s32(lu1.vec, lv1.vec); lr2.vec = vaddq_s32(lu2.vec, lv2.vec);
-        std::memcpy(&res.v[0], lr1.arr, 16); std::memcpy(&res.v[4], lr2.arr, 16);
-#else
         for (int i = 0; i < 8; ++i) res.v[i] = u.v[i] + v.v[i];
-#endif
         return res;
     }
     static inline SPU_Vector256 rotate60(const SPU_Vector256& q) {
@@ -157,6 +123,25 @@ struct SPU_Vector256 {
     }
     static inline SPU_Vector256 permute_q1(const SPU_Vector256& q) {
         return { q.v[0], q.v[1], q.v[4], q.v[5], q.v[6], q.v[7], q.v[2], q.v[3] };
+    }
+};
+
+struct SPU_Vector832 {
+    int32_t v[26];
+};
+
+struct Quadray13 {
+    SPU_Vector832 data;
+    static inline Quadray13 _spu_sperm_13(Quadray13 q) {
+        Quadray13 res;
+        for (int i = 0; i < 12; ++i) { res.data.v[i*2] = q.data.v[(i+1)*2]; res.data.v[i*2+1] = q.data.v[(i+1)*2+1]; }
+        res.data.v[24] = q.data.v[0]; res.data.v[25] = q.data.v[1];
+        return res;
+    }
+    bool checkParity() const {
+        int32_t sum_a = 0, sum_b = 0;
+        for (int i = 0; i < 13; ++i) { sum_a += data.v[i*2]; sum_b += data.v[i*2+1]; }
+        return (sum_a == 0 && sum_b == 0);
     }
 };
 
@@ -171,20 +156,14 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
-    
     static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
         switch (phase) {
-            case 1: // P3 (60°): (b, c, a, d)
-                return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
-            case 2: // P5 (120°): (c, a, b, d)
-                return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
-            case 3: // P7 (Flip): (d, b, c, a)
-                return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
-            default: // P1 (Identity): (a, b, c, d)
-                return q;
+            case 1: return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
+            case 2: return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
+            case 3: return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
+            default: return q;
         }
     }
-
     static inline Quadray4 _spu_damp(Quadray4 q) {
         Quadray4 scaled;
         for (int i = 0; i < 8; ++i) {
@@ -194,7 +173,6 @@ struct alignas(32) Quadray4 {
         }
         return _spu_sperm_x4(scaled, 3);
     }
-
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
@@ -217,8 +195,6 @@ struct DualSurd {
         return { val.multiply(other.val), val.multiply(other.eps).add(eps.multiply(other.val)) };
     }
 };
-
-// --- END SOVEREIGN CORE ---
 
 // --- DISPLAY ADAPTER ---
 namespace DisplayAdapter {
