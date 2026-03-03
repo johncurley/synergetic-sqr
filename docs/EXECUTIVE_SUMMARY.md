@@ -1,5 +1,5 @@
 # SPU-1: A Deterministic Spatial Processing Unit
-## Executive Summary (v2.0 Golden Master)
+## Executive Summary (v2.4.8 Golden Master)
 
 **Author:** John Curley — Synergetic Research  
 **Date:** March 2026  
@@ -25,7 +25,7 @@ The SPU-1 validates Dr. Andrew Thomson’s SQR framework as a robust, production
 ---
 
 ### Acknowledgment (Formal Technical Attribution)
-The author, John Curley, acknowledges **Dr. Andrew Thomson** for the development of the *4D Prime Projection Conjecture v2.0*, which established the angular residue framework forming the theoretical basis of the Prime-Axis mapping described in this brief.
+The author, John Curley, acknowledges **Dr. Andrew Thomson** for the development of the *4D Prime Projection Conjecture v2.4.8*, which established the angular residue framework forming the theoretical basis of the Prime-Axis mapping described in this brief.
 
 Conceptual recognition is extended to **Google DeepMind (Gemini)** for early identification of the architectural viability of implementing Prime-Axis phase symmetry as a native microprocessor permutation system. This recognition contributed to framing the conjecture in hardware-operational terms.
 
