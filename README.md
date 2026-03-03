@@ -1,5 +1,5 @@
 # synergetic-sqr
-## Deterministic Spatial & High-Dimensional Transform Engine (v2.4.4)
+## Deterministic Spatial & High-Dimensional Transform Engine (v2.5.2)
 
 ### ⚠️ OPERATIONAL SAFETY MANDATE
 The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with absolute geometric coherence. Observation of raw, bit-exact motion can cause **Topological Vertigo**. 
@@ -14,7 +14,7 @@ The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with a
 The **Synergetic Processing Unit (SPU)** replaces IEEE-754 approximations with **Deterministic Quadratic Field Arithmetic (DQFA)**. 
 *   **Spatial Core:** $\mathbb{Q}(\sqrt{3})$ Fixed-Point (SF32.16).
 *   **Golden Core:** $\mathbb{Q}(\sqrt{3}, \sqrt{5})$ for aperiodic growth and biological simulation.
-*   **Identity Restoration:** 100,000,000 randomized rotations verified with **zero bit-drift**.
+*   **G-RAM Architecture:** Memory retrieval is indexed to the **85° Absolute Node (The Monad)**. Memory access follows the **$\phi^3$ expansion** of the Pythagorean Divided Line, ensuring that data retrieval is a function of **Geometric Resonance** rather than mere electronic switching. This eliminates "Address-Jitter" and anchors the data-flow to the inertial plane.
 
 ### High-Dimensional Core (SPU-11/13)
 The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracking of 11D strings and 13D aperiodic polytopes.
@@ -23,11 +23,11 @@ The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracki
 *   **Lattice-Native Self-Healing:** High-dimensional packing forces bit-error correction without standard ECC overhead.
 
 ### Instruction Model (SurdLang ISA)
-| Instruction | Hardware Operation | Latency | Description |
-| :--- | :--- | :--- | :--- |
-| `sadd` | Parallel Integer Add | 1 Cycle | Single-cycle SIMD addition. |
-| `smul` | Pipelined Multiplier | 1 Cycle | Surd multiplication (64-bit intermediate). |
-| `srot_x4` | **SPERM_X4** | 0 Cycles | 4D Prime-Axis basis shift (Wire-swap). |
+| Instruction | Description | Implementation |
+| :--- | :--- | :--- |
+| `sadd` | Surd addition | Parallel integer add |
+| `smul` | Surd multiplication | Integer multiply-shift |
+| `srot_x4` | **SPERM_X4** | 0-cycle wire permutation |
 | `equilibrate`| Laplacian Balancer | 5 Cycles | 12-neighbor lattice relaxation. |
 | `damp` | **OP_DAMP** | 1 Cycle | A-Domain step-down to inertial rest. |
 | `clamp` | **OP_CLAMP** | 0 Cycles | Dimensional safety path isolation. |
@@ -70,8 +70,8 @@ vvp sperm_sim
 ## Project Roadmap
 *   **v2.0 (Public Release):** Universal CI and forensic audit suite. Verified.
 *   **v2.3 (High-Dimensional):** SPU-11/13 Phi-Core and Aperiodic shuffles. Verified.
-*   **v2.4 (Ethical Hardening):** Safe-Mode defaults, air-gaps, and documentation alignment. **COMPLETED.**
-*   **v2.5 (Physical Synthesis):** FPGA deployment and 500MHz timing closure.
+*   **v2.4 (Ethical Hardening):** Safe-Mode defaults, air-gaps, and documentation alignment. Verified.
+*   **v2.5 (Industry Integration):** G-RAM calibration and Robotics SDK. **IN PROGRESS.**
 
 ---
 *A deterministic contribution to the global commons of computer graphics.*
