@@ -8,12 +8,29 @@ namespace Synergetics {
 namespace SDK {
 
 /**
- * Bond: A structural identity between two nodes.
+ * ArticulatedJoint: A bit-perfect robotic joint.
  */
-struct Bond {
-    int32_t a_idx;
-    int32_t b_idx;
-    int64_t rest_quadrance;
+struct ArticulatedJoint {
+    Quadray4 local_pos;
+    int phase; 
+
+    void Rotate(int steps) {
+        phase = (phase + steps) % 4;
+        local_pos = Quadray4::_spu_sperm_x4(local_pos, phase);
+    }
+};
+
+/**
+ * KinematicChain: A sequence of joints.
+ */
+struct KinematicChain {
+    std::vector<ArticulatedJoint> joints;
+    void AddJoint(Quadray4 offset) { joints.push_back({ offset, 0 }); }
+    Quadray4 CalculateEndEffector() {
+        Quadray4 result = { {0, 0, 0, 0, 0, 0, 0, 0} };
+        for (const auto& j : joints) result = Quadray4::_spu_add_q4(result, j.local_pos);
+        return result;
+    }
 };
 
 /**
@@ -21,32 +38,11 @@ struct Bond {
  */
 struct Lattice {
     std::vector<SPU_TensegrityNode> nodes;
-    std::vector<Bond> bonds;
-
     void AddNode(Quadray4 pos) {
         if (pos.checkParity()) {
             SPU_TensegrityNode n;
-            n.position = pos;
-            n.prev_position = pos;
-            n.mass.num = 1;
-            n.mass.den = 1;
+            n.position = pos; n.prev_position = pos; n.mass = {1, 1};
             nodes.push_back(n);
-        }
-    }
-
-    void Bind(int32_t i, int32_t j) {
-        int64_t q = Quadray4::_spu_quadrance(nodes[i].position, nodes[j].position);
-        bonds.push_back({ i, j, q });
-    }
-
-    void Step() {
-        for (const auto& b : bonds) {
-            TensegrityLink link = { b.a_idx, b.b_idx, b.rest_quadrance, 10, LinkType::Tie };
-            link.projectConstraint(nodes[b.a_idx], nodes[b.b_idx]);
-        }
-        Quadray4 g = SPU_TensegrityNode::gravityVector();
-        for (auto& n : nodes) {
-            SPU_TensegrityNode::_spu_verlet_step(n, g, 1);
         }
     }
 };
