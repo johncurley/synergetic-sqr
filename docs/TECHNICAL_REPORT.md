@@ -46,7 +46,7 @@ The architecture is verified via the **Rigorous Verification Suite**:
 ### 6. Limitations
 - **Field Constraint:** Native operations are restricted to $\mathbb{Q}(\sqrt{3})$. Arbitrary angles require rational approximation.
 - **Precision:** $SF_{32.16}$ provides finite precision; extremely high-velocity dynamics may require $SF_{64.32}$.
-- **Specialization:** Optimized for tetrahedral symmetry; Cartesian-heavy workloads may see overhead in coordinate conversion.
+- **Specialization:** Optimized for tetrahedral symmetry; legacy spatial workloads utilizing standard 90-degree coordinates may see overhead in coordinate conversion at the display boundary.
 
 ### 7. Conclusion
 The SPU-1 architecture proves that spatial computation can be bit-exact, deterministic, and hardware-efficient. This construction serves as a baseline for the development of native Synergetic Silicon (SQR-ASIC) and drift-free simulation standards.
