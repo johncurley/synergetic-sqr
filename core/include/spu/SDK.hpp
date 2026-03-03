@@ -8,7 +8,24 @@ namespace Synergetics {
 namespace SDK {
 
 /**
+ * PhiNode: A high-dimensional 'Golden Core' node.
+ * Operates in the Q(sqrt3, sqrt5) basis for aperiodic growth.
+ */
+struct PhiNode {
+    SurdFixed128 coordinate;
+    
+    static PhiNode Create(int32_t a, int32_t b, int32_t c, int32_t d) {
+        return { {a, b, c, d} };
+    }
+
+    void GrowthStep(const PhiNode& other) {
+        coordinate = SurdFixed128::multiply(coordinate, other.coordinate);
+    }
+};
+
+/**
  * ArticulatedJoint: A bit-perfect robotic joint.
+ * Uses SPERM_X4 shuffles to ensure zero-drift rotation.
  */
 struct ArticulatedJoint {
     Quadray4 local_pos;
@@ -62,10 +79,8 @@ struct TetraUnit {
     }
 };
 
-static inline void RotateObject(std::vector<Quadray4>& vertices, int steps = 1) {
-    for (auto& v : vertices) {
-        for (int i = 0; i < steps; ++i) v = Quadray4::_spu_rotate_60(v);
-    }
+static inline void RotateObject(std::vector<Quadray4>& vertices, int phase) {
+    for (auto& v : vertices) v = Quadray4::_spu_sperm_x4(v, phase);
 }
 
 static inline Quadray4 RationalSnap(float x, float y, float z) {
