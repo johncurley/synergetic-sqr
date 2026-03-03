@@ -124,9 +124,34 @@ struct SurdFixed128 {
     static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } 
 
     static inline SurdFixed128 multiply(SurdFixed128 u, SurdFixed128 v) {
-        // Full algebraic expansion of (a + b*sqrt3 + c*sqrt5 + d*sqrt15)
-        // ... Logic for 16 cross-products ...
-        return { 0, 0, 0, 0 }; // Placeholder for v2.4 implementation
+        int64_t aa = (int64_t)u.a * v.a;
+        int64_t ab = (int64_t)u.a * v.b;
+        int64_t ac = (int64_t)u.a * v.c;
+        int64_t ad = (int64_t)u.a * v.d;
+        
+        int64_t ba = (int64_t)u.b * v.a;
+        int64_t bb = (int64_t)u.b * v.b;
+        int64_t bc = (int64_t)u.b * v.c;
+        int64_t bd = (int64_t)u.b * v.d;
+        
+        int64_t ca = (int64_t)u.c * v.a;
+        int64_t cb = (int64_t)u.c * v.b;
+        int64_t cc = (int64_t)u.c * v.c;
+        int64_t cd = (int64_t)u.c * v.d;
+        
+        int64_t da = (int64_t)u.d * v.a;
+        int64_t db = (int64_t)u.d * v.b;
+        int64_t dc = (int64_t)u.d * v.c;
+        int64_t dd = (int64_t)u.d * v.d;
+
+        // Field Pairing: res_a = aa + 3bb + 5cc + 15dd ... etc.
+        int64_t res_a = (aa + (bb*3) + (cc*5) + (dd*15)) >> Shift;
+        int64_t res_b = (ab + ba + (cd*5) + (dc*5)) >> Shift;
+        int64_t res_c = (ac + ca + (bd*3) + (db*3)) >> Shift;
+        int64_t res_d = (ad + da + bc + cb) >> Shift;
+
+        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b), 
+                 spu_deterministic_cast(res_c), spu_deterministic_cast(res_d) };
     }
 };
 
