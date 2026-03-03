@@ -61,6 +61,7 @@ vvp sperm_sim
 
 ## Documentation
 *   **[RESEARCH.md](RESEARCH.md):** Formal stability results and fixed-point proofs.
+*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity conservation.
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
 *   **[SAFETY.md](docs/SAFETY.md):** Operational guidelines for high-symmetry computing.
 *   **[ETHICS.md](docs/ETHICS.md):** Responsible management of high-dimensional shuffles.
