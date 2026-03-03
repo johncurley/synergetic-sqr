@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string.h>
 #include "SynergeticRenderer.hpp"
-#include "SynergeticsMath.hpp"
+#include "spu/SynergeticsMath.hpp"
 
 #ifdef __APPLE__
 #import <AppKit/AppKit.h>

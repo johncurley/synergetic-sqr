@@ -9,7 +9,7 @@
 #include <Metal/Metal.hpp>
 #endif
 
-#include "SynergeticsMath.hpp"
+#include "spu/SynergeticsMath.hpp"
 
 namespace Synergetics {
 
