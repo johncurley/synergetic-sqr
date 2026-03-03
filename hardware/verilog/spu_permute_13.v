@@ -1,10 +1,10 @@
 // SPU-11 High-Dimensional Permutator (v2.3.2)
-// Implements 11-axis cyclic shuffle: {Q1..Q11} -> {Q2..Q11, Q1}
+// Implements 11-axis cyclic shuffle: {Q1..Q13} -> {Q2..Q13, Q1}
 // Aligned with Prime-11 Symmetry for Topological Data Folding.
 
-module spu_permute_11 (
-    input  [703:0] q_in,  // 11 Lanes x 64-bit
-    output [703:0] q_out
+module spu_permute_13 (
+    input  [831:0] q_in,  // 11 Lanes x 64-bit
+    output [831:0] q_out
 );
 
     // Named Lane Extraction

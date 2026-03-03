@@ -68,21 +68,72 @@ struct SurdFixed64 {
     SurdFixed64 janusFlip() const { return { a, -b }; }
 };
 
-struct SurdVector3 {
-    SurdFixed64 x, y, z;
-    static inline void _spu_safe_normalize_vector(SurdVector3& v) {
-        v.x = SurdFixed64::_spu_safe_normalize(v.x);
-        v.y = SurdFixed64::_spu_safe_normalize(v.y);
-        v.z = SurdFixed64::_spu_safe_normalize(v.z);
+/**
+ * SurdFixed128: The 'Golden Core' Element (Q(sqrt3, sqrt5)).
+ * Represents a + b*sqrt3 + c*sqrt5 + d*sqrt15.
+ */
+struct SurdFixed128 {
+    int32_t a, b, c, d;
+    static constexpr int32_t Shift = 16;
+    static constexpr int32_t One = 1 << Shift;
+
+    static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } // (1 + sqrt5)/2
+
+    SurdFixed128 add(const SurdFixed128& other) const { return { a + other.a, b + other.b, c + other.c, d + other.d }; }
+    SurdFixed128 subtract(const SurdFixed128& other) const { return { a - other.a, b - other.b, c - other.c, d - other.d }; }
+    SurdFixed128 janusFlip() const { return { a, -b, -c, d }; } // Flips both surd polarities
+
+    static inline SurdFixed128 multiply(SurdFixed128 u, SurdFixed128 v) {
+        int64_t aa = (int64_t)u.a * v.a;
+        int64_t ab = (int64_t)u.a * v.b;
+        int64_t ac = (int64_t)u.a * v.c;
+        int64_t ad = (int64_t)u.a * v.d;
+        int64_t ba = (int64_t)u.b * v.a;
+        int64_t bb = (int64_t)u.b * v.b;
+        int64_t bc = (int64_t)u.b * v.c;
+        int64_t bd = (int64_t)u.b * v.d;
+        int64_t ca = (int64_t)u.c * v.a;
+        int64_t cb = (int64_t)u.c * v.b;
+        int64_t cc = (int64_t)u.c * v.c;
+        int64_t cd = (int64_t)u.c * v.d;
+        int64_t da = (int64_t)u.d * v.a;
+        int64_t db = (int64_t)u.d * v.b;
+        int64_t dc = (int64_t)u.d * v.c;
+        int64_t dd = (int64_t)u.d * v.d;
+
+        int64_t res_a = (aa + (bb*3) + (cc*5) + (dd*15)) >> Shift;
+        int64_t res_b = (ab + ba + (cd*5) + (dc*5)) >> Shift;
+        int64_t res_c = (ac + ca + (bd*3) + (db*3)) >> Shift;
+        int64_t res_d = (ad + da + bc + cb) >> Shift;
+
+        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b), 
+                 spu_deterministic_cast(res_c), spu_deterministic_cast(res_d) };
     }
 };
 
-struct SurdMatrix3x3 {
-    SurdVector3 row[3];
-    static inline void _spu_safe_normalize_matrix(SurdMatrix3x3& m) {
-        SurdVector3::_spu_safe_normalize_vector(m.row[0]);
-        SurdVector3::_spu_safe_normalize_vector(m.row[1]);
-        SurdVector3::_spu_safe_normalize_vector(m.row[2]);
+struct SPU_Vector832 {
+    int32_t v[26]; // 13 Lanes * 2 (a, b)
+};
+
+struct Quadray13 {
+    SPU_Vector832 data;
+    
+    // 13-Axis Cyclic Shuffle: {1,2..13} -> {2,3..13,1}
+    static inline Quadray13 _spu_sperm_13(Quadray13 q) {
+        Quadray13 res;
+        for (int i = 0; i < 12; ++i) {
+            res.data.v[i*2]   = q.data.v[(i+1)*2];
+            res.data.v[i*2+1] = q.data.v[(i+1)*2+1];
+        }
+        res.data.v[24] = q.data.v[0];
+        res.data.v[25] = q.data.v[1];
+        return res;
+    }
+
+    bool checkParity() const {
+        int32_t sum_a = 0, sum_b = 0;
+        for (int i = 0; i < 13; ++i) { sum_a += data.v[i*2]; sum_b += data.v[i*2+1]; }
+        return (sum_a == 0 && sum_b == 0);
     }
 };
 
@@ -108,66 +159,6 @@ struct SPU_Vector256 {
         return { q.v[0], q.v[1], q.v[4], q.v[5], q.v[6], q.v[7], q.v[2], q.v[3] };
     }
 };
-
-// --- PHASE 3: HIGH-DIMENSIONAL CORE (SPU-11) ---
-
-/**
- * SurdFixed128: The 'Golden Core' Extension (Q(sqrt3, sqrt5)).
- * Represents a + b*sqrt3 + c*sqrt5 + d*sqrt15.
- */
-struct SurdFixed128 {
-    int32_t a, b, c, d;
-    static constexpr int32_t Shift = 16;
-    static constexpr int32_t One = 1 << Shift;
-
-    // Phi Constant: (1 + sqrt5) / 2
-    static inline SurdFixed128 Phi() { return { 32768, 0, 32768, 0 }; } 
-
-    static inline SurdFixed128 multiply(SurdFixed128 u, SurdFixed128 v) {
-        int64_t aa = (int64_t)u.a * v.a;
-        int64_t ab = (int64_t)u.a * v.b;
-        int64_t ac = (int64_t)u.a * v.c;
-        int64_t ad = (int64_t)u.a * v.d;
-        
-        int64_t ba = (int64_t)u.b * v.a;
-        int64_t bb = (int64_t)u.b * v.b;
-        int64_t bc = (int64_t)u.b * v.c;
-        int64_t bd = (int64_t)u.b * v.d;
-        
-        int64_t ca = (int64_t)u.c * v.a;
-        int64_t cb = (int64_t)u.c * v.b;
-        int64_t cc = (int64_t)u.c * v.c;
-        int64_t cd = (int64_t)u.c * v.d;
-        
-        int64_t da = (int64_t)u.d * v.a;
-        int64_t db = (int64_t)u.d * v.b;
-        int64_t dc = (int64_t)u.d * v.c;
-        int64_t dd = (int64_t)u.d * v.d;
-
-        // Field Pairing: res_a = aa + 3bb + 5cc + 15dd ... etc.
-        int64_t res_a = (aa + (bb*3) + (cc*5) + (dd*15)) >> Shift;
-        int64_t res_b = (ab + ba + (cd*5) + (dc*5)) >> Shift;
-        int64_t res_c = (ac + ca + (bd*3) + (db*3)) >> Shift;
-        int64_t res_d = (ad + da + bc + cb) >> Shift;
-
-        return { spu_deterministic_cast(res_a), spu_deterministic_cast(res_b), 
-                 spu_deterministic_cast(res_c), spu_deterministic_cast(res_d) };
-    }
-};
-
-struct SPU_Vector832 {
-    int32_t v[26]; // 13 Lanes x 64-bit (a, b) or 13 x 128 (a,b,c,d)
-};
-
-struct Quadray13 {
-    SPU_Vector832 data;
-    static inline Quadray13 _spu_sperm_13(Quadray13 q) {
-        // 13-Axis Prime Cyclic Shuffle
-        return q; 
-    }
-};
-
-// --- END HIGH-DIMENSIONAL CORE ---
 
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
