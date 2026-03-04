@@ -12,11 +12,11 @@ using namespace Synergetics;
 
 int main(int argc, char* argv[]) {
     // 0. CLI Argument Parsing
-    bool safe_mode = true;
+    bool forensic_mode = false;
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--forensic") == 0) {
-            safe_mode = false;
-            std::cout << "WARNING: Launching in FORENSIC MODE. Optical Dampers Disabled." << std::endl;
+            forensic_mode = true;
+            std::cout << "WARNING: Launching in FORENSIC MODE. High-Intensity Symmetries Active." << std::endl;
         }
     }
 
@@ -60,12 +60,12 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    // Apply Safe-Mode State
-    if (safe_mode) {
+    // Apply Hard-Locked Safe State
+    if (!forensic_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); // Force ON
-        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE] | Damper [ON]");
+        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE] | Damper [LOCKED ON]");
     } else {
-        SDL_SetWindowTitle(window, "SPU-1 [FORENSIC] | Damper [OFF]");
+        SDL_SetWindowTitle(window, "SPU-1 [FORENSIC] | Damper [UNLOCKED]");
     }
 
 #ifdef __APPLE__
@@ -84,17 +84,20 @@ int main(int argc, char* argv[]) {
             if (e.type == SDL_EVENT_QUIT) {
                 quit = true;
             } else if (e.type == SDL_EVENT_KEY_DOWN) {
-                if (e.key.key == SDLK_SPACE) {
-                    renderer->toggleJanus();
-                } else if (e.key.key == SDLK_S) {
-                    renderer->toggleDSS();
+                // Input only allowed in Forensic Mode
+                if (forensic_mode) {
+                    if (e.key.key == SDLK_SPACE) {
+                        renderer->toggleJanus();
+                    } else if (e.key.key == SDLK_S) {
+                        renderer->toggleDSS();
+                    }
+                    
+                    char title[128];
+                    snprintf(title, sizeof(title), "SPU-1 [FORENSIC] | Janus: %s | Damper: %s", 
+                        (renderer->getJanus() > 0 ? "+" : "-"),
+                        (renderer->getDSS() ? "ON" : "OFF"));
+                    SDL_SetWindowTitle(window, title);
                 }
-                
-                char title[128];
-                snprintf(title, sizeof(title), "SPU-1 [%s] | Damper [%s]", 
-                    (renderer->getJanus() > 0 ? "Janus +" : "Janus -"),
-                    (renderer->getDSS() ? "ON" : "OFF"));
-                SDL_SetWindowTitle(window, title);
             }
         }
 
