@@ -14,15 +14,6 @@ endif()
 # --- OPTIONS ---
 option(BUILD_RENDERER "Build the visual SPU-1 demonstrator" ON)
 
-# --- EXTERNAL DEPENDENCIES ---
-include(FetchContent)
-FetchContent_Declare(
-  sdl3
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-  GIT_TAG main
-)
-FetchContent_MakeAvailable(sdl3)
-
 # --- INCLUDE DIRECTORIES ---
 include_directories(core/include)
 include_directories(software/api)
@@ -61,8 +52,17 @@ add_spu_test(spu-toolchain-verify toolchain_verification.cpp)
 add_spu_test(spu-security-verify security_verification.cpp)
 add_spu_test(spu-hull-verify hull_verification.cpp)
 
-# --- VISUAL DEMONSTRATOR ---
+# --- VISUAL DEMONSTRATOR (OPTIONAL) ---
 if(BUILD_RENDERER)
+    # Fetch SDL3 only when renderer is enabled to prevent CI failures on headless Linux
+    include(FetchContent)
+    FetchContent_Declare(
+      sdl3
+      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+      GIT_TAG main
+    )
+    FetchContent_MakeAvailable(sdl3)
+
     set(RENDERER_SOURCES
         demos/renderer/main.cpp
         demos/renderer/SynergeticRenderer.cpp
