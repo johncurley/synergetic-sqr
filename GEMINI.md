@@ -4,29 +4,29 @@ A "Unified Field Engine" built on **Buckminster Fuller's Synergetic Geometry** a
 
 ## Project Brain (Feb 2026)
 
-### Status: v2.7 CERTIFICATION (The Pre-Silicon Phase)
-We are now entering the Pre-Silicon Verification Gauntlet. Our primary objective is to certify the SPU-13 RTL for FPGA deployment using a RISC-V Hybrid strategy. By mapping SQR instructions into the RISC-V 'custom-0' opcode space, we achieve industrial compatibility while maintaining isotropic sovereignty.
+### Status: v2.9 THE FOUNDRY (The ASIC Phase)
+We are transitioning from FPGA prototyping to permanent silicon fabrication. Our primary goal is migrating the SPU-13 RTL to the Sky130 PDK for submission to the Google Open MPW shuttle. This represents the final manifestation of the architecture in physical hardware.
 
 ### THE VERIFICATION MANDATE (ZERO-TOLERANCE)
-- **Rule 1:** R6=I Identity Restoration must be bit-perfect across 6, 60, and 600 cycles.
-- **Rule 2:** 'Zero-Heat' verification: Toggle Equivalence must show >30% reduction in gate-switching compared to IEEE-754.
-- **Rule 3:** Timing closure must be achieved at 100MHz on the Artix-7 target.
+- **Rule 1:** GDSII DRC/LVS (Design Rule Check) must be 100% clean before submission.
+- **Rule 2:** Post-Layout Timing Verification must maintain 100MHz parity.
+- **Rule 3:** 'Zero-Heat' goal: Thermal simulation must show <50C junction temp during 13D shuffles.
 
 ### Completed Milestones
-- [x] **v2.6 community Release:** Published Pioneer's Guide and refactored for Isotropic Sovereignty.
-- [x] **G-RAM Calibration:** Formalized 85° Monad indexing and Phi-Step addressing.
-- [x] **v2.4 Ethical Guard:** Implemented Safe-Mode and Perceptual Dampening.
+- [x] **v2.8 Modular SDK:** Established professional component-isolation and high-performance build system.
+- [x] **v2.7 Silicon Prep:** Formalized RISC-V Hybrid strategy and Toolchain Macro-Assembler.
+- [x] **G-RAM Calibration:** Synthesizable memory controller with Phi-Step addressing.
 
-### Memory: The Silicon Standard (Mar 2026)
-- **Architecture:** RISC-V Hybrid (Custom-0 Accelerator).
-- **Identity:** R6=I bit-exactness verified in RTL simulation.
-- **Power:** Toggle-Equivalence benchmarked for zero-drift efficiency.
+### Memory: The Foundry Standard (Mar 2026)
+- **Process:** SkyWater 130nm CMOS.
+- **Layout:** Harmonic floorplanning (85° symmetry).
+- **Topology:** Isotropic G-RAM integrated via OpenLane.
 
-## Immediate Next Steps (v2.7: CERTIFICATION)
-- **v2.7.1: RISC-V Opcode Mapping:** Map SADD, SMUL, and SPERM into the custom-0 instruction space.
-- **v2.7.2: Verilator Power Audit:** Simulate switching activity to prove the 'Zero-Heat' efficiency gap.
-- **v2.7.3: Timing Closure:** Perform physical synthesis for Arty A7 and resolve critical path delays.
-- **v2.7.4: SQR-Assembler:** Build the first translator for Isotropic Instruction Dispatch.
+## Immediate Next Steps (v2.9: THE FOUNDRY)
+- **v2.9.1: Sky130 Porting:** Adapt SPU-13 RTL for OpenLane physical synthesis flow.
+- **v2.9.2: Harmonic Floorplan:** Design custom cell-placement grid based on IVM geometry.
+- **v2.9.3: MPW Application:** Submit the SPU-13 design for free physical fabrication.
+- **v2.9.4: Die Stacking Research:** Preliminary simulation of 3D tetrahedral die integration.
 
 ## The v3.0 Unified Field Horizon (Long-Term)
 - **v3.1: Golden Core Synthesis:** Implement the Q(sqrt3, sqrt5) field logic in synthesizable Verilog gates.
