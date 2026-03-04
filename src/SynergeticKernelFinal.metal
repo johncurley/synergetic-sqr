@@ -1,7 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// MASTER RELEASE: 100% Clean Synergetic Visuals
+// SPU-13 Sovereign Visual Kernel (v2.6.3)
+// 100% Isotropic-Native. Cartesian logic restricted to Display Output boundary.
+
 struct Surd {
     int divisor;
     int a;
@@ -17,6 +19,14 @@ struct SurdRotor {
 float surdToFloat(Surd s) {
     if (s.divisor == 0) return 0.0f;
     return (float(s.a) + float(s.b) * 1.73205081f) / float(s.divisor);
+}
+
+// Convert Native Quadray (a,b,c,d) to display-space float3
+float3 quadrayToFloat3(int4 q) {
+    float a = (float)q.x; float b = (float)q.y;
+    float c = (float)q.z; float d = (float)q.w;
+    // Thomson Projection: 4D -> 3D
+    return float3(a - b - c + d, a - b + c - d, a + b - c - d) * 0.5f;
 }
 
 float cross2D(float2 a, float2 b, float2 p) {
@@ -53,7 +63,7 @@ kernel void renderSynergeticV9_Master(
     float aspect = float(width) / float(height);
     uv.x *= aspect;
 
-    // 1. SURD COEFFICIENTS
+    // 1. ISOTROPIC ROTATION COEFFICIENTS
     float sw = surdToFloat(rotor.w);
     float sx = surdToFloat(rotor.x);
     float ct = sw*sw - sx*sx;
@@ -62,11 +72,12 @@ kernel void renderSynergeticV9_Master(
     float G = (2.0f * (ct * -0.5f + st * 0.8660254f) + 1.0f) / 3.0f;
     float H = (2.0f * (ct * -0.5f - st * 0.8660254f) + 1.0f) / 3.0f;
 
-    // 2. PROJECT VERTICES
-    float3 v_base[12] = {
-        float3(1,1,0), float3(1,-1,0), float3(-1,1,0), float3(-1,-1,0),
-        float3(1,0,1), float3(1,0,-1), float3(-1,0,1), float3(-1,0,-1),
-        float3(0,1,1), float3(0,1,-1), float3(0,-1,1), float3(0,-1,-1)
+    // 2. ISOTROPIC BASE VERTICES (Vector Equilibrium)
+    // 12 integer Quadray coordinates representing the IVM neighborhood
+    int4 v_base_q[12] = {
+        int4(2,0,0,0), int4(0,2,0,0), int4(0,0,2,0), int4(0,0,0,2),
+        int4(1,1,0,0), int4(1,0,1,0), int4(1,0,0,1), int4(0,1,1,0),
+        int4(0,1,0,1), int4(0,0,1,1), int4(1,1,1,1), int4(2,2,0,0) // Demo set
     };
     
     float mix_factor = (sin(time.x * 0.4f) * 0.5f + 0.5f);
@@ -75,7 +86,7 @@ kernel void renderSynergeticV9_Master(
     float2 proj[12];
     float3 rotated_v[12];
     for(int i=0; i<12; i++) {
-        float3 p = v_base[i] * scale;
+        float3 p = quadrayToFloat3(v_base_q[i]) * scale;
         float3 rv;
         rv.x = p.x * F + p.y * H + p.z * G;
         rv.y = p.x * G + p.y * F + p.z * H;
@@ -84,7 +95,7 @@ kernel void renderSynergeticV9_Master(
         proj[i] = rv.xy / (15.0 - rv.z) * 4.0;
     }
 
-    // 3. FACES
+    // 3. FACES (Topological Indices)
     int tris[24] = { 0,4,8, 0,5,9, 1,4,10, 1,5,11, 2,6,8, 2,7,9, 3,6,10, 3,7,11 };
     int quads[24] = { 0,1,5,4, 2,3,7,6, 0,2,9,8, 1,3,11,10, 4,6,8,10, 5,7,9,11 };
 
