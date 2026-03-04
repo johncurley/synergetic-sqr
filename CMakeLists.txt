@@ -52,6 +52,7 @@ add_spu_test(spu13-verify spu13_verification.cpp)
 add_spu_test(spu-robotics-verify robotics_verification.cpp)
 add_spu_test(spu-toolchain-verify toolchain_verification.cpp)
 add_spu_test(spu-security-verify security_verification.cpp)
+add_spu_test(spu-hull-verify hull_verification.cpp)
 
 # --- VISUAL DEMONSTRATOR ---
 if(BUILD_RENDERER)
