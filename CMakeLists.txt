@@ -83,6 +83,12 @@ if(APPLE)
     set_source_files_properties(tests/suites/robotics_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
+# 4.9 Toolchain Verification Suite
+add_executable(spu-toolchain-verify tests/suites/toolchain_verification.cpp)
+if(APPLE)
+    set_source_files_properties(tests/suites/toolchain_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+endif()
+
 # --- SPU-1 PURITY GUARD ---
 add_custom_target(purity_audit ALL
     COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/core/include/spu/SynergeticsMath.hpp" | grep -E 'float|double' && (echo "PURITY ERROR: Contamination in Core" && exit 1) || true
