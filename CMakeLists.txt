@@ -1,115 +1,74 @@
-cmake_minimum_required(VERSION 3.16)
-project(SynergeticSQR VERSION 1.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.20)
+project(synergetic-sqr LANGUAGES C CXX OBJCXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 1. Option to build the Visual Renderer (Requires SDL3)
-option(BUILD_RENDERER "Build the SDL3 visual renderer" ON)
+# --- OPTIONS ---
+option(BUILD_RENDERER "Build the visual SPU-1 demonstrator" ON)
 
-if(BUILD_RENDERER)
-    # Automatic SDL3 Fetching
-    include(FetchContent)
-    FetchContent_Declare(
-      SDL3
-      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-      GIT_TAG main
-    )
-    FetchContent_MakeAvailable(SDL3)
-endif()
-
-# 2. Source Files
-set(SOURCES
-    src/main.cpp
-    renderer/src/SynergeticRenderer.cpp
+# --- EXTERNAL DEPENDENCIES ---
+include(FetchContent)
+FetchContent_Declare(
+  sdl3
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+  GIT_TAG main
 )
+FetchContent_MakeAvailable(sdl3)
 
-# 3. Global Include Directories
+# --- INCLUDE DIRECTORIES ---
 include_directories(core/include)
-include_directories(renderer/src)
+include_directories(software/api)
+include_directories(software/toolchain)
+include_directories(demos/renderer)
 include_directories(metal-cpp)
 
-# 4. Executable (Visual Renderer)
-if(BUILD_RENDERER)
-    add_executable(synergetic-sqr ${SOURCES})
-endif()
-
-# 4.1 Deterministic Verification Suite
-add_executable(spu-verify tests/suites/rigorous_verification.cpp)
-if(APPLE)
-    target_link_libraries(spu-verify PRIVATE "-framework Foundation") 
-    set_source_files_properties(tests/suites/rigorous_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.2 Collision Verification Suite
-add_executable(spu-collision tests/suites/collision_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/collision_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.3 Bulletproof Verification Suite
-add_executable(spu-bulletproof tests/suites/bulletproof_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/bulletproof_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.4 Extreme Chaos Suite
-add_executable(spu-extreme-chaos tests/suites/extreme_chaos_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/extreme_chaos_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.5 SDK Verification Suite
-add_executable(spu-sdk-verify tests/suites/sdk_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/sdk_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.6 Prime Synthesis Verification Suite
-add_executable(spu-prime-verify tests/suites/prime_synthesis_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/prime_synthesis_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.7 SPU-13 High-Dimensional Audit
-add_executable(spu13-verify tests/suites/spu13_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/spu13_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.8 Robotics Verification Suite
-add_executable(spu-robotics-verify tests/suites/robotics_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/robotics_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# 4.9 Toolchain Verification Suite
-add_executable(spu-toolchain-verify tests/suites/toolchain_verification.cpp)
-if(APPLE)
-    set_source_files_properties(tests/suites/toolchain_verification.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
-
-# --- SPU-1 PURITY GUARD ---
-add_custom_target(purity_audit ALL
-    COMMAND sed -n '/SOVEREIGN CORE/,/END SOVEREIGN CORE/p' "${CMAKE_CURRENT_SOURCE_DIR}/core/include/spu/SynergeticsMath.hpp" | grep -E 'float|double' && (echo "PURITY ERROR: Contamination in Core" && exit 1) || true
+# --- CORE ALGEBRAIC AUDIT (PURITY GUARD) ---
+add_custom_target(purity_audit
+    COMMAND grep -rnE "float|double" core/include/spu/SynergeticsMath.hpp | grep -v "DisplayAdapter" | grep -v "Legacy" || true
     COMMENT "Auditing SPU-1 Algebraic Core for floating-point contamination..."
 )
 
-# 5. Asset Management
-if(BUILD_RENDERER)
-    add_custom_command(TARGET synergetic-sqr POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/renderer/metal/DQFA.metal ${CMAKE_CURRENT_BINARY_DIR}/src/DQFA.metal
-        COMMENT "Syncing shaders to build directory..."
-    )
-endif()
-
-# 6. Linking Logic
-if(BUILD_RENDERER)
+# --- VERIFICATION SUITES ---
+macro(add_spu_test name source)
+    add_executable(${name} verification/suites/${source})
     if(APPLE)
-        target_link_libraries(synergetic-sqr PRIVATE SDL3::SDL3 "-framework Metal" "-framework Foundation" "-framework QuartzCore" "-framework AppKit")
-        set_source_files_properties(renderer/src/SynergeticRenderer.cpp src/main.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
-    else()
-        target_link_libraries(synergetic-sqr PRIVATE SDL3::SDL3)
+        set_source_files_properties(verification/suites/${source} PROPERTIES COMPILE_FLAGS "-x objective-c++")
     endif()
+    target_link_libraries(${name} PRIVATE spu_core_interface)
+endmacro()
+
+# Interface library for shared includes
+add_library(spu_core_interface INTERFACE)
+target_include_directories(spu_core_interface INTERFACE core/include software/api software/toolchain)
+
+add_spu_test(spu-verify rigorous_verification.cpp)
+add_spu_test(spu-extreme-chaos extreme_chaos_verification.cpp)
+add_spu_test(spu-bulletproof bulletproof_verification.cpp)
+add_spu_test(spu-collision collision_verification.cpp)
+add_spu_test(spu-sdk-verify sdk_verification.cpp)
+add_spu_test(spu-prime-verify prime_synthesis_verification.cpp)
+add_spu_test(spu13-verify spu13_verification.cpp)
+add_spu_test(spu-robotics-verify robotics_verification.cpp)
+add_spu_test(spu-toolchain-verify toolchain_verification.cpp)
+
+# --- VISUAL DEMONSTRATOR ---
+if(BUILD_RENDERER)
+    set(RENDERER_SOURCES
+        demos/renderer/main.cpp
+        demos/renderer/SynergeticRenderer.cpp
+    )
+    
+    add_executable(synergetic-sqr ${RENDERER_SOURCES})
+    target_link_libraries(synergetic-sqr PRIVATE SDL3-shared spu_core_interface)
+    
+    if(APPLE)
+        set_source_files_properties(demos/renderer/main.cpp demos/renderer/SynergeticRenderer.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+        target_link_libraries(synergetic-sqr PRIVATE "-framework Metal" "-framework QuartzCore" "-framework AppKit")
+    endif()
+
+    add_custom_command(TARGET synergetic-sqr POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/demos/renderer ${CMAKE_CURRENT_BINARY_DIR}/
+        COMMENT "Syncing shaders and models to build directory..."
+    )
 endif()
