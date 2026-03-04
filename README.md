@@ -35,13 +35,19 @@ The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracki
 | `clamp` | **OP_CLAMP** | 0 Cycles | Dimensional safety path isolation. |
 | `srot_13` | **SPERM_13** | 0 Cycles | 13-Axis aperiodic shuffle [RESTRICTED]. |
 
-### Hardware Realization (SQR-ASIC)
-The `hardware/` directory contains synthesizable Verilog RTL for the SPU stack:
-*   **`spu_core.v`**: Integrated pipeline with ECC and Prime-Axis control.
-*   **`spu_tensegrity_balancer.v`**: 4-stage pipelined Laplacian unit.
-*   **`spu_ecc.v`**: SECDED Hamming protection layer.
-*   **`spu_damper.v`**: A-Domain inertial rest gate.
-*   **`hardware/restricted/`**: Air-gapped high-dimensional shuffle modules.
+### Thomson Deterministic Benchmarks (TDB)
+The SPU-13 architecture is benchmarked for spatial identity and switching efficiency.
+*   **Identity:** 100% bit-exact restoration across $10^8$ rotations.
+*   **Efficiency:** ~37x reduction in gate-switching activity compared to standard FPUs.
+*   **Robotics:** Zero cumulative drift across 100-joint kinematic chains.
+*   **[BENCHMARKS.md](docs/BENCHMARKS.md):** Full clinical performance analysis.
+
+### Hardware Realization (Synthesizable RTL)
+The `hardware/` directory contains synthesizable Verilog for industrial FPGA deployment:
+*   **`spu_core.v`**: Integrated RISC-V Custom-0 logic.
+*   **`spu_gram_controller.v`**: Harmonic memory decoder.
+*   **`spu_tensegrity_balancer.v`**: Pipelined Laplacian unit.
+*   **`spu_smul_13.v`**: Phi-Core multiplier (Restricted).
 
 ### Running the Forensic Audit
 ```bash
