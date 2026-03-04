@@ -4,27 +4,29 @@ A "Unified Field Engine" built on **Buckminster Fuller's Synergetic Geometry** a
 
 ## Project Brain (Feb 2026)
 
-### Status: v2.5 INDUSTRY (The Robotics Phase)
-Having achieved isotropic sovereignty and high-dimensional verification, we are now focused on industry adoption. Our primary goal is building the 'Isotropic Bridge'—a set of libraries and plugins that allow standard engineering tools (Blender, ROS, Unity) to offload spatial logic to the bit-perfect SPU-1 core.
+### Status: v2.7 CERTIFICATION (The Pre-Silicon Phase)
+We are now entering the Pre-Silicon Verification Gauntlet. Our primary objective is to certify the SPU-13 RTL for FPGA deployment using a RISC-V Hybrid strategy. By mapping SQR instructions into the RISC-V 'custom-0' opcode space, we achieve industrial compatibility while maintaining isotropic sovereignty.
 
 ### THE VERIFICATION MANDATE (ZERO-TOLERANCE)
-... (existing) ...
+- **Rule 1:** R6=I Identity Restoration must be bit-perfect across 6, 60, and 600 cycles.
+- **Rule 2:** 'Zero-Heat' verification: Toggle Equivalence must show >30% reduction in gate-switching compared to IEEE-754.
+- **Rule 3:** Timing closure must be achieved at 100MHz on the Artix-7 target.
 
 ### Completed Milestones
-- [x] **v2.4 Ethical Guard:** Implemented Safe-Mode, Air-Gaps, and Perceptual Safety.
-- [x] **SPU-13 Phi-Core:** Integrated Q(sqrt3, sqrt5) golden basis and 13-axis identity.
-- [x] **v2.0 Gold Master:** Full-stack parity verified (C++, Metal, GLSL, RTL).
+- [x] **v2.6 community Release:** Published Pioneer's Guide and refactored for Isotropic Sovereignty.
+- [x] **G-RAM Calibration:** Formalized 85° Monad indexing and Phi-Step addressing.
+- [x] **v2.4 Ethical Guard:** Implemented Safe-Mode and Perceptual Dampening.
 
-### Memory: The Robotic Standard (Mar 2026)
-- **Precision:** 0x10000 identity restoration across joint rotations.
-- **Safety:** Mandatory DSS and 7D display clamps active.
-- **Hardware:** Pipelined, ECC-hardened RTL.
+### Memory: The Silicon Standard (Mar 2026)
+- **Architecture:** RISC-V Hybrid (Custom-0 Accelerator).
+- **Identity:** R6=I bit-exactness verified in RTL simulation.
+- **Power:** Toggle-Equivalence benchmarked for zero-drift efficiency.
 
-## Immediate Next Steps (v2.5: INDUSTRY)
-- **v2.5.3: Isotropic IK-Solver:** Implement bit-perfect Inverse Kinematics using Prime-Axis symmetry search.
-- **v2.5.4: Digital Twin Bridge:** Create ROS/Blender import scripts for bit-exact robotic simulation.
-- **v2.5.5: Safe-Motion Protocol:** Integrate OP_DAMP for vibration-free joint control.
-- **Physical FPGA Rig:** Deploy SPU-1 to Artix-7 and verify IK precision.
+## Immediate Next Steps (v2.7: CERTIFICATION)
+- **v2.7.1: RISC-V Opcode Mapping:** Map SADD, SMUL, and SPERM into the custom-0 instruction space.
+- **v2.7.2: Verilator Power Audit:** Simulate switching activity to prove the 'Zero-Heat' efficiency gap.
+- **v2.7.3: Timing Closure:** Perform physical synthesis for Arty A7 and resolve critical path delays.
+- **v2.7.4: SQR-Assembler:** Build the first translator for Isotropic Instruction Dispatch.
 
 ## The v3.0 Unified Field Horizon (Long-Term)
 - **v3.1: Golden Core Synthesis:** Implement the Q(sqrt3, sqrt5) field logic in synthesizable Verilog gates.
