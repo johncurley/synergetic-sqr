@@ -1,8 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
-project(synergetic-sqr LANGUAGES C CXX OBJCXX)
+
+# 1. Initialize with standard C/C++ only
+project(synergetic-sqr LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 2. Enable Objective-C++ ONLY on macOS for Metal support
+if(APPLE)
+    enable_language(OBJCXX)
+endif()
 
 # --- OPTIONS ---
 option(BUILD_RENDERER "Build the visual SPU-1 demonstrator" ON)
