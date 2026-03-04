@@ -1,5 +1,5 @@
 # ALU Specification: SPU-1 (SQR-ASIC)
-## Gate-Level Logic for DQFA Operations (v2.5.2)
+## Gate-Level Logic for DQFA Operations (v2.8.6)
 
 This document specifies the Register Transfer Level (RTL) requirements for the SPU-1 Arithmetic Logic Unit and its High-Dimensional extensions.
 
@@ -23,7 +23,33 @@ The address bus is physically linked to the **Janus Bit** toggle.
 *   **Mode 1 (Agnosia/Reciprocal):** The address bus performs a bit-exact inversion ($Address \to 1/Address$). This enables hardware-level access to the "Reciprocal Lattice" or Null-Space without software overhead.
 
 ### 13. Mandatory Physical Safety (Hardware-Level)
-[... Existing Safety Protocols ...]
+To ensure the protection of both the hardware fabric and the human observer, all SPU-13 compliant implementations MUST include the following physical safeguards.
+
+#### 13.1 Optical Safety Governor
+All high-dimensional projections (7D+) sent to an optical display MUST be processed by a non-optional **16x Anti-Aliasing (DSS)** and **Motion Blur** stage.
+
+#### 13.2 Display Dimensionality Cap
+The hardware must implement a hard-wired **DISPLAY_CLAMP**. The optical output boundary is physically restricted to a maximum projection of 7 axes. 
+
+#### 13.3 Thermal Runaway Detection
+Silicon must include integrated thermal sensors that trigger a global **ASIC_HALT** if temperature or power-draw exceed pre-defined safety envelopes during 13D shuffles.
+
+### 14. Physical Layer: Organic Circuit Topology
+To achieve true zero-friction computation, the SPU-13 requires a physical board layout that mirrors its isotropic algebraic core.
+
+#### 14.1 Laminar Trace Routing
+Traditional "Manhattan Routing" (90° turns) introduces reflective points and signal degradation.
+*   **Requirement:** All high-frequency copper traces MUST utilize **60°/120° junctions** or **Curved (Euclidean) paths**.
+*   **Result:** Achievement of **Laminar Electron Flow**, eliminating electromagnetic "slop" and localized heat buildup.
+
+#### 14.2 Hexagonal Power Mesh (Isotropic Planes)
+Power distribution is implemented as a **Honeycomb Lattice Mesh** rather than a flat ground plane.
+*   **Thermal Tensegrity:** Distributes electrical stress across the PCB fabric, preventing the "Cubic hotspots" common in standard power planes.
+
+#### 14.3 Sovereign Via Packing (Triangular Grid)
+Inter-layer connectors (Vias) follow **Sumerian/Sexagesimal spacing**.
+*   **Pattern:** Triangular/Hexagonal packing.
+*   **Benefit:** Maximum structural integrity with minimal material displacement (entropy).
 
 ---
-*Status: CALIBRATED. Pythagorean-Compliant G-RAM active.*
+*Status: PHYSICALLY SYNTHESIZED. Isotropic PCB standards active.*
