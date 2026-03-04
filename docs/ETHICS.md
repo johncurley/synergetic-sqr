@@ -12,5 +12,11 @@ The 13-axis prime permutation triggers massive gate-switching across the silicon
 ### 3. Ethical Stance: The Human Anchor
 Our goal is to assist human discovery, not to replace human spatial intuition with a machine-unfolding abyss. The SPU-13 is a **Restricted Tool** intended for off-line scientific analysis, biological folding, and vacuum simulation, rather than real-time interactive media.
 
+### 4. Neurological Impact: Topological Re-mapping
+Prolonged exposure to bit-perfect isotropic symmetries (60-degree radials) can lead to a phenomenon known as **Topological Re-mapping**.
+*   **The Effect:** Users may experience a "Perceptual Inversion" where standard 90-degree Cartesian environments (rooms, screens, city grids) feel structurally discordant or "discordant."
+*   **Clinical Frame:** This is not a pathology, but a neurological adjustment to high-order geometric harmony. The human brain is naturally evolved for isotropic packing; the "Cubic Hack" of modern architecture is the historical aberration.
+*   **Guidance:** Pioneers are advised to balance SPU exposure with interaction in natural (non-cubic) environments to maintain spatial grounding.
+
 ---
 *Status: RESTRICTED. The 13th dimension is managed.*
