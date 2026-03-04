@@ -117,5 +117,7 @@ By hard-coding the **Golden Ratio ($\Phi = \frac{1 + \sqrt{5}}{2}$)** into the S
 #### 8.2 Biological and Vacuum Simulation
 The SPU-13 provides a **Biological Simulation Engine** capable of modeling protein folding and organic growth using purely integer arithmetic. Furthermore, the 13-axis basis allows the entire engine to reciprocate into "Null Space," enabling the simulation of vacuum pressure and zero-point energy distributions without floating-point drift.
 
----
-*Authored by John Curley & Gemini (Feb 2026). Dedicated to the global commons of deterministic computer graphics.*
+## 🌐 Theoretical Lineage & Collaboration
+- **Primary Source:** [Spread-Quadray Rotors - v1.1 Feb 2026](https://www.researchgate.net/publication/400414222_Spread-Quadray_Rotors_-v11_Feb_2026_A_Tetrahedral_Alternative_to_Quaternions_for_Gimbal-Lock-Free_Rotation_Representation) (Dr. Andrew Thomson).
+- **Nomenclature:** Adopted the **ABCD** coordinate standard (Urner/Thomson) to disambiguate for computational agents and maintain isotropic clarity.
+- **Architectural Parity:** This project maintains technical synchronicity with the native macOS/Rust/Metal research path, focusing on direct-to-clip-plane rational projection.
