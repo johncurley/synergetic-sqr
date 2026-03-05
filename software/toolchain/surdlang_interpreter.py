@@ -1,4 +1,4 @@
-# SurdLang MVS Interpreter (v2.11.0)
+# SurdLang MVS Interpreter (v2.11.13)
 # Requirements: pip install sympy
 
 from sympy import sqrt, Rational, simplify, expand
@@ -18,39 +18,44 @@ class SurdLang:
         self.psi = Surd((1 - sqrt(5))/2)
 
     def execute(self, line):
-        parts = line.split()
-        if not parts: return
+        # Remove comments
+        line = line.split("--")[0].strip()
+        if not line: return
         
+        parts = line.split()
         if parts[0] == "let":
             name = parts[1]
-            # Simple scalar assignment simulation
             if "sqrt" in line:
-                val = line.split("=")[1].strip()
-                self.vars[name] = val
-            print(f"IDENTITY: {name} assigned to {self.vars[name]}")
+                val_expr = line.split("=")[1].strip()
+                # Use SymPy to evaluate the string expression
+                self.vars[name] = Surd(eval(val_expr.replace('sqrt', 'sqrt')))
+            print(f"IDENTITY: {name} = {self.vars.get(name)}")
 
-        elif parts[0] == "rotate":
-            vec_name = parts[1]
-            print(f"SHUFFLE: Rotating {vec_name} by Prime-Phase P3")
+        elif parts[0] == "growth":
+            target = parts[1]
+            factor = self.vars.get(parts[2], self.phi)
+            print(f"EXPANSION: Unfolding {target} via {factor}")
+
+        elif parts[0] == "damp":
+            target = parts[1]
+            factor = self.vars.get(parts[2], self.psi)
+            print(f"CONTRACTION: Folding {target} via {factor}")
 
         elif parts[0] == "bloom":
             target = parts[1]
-            print(f"EMANATION: Sending {target} to Phyllotaxis UI")
+            print(f"HENOSIS: {target} emanated to Phyllotaxis UI")
 
 def main():
-    print("--- SurdLang MVS Interpreter Active ---")
+    print("--- SPU-13 Aperiodic Growth Emulator Active ---")
     interpreter = SurdLang()
     
-    # Simple Bootstrap Program
-    program = [
-        "let phi = (1 + sqrt(5)) / 2",
-        "let v = [1, 0, 0, 0]",
-        "rotate v",
-        "bloom v"
-    ]
-
-    for line in program:
-        interpreter.execute(line)
+    # Path to the .surd file
+    if len(sys.argv) > 1:
+        with open(sys.argv[1], 'r') as f:
+            for line in f:
+                interpreter.execute(line)
+    else:
+        print("Usage: python surdlang_interpreter.py <source.surd>")
 
 if __name__ == "__main__":
     main()

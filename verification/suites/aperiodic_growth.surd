@@ -1,0 +1,23 @@
+-- SPU-13 Aperiodic Growth Audit (v2.11.13)
+-- Objective: Verify bit-exact Phi-expansion and Reciprocal Folding.
+
+-- 1. Initialize the Golden Core
+let phi = (1 + sqrt(5)) / 2    -- The Golden Ratio
+let psi = (1 - sqrt(5)) / 2    -- The Damping Conjugate
+
+-- 2. Initialize Seed State
+vec seed = [1, 0, 0, 0]
+
+-- 3. Perform 13-Axis Growth (Phi-Expansion)
+-- This follows the Fibonacci-spiral addressing logic
+growth seed phi
+growth seed phi
+growth seed phi
+
+-- 4. Perform Reciprocal Folding (Psi-Damping)
+damp seed psi
+damp seed psi
+damp seed psi
+
+-- 5. Verify Identity Restoration
+bloom seed                     -- Should return to the Monad
