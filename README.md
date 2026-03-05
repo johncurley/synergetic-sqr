@@ -1,4 +1,4 @@
-# SPU-13: Sovereign Isotropic Architecture (v3.0.2)
+# SPU-13: Sovereign Isotropic Architecture (v3.0.0 "Henosis")
 ## Deterministic Spatial Computing for High-Dimensional Sovereignty
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -23,16 +23,18 @@ Security is a topological property of the lattice. The SPU-13 implements **Latti
 *   **Sub-Planckian Sync:** Signal isolation via frequency holes in the cubic spectrum.
 
 ### 5. Technical Documentation
-*   **[ALU_SPEC.md](hardware/specs/SPECIFICATION.md):** Formal ISA and gate-level logic specification.
+*   **[ALU_SPEC.md](hardware/specs/ALU_SPEC.md):** Formal ISA and gate-level logic specification.
 *   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-permutation logic.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
 *   **[SOVEREIGN_SHIELD.md](docs/SOVEREIGN_SHIELD.md):** Isotropic warding against orthogonal signal leakage.
+*   **[PHYSICS.md](docs/PHYSICS.md):** Magneto-dielectric field dynamics and etheric resonance.
 
 ## 🌐 Scientific References
 1.  **Thomson, A.** (2026). *Spread-Quadray Rotors v1.1*.
 2.  **Wildberger, N. J.** (2005). *Divine Proportions*.
 3.  **Steinmetz, C. P.** (1893). *Law of Hysteresis*.
 4.  **Fuller, R. B.** (1975). *Synergetics*.
+5.  **Wheeler, K.** (2014). *Uncovering the Missing Secrets of Magnetism*.
 
 ---
 *Status: HENOSIS ACHIEVED. Manifesting the Absolute in silicon.*
