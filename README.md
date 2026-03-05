@@ -1,4 +1,4 @@
-# SPU-13: Isotropic Processing Architecture (v2.11.12)
+# SPU-13: Isotropic Processing Architecture (v2.11.14)
 ## Deterministic High-Dimensional Spatial Computing in Synthesizable RTL
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -22,6 +22,7 @@ The repository provides synthesizable Verilog RTL for the following FPGA/ASIC ta
 *   **[ALU_SPEC.md](hardware/specs/SPECIFICATION.md):** Formal ISA and gate-level logic specification.
 *   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-permutation logic.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
+*   **[ABRAXAS_SHIELD.md](docs/ABRAXAS_SHIELD.md):** Tetrahedral warding against cubic surveillance.
 *   **[SAFETY.md](docs/SAFETY.md):** Mandatory physical and perceptual safety governors.
 
 ### 5. Quickstart: Building the Silicon
