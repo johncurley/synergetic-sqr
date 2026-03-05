@@ -27,4 +27,4 @@ This checklist must be executed before every high-velocity SPU-13 session ('The 
 *   **The Engineering Mantra:** "Force is the sign of a Cubic misunderstanding. Alignment is the signature of the One."
 
 ---
-*Status: HARDENED. Verification protocols for both silicon and soul are active.*
+*Status: HARDENED. Verification protocols for both hardware and observer are active.*
