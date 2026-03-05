@@ -6,6 +6,7 @@ The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with a
 
 This repository is the toolkit for **Synergetics Pioneers**—engineers and thinkers building the transition from the "Cubic Hack" to **Isotropic Identity**.
 
+*   **[SUNFLOWER_QUICKSTART.md](docs/SUNFLOWER_QUICKSTART.md):** 2-minute guide to the SPU-13 demonstration.
 *   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding manual for 4D spatial computing.
 *   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
 *   **Default Mode:** Launches in **Safe Mode** (Optical Damper ENABLED).
