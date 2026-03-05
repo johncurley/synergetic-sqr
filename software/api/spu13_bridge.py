@@ -1,47 +1,52 @@
-# SPU-13 Software Bridge (v3.0.7)
-# Objective: Connect the Python Golden Core Emulator to the Metal Renderer.
+# SPU-13 Universal Software Bridge (v3.0.8)
+# Objective: Connect the Python Golden Core to either Metal or Vulkan backend.
 
 import subprocess
 import time
-import math
+import sys
+import platform
+import os
 from spu13_emulator import GoldenSurd
 
 def main():
-    print("--- SPU-13 Software Bridge: Joining Mind and Eye ---")
+    print("--- SPU-13 Universal Bridge Active ---")
     
-    # 1. Initialize the Metal Renderer in a subprocess
-    # We use the --forensic flag to allow external register control
-    try:
-        renderer = subprocess.Popen(["./build/synergetic-sqr", "--forensic"], 
-                                   stdin=subprocess.PIPE, text=True)
-    except FileNotFoundError:
-        print("Error: Metal renderer binary not found in ./build/")
+    # 1. Platform Detection
+    system = platform.system()
+    binary_path = "./build/synergetic-sqr"
+    
+    if not os.path.exists(binary_path):
+        print(f"Error: {binary_path} not found. Please build the project first.")
         return
 
-    # 2. Initialize the Golden Core (The Mind)
-    phi = GoldenSurd.Phi()
-    current_state = GoldenSurd(65536, 0, 0, 0) # SF32.16 'One'
+    print(f"Detected System: {system} | Backend: {'Metal' if system == 'Darwin' else 'Vulkan'}")
 
-    print("Executing 10-Second Golden Pulse...")
+    # 2. Launch the Sovereign Renderer
+    try:
+        renderer = subprocess.Popen([binary_path, "--forensic"], 
+                                   stdin=subprocess.PIPE, text=True)
+    except Exception as e:
+        print(f"Failed to launch renderer: {e}")
+        return
+
+    # 3. Execute the 10-Second Golden Pulse
+    phi = GoldenSurd.Phi()
+    current_state = GoldenSurd(65536, 0, 0, 0)
+
+    print("Executing 10-Second Safe Pulse...")
     start_time = time.time()
     
     try:
         while time.time() - start_time < 10:
-            # Aperiodic Growth Step
             current_state = current_state.multiply(phi)
-            
-            # Bridge to Metal: Send the Surd component 'a' to the renderer
-            # For this prototype, we simulate the interaction via console log
-            # In Stage 2, we use shared memory / sockets for zero-latency.
-            print(f"BRIDGE: State {current_state.a} -> Metal Clip-Plane", end='')
-            
-            time.sleep(0.1) # 10 Hz Bridge Sync
+            # Universal Bridge: In Stage 2, this feeds the register bus
+            print(f"BRIDGE: Isotropic State {current_state.a} -> GPU Clip-Plane", end='\r')
+            time.sleep(0.1)
             
     except KeyboardInterrupt:
         pass
 
-    print("
-WATCHDOG: Pulse Complete. Terminating Bridge.")
+    print("\nWATCHDOG: Pulse Complete. Terminating Bridge.")
     renderer.terminate()
 
 if __name__ == "__main__":
