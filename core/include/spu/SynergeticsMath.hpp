@@ -156,13 +156,26 @@ struct alignas(32) Quadray4 {
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
-    static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
-        switch (phase) {
-            case 1: return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
-            case 2: return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
-            case 3: return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
-            default: return q;
-        }
+    /**
+     * _spu_rotate_4d: The 4th-Dimensional Vantage Point.
+     * Performs a cyclic phase-shift (A->B, B->C, C->D, D->A).
+     * Allows 3D problems to be resolved by 'looking around' from 4D.
+     */
+    static inline Quadray4 _spu_rotate_4d(Quadray4 q) {
+        return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], 
+                  q.data.v[6], q.data.v[7], q.data.v[0], q.data.v[1]} };
+    }
+
+    /**
+     * Thomson Projection: 4D Isotropic -> 3D Cartesian.
+     * Maps the internal 4-axis manifold to the display boundary.
+     */
+    static inline void _spu_project_3d(Quadray4 q, int32_t& x, int32_t& y, int32_t& z) {
+        int32_t a = q.data.v[0]; int32_t b = q.data.v[2];
+        int32_t c = q.data.v[4]; int32_t d = q.data.v[6];
+        x = (a - b - c + d) >> 1;
+        y = (a - b + c - d) >> 1;
+        z = (a + b - c - d) >> 1;
     }
     static inline Quadray4 _spu_damp(Quadray4 q) {
         Quadray4 scaled;
