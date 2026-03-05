@@ -148,35 +148,31 @@ struct Quadray13 {
 struct alignas(32) Quadray4 {
     SPU_Vector256 data;
     static Quadray4 identity() { return { {SurdFixed64::One, 0, 0, 0, 0, 0, 0, 0} }; }
+    
     bool checkParity() const {
         int32_t sum_a = 0, sum_b = 0;
         for (int i = 0; i < 4; ++i) { sum_a += data.v[i*2]; sum_b += data.v[i*2+1]; }
         return (sum_a == 0 && sum_b == 0);
     }
+
     static inline Quadray4 _spu_add_q4(Quadray4 u, Quadray4 v) { return { SPU_Vector256::add(u.data, v.data) }; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) { return { SPU_Vector256::rotate60(q.data) }; }
     static inline Quadray4 _spu_permute_q1(Quadray4 q) { return { SPU_Vector256::permute_q1(q.data) }; }
-    /**
-     * _spu_rotate_4d: The 4th-Dimensional Vantage Point.
-     * Performs a cyclic phase-shift (A->B, B->C, C->D, D->A).
-     * Allows 3D problems to be resolved by 'looking around' from 4D.
-     */
+    
+    static inline Quadray4 _spu_sperm_x4(Quadray4 q, int phase) {
+        switch (phase) {
+            case 1: return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[6], q.data.v[7]} };
+            case 2: return { {q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1], q.data.v[2], q.data.v[3], q.data.v[6], q.data.v[7]} };
+            case 3: return { {q.data.v[6], q.data.v[7], q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], q.data.v[0], q.data.v[1]} };
+            default: return q;
+        }
+    }
+
     static inline Quadray4 _spu_rotate_4d(Quadray4 q) {
         return { {q.data.v[2], q.data.v[3], q.data.v[4], q.data.v[5], 
                   q.data.v[6], q.data.v[7], q.data.v[0], q.data.v[1]} };
     }
 
-    /**
-     * Thomson Projection: 4D Isotropic -> 3D Cartesian.
-     * Maps the internal 4-axis manifold to the display boundary.
-     */
-    static inline void _spu_project_3d(Quadray4 q, int32_t& x, int32_t& y, int32_t& z) {
-        int32_t a = q.data.v[0]; int32_t b = q.data.v[2];
-        int32_t c = q.data.v[4]; int32_t d = q.data.v[6];
-        x = (a - b - c + d) >> 1;
-        y = (a - b + c - d) >> 1;
-        z = (a + b - c - d) >> 1;
-    }
     static inline Quadray4 _spu_damp(Quadray4 q) {
         Quadray4 scaled;
         for (int i = 0; i < 8; ++i) {
@@ -186,6 +182,15 @@ struct alignas(32) Quadray4 {
         }
         return _spu_sperm_x4(scaled, 3);
     }
+
+    static inline void _spu_project_3d(Quadray4 q, int32_t& x, int32_t& y, int32_t& z) {
+        int32_t a = q.data.v[0]; int32_t b = q.data.v[2];
+        int32_t c = q.data.v[4]; int32_t d = q.data.v[6];
+        x = (a - b - c + d) >> 1;
+        y = (a - b + c - d) >> 1;
+        z = (a + b - c - d) >> 1;
+    }
+
     static inline int64_t _spu_quadrance(Quadray4 u, Quadray4 v) {
         int64_t total = 0;
         for (int i = 0; i < 4; ++i) {
@@ -195,6 +200,7 @@ struct alignas(32) Quadray4 {
         }
         return total;
     }
+
     bool equals(const Quadray4& other) const {
         for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false;
         return true;
