@@ -1,5 +1,5 @@
-// SPU-1 Integrated Core (v2.5.7 Golden Model)
-// Full-Stack 13-Axis Realization with ECC and Phi-Core Multiplier
+// SPU-1 Integrated Core (v2.9.13 Optimized)
+// Full-Stack 13-Axis Realization with Pipelined Permutation and XOR Negation
 
 module spu_core (
     input  wire         clk,
@@ -8,6 +8,7 @@ module spu_core (
     input  wire [3071:0] neighbors, // 12 Neighbor relational bus
     input  wire [2:0]   opcode,     // SurdLang ISA
     input  wire [1:0]   prime_phase,// For SPERM_X4
+    input  wire         sign_flip,  // XOR negation trigger
     output reg  [831:0] reg_out,    // Protected Output
     output wire         fault_detected
 );
@@ -21,29 +22,30 @@ module spu_core (
     generate
         for (i = 0; i < 13; i = i + 1) begin : ecc_lanes
             spu_ecc_decode decoder (
-                .protected_word({7'b0, reg_curr[i*64 +: 32]}), // coefficient a protection
+                .protected_word({7'b0, reg_curr[i*64 +: 32]}),
                 .corrected_data(cleaned_reg[i*64 +: 32]),
                 .double_error_detected(lane_faults[i])
             );
-            assign cleaned_reg[i*64+32 +: 32] = reg_curr[i*64+32 +: 32]; // raw coefficient b
+            assign cleaned_reg[i*64+32 +: 32] = reg_curr[i*64+32 +: 32];
         end
     endgenerate
 
-    // 2. High-Dimensional Logic Units
-    wire [831:0] sperm_x4_out;
+    // 2. High-Dimensional Logic Units (Pipelined)
+    wire [255:0] sperm_x4_out;
     wire [831:0] sperm_13_out;
-    wire [831:0] equilibrate_out;
-    wire [831:0] damp_out;
-    wire [127:0] smul_13_out; // Phi-Core Multiplier
+    wire [127:0] smul_13_out;
 
-    // 4D Prime-Axis Unit (First 4 lanes)
-    spu_permute x4_unit (.q_in(cleaned_reg[255:0]), .prime_phase(prime_phase), .q_out(sperm_x4_out[255:0]));
-    assign sperm_x4_out[831:256] = cleaned_reg[831:256];
+    // Optimized 4D Permutator (Registered Output)
+    spu_permute x4_unit (
+        .clk(clk), .reset(reset), 
+        .q_in(cleaned_reg[255:0]), .prime_phase(prime_phase), 
+        .sign_flip(sign_flip), .q_out(sperm_x4_out)
+    );
 
     // 13-Axis Cyclic Unit
     spu_permute_13 x13_unit (.q_in(cleaned_reg), .q_out(sperm_13_out));
 
-    // Phi-Core Multiplier (Lane 1 Demo)
+    // Phi-Core Multiplier
     spu_smul_13 phi_multiplier (
         .a1(cleaned_reg[31:0]), .b1(cleaned_reg[63:32]), .c1(32'd0), .d1(32'd0),
         .a2(32'd65536), .b2(32'd0), .c2(32'd0), .d2(32'd0),
@@ -57,7 +59,7 @@ module spu_core (
             reg_out <= 832'b0;
         end else begin
             case (opcode)
-                3'b001: reg_out <= sperm_x4_out;
+                3'b001: reg_out <= {cleaned_reg[831:256], sperm_x4_out};
                 3'b110: reg_out <= sperm_13_out;
                 3'b010: reg_out <= {cleaned_reg[831:128], smul_13_out};
                 default: reg_out <= cleaned_reg;
