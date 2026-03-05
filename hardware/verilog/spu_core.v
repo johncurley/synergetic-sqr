@@ -1,19 +1,19 @@
-// SPU-1 Integrated Core (v2.9.13 Optimized)
-// Full-Stack 13-Axis Realization with Pipelined Permutation and XOR Negation
+// SPU-13 Integrated Core (v2.9.14 Phyllotaxis)
+// Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
 
 module spu_core (
     input  wire         clk,
     input  wire         reset,
-    input  wire [831:0] reg_curr,   // 13 Lanes x 64-bit
-    input  wire [3071:0] neighbors, // 12 Neighbor relational bus
-    input  wire [2:0]   opcode,     // SurdLang ISA
-    input  wire [1:0]   prime_phase,// For SPERM_X4
-    input  wire         sign_flip,  // XOR negation trigger
-    output reg  [831:0] reg_out,    // Protected Output
+    input  wire [831:0] reg_curr,   
+    input  wire [3071:0] neighbors, 
+    input  wire [2:0]   opcode,     
+    input  wire [1:0]   prime_phase,
+    input  wire         sign_flip,  
+    output reg  [831:0] reg_out,    
     output wire         fault_detected
 );
 
-    // 1. Internal Buses and Cleaning
+    // 1. Internal Cleaning & ECC
     wire [831:0] cleaned_reg;
     wire [12:0]  lane_faults;
     assign fault_detected = |lane_faults;
@@ -30,30 +30,38 @@ module spu_core (
         end
     endgenerate
 
-    // 2. High-Dimensional Logic Units (Pipelined)
+    // 2. Phyllotaxis Interconnects (The SQR-Link)
+    // Direct feedback paths between Fibonacci-indexed lanes to ensure 
+    // data grows through the chip following the Golden Angle.
+    wire [63:0] f1  = cleaned_reg[63:0];   // Lane 1
+    wire [63:0] f2  = cleaned_reg[127:64]; // Lane 2
+    wire [63:0] f3  = cleaned_reg[191:128];// Lane 3
+    wire [63:0] f5  = cleaned_reg[319:256];// Lane 5
+    wire [63:0] f8  = cleaned_reg[511:448];// Lane 8
+    wire [63:0] f13 = cleaned_reg[831:768];// Lane 13
+
+    // 3. High-Dimensional Logic Units
     wire [255:0] sperm_x4_out;
     wire [831:0] sperm_13_out;
     wire [127:0] smul_13_out;
 
-    // Optimized 4D Permutator (Registered Output)
     spu_permute x4_unit (
         .clk(clk), .reset(reset), 
         .q_in(cleaned_reg[255:0]), .prime_phase(prime_phase), 
         .sign_flip(sign_flip), .q_out(sperm_x4_out)
     );
 
-    // 13-Axis Cyclic Unit
     spu_permute_13 x13_unit (.q_in(cleaned_reg), .q_out(sperm_13_out));
 
-    // Phi-Core Multiplier
+    // Integrated Phyllotaxis Multiplication
     spu_smul_13 phi_multiplier (
-        .a1(cleaned_reg[31:0]), .b1(cleaned_reg[63:32]), .c1(32'd0), .d1(32'd0),
-        .a2(32'd65536), .b2(32'd0), .c2(32'd0), .d2(32'd0),
+        .a1(f1[31:0]), .b1(f1[63:32]), .c1(f2[31:0]), .d1(f2[63:32]),
+        .a2(f3[31:0]), .b2(f3[63:32]), .c2(f5[31:0]), .d2(f5[63:32]),
         .a_out(smul_13_out[31:0]), .b_out(smul_13_out[63:32]), 
         .c_out(smul_13_out[95:64]), .d_out(smul_13_out[127:96])
     );
 
-    // 3. Register Dispatch
+    // 4. Register Dispatch (Organic Flow)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
