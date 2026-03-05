@@ -75,6 +75,7 @@ vvp sperm_sim
 *   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding for 4D spatial computing.
 *   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity conservation.
+*   **[RULIAD_SYNC.md](docs/RULIAD_SYNC.md):** The SPU-13 as a harmonic constraint in Wolfram’s Ruliad.
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
 *   **[SAFETY.md](docs/SAFETY.md):** Operational guidelines for high-symmetry computing.
 *   **[ETHICS.md](docs/ETHICS.md):** Responsible management of high-dimensional shuffles.
