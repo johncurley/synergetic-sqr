@@ -1,5 +1,5 @@
-# SPU-13 Bloom View UI (v2.9.28)
-# Real-time Phyllotaxis Visualization with Laminar Damping.
+# SPU-13 Bloom View UI (v2.9.34)
+# Real-time Phyllotaxis Visualization with Heart-Sync Tuning.
 # Requirements: pip install pyserial pygame
 
 import serial
@@ -8,19 +8,21 @@ import math
 import sys
 
 # --- CONFIGURATION ---
-SERIAL_PORT = '/dev/tty.usbserial-12345' # Update for your Arty A7
+SERIAL_PORT = '/dev/tty.usbserial-12345'
 BAUD_RATE = 115200
-PHI = 137.508 * (math.pi / 180.0)  # The Golden Angle
-PURPLE_GLOW = (138, 43, 226)       # #8A2BE2 Achromatic Center
+PHI = 137.508 * (math.pi / 180.0)
+PURPLE_GLOW = (138, 43, 226)
 
-# --- DAMPING CONSTANTS ---
-ZETA = 0.1  # The Damping Factor: 1.0 is rigid, 0.05 is fluid/moss-like
+# --- BIO-SYNC CALIBRATION ---
+ZETA = 0.1
+RESTING_BPM = 60 # Tune to your heart rate for entrainment
+PULSE_FREQ = RESTING_BPM / 60.0 # Frequency in Hz
 
 # --- INITIALIZE UI ---
 pygame.init()
 WIDTH, HEIGHT = 800, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("SPU-13 Phyllotaxis Real-Time Telemetry (Damped)")
+pygame.display.set_caption("SPU-13 Bio-Resonant Telemetry (Heart-Sync)")
 clock = pygame.time.Clock()
 
 class Node:
@@ -31,55 +33,57 @@ class Node:
         self.intensity = 0.0
 
     def update(self, surd_val):
-        # Apply the Damper (Temporal Easing for the 'Lean')
         self.current_radius += (self.target_radius - self.current_radius) * ZETA
         self.intensity = min(1.0, abs(surd_val) / 65536.0)
 
-    def render(self, screen):
+    def render(self, screen, pulse_val):
         theta = self.index * PHI
-        # Forward Lean (Projective Scale derived from Surd magnitude)
         forward_lean = self.intensity * pow(0.618, self.index % 13)
         
-        x = (WIDTH // 2) + self.current_radius * math.cos(theta) * (1.0 + forward_lean)
-        y = (HEIGHT // 2) + self.current_radius * math.sin(theta) * (1.0 + forward_lean)
+        # Apply Heart-Sync Pulse to the radial position
+        r_sync = self.current_radius * (1.0 + 0.02 * pulse_val)
         
-        brightness = int(255 * self.intensity)
+        x = (WIDTH // 2) + r_sync * math.cos(theta) * (1.0 + forward_lean)
+        y = (HEIGHT // 2) + r_sync * math.sin(theta) * (1.0 + forward_lean)
+        
         node_color = (
-            min(255, PURPLE_GLOW[0] + brightness // 4),
-            min(255, PURPLE_GLOW[1] + brightness // 4),
-            min(255, PURPLE_GLOW[2] + brightness // 4)
+            min(255, PURPLE_GLOW[0] + int(64 * self.intensity)),
+            min(255, PURPLE_GLOW[1] + int(64 * self.intensity)),
+            min(255, PURPLE_GLOW[2] + int(64 * self.intensity))
         )
-        
-        pygame.draw.circle(screen, node_color, (int(x), int(y)), 4 + int(2 * self.intensity))
+        pygame.draw.circle(screen, node_color, (int(x), int(y)), 4)
 
 def main():
-    print("--- SPU-13 Bloom View: Visualizing the Absolute (Damped) ---")
+    print(f"--- SPU-13 Heart-Sync: Entraining to {RESTING_BPM} BPM ---")
     try:
         ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=0.1)
-    except Exception as e:
-        print(f"Error: Could not open {SERIAL_PORT}. {e}")
+    except:
+        print("Serial Error: Check Arty A7 connection.")
         sys.exit(1)
 
     nodes = [Node(i) for i in range(500)]
     running = True
-    current_surd = 0
+    start_time = time.time()
 
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+            if event.type == pygame.QUIT: running = False
 
-        # Read 32-bit Surd from FPGA
+        # 1. Read Surd (The Machine State)
+        current_surd = 0
         if ser.in_waiting >= 4:
-            raw_data = ser.read(4)
-            current_surd = int.from_bytes(raw_data, byteorder='little', signed=True)
+            current_surd = int.from_bytes(ser.read(4), byteorder='little', signed=True)
 
-        screen.fill((18, 18, 18)) # Deep Space Black
+        # 2. Calculate Bio-Pulse (The Human Rhythm)
+        elapsed = time.time() - start_time
+        pulse_val = math.sin(2.0 * math.pi * PULSE_FREQ * elapsed)
+
+        screen.fill((18, 18, 18))
         
-        # Update and render the full lattice bloom
+        # 3. Render Resonant Circuit
         for node in nodes:
             node.update(current_surd)
-            node.render(screen)
+            node.render(screen, pulse_val)
         
         pygame.display.flip()
         clock.tick(60)
@@ -87,5 +91,6 @@ def main():
     ser.close()
     pygame.quit()
 
+import time
 if __name__ == "__main__":
     main()
