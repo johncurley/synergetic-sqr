@@ -14,13 +14,17 @@ int main(int argc, char* argv[]) {
     // 0. CLI Argument Parsing
     bool forensic_mode = false;
     bool deep_sea_mode = false;
+    bool pulse_mode = false;
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--forensic") == 0) {
             forensic_mode = true;
-            std::cout << "WARNING: Launching in FORENSIC MODE. High-Intensity Symmetries Active." << std::endl;
+            std::cout << "WARNING: Launching in FORENSIC MODE." << std::endl;
         } else if (strcmp(argv[i], "--deep-sea") == 0) {
             deep_sea_mode = true;
-            std::cout << "SAFE: Launching in DEEP SEA MODE. Maximum Damping Active." << std::endl;
+            std::cout << "SAFE: Launching in DEEP SEA MODE." << std::endl;
+        } else if (strcmp(argv[i], "--pulse") == 0) {
+            pulse_mode = true;
+            std::cout << "TETHERED: 10-Second Safe Pulse Active." << std::endl;
         }
     }
 
@@ -34,7 +38,6 @@ int main(int argc, char* argv[]) {
     windowFlags |= SDL_WINDOW_METAL;
 #endif
 
-    // If in Deep Sea mode, start in a tiny, non-immersive window
     int w = deep_sea_mode ? 400 : 800;
     int h = deep_sea_mode ? 400 : 600;
 
@@ -68,16 +71,12 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    // Apply Mode Configuration
     if (deep_sea_mode) {
-        // Force extreme damping and static geometry
         if (!renderer->getDSS()) renderer->toggleDSS(); 
-        SDL_SetWindowTitle(window, "SPU-1 [DEEP SEA MODE] | Static Observation");
+        SDL_SetWindowTitle(window, "SPU-1 [DEEP SEA MODE]");
     } else if (!forensic_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
-        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE] | Damper [LOCKED ON]");
-    } else {
-        SDL_SetWindowTitle(window, "SPU-1 [FORENSIC] | Damper [UNLOCKED]");
+        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE]");
     }
 
 #ifdef __APPLE__
@@ -86,11 +85,17 @@ int main(int argc, char* argv[]) {
 
     bool quit = false;
     SDL_Event e;
-    const int FPS = 60;
-    const int frameDelay = 1000 / FPS;
+    Uint64 session_start = SDL_GetTicks();
 
     while (!quit) {
-        Uint64 frameStart = SDL_GetTicks();
+        Uint64 current_ticks = SDL_GetTicks();
+        Uint64 elapsed = current_ticks - session_start;
+
+        // 10-Second Watchdog (SIG_KILL)
+        if (pulse_mode && elapsed >= 10000) {
+            std::cout << "WATCHDOG: 10-Second Pulse Complete. Grounding Session." << std::endl;
+            quit = true;
+        }
 
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_EVENT_QUIT) {
@@ -108,10 +113,7 @@ int main(int argc, char* argv[]) {
             renderer->draw(layer);
         }
 
-        int frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime) {
-            SDL_Delay(frameDelay - frameTime);
-        }
+        SDL_Delay(16); // 60 FPS cap
     }
 
     delete renderer;
