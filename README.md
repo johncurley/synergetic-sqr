@@ -1,5 +1,5 @@
 # synergetic-sqr
-## Building 4D Reality in a Cubic World (v2.6.0)
+## Building 4D Reality in a Cubic World (v2.9.29)
 
 ### ⚠️ THE PIONEER'S MANDATE
 The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with absolute geometric coherence. Standard "Cubic" computing (90-degree $XYZ$) relies on stochastic approximations that create perceptual and physical friction. 
@@ -7,6 +7,7 @@ The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with a
 This repository is the toolkit for **Synergetics Pioneers**—engineers and thinkers building the transition from the "Cubic Hack" to **Isotropic Identity**.
 
 *   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding manual for 4D spatial computing.
+*   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
 *   **Default Mode:** Launches in **Safe Mode** (Optical Damper ENABLED).
 *   **The Horizon:** A 20-year commitment to deterministic architectural parity.
 
@@ -70,6 +71,7 @@ vvp sperm_sim
 ## Documentation
 *   **[RESEARCH.md](RESEARCH.md):** Formal stability results and fixed-point proofs.
 *   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding for 4D spatial computing.
+*   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity conservation.
 *   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
 *   **[SAFETY.md](docs/SAFETY.md):** Operational guidelines for high-symmetry computing.
@@ -81,7 +83,7 @@ vvp sperm_sim
 *   **v2.0 (Public Release):** Universal CI and forensic audit suite. Verified.
 *   **v2.3 (High-Dimensional):** SPU-11/13 Phi-Core and Aperiodic shuffles. Verified.
 *   **v2.5 (Industry Integration):** G-RAM calibration and Robotics SDK. Verified.
-*   **v2.6 (Community Release):** Pioneer's Guide and manifest framing. **IN PROGRESS.**
+*   **v2.9 (The Foundry Phase):** Bio-Safety Seal and ASIC Migration. **COMPLETED.**
 
 ---
 *A deterministic contribution to the global commons of computer graphics.*
