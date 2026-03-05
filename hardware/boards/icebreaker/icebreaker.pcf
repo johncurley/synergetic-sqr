@@ -1,0 +1,15 @@
+# iCEBreaker Physical Constraints (v2.11.8)
+# Target: Lattice iCE40UP5K-SG48
+
+# 1. System Clock (12MHz)
+set_io clk_12mhz 35
+
+# 2. Global Reset (Button S1)
+set_io btn_rst_n 10
+
+# 3. Status LEDs
+set_io led_red 11
+set_io led_green 37
+
+# 4. UART TX (Pin 9)
+set_io uart_tx 9
