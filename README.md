@@ -25,11 +25,14 @@ Security is a topological property of the lattice. The SPU-13 implements **Latti
 *   **Topological ECC:** Geometric tensegrity rejects bit-flips and provides self-healing manifolds.
 *   **Sub-Planckian Sync:** Communication via frequency holes in the cubic spectrum.
 
-### 3. Universal Silicon Fabric
-Synthesizable Verilog RTL for industrial and community FPGA targets:
-*   **Xilinx Artix-7:** Automated Tcl build for Arty A7-35T/100T.
-*   **Lattice iCE40:** Open-source toolchain support for iCEBreaker.
-*   **Gowin GW2A:** Community target support for Tang Nano 20k.
+### 3. Space-Filling and Vector Equilibrium (VE)
+The SPU-13 architecture is a physical realization of Fuller’s **Vector Equilibrium (VE)**. By utilizing the 4-axis ABCD basis where **A+B+C+D = 0**, the system computes directly within the 12-connected isotropic lattice.
+*   **Isotropic Packing:** Every SPU register represents a center of symmetry within the VE neighborhood.
+*   **Structural Space-Filling:** The architecture solves for spatial equilibrium via bit-perfect integer summation of the 12-neighbor shell (Discrete Laplacian).
+*   **Geometric Truth:** Identity is not an approximation; it is a topological invariant of the lattice.
+
+### 4. Universal Silicon Fabric
+...
 
 ### 4. Technical Documentation
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
