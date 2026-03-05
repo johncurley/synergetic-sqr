@@ -1,40 +1,46 @@
-# SPU-13: Sovereign Isotropic Architecture (v3.0.0 "Henosis")
+# SPU-13: Sovereign Isotropic Architecture (v3.0.6)
 ## Deterministic Spatial Computing for High-Dimensional Sovereignty
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
 
-### 1. Overview
-The SPU-13 (Synergetic Processing Unit) is a high-performance computational architecture designed for **Deterministic Quadratic Field Arithmetic (DQFA)**. By utilizing 60-degree isotropic vector matrix (IVM) shuffles, the system eliminates cumulative floating-point drift and achieves absolute identity restoration ($R^6 = I$) across arbitrarily long spatial transformation chains.
+---
 
-### 2. Primary Benchmarks
-*   **Deterministic Identity:** 100% bit-exact restoration across 10^8 randomized shuffles.
-*   **Switching Efficiency:** ~37x reduction in gate-switching density compared to standard FPU shuffles.
-*   **Kinematic Stability:** 0.00mm cumulative drift in 100-joint articulating chains (verified via `spu-robotics-verify`).
-*   **Temporal Coherence:** Resonant 61.44 kHz core clock for bio-coherent synchronization.
+### ⚠️ OPERATIONAL SAFETY MANDATE
+The SPU-13 architecture produces **zero-drift spatial projections** with absolute geometric coherence. Standard "Cubic" computing relies on stochastic approximations; the SPU-13 instantiates **Identity.**
 
-### 3. Space-Filling and Vector Equilibrium (VE)
-The SPU-13 architecture is a physical realization of Fuller’s **Vector Equilibrium (VE)**. By utilizing the 4-axis ABCD basis where **A+B+C+D = 0**, the system computes directly within the 12-connected isotropic lattice.
-*   **Isotropic Packing:** Every SPU register represents a center of symmetry within the VE neighborhood.
-*   **Structural Space-Filling:** The architecture solves for spatial equilibrium via bit-perfect integer summation of the 12-neighbor shell (Discrete Laplacian).
+**Mandatory Grounding Protocols:**
+1.  **The 10-Second Threshold:** High-velocity 4D emanation is restricted to 10s intervals.
+2.  **Laminar Warm-up:** Users MUST run the Software Emulator before the Hardware Core.
+3.  **Post-Exposure:** Look at a 'Cubic' object (wall/table) for 30s after session termination.
+4.  **Full Spec:** [SAFETY.md](docs/SAFETY.md) | [GROUNDING.md](docs/GROUNDING.md) | [BIO_SAFETY.md](docs/BIO_SAFETY.md)
 
-### 4. Privacy-Preserving Manifold (The Shield)
-Security is a topological property of the lattice. The SPU-13 implements **Lattice-Lock (Geometric Encryption)**, rendering data incompatible with 90-degree Cartesian observation.
-*   **Topological ECC:** Geometric tensegrity rejects bit-flips and provides self-healing manifolds.
-*   **Sub-Planckian Sync:** Signal isolation via frequency holes in the cubic spectrum.
+---
 
-### 5. Technical Documentation
-*   **[ALU_SPEC.md](hardware/specs/ALU_SPEC.md):** Formal ISA and gate-level logic specification.
-*   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-permutation logic.
-*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
-*   **[SOVEREIGN_SHIELD.md](docs/SOVEREIGN_SHIELD.md):** Isotropic warding against orthogonal signal leakage.
-*   **[PHYSICS.md](docs/PHYSICS.md):** Magneto-dielectric field dynamics and etheric resonance.
+### 🚀 Quickstart: Software Pioneer (No Hardware Required)
+Witness the 13-axis high-dimensional bloom in 2 minutes.
+1.  **Install Dependencies:** `pip install sympy pygame pyserial`
+2.  **Run Decompression Sequence:** `bash tools/test_golden_core.sh`
+3.  **Manual Launch:** `python3 software/toolchain/spu13_emulator.py`
 
-## 🌐 Scientific References
-1.  **Thomson, A.** (2026). *Spread-Quadray Rotors v1.1*.
-2.  **Wildberger, N. J.** (2005). *Divine Proportions*.
-3.  **Steinmetz, C. P.** (1893). *Law of Hysteresis*.
-4.  **Fuller, R. B.** (1975). *Synergetics*.
-5.  **Wheeler, K.** (2014). *Uncovering the Missing Secrets of Magnetism*.
+### ⚡ Quickstart: Hardware Pioneer (Arty A7 Required)
+Manifest the SPU-13 Golden Core in physical silicon.
+1.  **Synthesis:** `cd hardware/boards/arty_a7_35t && vivado -mode batch -source build_spu13.tcl`
+2.  **Flash:** Use Vivado Hardware Manager to program `build_output/spu13_flower.bit`.
+3.  **Full Guide:** [HARDWARE_MANUAL.md](docs/HARDWARE_MANUAL.md) | [FPGA_SPEC.md](docs/FPGA_SPEC.md)
+
+---
+
+### 📂 Repository Map
+*   **[core/](core/)**: The 'Sovereign Core' — Bit-locked algebraic headers ($\mathbb{Q}(\sqrt{3}, \sqrt{5})$).
+*   **[hardware/](hardware/)**: The 'Silicon Blueprint' — Synthesizable Verilog RTL and FPGA targets.
+*   **[software/](software/)**: The 'Isotropic Bridge' — SDK, Assembler, and Python visualizers.
+*   **[verification/](verification/)**: The 'Full-Stack Audit' — 65+ tests confirming 100% bit-exact identity.
+*   **[docs/](docs/)**: The 'Archive of Truth' — Formal proofs, physics, and safety protocols.
+
+### 🌐 Scientific Foundation
+*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity.
+*   **[PHYSICS.md](docs/PHYSICS.md):** Steinmetz resonance and Dielectric field dynamics.
+*   **[RULIAD_SYNC.md](docs/RULIAD_SYNC.md):** SPU-13 as a harmonic constraint in Wolfram’s Ruliad.
 
 ---
 *Status: HENOSIS ACHIEVED. Manifesting the Absolute in silicon.*
