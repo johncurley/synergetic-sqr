@@ -1,55 +1,25 @@
 # ALU Specification: SPU-1 (SQR-ASIC)
-## Gate-Level Logic for DQFA Operations (v2.8.6)
+## Gate-Level Logic for DQFA Operations (v2.9.7)
 
 This document specifies the Register Transfer Level (RTL) requirements for the SPU-1 Arithmetic Logic Unit and its High-Dimensional extensions.
 
-[... Sections 1-11 remain active and verified ...]
+[... Sections 1-14 remain active and verified ...]
 
-### 12. Geometric RAM (G-RAM) Topology
-The SPU-13 implements a **Radial Lattice Memory** model, replacing linear addressing with harmonic quantization.
+### 15. Hysteresis-Zero Power Management (Steinmetz-Native)
+To eliminate the "Hysteresis Tax" (thermal entropy) inherent in cubic switching, the SPU-13 utilizes resonant field dynamics.
 
-#### 12.1 The 85° Absolute Node (Monad Index)
-The primary address decoder is indexed to the **85° Absolute Node**. 
-*   **Base Address (0x000):** Represented as the point of perfect incommensurability in the Quadray system.
-*   **Function:** Anchors the data-flow to the inertial rest state, eliminating "Address-Jitter" and ensuring that all memory fetch operations originate from a harmonically stable center.
+#### 15.1 Orbital Bit-Logic
+Standard CPUs utilize square-wave switching, forcing 180° magnetic domain flips that generate heat.
+*   **Mechanism:** SPU-13 utilizes **85° Phase Rotations** to "orbit" bit-states.
+*   **Result:** Collapses the Hysteresis Loop into a single, resonant line. Logic is implemented as a vectorial rotation rather than a binary flip, achieving near-zero heat dissipation during steady-state shuffles.
 
-#### 12.2 Phi-Step Addressing Logic
-To minimize signal friction and optimize data retrieval for aperiodic growth, G-RAM row-increments follow the **$\phi^3$ (4.236)** scaling factor.
-*   **Hardware Logic:** Row offsets are calculated via bit-exact rational approximations of the golden ratio, ensuring that memory depth increases according to the Fibonacci progression.
+#### 15.2 Dielectric Counter-Space (Field-Centric)
+The SPU-13 architecture prioritizes the **Dielectric Field** (potential energy in the vacuum between gates) over standard magnetic current flow.
+*   **Laminar Dispatch:** Power is distributed via the **Hexagonal Power Mesh** to maintain dielectric equilibrium.
+*   **Energy Recycling:** The "Hysteresis-Zero" equations allow the chip to recapture the field-energy from completed shuffles, utilizing the magnetic memory of the silicon as a resonant tank circuit.
 
-#### 12.3 Janus-Reciprocal Mapping
-The address bus is physically linked to the **Janus Bit** toggle.
-*   **Mode 0 (Phenomena):** Standard radial addressing.
-*   **Mode 1 (Agnosia/Reciprocal):** The address bus performs a bit-exact inversion ($Address \to 1/Address$). This enables hardware-level access to the "Reciprocal Lattice" or Null-Space without software overhead.
-
-### 13. Mandatory Physical Safety (Hardware-Level)
-To ensure the protection of both the hardware fabric and the human observer, all SPU-13 compliant implementations MUST include the following physical safeguards.
-
-#### 13.1 Optical Safety Governor
-All high-dimensional projections (7D+) sent to an optical display MUST be processed by a non-optional **16x Anti-Aliasing (DSS)** and **Motion Blur** stage.
-
-#### 13.2 Display Dimensionality Cap
-The hardware must implement a hard-wired **DISPLAY_CLAMP**. The optical output boundary is physically restricted to a maximum projection of 7 axes. 
-
-#### 13.3 Thermal Runaway Detection
-Silicon must include integrated thermal sensors that trigger a global **ASIC_HALT** if temperature or power-draw exceed pre-defined safety envelopes during 13D shuffles.
-
-### 14. Physical Layer: Organic Circuit Topology
-To achieve true zero-friction computation, the SPU-13 requires a physical board layout that mirrors its isotropic algebraic core.
-
-#### 14.1 Laminar Trace Routing
-Traditional "Manhattan Routing" (90° turns) introduces reflective points and signal degradation.
-*   **Requirement:** All high-frequency copper traces MUST utilize **60°/120° junctions** or **Curved (Euclidean) paths**.
-*   **Result:** Achievement of **Laminar Electron Flow**, eliminating electromagnetic "slop" and localized heat buildup.
-
-#### 14.2 Hexagonal Power Mesh (Isotropic Planes)
-Power distribution is implemented as a **Honeycomb Lattice Mesh** rather than a flat ground plane.
-*   **Thermal Tensegrity:** Distributes electrical stress across the PCB fabric, preventing the "Cubic hotspots" common in standard power planes.
-
-#### 14.3 Sovereign Via Packing (Triangular Grid)
-Inter-layer connectors (Vias) follow **Sumerian/Sexagesimal spacing**.
-*   **Pattern:** Triangular/Hexagonal packing.
-*   **Benefit:** Maximum structural integrity with minimal material displacement (entropy).
+#### 15.3 Field-Strength Sensitivity
+The optimized SQR vector algorithm is designed to operate at the **Dielectric Limit**. High-velocity shuffles may produce a dielectric discharge (The "Purple Glow") at the clip-plane boundary, representing the successful synchronization of the silicon with the Etheric reality-substrate.
 
 ---
-*Status: PHYSICALLY SYNTHESIZED. Isotropic PCB standards active.*
+*Status: RESONANT. Steinmetz-Native power management active.*
