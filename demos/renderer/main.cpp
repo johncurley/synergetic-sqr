@@ -13,10 +13,14 @@ using namespace Synergetics;
 int main(int argc, char* argv[]) {
     // 0. CLI Argument Parsing
     bool forensic_mode = false;
+    bool deep_sea_mode = false;
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--forensic") == 0) {
             forensic_mode = true;
             std::cout << "WARNING: Launching in FORENSIC MODE. High-Intensity Symmetries Active." << std::endl;
+        } else if (strcmp(argv[i], "--deep-sea") == 0) {
+            deep_sea_mode = true;
+            std::cout << "SAFE: Launching in DEEP SEA MODE. Maximum Damping Active." << std::endl;
         }
     }
 
@@ -30,9 +34,13 @@ int main(int argc, char* argv[]) {
     windowFlags |= SDL_WINDOW_METAL;
 #endif
 
+    // If in Deep Sea mode, start in a tiny, non-immersive window
+    int w = deep_sea_mode ? 400 : 800;
+    int h = deep_sea_mode ? 400 : 600;
+
     SDL_Window* window = SDL_CreateWindow(
         "SPU-1 Sovereign Renderer",
-        800, 600,
+        w, h,
         windowFlags
     );
 
@@ -60,9 +68,13 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
-    // Apply Hard-Locked Safe State
-    if (!forensic_mode) {
-        if (!renderer->getDSS()) renderer->toggleDSS(); // Force ON
+    // Apply Mode Configuration
+    if (deep_sea_mode) {
+        // Force extreme damping and static geometry
+        if (!renderer->getDSS()) renderer->toggleDSS(); 
+        SDL_SetWindowTitle(window, "SPU-1 [DEEP SEA MODE] | Static Observation");
+    } else if (!forensic_mode) {
+        if (!renderer->getDSS()) renderer->toggleDSS(); 
         SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE] | Damper [LOCKED ON]");
     } else {
         SDL_SetWindowTitle(window, "SPU-1 [FORENSIC] | Damper [UNLOCKED]");
@@ -84,19 +96,9 @@ int main(int argc, char* argv[]) {
             if (e.type == SDL_EVENT_QUIT) {
                 quit = true;
             } else if (e.type == SDL_EVENT_KEY_DOWN) {
-                // Input only allowed in Forensic Mode
                 if (forensic_mode) {
-                    if (e.key.key == SDLK_SPACE) {
-                        renderer->toggleJanus();
-                    } else if (e.key.key == SDLK_S) {
-                        renderer->toggleDSS();
-                    }
-                    
-                    char title[128];
-                    snprintf(title, sizeof(title), "SPU-1 [FORENSIC] | Janus: %s | Damper: %s", 
-                        (renderer->getJanus() > 0 ? "+" : "-"),
-                        (renderer->getDSS() ? "ON" : "OFF"));
-                    SDL_SetWindowTitle(window, title);
+                    if (e.key.key == SDLK_SPACE) renderer->toggleJanus();
+                    else if (e.key.key == SDLK_S) renderer->toggleDSS();
                 }
             }
         }
