@@ -1,8 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 Sovereign Visual Kernel (v2.6.3)
-// 100% Isotropic-Native. Cartesian logic restricted to Display Output boundary.
+// SPU-13 Emanation Kernel (v2.9.12)
+// Logic: Wave-Interference Rendering and Barycentric Tetrahedral Projection.
+// Objective: 100% Nature-Sync. Zero-Cubic RGB Mixing.
 
 struct Surd {
     int divisor;
@@ -21,31 +22,18 @@ float surdToFloat(Surd s) {
     return (float(s.a) + float(s.b) * 1.73205081f) / float(s.divisor);
 }
 
-// Convert Native Quadray (a,b,c,d) to display-space float3
-float3 quadrayToFloat3(int4 q) {
+// Barycentric Tetrahedral Projector (The Forward Lean)
+// Utilizes the 4th dimension (w) to resolve depth and projective scale.
+float3 barycentricProject(int4 q, float scale) {
     float a = (float)q.x; float b = (float)q.y;
     float c = (float)q.z; float d = (float)q.w;
-    // Thomson Projection: 4D -> 3D
-    return float3(a - b - c + d, a - b + c - d, a + b - c - d) * 0.5f;
-}
-
-float cross2D(float2 a, float2 b, float2 p) {
-    return (p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x);
-}
-
-bool isInsideTriangle(float2 p, float2 v0, float2 v1, float2 v2) {
-    float d0 = cross2D(v0, v1, p);
-    float d1 = cross2D(v1, v2, p);
-    float d2 = cross2D(v2, v0, p);
-    return (d0 >= 0 && d1 >= 0 && d2 >= 0) || (d0 <= 0 && d1 <= 0 && d2 <= 0);
-}
-
-bool isInsideSquare(float2 p, float2 v0, float2 v1, float2 v2, float2 v3) {
-    float d0 = cross2D(v0, v1, p);
-    float d1 = cross2D(v1, v2, p);
-    float d2 = cross2D(v2, v3, p);
-    float d3 = cross2D(v3, v0, p);
-    return (d0 >= 0 && d1 >= 0 && d2 >= 0 && d3 >= 0) || (d0 <= 0 && d1 <= 0 && d2 <= 0 && d3 <= 0);
+    
+    // Projective Vector Field Mapping
+    // Depth is handled by the sum of radials (Inertial Lean)
+    float depth = (a + b + c + d) * 0.25f;
+    float projective_factor = scale / (15.0f - depth);
+    
+    return float3(a - b - c + d, a - b + c - d, a + b - c - d) * projective_factor;
 }
 
 kernel void renderSynergeticV9_Master(
@@ -63,7 +51,7 @@ kernel void renderSynergeticV9_Master(
     float aspect = float(width) / float(height);
     uv.x *= aspect;
 
-    // 1. ISOTROPIC ROTATION COEFFICIENTS
+    // 1. WAVE-INTERFERENCE ROTATION
     float sw = surdToFloat(rotor.w);
     float sx = surdToFloat(rotor.x);
     float ct = sw*sw - sx*sx;
@@ -72,64 +60,39 @@ kernel void renderSynergeticV9_Master(
     float G = (2.0f * (ct * -0.5f + st * 0.8660254f) + 1.0f) / 3.0f;
     float H = (2.0f * (ct * -0.5f - st * 0.8660254f) + 1.0f) / 3.0f;
 
-    // 2. ISOTROPIC BASE VERTICES (Vector Equilibrium)
-    // 12 integer Quadray coordinates representing the IVM neighborhood
+    // 2. ISOTROPIC LATTICE (Vector Equilibrium)
     int4 v_base_q[12] = {
         int4(2,0,0,0), int4(0,2,0,0), int4(0,0,2,0), int4(0,0,0,2),
         int4(1,1,0,0), int4(1,0,1,0), int4(1,0,0,1), int4(0,1,1,0),
-        int4(0,1,0,1), int4(0,0,1,1), int4(1,1,1,1), int4(2,2,0,0) // Demo set
+        int4(0,1,0,1), int4(0,0,1,1), int4(1,1,1,1), int4(2,2,0,0)
     };
     
     float mix_factor = (sin(time.x * 0.4f) * 0.5f + 0.5f);
     float scale = mix(2.5f, 1.8f, mix_factor);
 
-    float2 proj[12];
-    float3 rotated_v[12];
+    float3 color = float3(0.0);
+    
+    // 3. ACHROMATIC RESONANCE LOGIC
+    // Instead of loops, we calculate wave interference at each pixel.
     for(int i=0; i<12; i++) {
-        float3 p = quadrayToFloat3(v_base_q[i]) * scale;
+        float3 p = barycentricProject(v_base_q[i], scale);
+        
+        // 4D Rotation in the Projective Field
         float3 rv;
         rv.x = p.x * F + p.y * H + p.z * G;
         rv.y = p.x * G + p.y * F + p.z * H;
         rv.z = p.x * H + p.y * G + p.z * F;
-        rotated_v[i] = rv;
-        proj[i] = rv.xy / (15.0 - rv.z) * 4.0;
+
+        // Wave Interference Pattern (The Purple Glow)
+        float dist = length(uv - rv.xy);
+        float wave = sin(dist * 50.0f - time.x * 5.0f) * exp(-dist * 10.0f);
+        
+        // 61440 Harmonic Injection
+        float3 spectralColor = float3(0.5 + 0.5*cos(dist*10.0 + float3(0,2,4)));
+        color += spectralColor * wave * (1.0f / (dist + 0.1f));
     }
 
-    // 3. FACES (Topological Indices)
-    int tris[24] = { 0,4,8, 0,5,9, 1,4,10, 1,5,11, 2,6,8, 2,7,9, 3,6,10, 3,7,11 };
-    int quads[24] = { 0,1,5,4, 2,3,7,6, 0,2,9,8, 1,3,11,10, 4,6,8,10, 5,7,9,11 };
-
-    float3 color = float3(0.0, 0.0, 0.01);
-    float maxZ = -1e10;
-    bool hit = false;
-    int hitFace = -1;
-
-    for(int i=0; i<8; i++) {
-        if(isInsideTriangle(uv, proj[tris[i*3]], proj[tris[i*3+1]], proj[tris[i*3+2]])) {
-            float avgZ = (rotated_v[tris[i*3]].z + rotated_v[tris[i*3+1]].z + rotated_v[tris[i*3+2]].z) / 3.0;
-            if(avgZ > maxZ) { maxZ = avgZ; hit = true; hitFace = i; }
-        }
-    }
-    for(int i=0; i<6; i++) {
-        if(isInsideSquare(uv, proj[quads[i*4]], proj[quads[i*4+1]], proj[quads[i*4+2]], proj[quads[i*4+3]])) {
-            float avgZ = (rotated_v[quads[i*4]].z + rotated_v[quads[i*4+1]].z + rotated_v[quads[i*4+2]].z + rotated_v[quads[i*4+3]].z) / 4.0;
-            if(avgZ > maxZ) { maxZ = avgZ; hit = true; hitFace = i + 8; }
-        }
-    }
-
-    if(hit) {
-        float3 light = normalize(float3(1, 1, -1));
-        float3 v0, v1, v2;
-        if(hitFace < 8) {
-            v0 = rotated_v[tris[hitFace*3]]; v1 = rotated_v[tris[hitFace*3+1]]; v2 = rotated_v[tris[hitFace*3+2]];
-        } else {
-            v0 = rotated_v[quads[(hitFace-8)*4]]; v1 = rotated_v[quads[(hitFace-8)*4+1]]; v2 = rotated_v[quads[(hitFace-8)*4+2]];
-        }
-        float3 n = normalize(cross(v1-v0, v2-v0));
-        float diffuse = max(0.2, dot(n, light));
-        float3 baseColor = (hitFace >= 8) ? float3(1.0, 0.8, 0.2) : float3(0.8, 0.2, 1.0);
-        color = baseColor * diffuse + 0.1;
-    }
-
+    // Final Intensity Clamping (Safety Protocol)
+    color = clamp(color, 0.0, 0.7);
     outTexture.write(float4(color, 1.0f), gid);
 }

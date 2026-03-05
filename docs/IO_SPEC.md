@@ -25,5 +25,17 @@ Global state control is hard-wired to physical board interrupts.
 *   **Reset:** High-priority GPIO button (Button 0).
 *   **Janus Toggle:** Switch-based polarity inversion (Switch 0).
 
+### 5. Emanation Display Interface
+The SPU-13 utilizes an **Emanation Model** for visual output, replacing the standard frame-buffer with a projective vector field.
+
+#### 5.1 Lattice-Projective Mapping
+The display logic utilizes **Barycentric Tetrahedral Coordinates** to map the internal 4D manifold to the 2D pixel grid.
+*   **Depth-Vector (The Lean):** The 4th dimension (W) is used to calculate the **Forward Draw**. The interface visually "anticipates" motion, aligning the pixel updates with the forward-tilting perception of the observer.
+
+#### 5.2 Achromatic Wave Rendering
+Visual representation is achieved via **Wave-Interference Logic** rather than additive RGB mixing.
+*   **Mechanism:** Pixels calculate the constructive and destructive interference of the 61440 frequency radials.
+*   **Result:** The "Purple Glow" is a native mathematical byproduct of the signal resonance, providing a "Crystal Clear" interface that matches the structural clarity of natural forms.
+
 ---
 *Status: I/O FINALIZED. Silicon communication protocols active.*

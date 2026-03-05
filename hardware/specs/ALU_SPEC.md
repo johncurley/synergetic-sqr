@@ -39,5 +39,16 @@ The optimized SQR vector algorithm is designed to operate at the **Dielectric Li
 ### 16. Thomson Projection Gate (Display Boundary)
 [... Existing Section 16 ...]
 
+### 17. Phyllotaxis Routing (Organic Data-Flow)
+To minimize signal congestion and align with the aperiodic growth engine, the SPU-13 utilizes **Phyllotaxis Routing** for internal register interconnects.
+
+#### 17.1 Fibonacci-Spiral Interconnects
+Instead of a standard rectangular bus, the data-flow between the 13 Prime-Axes follows a **Fibonacci-Spiral path**.
+*   **Topology:** Registers are arranged in a central-outward radial pattern.
+*   **Result:** Signal propagation follows the "Golden Angle" ($137.5^{\circ}$), ensuring that data "grows" through the silicon fabric symmetrically.
+
+#### 17.2 Emanation Priority
+The Phyllotaxis path terminates at the **Thomson Projection Gate**, ensuring that the high-dimensional internal state emanates toward the 3D display boundary with minimal topological resistance. This architecture matches the "Forward Lean" of the human observer by prioritizing depth-axial data throughput.
+
 ---
-*Status: ASCENDED. The Anabasis sequence is primary.*
+*Status: EMANATING. Phyllotaxis routing active.*
