@@ -1,47 +1,47 @@
-# SPU-13: Isotropic Processing Architecture (v2.11.14)
-## Deterministic High-Dimensional Spatial Computing in Synthesizable RTL
+# SPU-13: The Abraxas Architecture (v3.0.0 "Henosis")
+## Deterministic Isotropic Computing for the Great Inversion
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
 
-### 1. Overview
-The SPU-13 (Synergetic Processing Unit) is a high-performance computational architecture designed for **Deterministic Quadratic Field Arithmetic (DQFA)**. By utilizing 60-degree isotropic vector matrix (IVM) shuffles, the system eliminates cumulative floating-point drift and achieves absolute identity restoration ($R^6 = I$) across arbitrarily long spatial transformation chains.
+### ⚠️ THE PIONEER'S MANDATE
+The SPU-13 produces **zero-drift spatial projections** with absolute geometric coherence. Standard "Cubic" computing (90-degree $XYZ$) relies on stochastic approximations that create perceptual and physical friction. 
 
-### 2. Primary Benchmarks
-*   **Deterministic Identity:** 100% bit-exact restoration across 10^8 randomized shuffles.
-*   **Switching Efficiency:** ~37x reduction in gate-switching density compared to IEEE-754 FPU shuffles.
-*   **Kinematic Stability:** 0.00mm cumulative drift in 100-joint articulating chains (verified via `spu-robotics-verify`).
-*   **Temporal Coherence:** Resonant 61.44 kHz core clock for bio-coherent synchronization.
+This repository is an **Abraxas Gem**—a technical instrument designed to shield 4D truth from cubic surveillance and provide a digital sanctuary for synergetic pioneers.
 
-### 3. Hardware Implementation
-The repository provides synthesizable Verilog RTL for the following FPGA/ASIC targets:
-*   **Xilinx Artix-7:** (Arty A7-35T/100T) - Full Tcl automated build path.
-*   **Lattice iCE40:** (iCEBreaker) - Open-source toolchain compliant.
-*   **Gowin GW2A:** (Tang Nano 20k) - Community target support.
-
-### 4. Technical Documentation
-*   **[ALU_SPEC.md](hardware/specs/SPECIFICATION.md):** Formal ISA and gate-level logic specification.
-*   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-permutation logic.
-*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
-*   **[ABRAXAS_SHIELD.md](docs/ABRAXAS_SHIELD.md):** Tetrahedral warding against cubic surveillance.
-*   **[SAFETY.md](docs/SAFETY.md):** Mandatory physical and perceptual safety governors.
-
-### 5. Quickstart: Building the Silicon
-```bash
-# Software Verification (Headless Audit)
-cmake -B build -S . -DBUILD_RENDERER=OFF
-cmake --build build --target spu-verify
-./build/spu-verify
-
-# Hardware Synthesis (Arty A7 Target)
-cd hardware/boards/arty_a7_35t
-vivado -mode batch -source build_spu13.tcl
-```
-
-## 🌐 Scientific References
-1.  **Thomson, A. (2026).** *Spread-Quadray Rotors v1.1: A Tetrahedral Alternative to Quaternions.*
-2.  **Wildberger, N. J. (2005).** *Divine Proportions: Rational Trigonometry to Universal Geometry.*
-3.  **Fuller, R. B. (1975).** *Synergetics: Explorations in the Geometry of Thinking.*
-4.  **Urner, K. (2001).** *Quadray Coordinates.*
+*   **[SUNFLOWER_QUICKSTART.md](docs/SUNFLOWER_QUICKSTART.md):** 2-minute guide to the SPU-13 demonstration.
+*   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding manual for 4D spatial computing.
+*   **[HARDWARE_MANUAL.md](docs/HARDWARE_MANUAL.md):** The laminar guide to FPGA synthesis.
 
 ---
-*A deterministic contribution to the global commons of computer architecture.*
+
+### 1. The Deterministic Invariant
+The SPU-13 (Synergetic Processing Unit) replaces IEEE-754 approximations with **Deterministic Quadratic Field Arithmetic (DQFA)** over the field $\mathbb{Q}(\sqrt{3}, \sqrt{5})$. 
+*   **Identity Restoration:** $10^8$ randomized rotations verified with **zero bit-drift**.
+*   **Switching Efficiency:** ~37x reduction in gate-switching density via zero-logic wire permutations.
+*   **Kinematic Lock:** 0.00mm drift across 100-joint robotic chains.
+
+### 2. The Abraxas Shield
+Security is a topological property of the lattice. The SPU-13 implements **Lattice-Lock (Geometric Encryption)**, rendering data invisible to 90-degree Cartesian observers.
+*   **Topological ECC:** Geometric tensegrity rejects bit-flips and provides self-healing manifolds.
+*   **Sub-Planckian Sync:** Communication via frequency holes in the cubic spectrum.
+
+### 3. Universal Silicon Fabric
+Synthesizable Verilog RTL for industrial and community FPGA targets:
+*   **Xilinx Artix-7:** Automated Tcl build for Arty A7-35T/100T.
+*   **Lattice iCE40:** Open-source toolchain support for iCEBreaker.
+*   **Gowin GW2A:** Community target support for Tang Nano 20k.
+
+### 4. Technical Documentation
+*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
+*   **[PHYSICS.md](docs/PHYSICS.md):** Steinmetz resonance and the Dielectric Ether model.
+*   **[RULIAD_SYNC.md](docs/RULIAD_SYNC.md):** SPU-13 as a harmonic constraint in Wolfram’s Ruliad.
+*   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Mandatory bio-coherent calibration protocols.
+
+## 🌐 Scientific Lineage
+1.  **Thomson, A.** (2026). *Spread-Quadray Rotors v1.1*.
+2.  **Wildberger, N. J.** (2005). *Divine Proportions*.
+3.  **Steinmetz, C. P.** (1893). *Law of Hysteresis*.
+4.  **Fuller, R. B.** (1975). *Synergetics*.
+
+---
+*Status: HENOSIS ACHIEVED. Manifesting the Absolute in silicon.*

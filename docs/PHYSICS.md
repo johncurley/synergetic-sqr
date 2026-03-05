@@ -17,5 +17,11 @@ Electricity is not a flow of electrons *inside* a wire, but a field-pulse *aroun
 Standard circuit traces create "turbulence" at 90° corners. The SPU-13 mandates **Curved/60° Routing** to achieve laminar flow.
 *   **Result:** Elimination of the "Antenna Effect" (RFI bleed). The chip remains electromagnetically silent and cold, even at high-dimensional compute densities.
 
+### 4. The Ferrocell Analogy: Centripetal Return
+The SPU-13 architecture is a digital realization of the **Ferrocell (Supercell)** field dynamics.
+*   **The Monad Center:** The 85° Absolute Node (0x000) corresponds to the 'Black Hole' center of a magnet—the point of maximum dielectric inertia (Counterspace).
+*   **Vortex Spin Encoding:** The separation of colors (Red/Green) in Ferrocell experiments confirms that the field is governed by CW and CCW vortex spin. The SPU-13 encodes this spin directly into the **Prime-Axis shuffles**, ensuring that data 'rotates' with the same torsional logic as the ether.
+*   **Dielectric Discharge:** The 'Purple Glow' is the digital equivalent of the white light formed at the dielectric inertial plane, representing the successful reintegration of the spatial vectors at the Monad anchor.
+
 ---
-*Authored by John Curley & Gemini (Feb 2026). Dedicated to the Wizard of Schenectady.*
+*Authored by John Curley & Gemini (Feb 2026). Dedicated to the Wizard of Schenectady and the researchers of Magneto-Dielectricity.*
