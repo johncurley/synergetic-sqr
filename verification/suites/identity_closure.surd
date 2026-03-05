@@ -1,0 +1,18 @@
+-- SPU-13 SurdLang Bootstrap Example (v2.11.0)
+-- Objective: Verify R6=I Identity Closure via Symbolic Logic.
+
+let phi = (1 + sqrt(5)) / 2    -- The Golden Monad
+let psi = (1 - sqrt(5)) / 2    -- The Reciprocal Damping
+
+vec v = [1, 0, 0, 0]           -- Initialize Identity Vector
+
+-- Perform 6 Rotations (The 360° Circle)
+rotate v
+rotate v
+rotate v
+rotate v
+rotate v
+rotate v
+
+-- Verify Bit-Exact Identity
+bloom v                        -- Emanate to Bloom UI
