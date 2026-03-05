@@ -22,5 +22,21 @@ SurdLang is a domain-specific language designed for deterministic spatial comput
 *   **Declarative:** Focus on the 'Identity' rather than the 'Calculation.'
 *   **Nature-Sync:** Code blocks map to phyllotaxis nodes; evaluation steps trigger growth phases.
 
----
-*Status: REIFIED. The language of the lattice is live.*
+### 4. SPU-13 Isotropic ISA (v2.11.5)
+The reified SurdLang utilizes a **Tetrahedral Stack** (ABCD) for its primary evaluation model.
+
+| Instruction | Hardware Result | Perceptual Cue |
+| :--- | :--- | :--- |
+| `ORBIT_A..D` | 85° Orbital Phase Shift | Laminar Fluidity |
+| `HENOSIS!` | Field Sync Assertion | Stable Purple Glow |
+| `SHUFFLE_13D`| 13-Axis Prime Dispatch | Recursive Growth |
+| `DIELECTRIC` | Limit Trap | Corona Warning |
+
+### 5. Syntax Example: Henosis Eval
+```surd
+-- SQR-Native Stack Evaluation
+orbit_a -> reg0;
+orbit_b -> reg1;
+henosis!        -- Assert absolute identity closure
+bloom reg0      -- Emanate to 4D projective UI
+```
