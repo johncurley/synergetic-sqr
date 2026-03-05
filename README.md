@@ -70,6 +70,7 @@ vvp sperm_sim
 
 ## Documentation
 *   **[RESEARCH.md](RESEARCH.md):** Formal stability results and fixed-point proofs.
+*   **[HARDWARE_MANUAL.md](docs/HARDWARE_MANUAL.md):** The laminar guide to FPGA synthesis and analysis.
 *   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding for 4D spatial computing.
 *   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity conservation.
