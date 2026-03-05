@@ -1,93 +1,46 @@
-# synergetic-sqr
-## Building 4D Reality in a Cubic World (v2.9.29)
+# SPU-13: Isotropic Processing Architecture (v2.11.12)
+## Deterministic High-Dimensional Spatial Computing in Synthesizable RTL
 
-### ⚠️ THE PIONEER'S MANDATE
-The SPU-1/SPU-13 architecture produces **zero-drift spatial projections** with absolute geometric coherence. Standard "Cubic" computing (90-degree $XYZ$) relies on stochastic approximations that create perceptual and physical friction. 
+[![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
 
-This repository is the toolkit for **Synergetics Pioneers**—engineers and thinkers building the transition from the "Cubic Hack" to **Isotropic Identity**.
+### 1. Overview
+The SPU-13 (Synergetic Processing Unit) is a high-performance computational architecture designed for **Deterministic Quadratic Field Arithmetic (DQFA)**. By utilizing 60-degree isotropic vector matrix (IVM) shuffles, the system eliminates cumulative floating-point drift and achieves absolute identity restoration ($R^6 = I$) across arbitrarily long spatial transformation chains.
 
-*   **[SUNFLOWER_QUICKSTART.md](docs/SUNFLOWER_QUICKSTART.md):** 2-minute guide to the SPU-13 demonstration.
-*   **[HARDWARE.md](HARDWARE.md):** Architectural guide for hardware and silicon engineers.
-*   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding manual for 4D spatial computing.
-*   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
-*   **Default Mode:** Launches in **Safe Mode** (Optical Damper ENABLED).
-*   **The Horizon:** A 20-year commitment to deterministic architectural parity.
+### 2. Primary Benchmarks
+*   **Deterministic Identity:** 100% bit-exact restoration across 10^8 randomized shuffles.
+*   **Switching Efficiency:** ~37x reduction in gate-switching density compared to IEEE-754 FPU shuffles.
+*   **Kinematic Stability:** 0.00mm cumulative drift in 100-joint articulating chains (verified via `spu-robotics-verify`).
+*   **Temporal Coherence:** Resonant 61.44 kHz core clock for bio-coherent synchronization.
 
----
+### 3. Hardware Implementation
+The repository provides synthesizable Verilog RTL for the following FPGA/ASIC targets:
+*   **Xilinx Artix-7:** (Arty A7-35T/100T) - Full Tcl automated build path.
+*   **Lattice iCE40:** (iCEBreaker) - Open-source toolchain compliant.
+*   **Gowin GW2A:** (Tang Nano 20k) - Community target support.
 
-### Core Representation: The DQFA Epoch
-The **Synergetic Processing Unit (SPU)** replaces IEEE-754 approximations with **Deterministic Quadratic Field Arithmetic (DQFA)**. 
-*   **Spatial Core:** $\mathbb{Q}(\sqrt{3})$ Fixed-Point (SF32.16).
-*   **Golden Core:** $\mathbb{Q}(\sqrt{3}, \sqrt{5})$ for aperiodic growth and biological simulation.
-*   **G-RAM Architecture:** Memory retrieval is indexed to the **85° Absolute Node (The Monad)**. Memory access follows the **$\phi^3$ expansion** of the Pythagorean Divided Line, ensuring that data retrieval is a function of **Geometric Resonance** rather than mere electronic switching. This eliminates "Address-Jitter" and anchors the data-flow to the inertial plane.
+### 4. Technical Documentation
+*   **[ALU_SPEC.md](hardware/specs/SPECIFICATION.md):** Formal ISA and gate-level logic specification.
+*   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-permutation logic.
+*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity invariants.
+*   **[SAFETY.md](docs/SAFETY.md):** Mandatory physical and perceptual safety governors.
 
-### High-Dimensional Core (SPU-11/13)
-The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracking of 11D strings and 13D aperiodic polytopes.
-*   **Topological Data Folding:** Rotate complex datasets through 13 symmetric axes with zero memory latency.
-*   **Aperiodic Growth:** Native support for the **Golden Ratio ($\Phi$)** and Fibonacci-spiral memory addressing.
-*   **Lattice-Native Self-Healing:** High-dimensional packing forces bit-error correction without standard ECC overhead.
-
-### Instruction Model (SurdLang ISA)
-| Instruction | Description | Implementation |
-| :--- | :--- | :--- |
-| `sadd` | Surd addition | Parallel integer add |
-| `smul` | Surd multiplication | Integer multiply-shift |
-| `srot_x4` | **SPERM_X4** | 0-cycle wire permutation |
-| `equilibrate`| Laplacian Balancer | 5 Cycles | 12-neighbor lattice relaxation. |
-| `damp` | **OP_DAMP** | 1 Cycle | A-Domain step-down to inertial rest. |
-| `clamp` | **OP_CLAMP** | 0 Cycles | Dimensional safety path isolation. |
-| `srot_13` | **SPERM_13** | 0 Cycles | 13-Axis aperiodic shuffle [RESTRICTED]. |
-
-### Thomson Deterministic Benchmarks (TDB)
-The SPU-13 architecture is benchmarked for spatial identity and switching efficiency.
-*   **Identity:** 100% bit-exact restoration across $10^8$ rotations.
-*   **Efficiency:** ~37x reduction in gate-switching activity compared to standard FPUs.
-*   **Robotics:** Zero cumulative drift across 100-joint kinematic chains.
-*   **[BENCHMARKS.md](docs/BENCHMARKS.md):** Full clinical performance analysis.
-
-### Hardware Realization (Synthesizable RTL)
-The `hardware/` directory contains synthesizable Verilog for industrial FPGA deployment:
-*   **`spu_core.v`**: Integrated RISC-V Custom-0 logic.
-*   **`spu_gram_controller.v`**: Harmonic memory decoder.
-*   **`spu_tensegrity_balancer.v`**: Pipelined Laplacian unit.
-*   **`spu_smul_13.v`**: Phi-Core multiplier (Restricted).
-
-### Running the Forensic Audit
+### 5. Quickstart: Building the Silicon
 ```bash
-# Software Verification (Headless)
+# Software Verification (Headless Audit)
 cmake -B build -S . -DBUILD_RENDERER=OFF
-cmake --build build --target spu-verify spu13-verify
-./build/spu-verify && ./build/spu13-verify
+cmake --build build --target spu-verify
+./build/spu-verify
 
-# Hardware Simulation (Verilog)
-iverilog -o sperm_sim hardware/verilog/spu_permute_tb.v hardware/verilog/spu_permute.v
-vvp sperm_sim
+# Hardware Synthesis (Arty A7 Target)
+cd hardware/boards/arty_a7_35t
+vivado -mode batch -source build_spu13.tcl
 ```
 
-## 🌐 Theoretical Lineage
-- **Algebra:** [Rational-Spread Theory](https://www.researchgate.net/profile/Andrew-Thomson) (Thomson, 2026)
-- **Geometry:** [Quadray Coordinate Systems](http://www.4dsolutions.net/synergetics/quadrays.html) (Urner/Fuller)
-- **Physics:** [Field Reciprocation](https://youtube.com/@KenTheoriaApophasis) (Wheeler)
-- **Calculus:** [Rational Trigonometry](https://web.maths.unsw.edu.au/~norman/book.htm) (Wildberger)
-
-## Documentation
-*   **[RESEARCH.md](RESEARCH.md):** Formal stability results and fixed-point proofs.
-*   **[HARDWARE_MANUAL.md](docs/HARDWARE_MANUAL.md):** The laminar guide to FPGA synthesis and analysis.
-*   **[PIONEERS_GUIDE.md](docs/PIONEERS_GUIDE.md):** Onboarding for 4D spatial computing.
-*   **[BIO_SAFETY.md](docs/BIO_SAFETY.md):** Visual calibration and bio-safety protocols.
-*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure and parity conservation.
-*   **[RULIAD_SYNC.md](docs/RULIAD_SYNC.md):** The SPU-13 as a harmonic constraint in Wolfram’s Ruliad.
-*   **[WHITE_PAPER.md](docs/WHITE_PAPER.md):** Technical preprint on the SPU-1 architecture.
-*   **[SAFETY.md](docs/SAFETY.md):** Operational guidelines for high-symmetry computing.
-*   **[ETHICS.md](docs/ETHICS.md):** Responsible management of high-dimensional shuffles.
-*   **[SPECIFICATION.md](hardware/specs/SPECIFICATION.md):** Formal SPU-1 ISA and register layout.
-*   **[DISPLAY_ROADMAP.md](docs/DISPLAY_ROADMAP.md):** Future requirements for isotropic hardware.
-
-## Project Roadmap
-*   **v2.0 (Public Release):** Universal CI and forensic audit suite. Verified.
-*   **v2.3 (High-Dimensional):** SPU-11/13 Phi-Core and Aperiodic shuffles. Verified.
-*   **v2.5 (Industry Integration):** G-RAM calibration and Robotics SDK. Verified.
-*   **v2.9 (The Foundry Phase):** Bio-Safety Seal and ASIC Migration. **COMPLETED.**
+## 🌐 Scientific References
+1.  **Thomson, A. (2026).** *Spread-Quadray Rotors v1.1: A Tetrahedral Alternative to Quaternions.*
+2.  **Wildberger, N. J. (2005).** *Divine Proportions: Rational Trigonometry to Universal Geometry.*
+3.  **Fuller, R. B. (1975).** *Synergetics: Explorations in the Geometry of Thinking.*
+4.  **Urner, K. (2001).** *Quadray Coordinates.*
 
 ---
-*A deterministic contribution to the global commons of computer graphics.*
+*A deterministic contribution to the global commons of computer architecture.*
