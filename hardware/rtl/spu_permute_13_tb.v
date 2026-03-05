@@ -3,12 +3,12 @@
 
 `timescale 1ns/1ps
 
-module spu_permute_11_tb;
-    reg [703:0] q_in;
-    wire [703:0] q_out;
+module spu_permute_13_tb;
+    reg [831:0] q_in;
+    wire [831:0] q_out;
 
     // Instantiate SPU-11 Permutator
-    spu_permute_11 uut (
+    spu_permute_13 uut (
         .q_in(q_in),
         .q_out(q_out)
     );
