@@ -15,15 +15,14 @@ endif()
 option(BUILD_RENDERER "Build the visual SPU-1 demonstrator" ON)
 
 # --- INCLUDE DIRECTORIES ---
-include_directories(core/include)
-include_directories(software/api)
-include_directories(software/toolchain)
+include_directories(include)
 include_directories(sim/python)
+include_directories(demos/renderer)
 include_directories(metal-cpp)
 
 # --- CORE ALGEBRAIC AUDIT (PURITY GUARD) ---
 add_custom_target(purity_audit
-    COMMAND grep -rnE "float|double" core/include/spu/SynergeticsMath.hpp | grep -v "DisplayAdapter" | grep -v "Legacy" || true
+    COMMAND grep -rnE "float|double" include/spu/SynergeticsMath.hpp | grep -v "DisplayAdapter" | grep -v "Legacy" || true
     COMMENT "Auditing SPU-1 Algebraic Core for floating-point contamination..."
 )
 
@@ -38,7 +37,7 @@ endmacro()
 
 # Interface library for shared includes
 add_library(spu_core_interface INTERFACE)
-target_include_directories(spu_core_interface INTERFACE core/include software/api software/toolchain)
+target_include_directories(spu_core_interface INTERFACE include sim/python)
 
 add_spu_test(spu-verify rigorous_verification.cpp)
 add_spu_test(spu-extreme-chaos extreme_chaos_verification.cpp)
