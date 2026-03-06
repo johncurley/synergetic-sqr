@@ -13,26 +13,24 @@ module spu_fluid_solver (
 
     // 1. Tetrahedral Curl / Divergence Logic
     // Calculates the isotropic gradient without 90-degree artifacts.
-    wire [831:0] grad_out;
+    wire [255:0] grad_out; // Balancer operates on the 256-bit spatial basis
     spu_tensegrity_balancer u_balancer (
         .clk(clk), .reset(reset),
-        .reg_curr(velocity_in),
         .neighbors(neighbors),
-        .reg_out(grad_out)
+        .scaled_residual(grad_out)
     );
 
     // 2. Orbital Laplacian (Hysteresis-Zero Operator)
-    // Applies 85-degree phase rotation to resolve vorticity bit-exactly.
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             velocity_out <= 832'b0;
         end else begin
             // V_next = V_curr + (Isotropic_Divergence >> 4)
             // No numerical diffusion; state moves vertically through the IVM.
-            velocity_out <= velocity_in + (grad_out >>> 4);
+            velocity_out <= velocity_in + {576'b0, grad_out};
         end
     end
 
-    assign laminar_lock = (grad_out == 832'b0); // True equilibrium
+    assign laminar_lock = (grad_out == 256'b0); // True equilibrium
 
 endmodule

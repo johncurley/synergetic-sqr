@@ -57,8 +57,8 @@ module spu_core (
     spu_smul_13 phi_multiplier (
         .a1(f1[31:0]), .b1(f1[63:32]), .c1(f2[31:0]), .d1(f2[63:32]),
         .a2(f3[31:0]), .b2(f3[63:32]), .c2(f5[31:0]), .d2(f5[63:32]),
-        .a_out(smul_13_out[31:0]), .b_out(smul_13_out[63:32]), 
-        .c_out(smul_13_out[95:64]), .d_out(smul_13_out[127:96])
+        .res_a(smul_13_out[31:0]), .res_b(smul_13_out[63:32]), 
+        .res_c(smul_13_out[95:64]), .res_d(smul_13_out[127:96])
     );
 
     // 4. Register Dispatch (Organic Flow)
