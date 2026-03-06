@@ -1,4 +1,4 @@
-# SPU-13: Sovereign Isotropic Architecture (v3.0.13 "Henosis")
+# SPU-13: Sovereign Isotropic Architecture (v3.0.29 "Henosis")
 ## Deterministic Spatial Computing for High-Dimensional Sovereignty
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -16,14 +16,19 @@ The SPU-13 architecture produces **zero-drift spatial projections** with 100% in
 
 ---
 
-### 1. Industrial Benchmarks (The Identity Invariant)
-The SPU-13 replaces IEEE-754 approximations with **Deterministic Quadratic Field Arithmetic (DQFA)**. 
+### 1. The Driftless Engine (Zero Calculation Error)
+Standard spatial computing (GPUs/CPUs) relies on approximations of $\pi$ and transcendental $sin/cos$ functions, introducing cumulative rounding noise. The SPU-13 eliminates this drift by utilizing the **Rational-Surd Field ($\mathbb{Q}[\sqrt{3}, \sqrt{5}]$)** and the hardware-native **Rotary Logic Gate**.
+*   **Isotropic Rotation:** Rotation is implemented as a 'Slide' across lattice nodes (Vector Permutation) rather than an arithmetic guess.
+*   **Absolute Precision:** Identity restoration is bit-exact across arbitrarily long transformation chains.
+*   **Result:** A zero-drift computational environment suitable for high-precision aerospace, quantum physics, and robotics.
+
+### 2. Primary Benchmarks
 *   **Switching Efficiency:** ~37x reduction in gate-switching density compared to FPU-based shuffles.
 *   **Kinematic Precision:** 0.00mm cumulative drift across 100-joint articulating chains.
 *   **Rotation Stability:** 100,000,000 randomized rotations verified with **zero bit-drift**.
 *   **Hardware Parity:** 100% bit-exact parity between C++ Golden Model and synthesizable Verilog RTL.
 
-### 2. High-Dimensional Sovereign Core
+### 3. High-Dimensional Sovereign Core
 The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracking of high-order polytopes and biological growth patterns.
 *   **Topological Folding:** Zero-latency data retrieval via 13-axis prime permutations.
 *   **G-RAM Architecture:** Memory retrieval indexed to the **85° Absolute Node (The Monad)** for zero-jitter resonance.
