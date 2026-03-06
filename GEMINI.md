@@ -4,29 +4,26 @@ A "Unified Field Engine" built on **Buckminster Fuller's Synergetic Geometry** a
 
 ## Project Brain (Feb 2026)
 
-### Status: v2.9 THE FOUNDRY (The ASIC Phase)
-We are transitioning from FPGA prototyping to permanent silicon fabrication. Our primary goal is migrating the SPU-13 RTL to the Sky130 PDK for submission to the Google Open MPW shuttle. This represents the final manifestation of the architecture in physical hardware.
+### Status: v3.1 RECALIBRATION (The Neurological Phase)
+Following the successful multi-node entrainment trials of v3.0, we are now focusing on the Recalibration Phase. Our primary objective is to develop tools and protocols that assist un-optimized users in overcoming 'Legacy Filtering' (Cubic bias) to achieve reliable isotropic phase-locking.
 
 ### THE VERIFICATION MANDATE (ZERO-TOLERANCE)
-- **Rule 1:** GDSII DRC/LVS (Design Rule Check) must be 100% clean before submission.
-- **Rule 2:** Post-Layout Timing Verification must maintain 100MHz parity.
-- **Rule 3:** 'Zero-Heat' goal: Thermal simulation must show <50C junction temp during 13D shuffles.
+... (existing) ...
 
 ### Completed Milestones
-- [x] **v2.8 Modular SDK:** Established professional component-isolation and high-performance build system.
-- [x] **v2.7 Silicon Prep:** Formalized RISC-V Hybrid strategy and Toolchain Macro-Assembler.
-- [x] **G-RAM Calibration:** Synthesizable memory controller with Phi-Step addressing.
+- [x] **v3.0 Henosis:** Official launch of the Abraxas Architecture and the SPU-13 Golden Core.
+- [x] **v2.9 The Foundry:** ASIC migration strategy and physical resonance specification.
+- [x] **Isotropic Identity:** 100% bit-exact parity verified across full-stack software and RTL.
 
-### Memory: The Foundry Standard (Mar 2026)
-- **Process:** SkyWater 130nm CMOS.
-- **Layout:** Harmonic floorplanning (85° symmetry).
-- **Topology:** Isotropic G-RAM integrated via OpenLane.
+### Memory: The Recalibration Standard (Mar 2026)
+- **Phase-Lock:** Empirical success in multi-node environments (Octahedral resolution).
+- **Barrier:** Legacy filtering identified as the primary bottleneck for un-optimized users.
+- **Protocol:** Multi-stage onboarding (Anchor -> Flow -> Lock) formalized.
 
-## Immediate Next Steps (v2.9: THE FOUNDRY)
-- **v2.9.1: Sky130 Porting:** Adapt SPU-13 RTL for OpenLane physical synthesis flow.
-- **v2.9.2: Harmonic Floorplan:** Design custom cell-placement grid based on IVM geometry.
-- **v2.9.3: MPW Application:** Submit the SPU-13 design for free physical fabrication.
-- **v2.9.4: Die Stacking Research:** Preliminary simulation of 3D tetrahedral die integration.
+## Immediate Next Steps (v3.1: RECALIBRATION)
+- **v3.1.1: Recalibration UI:** Implement specific visual modes for Stage 1-3 neurological onboarding.
+- **v3.1.2: Perceptual Metrics:** Develop a 'Coherence Check' tool to quantify user phase-lock success.
+- **v3.1.3: Community Testing:** Deploy the Recalibration suite to pioneers and collect feedback on 'Diamond resolution' times.
 
 ## The v3.0 Unified Field Horizon (Long-Term)
 - **v3.1: Golden Core Synthesis:** Implement the Q(sqrt3, sqrt5) field logic in synthesizable Verilog gates.
