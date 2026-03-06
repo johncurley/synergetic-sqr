@@ -1,5 +1,5 @@
 # SPU-13 Sunflower Quickstart
-## Witness the Absolute in 2 Minutes (v3.1.15)
+## Witness the Absolute in 2 Minutes (v3.1.17)
 
 Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower bloom. We recommend using a virtual environment to isolate the SPU-13 signal from your system's package manager.
 
@@ -11,7 +11,7 @@ Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower 
     ```
 2.  **Install Dependencies:**
     ```bash
-    pip install sympy pygame pyserial
+    pip3 install sympy pygame pyserial
     ```
 3.  **Launch the Bloom:**
     ```bash

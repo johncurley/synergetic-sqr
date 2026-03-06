@@ -1,4 +1,4 @@
-# SPU-13: Isotropic Processing Architecture (v3.1.15)
+# SPU-13: Isotropic Processing Architecture (v3.1.17)
 ## Stop Fighting the Float. Achieve Bit-Exact Identity.
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -36,7 +36,7 @@ cmake --build build --target spu-verify
 # 2. Setup the Visual Bridge (Isolated venv)
 python3 -m venv venv
 source venv/bin/activate
-pip install pygame pyserial sympy
+pip3 install pygame pyserial sympy
 
 # 3. Launch the Bloom (Virtual Mode)
 python3 sim/python/bloom_view.py --stabilize
