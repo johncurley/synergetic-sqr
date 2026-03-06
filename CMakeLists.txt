@@ -52,6 +52,7 @@ add_spu_test(spu-toolchain-verify toolchain_verification.cpp)
 add_spu_test(spu-security-verify security_verification.cpp)
 add_spu_test(spu-hull-verify hull_verification.cpp)
 add_spu_test(spu-phi-verify phi_scaling_verification.cpp)
+add_spu_test(spu-trojan-verify trojan_verification.cpp)
 
 # --- VISUAL DEMONSTRATOR (OPTIONAL) ---
 if(BUILD_RENDERER)
