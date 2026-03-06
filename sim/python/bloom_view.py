@@ -1,5 +1,5 @@
-# SPU-13 Bloom View UI (v3.1.12)
-# Real-time Isotropic Visualization with Dependency Guidance.
+# SPU-13 Bloom View UI (v3.1.13)
+# Real-time Isotropic Visualization with Python 3 Precision.
 
 import math
 import sys
@@ -17,14 +17,13 @@ try:
     SERIAL_AVAILABLE = True
 except ImportError:
     SERIAL_AVAILABLE = False
-    # pyserial is only critical if --port is used
     if "--port" in sys.argv:
         MISSING_DEPS.append("pyserial")
 
 if MISSING_DEPS:
     print("--- SPU-13 Dependency Audit ---")
     print(f"CRITICAL: Missing Python libraries: {', '.join(MISSING_DEPS)}")
-    print(f"FIX: Run 'pip install {' '.join(MISSING_DEPS)}' to enable the visualizer.")
+    print(f"FIX: Run 'pip3 install {' '.join(MISSING_DEPS)}' to enable the visualizer.")
     sys.exit(1)
 
 # --- CONFIGURATION ---
