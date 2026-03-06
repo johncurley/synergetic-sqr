@@ -34,9 +34,32 @@ void MetalRenderer::toggleDSS() {
 
 void MetalRenderer::buildComputePipeline() {
     NS::Error* error = nullptr;
-    std::ifstream file("src/SynergeticKernelFinal.metal");
-    if (!file.is_open()) {
-        std::cerr << "CRITICAL ERROR: Could not find src/SynergeticKernelFinal.metal" << std::endl;
+    
+    // Path list for high-fidelity discovery
+    const char* paths[] = {
+        "SynergeticKernelFinal.metal",
+        "./SynergeticKernelFinal.metal",
+        "../demos/renderer/SynergeticKernelFinal.metal",
+        "demos/renderer/SynergeticKernelFinal.metal",
+        "src/SynergeticKernelFinal.metal",
+        "../src/SynergeticKernelFinal.metal"
+    };
+
+    std::ifstream file;
+    std::string finalPath;
+
+    for (const char* p : paths) {
+        file.open(p);
+        if (file.is_open()) {
+            finalPath = p;
+            break;
+        }
+    }
+
+    if (!finalPath.empty()) {
+        std::cout << "SUCCESS: SPU-13 Kernel Manifested at: " << finalPath << std::endl;
+    } else {
+        std::cerr << "CRITICAL ERROR: SPU-13 Kernel not found in any search path." << std::endl;
         return;
     }
     std::stringstream buffer;
