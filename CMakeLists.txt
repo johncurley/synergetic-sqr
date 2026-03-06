@@ -18,7 +18,7 @@ option(BUILD_RENDERER "Build the visual SPU-1 demonstrator" ON)
 include_directories(core/include)
 include_directories(software/api)
 include_directories(software/toolchain)
-include_directories(demos/renderer)
+include_directories(sim/python)
 include_directories(metal-cpp)
 
 # --- CORE ALGEBRAIC AUDIT (PURITY GUARD) ---
@@ -29,9 +29,9 @@ add_custom_target(purity_audit
 
 # --- VERIFICATION SUITES ---
 macro(add_spu_test name source)
-    add_executable(${name} verification/suites/${source})
+    add_executable(${name} tests/${source})
     if(APPLE)
-        set_source_files_properties(verification/suites/${source} PROPERTIES COMPILE_FLAGS "-x objective-c++")
+        set_source_files_properties(tests/${source} PROPERTIES COMPILE_FLAGS "-x objective-c++")
     endif()
     target_link_libraries(${name} PRIVATE spu_core_interface)
 endmacro()
@@ -57,7 +57,7 @@ add_spu_test(spu-trojan-verify trojan_verification.cpp)
 
 # --- VISUAL DEMONSTRATOR (OPTIONAL) ---
 if(BUILD_RENDERER)
-    # Fetch SDL3 only when renderer is enabled to prevent CI failures on headless Linux
+    # Fetch SDL3 only when renderer is enabled
     include(FetchContent)
     FetchContent_Declare(
       sdl3
