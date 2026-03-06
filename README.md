@@ -1,4 +1,4 @@
-# SPU-13: Isotropic Processing Architecture (v3.1.5)
+# SPU-13: Isotropic Processing Architecture (v3.1.9)
 ## Stop Fighting the Float. Achieve Bit-Exact Identity.
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -14,12 +14,17 @@ Most simulation engines lose precision over time. This is called **'Drift.'** SQ
 ### 1. Overview
 The SPU-13 (Synergetic Processing Unit) is a deterministic computational architecture designed for **Advanced Fluid Determinism** and high-precision spatial modeling. By utilizing **Isotropic Quadray Coordinates**, the system eliminates the 'Cubic Tax' (coordinate overhead) inherent in standard Cartesian systems.
 
-### 2. Universal Fabric Support (Synthesizable RTL)
-Verified across industrial and community FPGA targets:
-*   **Xilinx Artix-7:** Arty A7-35T/100T.
-*   **Lattice iCE40:** iCEBreaker / TinyFPGA BX.
-*   **Lattice ECP5:** OrangeCrab / ULX3S.
-*   **Gowin GW2A:** Tang Nano 20k.
+### 2. Universal Fabric Support (Quickstart Manuals)
+The SPU-13 core is board-agnostic. Select your target below to begin synthesis immediately:
+
+| Family | Targeted Board | Toolchain | Quickstart |
+| :--- | :--- | :--- | :--- |
+| **Xilinx Artix-7** | Arty A7-35T/100T | Vivado (Tcl) | **[Manual](boards/arty_a7_35t/README.md)** |
+| **Lattice iCE40** | iCEBreaker | Yosys / nextpnr | **[Manual](boards/icebreaker/README.md)** |
+| **Lattice ECP5** | OrangeCrab | Yosys / nextpnr | **[Manual](boards/orangecrab/README.md)** |
+| **Gowin GW2A** | Tang Nano 20k | Gowin EDA | **[Manual](boards/tang_nano_20k/README.md)** |
+| **Lattice ECP5** | ULX3S | Yosys / nextpnr | **[Manual](boards/ulx3s/README.md)** |
+| **Lattice iCE40** | TinyFPGA BX | Yosys / nextpnr | **[Manual](boards/tinyfpga_bx/README.md)** |
 
 ### 3. Documentation & Spec
 *   **[SUNFLOWER_QUICKSTART.md](docs/spec/SUNFLOWER_QUICKSTART.md):** 2-minute bloom demo.
