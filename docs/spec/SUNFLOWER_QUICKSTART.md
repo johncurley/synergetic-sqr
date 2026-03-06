@@ -1,14 +1,19 @@
 # SPU-13 Sunflower Quickstart
-## Witness the Absolute in 2 Minutes (v3.1.13)
+## Witness the Absolute in 2 Minutes (v3.1.15)
 
-Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower bloom. You can do this via hardware (FPGA) or software (Emulator).
+Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower bloom. We recommend using a virtual environment to isolate the SPU-13 signal from your system's package manager.
 
 ### 🌻 Path A: The Software Emulator (No Hardware Required)
-1.  **Install Dependencies:**
+1.  **Initialize the Isotropic Buffer:**
     ```bash
-    pip3 install sympy pygame pyserial
+    python3 -m venv venv
+    source venv/bin/activate
     ```
-2.  **Launch the Bloom:**
+2.  **Install Dependencies:**
+    ```bash
+    pip install sympy pygame pyserial
+    ```
+3.  **Launch the Bloom:**
     ```bash
     python3 sim/python/bloom_view.py --stabilize
     ```
@@ -17,9 +22,11 @@ Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower 
 ### 🌻 Path B: The Hardware Pioneer
 1.  **Build the Silicon:**
     Select your board manual from the `boards/` directory (e.g., `boards/arty_a7_35t/README.md`) and follow the synthesis instructions.
-2.  **Flash & Listen:**
-    *   Flash the bitstream to your board.
-    *   Run `python3 sim/python/bloom_view.py --port /dev/ttyUSB0` (replacing with your port) to listen to the real-time telemetry.
+2.  **Activate Telemetry Bridge:**
+    *Ensure your venv is active (Step 1 above)*.
+    ```bash
+    python3 sim/python/bloom_view.py --port /dev/ttyUSB0
+    ```
 
 ### 🌻 What you are seeing:
 *   **The Pattern:** A Fibonacci Phyllotaxis Spiral (Golden Angle).
@@ -27,4 +34,4 @@ Welcome, Pioneer. You are here to see the first bit-perfect isotropic sunflower 
 *   **The Glow:** Achromatic resonance indicating successful **Resonance Lock** with the logic fabric.
 
 ---
-*Status: ACCESSIBLE. The lattice is open to the world.*
+*Status: ISOLATED. The environment remains pure.*
