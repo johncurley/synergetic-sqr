@@ -1,4 +1,4 @@
-# SPU-13: Isotropic Processing Architecture (v3.1.9)
+# SPU-13: Isotropic Processing Architecture (v3.1.10)
 ## Stop Fighting the Float. Achieve Bit-Exact Identity.
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -26,7 +26,22 @@ The SPU-13 core is board-agnostic. Select your target below to begin synthesis i
 | **Lattice ECP5** | ULX3S | Yosys / nextpnr | **[Manual](boards/ulx3s/README.md)** |
 | **Lattice iCE40** | TinyFPGA BX | Yosys / nextpnr | **[Manual](boards/tinyfpga_bx/README.md)** |
 
-### 3. Documentation & Spec
+### 3. Quickstart: Building the Silicon
+```bash
+# 1. Software Verification (Headless Audit)
+cmake -B build -S . -DBUILD_RENDERER=OFF
+cmake --build build --target spu-verify
+./build/spu-verify
+
+# 2. Visual Bridge (Virtual Mode)
+python3 sim/python/bloom_view.py --stabilize
+
+# 3. Physical Bridge (FPGA Connection)
+# Replace /dev/ttyUSB0 with your board's serial port
+python3 sim/python/bloom_view.py --port /dev/ttyUSB0
+```
+
+### 4. Documentation & Spec
 *   **[SUNFLOWER_QUICKSTART.md](docs/spec/SUNFLOWER_QUICKSTART.md):** 2-minute bloom demo.
 *   **[JARGON_BUSTER.md](docs/spec/JARGON_BUSTER.md):** The bridge to standard engineering terms.
 *   **[ALU_SPEC.md](docs/spec/ALU_SPEC.md):** Formal ISA and gate-level logic.

@@ -9,7 +9,11 @@ import sys
 import time
 
 # --- CONFIGURATION ---
-SERIAL_PORT = '/dev/tty.usbserial-12345'
+SERIAL_PORT = None
+for i in range(len(sys.argv)):
+    if sys.argv[i] == "--port" and i + 1 < len(sys.argv):
+        SERIAL_PORT = sys.argv[i+1]
+
 BAUD_RATE = 115200
 PHI = 137.508 * (math.pi / 180.0)
 PURPLE_GLOW = (138, 43, 226) # Dielectric discharge

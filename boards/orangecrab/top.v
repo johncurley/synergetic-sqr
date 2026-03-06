@@ -1,19 +1,20 @@
-// OrangeCrab Top-Level Integration (v3.1.1)
-// Target: Lattice ECP5 (LFE5U-25F) - Open-Toolchain Native
+// OrangeCrab Top-Level Integration (v3.1.10)
+// Target: Lattice ECP5 (48MHz Internal Clock)
 
 module orangecrab_top (
-    input  wire clk_48mhz,    // Onboard oscillator
-    input  wire btn_rst_n,    // Reset button
+    input  wire clk_48mhz,
+    input  wire btn_rst_n,
     output wire led_r, led_g, led_b,
-    output wire uart_tx
+    output wire uart_tx,
+    input  wire uart_rx
 );
 
     wire [831:0] reg_state;
     wire [831:0] next_state;
     wire         fault;
     wire         resonance_lock;
+    wire [3:0]   bridge_leds;
 
-    // 1. SPU-13 Sovereign Core Instance
     spu_core u_core (
         .clk(clk_48mhz),
         .reset(~btn_rst_n),
@@ -26,7 +27,6 @@ module orangecrab_top (
         .fault_detected(fault)
     );
 
-    // 2. Self-Test Logic
     spu_self_test u_test (
         .clk(clk_48mhz),
         .reset(~btn_rst_n),
@@ -34,9 +34,22 @@ module orangecrab_top (
         .pass(resonance_lock)
     );
 
-    // 3. Status Mapping
-    assign led_r = fault;
-    assign led_g = resonance_lock;
-    assign led_b = clk_48mhz; // Heartbeat
+    spu_io_bridge #(
+        .CLK_FREQ(48000000)
+    ) u_io (
+        .clk(clk_48mhz),
+        .reset(~btn_rst_n),
+        .spu_reg_in(reg_state),
+        .fault_detected(fault),
+        .led_status(bridge_leds),
+        .pmod_ja_out(),
+        .sw_control(),
+        .serial_rx(uart_rx),
+        .serial_tx(uart_tx)
+    );
+
+    assign led_r = bridge_leds[3];
+    assign led_g = bridge_leds[2];
+    assign led_b = bridge_leds[1];
 
 endmodule

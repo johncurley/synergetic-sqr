@@ -1,4 +1,4 @@
-# OrangeCrab Physical Constraints (v3.1.1)
+# OrangeCrab Physical Constraints (v3.1.10)
 # Target: Lattice ECP5-25F
 
 # 1. System Clock (48MHz)
@@ -17,6 +17,8 @@ IOBUF PORT "led_r" IO_TYPE=LVCMOS33;
 IOBUF PORT "led_g" IO_TYPE=LVCMOS33;
 IOBUF PORT "led_b" IO_TYPE=LVCMOS33;
 
-# 4. UART TX (Pin 69 mapping for feather)
+# 4. UART (Feather Pins 0/1)
 LOCATE COMP "uart_tx" SITE "V1";
 IOBUF PORT "uart_tx" IO_TYPE=LVCMOS33;
+LOCATE COMP "uart_rx" SITE "U1";
+IOBUF PORT "uart_rx" IO_TYPE=LVCMOS33;

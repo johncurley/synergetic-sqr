@@ -1,0 +1,12 @@
+# TinyFPGA BX Physical Constraints (v3.1.10)
+# Target: Lattice iCE40LP8K-CM81
+
+# 1. System Clock (16MHz)
+set_io clk_16mhz B2
+
+# 2. User LED
+set_io led B3
+
+# 3. UART (Pins A2/A1 on header)
+set_io usb_tx A2
+set_io usb_rx A1
