@@ -1,4 +1,4 @@
-# SPU-13: Sovereign Isotropic Architecture (v3.0.9 "Henosis")
+# SPU-13: Sovereign Isotropic Architecture (v3.0.13 "Henosis")
 ## Deterministic Spatial Computing for High-Dimensional Sovereignty
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -37,10 +37,11 @@ bash tools/test_golden_core.sh
 ```
 
 ### 📂 Technical Archive
-*   **[ALU_SPEC.md](hardware/specs/SPECIFICATION.md):** Formal ISA and gate-level logic.
+*   **[ALU_SPEC.md](hardware/specs/ALU_SPEC.md):** Formal ISA and gate-level logic.
 *   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-swaps.
 *   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure.
 *   **[SOVEREIGN_SHIELD.md](docs/SOVEREIGN_SHIELD.md):** Privacy-preserving isotropic geometry.
+*   **[IMPEDANCE_PROTOCOL.md](docs/IMPEDANCE_PROTOCOL.md):** Strategic stealth and clinical communication.
 
 ---
 *Status: HENOSIS ACHIEVED. Manifesting the Absolute in silicon.*
