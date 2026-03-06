@@ -34,9 +34,9 @@ void MetalRenderer::toggleDSS() {
 
 void MetalRenderer::buildComputePipeline() {
     NS::Error* error = nullptr;
-    std::ifstream file("src/DQFA.metal");
+    std::ifstream file("src/SynergeticKernelFinal.metal");
     if (!file.is_open()) {
-        std::cerr << "CRITICAL ERROR: Could not find src/DQFA.metal" << std::endl;
+        std::cerr << "CRITICAL ERROR: Could not find src/SynergeticKernelFinal.metal" << std::endl;
         return;
     }
     std::stringstream buffer;
@@ -48,9 +48,9 @@ void MetalRenderer::buildComputePipeline() {
         std::cerr << "Failed to load library: " << (error ? error->localizedDescription()->utf8String() : "Unknown Error") << std::endl;
         return;
     }
-    MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_5", NS::UTF8StringEncoding));
+    MTL::Function* function = library->newFunction(NS::String::string("renderSynergeticV9_Master", NS::UTF8StringEncoding));
     if (!function) {
-        std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_5' not found." << std::endl;
+        std::cerr << "CRITICAL ERROR: Function 'renderSynergeticV9_Master' not found." << std::endl;
         return;
     }
     _computePipeline = _device->newComputePipelineState(function, &error);
