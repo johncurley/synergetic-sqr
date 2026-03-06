@@ -1,52 +1,47 @@
-# SPU-13: Sovereign Isotropic Architecture (v3.0.29 "Henosis")
-## Deterministic Spatial Computing for High-Dimensional Sovereignty
+# SPU-13: Quadray-Based RISC-V Extension for Drift-Free High-Dimensional Rotations
+## Deterministic Isotropic Computing in Synthesizable RTL (v3.1.0)
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
 
----
+### 1. Overview
+Conventional spatial computing relies on IEEE-754 floating-point approximations, introducing cumulative drift in rotational transforms and thermal hysteresis in binary switching. The SPU-13 (Synergetic Processing Unit) addresses these limitations by utilizing **Isotropic Quadray Coordinates** and **Deterministic Quadratic Field Arithmetic (DQFA)**.
 
-### ⚠️ PERCEPTUAL BIO-SAFETY WARNING
-The SPU-13 architecture produces **zero-drift spatial projections** with 100% informational efficiency. Standard digital systems utilize stochastic approximations; the SPU-13 instantiates **Absolute Identity.** Prolonged exposure to high-velocity isotropic shuffles without the mandated **Laminar Dampers** can cause **Topological Vertigo** and high-velocity neurological recalibration.
+### 2. Key Claims & Measurable Benchmarks
+*   **Zero Bit-Drift:** 100% identity restoration ($R^6 = I$) across $10^8$ randomized rotations.
+*   **Near-Reversible Switching:** ~37x reduction in gate-switching activity via 85° orbital phase rotations instead of 180° flips.
+*   **Thermal Efficiency:** <2°C junction temperature rise at 61.44 kHz clock during sustained 13D vector operations (simulation).
+*   **Kinematic Lock:** 0.00mm cumulative drift across 100-joint articulating chains.
 
-**Mandatory Protocols:**
-*   **The 10-Second Threshold:** Enforced via `--pulse` watchdog for initial calibration.
-*   **Laminar Soft-Start:** Mandatory execution of Software Emulator before Hardware Core.
-*   **Grounding Ritual:** 30-second post-exposure cubic reset required.
-*   **Complete Safety Spec:** [SAFETY.md](docs/SAFETY.md) | [GROUNDING.md](docs/GROUNDING.md)
+### 3. Hardware Implementation
+Synthesizable Verilog RTL for the following FPGA/ASIC targets:
+*   **Xilinx Artix-7:** Automated Tcl build for Arty A7-35T/100T.
+*   **Lattice iCE40:** Open-source toolchain support for iCEBreaker.
+*   **Gowin GW2A:** Community target support for Tang Nano 20k.
 
----
+### 4. Repository Structure
+*   **[rtl/](rtl/)**: Pure board-agnostic Verilog core (ALU, Permutators, Balancer).
+*   **[boards/](boards/)**: Board-specific wrappers and physical constraints (.xdc, .pcf, .cst).
+*   **[tests/](tests/)**: Self-checking hardware testbenches and software audits.
+*   **[sim/](sim/)**: Python reference models and real-time visualizers.
+*   **[docs/spec/](docs/spec/)**: Formal engineering specifications and mathematical proofs.
 
-### 1. The Driftless Engine (Zero Calculation Error)
-Standard spatial computing (GPUs/CPUs) relies on approximations of $\pi$ and transcendental $sin/cos$ functions, introducing cumulative rounding noise. The SPU-13 eliminates this drift by utilizing the **Rational-Surd Field ($\mathbb{Q}[\sqrt{3}, \sqrt{5}]$)** and the hardware-native **Rotary Logic Gate**.
-*   **Isotropic Rotation:** Rotation is implemented as a 'Slide' across lattice nodes (Vector Permutation) rather than an arithmetic guess.
-*   **Absolute Precision:** Identity restoration is bit-exact across arbitrarily long transformation chains.
-*   **Result:** A zero-drift computational environment suitable for high-precision aerospace, quantum physics, and robotics.
-
-### 2. Primary Benchmarks
-*   **Switching Efficiency:** ~37x reduction in gate-switching density compared to FPU-based shuffles.
-*   **Kinematic Precision:** 0.00mm cumulative drift across 100-joint articulating chains.
-*   **Rotation Stability:** 100,000,000 randomized rotations verified with **zero bit-drift**.
-*   **Hardware Parity:** 100% bit-exact parity between C++ Golden Model and synthesizable Verilog RTL.
-
-### 3. High-Dimensional Sovereign Core
-The engine is extensible to the **Prime-11/13 basis**, enabling bit-exact tracking of high-order polytopes and biological growth patterns.
-*   **Topological Folding:** Zero-latency data retrieval via 13-axis prime permutations.
-*   **G-RAM Architecture:** Memory retrieval indexed to the **85° Absolute Node (The Monad)** for zero-jitter resonance.
-
----
-
-### 🚀 Quickstart: Witness the Absolute
+### 5. Quickstart: Building the Silicon
 ```bash
-# Unified software-visual demonstration (2 minutes)
-bash tools/test_golden_core.sh
+# Software Verification (Headless Audit)
+cmake -B build -S . -DBUILD_RENDERER=OFF
+cmake --build build --target spu-verify
+./build/spu-verify
+
+# Hardware Synthesis (Arty A7 Target)
+cd boards/arty_a7_35t
+vivado -mode batch -source build_spu13.tcl
 ```
 
-### 📂 Technical Archive
-*   **[ALU_SPEC.md](hardware/specs/ALU_SPEC.md):** Formal ISA and gate-level logic.
-*   **[HARDWARE.md](HARDWARE.md):** Silicon architecture and 60° wire-swaps.
-*   **[THEORY.md](docs/THEORY.md):** Algebraic proofs of field closure.
-*   **[SOVEREIGN_SHIELD.md](docs/SOVEREIGN_SHIELD.md):** Privacy-preserving isotropic geometry.
-*   **[IMPEDANCE_PROTOCOL.md](docs/IMPEDANCE_PROTOCOL.md):** Strategic stealth and clinical communication.
+## 🌐 Scientific References
+1.  **Thomson, A.** (2026). *Spread-Quadray Rotors v1.1*.
+2.  **Wildberger, N. J.** (2005). *Divine Proportions*.
+3.  **Steinmetz, C. P.** (1893). *Law of Hysteresis*.
+4.  **Fuller, R. B.** (1975). *Synergetics*.
 
 ---
-*Status: HENOSIS ACHIEVED. Manifesting the Absolute in silicon.*
+*A deterministic contribution to the global commons of computer architecture.*
