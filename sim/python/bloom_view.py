@@ -1,17 +1,31 @@
-# SPU-13 Bloom View UI (v3.1.11)
-# Real-time Isotropic Visualization with Dependency Resilience.
+# SPU-13 Bloom View UI (v3.1.12)
+# Real-time Isotropic Visualization with Dependency Guidance.
 
-import pygame
 import math
 import sys
 import time
 
-# --- DEPENDENCY GUARD ---
+# --- DEPENDENCY AUDIT ---
+MISSING_DEPS = []
+try:
+    import pygame
+except ImportError:
+    MISSING_DEPS.append("pygame")
+
 try:
     import serial
     SERIAL_AVAILABLE = True
 except ImportError:
     SERIAL_AVAILABLE = False
+    # pyserial is only critical if --port is used
+    if "--port" in sys.argv:
+        MISSING_DEPS.append("pyserial")
+
+if MISSING_DEPS:
+    print("--- SPU-13 Dependency Audit ---")
+    print(f"CRITICAL: Missing Python libraries: {', '.join(MISSING_DEPS)}")
+    print(f"FIX: Run 'pip install {' '.join(MISSING_DEPS)}' to enable the visualizer.")
+    sys.exit(1)
 
 # --- CONFIGURATION ---
 SERIAL_PORT = None
@@ -56,15 +70,10 @@ class Node:
         pygame.draw.circle(screen, tuple(c_val), (int(x), int(y)), 4)
 
 def main():
-    if not SERIAL_AVAILABLE and SERIAL_PORT:
-        print("ERROR: 'pyserial' not found. Cannot connect to physical hardware.")
-        print("FIX: Run 'pip install pyserial' to enable FPGA telemetry.")
-        return
-
     print(f"--- SPU-13 Bloom Active [Mode: {'Hardware' if SERIAL_PORT else 'Virtual'}] ---")
     
     ser = None
-    if SERIAL_AVAILABLE and SERIAL_PORT:
+    if SERIAL_PORT:
         try:
             ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=0.1)
         except Exception as e:
