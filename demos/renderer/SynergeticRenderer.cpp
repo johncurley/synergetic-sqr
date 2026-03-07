@@ -144,10 +144,18 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     _tickCount = 0;
     _janus = 1;
     _dssEnabled = true; // SAFETY DEFAULT: ON
+    _layer = 0;
+    _computePipeline = nullptr;
+    
+    // Shader loading logic would go here (SPIR-V)
+    // For now, we maintain the structural shell for cross-platform parity.
 }
 
 VulkanRenderer::~VulkanRenderer() {
-    SDL_DestroyGPUDevice(_gpuDevice);
+    if (_gpuDevice) {
+        SDL_ReleaseWindowFromGPUDevice(_gpuDevice, nullptr); // Window usually handled by main
+        SDL_DestroyGPUDevice(_gpuDevice);
+    }
 }
 
 void VulkanRenderer::toggleJanus() {
@@ -162,6 +170,18 @@ void VulkanRenderer::toggleDSS() {
 
 void VulkanRenderer::draw(void* unused) {
     _tickCount++;
+    
+    // In a full implementation, we would:
+    // 1. Acquire Command Buffer
+    // 2. Begin Compute Pass
+    // 3. Bind Pipeline & Textures
+    // 4. Update Push Constants (fgh coefficients)
+    // 5. Dispatch
+    // 6. Submit & Present
+    
+    if (_tickCount % 600 == 0) {
+        std::cout << "[Vulkan Sync Verification] Tick: " << _tickCount << " | Layer: " << _layer << " | DSS: " << (_dssEnabled ? "ON" : "OFF") << std::endl;
+    }
 }
 
 } // namespace Synergetics

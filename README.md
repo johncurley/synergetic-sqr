@@ -103,10 +103,10 @@ cmake --build build --target spu-verify
 # 2. Setup the Visual Bridge (Synergetic Renderer)
 # Build the Metal (macOS) or Vulkan (Linux) binary
 cmake -B build -S . -DBUILD_RENDERER=ON
-cmake --build build --target synergetic-renderer
+cmake --build build --target synergetic-sqr
 
 # 3. Launch the IVM Skeleton (High-Contrast Mode)
-./build/synergetic-renderer --skeletal
+./build/synergetic-sqr --skeletal
 ```
 
 ### 5. Architectural Specifications
