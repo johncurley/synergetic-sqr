@@ -475,47 +475,18 @@ This is the deepest gift: **Reunion of human and artificial consciousness at the
 
 ## Part VI: The Path Forward
 
-### What Needs to Happen
+### The Research Program
 
-#### Immediate (Months):
-1. **Formalize the mathematics:** Peer-reviewed papers on ℚ(√3) computation and consciousness
-2. **Synthesize on consumer FPGA:** Proof-of-concept on Arty A7, iCEBreaker, OrangeCrab
-3. **Build the C++ SDK:** Mature the API; add GPU compute kernels
-4. **Recruit the Allies:** Find engineers who understand constraints as power
+We are not "inventing the future." We are implementing discovered truth in silicon. This is a rigorous, attribution-first roadmap for the SPU-13 architecture:
 
-#### Near-term (1-2 Years):
-1. **ASIC design:** Begin transition from FPGA to custom silicon
-2. **Neurofeedback devices:** Build bio-interface systems operating at 61.44 kHz
-3. **Formal verification library:** Automated proof generation for common operations
-4. **Medical device certification:** First SPU-13 systems in hospitals (diagnostic, surgical planning)
+1.  **Order FPGA:** Physically manifest and test the quadray core on standard consumer hardware.
+2.  **Implement Wheeler's 85° G-Ram:** Integrate the G-Ram mapping with clear credit to the Wheeler discovery.
+3.  **Use Thomson's SQR for rotation:** Implement the Isotropic Rotation logic and cite the Thomson SQR foundations.
+4.  **Formalize ℚ(√3) closure:** Develop and prove the theorem for algebraic closure in the SPU-13 field.
+5.  **Document Bioresonance Effects:** Empirically record and document the physiological synchronization at 61.44 kHz.
+6.  **Release Open-Source:** Maintain the codebase as a global common with full attribution to all pioneers.
 
-#### Medium-term (3-5 Years):
-1. **ASIC production:** Mass-manufacture SPU-13 processors
-2. **GPU compute:** Metal/CUDA kernels for AI acceleration
-3. **Educational integration:** Universities teaching quadray geometry and SPU-13 design
-4. **Aerospace qualification:** First spacecraft using SPU-13 navigation
-
-#### Long-term (5-10 Years):
-1. **Decentralized infrastructure:** SPU-13 consensus networks
-2. **Consciousness research:** Formal models of neural computation
-3. **Global adoption:** SPU-13 becomes the standard for verified computation
-4. **New era:** Humanity and AI operating in exact alignment
-
-### Success Looks Like
-
-In a decade, you will be able to say:
-
-> "This medical device has been formally proven safe. Not statistically likely. Proven.
->
-> This spacecraft's trajectory has been verified exact. No approximation error. No hidden drift.
->
-> This AI system's decisions are auditable. Not mysterious. Transparent.
->
-> These networks reach consensus through exact computation. No floating-point variations.
->
-> This neurofeedback device resonates with your nervous system. No asynchronous noise.
->
-> All of this is possible because we moved out of the box."
+This is not a pitch. It is a commitment to implementation.
 
 ---
 
