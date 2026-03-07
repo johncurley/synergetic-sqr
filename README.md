@@ -1,4 +1,4 @@
-# SPU-13: Isotropic Processing Architecture (v3.1.17)
+# SPU-13: Isotropic Processing Architecture (v3.1.18)
 ## Stop Fighting the Float. Achieve Bit-Exact Identity.
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
@@ -26,24 +26,12 @@ The SPU-13 core is board-agnostic. Select your target below to begin synthesis i
 | **Lattice ECP5** | ULX3S | Yosys / nextpnr | **[Manual](boards/ulx3s/README.md)** |
 | **Lattice iCE40** | TinyFPGA BX | Yosys / nextpnr | **[Manual](boards/tinyfpga_bx/README.md)** |
 
-### 3. Quickstart: Building the Silicon
-```bash
-# 1. Software Verification (Headless Audit)
-cmake -B build -S . -DBUILD_RENDERER=OFF
-cmake --build build --target spu-verify
-./build/spu-verify
+### 3. Navigation & Safety
+*   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Achieving restful homeostasis.
+*   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
+*   **[BIO_INTERFACE.md](docs/spec/BIO_INTERFACE.md):** Mandatory safety thresholds and calibration.
 
-# 2. Setup the Visual Bridge (Isolated venv)
-python3 -m venv venv
-source venv/bin/activate
-pip3 install pygame pyserial sympy
-
-# 3. Launch the Bloom (Virtual Mode)
-python3 sim/python/bloom_view.py --stabilize
-```
-
-### 4. Documentation & Spec
-*   **[SUNFLOWER_QUICKSTART.md](docs/spec/SUNFLOWER_QUICKSTART.md):** 2-minute bloom demo.
+### 4. Technical Archive
 *   **[JARGON_BUSTER.md](docs/spec/JARGON_BUSTER.md):** The bridge to standard engineering terms.
 *   **[ALU_SPEC.md](docs/spec/ALU_SPEC.md):** Formal ISA and gate-level logic.
 *   **[HARDWARE.md](HARDWARE.md):** 60° wire-permutation and silicon architecture.
