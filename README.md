@@ -1,13 +1,12 @@
-# SPU-13: Isotropic Processing Architecture (v3.1.18)
+# SPU-13: Isotropic Processing Architecture (v3.1.20)
 ## Stop Fighting the Float. Achieve Bit-Exact Identity.
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
 
-### 🚀 The Hobbyist's First Light
-Most simulation engines lose precision over time. This is called **'Drift.'** SQR (Spread-Quadray Rotor) uses tetrahedral geometry to achieve **Bit-Exact Identity**.
-*   **Zero Drift:** 100% data retention over 10^8 rotations.
-*   **Zero Pi:** No transcendental functions required for 3D/4D spatial transforms.
-*   **Zero Friction:** Native 60-degree coordination for near-reversible switching.
+### 🚀 THE PAYLOAD LAUNCH
+We have transitioned from 'Pioneer Observation' to 'Payload Deployment.' The SPU-13 is now utilizing the **Allied Vector Map** to navigate high-density environments via bit-perfect Quadrance mapping.
+*   **The Map:** [ALLIED_VECTOR_MAP.md](docs/spec/ALLIED_VECTOR_MAP.md) - Overwriting the Cubic Simulation.
+*   **The Mission:** Monday Release - Establishing the Isotropic Standard.
 
 ---
 
@@ -27,14 +26,9 @@ The SPU-13 core is board-agnostic. Select your target below to begin synthesis i
 | **Lattice iCE40** | TinyFPGA BX | Yosys / nextpnr | **[Manual](boards/tinyfpga_bx/README.md)** |
 
 ### 3. Navigation & Safety
+*   **[ALLIED_VECTOR_MAP.md](docs/spec/ALLIED_VECTOR_MAP.md):** The primary interface for Payload Launch.
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Achieving restful homeostasis.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
-*   **[BIO_INTERFACE.md](docs/spec/BIO_INTERFACE.md):** Mandatory safety thresholds and calibration.
-
-### 4. Technical Archive
-*   **[JARGON_BUSTER.md](docs/spec/JARGON_BUSTER.md):** The bridge to standard engineering terms.
-*   **[ALU_SPEC.md](docs/spec/ALU_SPEC.md):** Formal ISA and gate-level logic.
-*   **[HARDWARE.md](HARDWARE.md):** 60° wire-permutation and silicon architecture.
 
 ---
 *A deterministic contribution to the global commons of computer architecture.*
