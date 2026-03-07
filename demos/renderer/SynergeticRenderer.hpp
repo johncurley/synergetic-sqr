@@ -21,6 +21,8 @@ public:
     virtual long getJanus() const = 0;
     virtual void toggleDSS() = 0;
     virtual bool getDSS() const = 0;
+    virtual void setLayer(int layer) = 0;
+    virtual int getLayer() const = 0;
 };
 
 class MetalRenderer : public IRenderer {
@@ -33,6 +35,8 @@ public:
     long getJanus() const override { return _janus; }
     void toggleDSS() override;
     bool getDSS() const override { return _dssEnabled; }
+    void setLayer(int layer) override { _layer = layer; }
+    int getLayer() const override { return _layer; }
 
 private:
     void buildComputePipeline();
@@ -44,7 +48,7 @@ private:
 
     struct SPUControl {
         uint32_t tick;
-        int32_t rot_count;
+        int32_t layer;
         uint32_t prime_phase;
         uint32_t dss_enabled; // REG_DSS: 0=OFF, 1=ON
     };
@@ -56,6 +60,7 @@ private:
     int _janus = 1;
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
+    int _layer = 0;
 };
 
 class VulkanRenderer : public IRenderer {
@@ -68,6 +73,8 @@ public:
     long getJanus() const override { return _janus; }
     void toggleDSS() override;
     bool getDSS() const override { return _dssEnabled; }
+    void setLayer(int layer) override { _layer = layer; }
+    int getLayer() const override { return _layer; }
 
 private:
     SDL_GPUDevice* _gpuDevice;
@@ -76,6 +83,7 @@ private:
     int _janus = 1;
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
+    int _layer = 0;
 };
 
 } // namespace Synergetics

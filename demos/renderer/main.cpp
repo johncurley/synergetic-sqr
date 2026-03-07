@@ -13,6 +13,7 @@ using namespace Synergetics;
 int main(int argc, char* argv[]) {
     bool forensic_mode = false;
     bool deep_sea_mode = false;
+    bool skeletal_mode = false;
     Uint64 session_limit = 0; // 0 = Infinite
 
     for (int i = 1; i < argc; ++i) {
@@ -20,6 +21,8 @@ int main(int argc, char* argv[]) {
             forensic_mode = true;
         } else if (strcmp(argv[i], "--deep-sea") == 0) {
             deep_sea_mode = true;
+        } else if (strcmp(argv[i], "--skeletal") == 0) {
+            skeletal_mode = true;
         } else if (strcmp(argv[i], "--pulse") == 0) {
             session_limit = 10000; // Default 10s
         } else if (strcmp(argv[i], "--duration") == 0 && i + 1 < argc) {
@@ -61,6 +64,9 @@ int main(int argc, char* argv[]) {
     if (deep_sea_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
         SDL_SetWindowTitle(window, "SPU-1 [PHASE 1: ANCHOR]");
+    } else if (skeletal_mode) {
+        renderer->setLayer(1); // Mode 1: Core IVM Skeleton
+        SDL_SetWindowTitle(window, "SPU-1 [IVM SKELETON]");
     } else if (!forensic_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
         SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE]");

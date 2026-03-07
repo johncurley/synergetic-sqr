@@ -39,6 +39,8 @@ void MetalRenderer::buildComputePipeline() {
     const char* paths[] = {
         "SynergeticKernelFinal.metal",
         "./SynergeticKernelFinal.metal",
+        "../src/kernels/SynergeticKernelFinal.metal",
+        "src/kernels/SynergeticKernelFinal.metal",
         "../demos/renderer/SynergeticKernelFinal.metal",
         "demos/renderer/SynergeticKernelFinal.metal",
         "src/SynergeticKernelFinal.metal",
@@ -98,7 +100,7 @@ void MetalRenderer::draw(void* layerPtr) {
     uint32_t currentPhase = (_tickCount / 1200) % 4;
     SPUControl control = {
         static_cast<uint32_t>(_tickCount),
-        static_cast<int32_t>((_tickCount / 100) % 6),
+        static_cast<int32_t>(_layer),
         currentPhase,
         _dssEnabled ? 1u : 0u
     };
