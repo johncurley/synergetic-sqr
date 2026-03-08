@@ -100,6 +100,24 @@ static inline Quadray4 RationalSnap(float x, float y, float z) {
     return { {q1, 0, q2, 0, q3, 0, -q4, 0} };
 }
 
+// --- 7. RATIONAL TRIGONOMETRY UTILITIES (v3.3.43) ---
+
+/**
+ * Calculates the exact Quadrance (squared distance) of a Quadray vector.
+ * No square roots are performed, ensuring algebraic closure.
+ */
+static inline int64_t GetQuadrance(const Quadray4& v) {
+    return v.quadrance();
+}
+
+/**
+ * Returns the exact Spread (rational angle) between primary IVM axes.
+ * Always exactly 0.75 (3/4).
+ */
+static inline float GetIVMSpread() {
+    return 0.75f;
+}
+
 } // namespace SDK
 } // namespace Synergetics
 
