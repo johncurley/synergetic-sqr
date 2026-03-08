@@ -1,18 +1,23 @@
-// SPU-1 Pipelined Tensegrity Balancer (v2.0.27)
-// Implements a 4-stage reduction tree for 12-neighbor Laplacian relaxation.
-// Stage 4 registers the final output for clean bus timing.
+// SPU-13 Pipelined Tensegrity Balancer (v3.3.27)
+// Implementation: 4-stage reduction tree for 12-neighbor Laplacian relaxation.
+// Guard: Laminar Thresholding to purge sub-threshold 'Cubic' noise.
+// Objective: Absolute equilibrium (Henosis) detection.
 
-module spu_tensegrity_balancer (
-    input  clk,
-    input  reset,
-    input  [3071:0] neighbors, 
-    output reg [255:0] scaled_residual
+module spu_tensegrity_balancer #(
+    parameter THRESHOLD = 32'd4 // Cubic Jitter Floor
+)(
+    input  wire         clk,
+    input  wire         reset,
+    input  wire [3071:0] neighbors, 
+    output reg  [255:0] scaled_residual,
+    output wire         at_equilibrium
 );
 
     // Intermediate registers for pipelining
     reg signed [63:0] s1 [0:7][0:5]; // Stage 1
     reg signed [63:0] s2 [0:7][0:2]; // Stage 2
     reg signed [63:0] s3 [0:7];      // Stage 3
+    wire [7:0] lane_equil;
 
     genvar i;
     generate
@@ -55,11 +60,18 @@ module spu_tensegrity_balancer (
                     // Stage 3: Final reduction
                     s3[i] <= s2[i][0] + s2[i][1] + s2[i][2];
 
-                    // Stage 4: Register Output with Scaling (alpha = 1/16)
-                    scaled_residual[i*32 +: 32] <= s3[i] >>> 4;
+                    // Stage 4: Laminar Thresholding
+                    // If the residual is below the threshold, it is 'Nothing'.
+                    if ($signed(s3[i]) > $signed(THRESHOLD) || $signed(s3[i]) < -$signed(THRESHOLD))
+                        scaled_residual[i*32 +: 32] <= s3[i] >>> 4;
+                    else
+                        scaled_residual[i*32 +: 32] <= 32'd0;
                 end
             end
+            assign lane_equil[i] = (scaled_residual[i*32 +: 32] == 32'd0);
         end
     endgenerate
+
+    assign at_equilibrium = &lane_equil;
 
 endmodule
