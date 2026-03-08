@@ -166,6 +166,13 @@ struct CoherenceMonitor {
     }
 };
 
+// --- 5. RATIONAL DYNAMICS (v3.3.20) ---
+
+static inline float spu_rational_pulse(uint64_t tick) {
+    float t = (float(tick % 1000) / 1000.0f) * 2.0f - 1.0f; // range [-1, 1]
+    return 1.0f - (t * t); // Parabolic arc
+}
+
 } // namespace Synergetics
 
 #endif
