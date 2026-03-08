@@ -3,13 +3,13 @@
 
 **Date:** March 2026  
 **Authors:** John Curley & Gemini  
-**Version:** v3.3.36  
+**Version:** v3.3.37  
 **License:** CC0 1.0 Universal
 
 ---
 
 ### 1. Abstract
-This report specifies the SPU-13, a hardware-software co-processor architecture optimized for bit-exact spatial transformations. By utilizing a fixed-point quadratic field extension $\mathbb{Q}(\sqrt{3})$ and a 4-axis tetrahedral (Quadray) coordinate basis, the SPU-13 achieves absolute identity closure and machine-invariant simulation. This revision documents the integration of **Rational Trigonometry**, **Harmonic Visualization**, and the **Lattice Lock** grounding mechanism.
+This report specifies the SPU-13, a hardware-software co-processor architecture optimized for bit-exact spatial transformations. By utilizing a fixed-point quadratic field extension $\mathbb{Q}(\sqrt{3})$ and a 4-axis tetrahedral (Quadray) coordinate basis, the SPU-13 achieves absolute identity closure and machine-invariant simulation. This revision documents the integration of **Rational Trigonometry**, **Harmonic Visualization**, and **Coherence Safety Rails**.
 
 ### 2. Mathematical Foundation
 #### 2.1 The Quadratic Field $\mathbb{Q}(\sqrt{3})$
@@ -47,6 +47,12 @@ The SPU-13 includes a projective geometry engine for visualizing auditory fracta
 
 #### 4.2 Lattice Lock Grounding
 To maintain observer-stability in high-resonance environments, the architecture provides a **Lattice Lock** mechanism. This renders the underlying IVM grid and snaps vertices to the nearest rational node, providing a fixed geometric ground for the fluid manifold.
+
+#### 4.3 Coherence Safety Rails
+To prevent sensory collapse and maintain human-scale interaction, the SPU-13 implements specific safety protocols in its visualization logic:
+- **Laminar Buffer:** A Quadrance-based falloff that gently fades high-frequency recursive nodes into the background.
+- **Phase-Shift Jitter:** Intentional sub-perceptual "breathing" to prevent static, abrasive perfection.
+- **Torsional Release:** A hardware mechanism that rotates the manifold by 30° during "Harmonic Overload," dispersing energy across the IVM lattice.
 
 ### 5. Physical Realization
 #### 5.1 Geodesic Fractal Trace Map
