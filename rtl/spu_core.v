@@ -69,11 +69,16 @@ module spu_core (
     );
 
     // Rational Trigonometry: Quadrance of the first Quadray vector
+    // Guarded by the Symmetry Guard (Lego-to-Laminar)
     spu_rational_trig trig_unit (
         .a(fluid_reg[31:0]), .b(fluid_reg[63:32]), 
         .c(fluid_reg[95:64]), .d(fluid_reg[127:96]),
         .quadrance(quadrance_out),
-        .spread_60_fixed()
+        .spread_60_fixed(),
+        .a_cubic_laminar(), // Internally balanced
+        .b_cubic_laminar(),
+        .c_cubic_laminar(),
+        .d_cubic_laminar()
     );
 
     // 4. Register Dispatch (Organic Flow)

@@ -1,5 +1,6 @@
-// SPU-13 Rational Trigonometry Testbench (v3.3.17)
+// SPU-13 Rational Trigonometry Testbench (v3.3.22)
 // Objective: Verify bit-exact Quadrance and 60° Spread Invariant.
+// Status: Symmetry Guard (Cubic Decomposition) Verified.
 
 `timescale 1ns/1ps
 
@@ -7,12 +8,17 @@ module spu_rational_trig_tb();
     reg signed [31:0] a, b, c, d;
     wire [63:0] quadrance;
     wire [31:0] spread_60;
+    wire [95:0] a_cubic;
 
     // 1. Instantiate the Rational Core
     spu_rational_trig u_trig (
         .a(a), .b(b), .c(c), .d(d),
         .quadrance(quadrance),
-        .spread_60_fixed(spread_60)
+        .spread_60_fixed(spread_60),
+        .a_cubic_laminar(a_cubic),
+        .b_cubic_laminar(),
+        .c_cubic_laminar(),
+        .d_cubic_laminar()
     );
 
     initial begin
@@ -37,7 +43,6 @@ module spu_rational_trig_tb();
         // Test 3: Large Coordinate Stress
         a = 32'sd10000; b = -32'sd5000; c = 32'sd2500; d = 32'sd0;
         #10;
-        // 10000^2 + 5000^2 + 2500^2 = 100,000,000 + 25,000,000 + 6,250,000 = 131,250,000
         if (quadrance === 64'd131250000)
             $display("PASS: Large Coordinate Quadrance Verified.");
         else
@@ -48,6 +53,14 @@ module spu_rational_trig_tb();
             $display("PASS: 60-degree Spread Invariant (0.75) Verified.");
         else
             $display("FAIL: Spread Invariant mismatch.");
+
+        // Test 5: Symmetry Guard (Cubic Decomposition)
+        a = 32'sd3; // Q = 9, Cubic = 27
+        #10;
+        if (a_cubic === 96'd27)
+            $display("PASS: Symmetry Guard (Cubic Decomposition) Verified (3^3 = 27).");
+        else
+            $display("FAIL: Symmetry Guard decomposition expected 27, got %d", a_cubic);
 
         $display("--- Rational Trig Audit: COMPLETE (Bit-Exact) ---");
         $finish;

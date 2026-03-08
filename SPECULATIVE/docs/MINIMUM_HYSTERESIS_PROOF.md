@@ -23,6 +23,9 @@ $\nabla^2 f = \text{div}(\nabla f)$, using tetrahedral divergence (sum of spread
 **Hysteresis Minimization:**
 Quadray's 60°/109.47° angles avoid the 90° grid bias. Turbulence "dissolves" because the mesh is naturally laminar. Numerical dissipation is reduced from $O(h^2) \to O(h^4)$ due to the cancellation of second-order terms in the tetrahedral Taylor expansion.
 
+**Symmetry Guard (v3.3.22):**
+To prevent "poking out" jitter, the SPU-13 implements a **Symmetry Guard** at the gate level. Unbalanced exponents (e.g., $d^3$) are automatically decomposed into interactions with the second-order metric invariant ($Q \cdot d$). This ensures that high-order volume interactions remain tied to the laminar metric, preventing numerical artifacts from breaching the manifold.
+
 ### 3. Proof of Minimum Hysteresis
 Hysteresis is defined as dissipative lag (numerical entropy).
 
