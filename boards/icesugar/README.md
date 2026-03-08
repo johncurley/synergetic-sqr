@@ -1,5 +1,5 @@
 # SPU-13: iCeSugar (iCE40UP5K) Integration
-## Physical Manifold Realization (v3.1.32)
+## Physical Manifold Realization (v3.3.4)
 
 This directory contains the necessary files to synthesize the SPU-13 core for the **iCeSugar** (Nano/Pro) FPGA board using the open-source **Yosys/nextpnr** toolchain.
 
@@ -11,9 +11,10 @@ Ensure you have the following tools installed:
 *   **icesprog:** iCeSugar programming tool
 
 ### 2. File Manifest
-*   **`top.v`**: Top-level module mapping the SPU-13 core to iCeSugar IO.
-*   **`icesugar.pcf`**: Physical Constraint File defining pin assignments.
+*   **`spu13_top.v`**: Phase 1.1 Top-level module (Enable-Gated).
+*   **`icesugar.pcf`**: Physical Constraint File defining pin assignments and Virtual Induction Tuning.
 *   **`Makefile`**: Automation script for the synthesis flow.
+*   **`icesugar_full_manifold.v`**: Full manifold implementation (Reference).
 
 ### 3. Synthesis and Programming
 To build the bitstream and flash it to the board:
@@ -29,12 +30,12 @@ make
 make prog
 ```
 
-### 4. Physical IO Mapping
-*   **Red LED:** Turbulence/Fault detected in the manifold.
-*   **Green LED:** Resonance Lock achieved.
-*   **Blue LED:** Phase Heartbeat (Resonant Clock).
-*   **Janus Differential Pair:** Pins 46 (+) and 47 (-). Connect to oscilloscope or bio-monitor.
-*   **UART:** Pins 9 (RX) and 10 (TX). Stream bit-exact telemetry to the **Rust Surd-Converter**.
+### 4. Physical IO Mapping (Phase 1.1)
+*   **Red LED:** System Reset / Stall (Active when `rst_n` is low).
+*   **Green LED:** Active Resonant Lock (Pulsing at 61.44 kHz).
+*   **Blue LED:** Counterspace Pulse (Anti-phase to Green).
+*   **Laminar Enable (Pin 10):** Authorization / Throttle. Hold High to enable the manifold flow.
+*   **Janus Differential Pair (Pins 46/47):** Inductive Entry and Resonant Return. Connect to oscilloscope or twisted-pair bio-monitor.
 
 ---
-*Status: READY FOR SILICON.*
+*Status: READY FOR DEPLOYMENT (Phase 1.1).*
