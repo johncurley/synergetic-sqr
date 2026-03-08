@@ -16,6 +16,7 @@ int main(int argc, char* argv[]) {
     bool deep_sea_mode = false;
     bool skeletal_mode = false;
     bool harmonic_mode = false;
+    bool lattice_lock_mode = false;
     Uint64 session_limit = 0; // 0 = Infinite
 
     for (int i = 1; i < argc; ++i) {
@@ -27,6 +28,8 @@ int main(int argc, char* argv[]) {
             skeletal_mode = true;
         } else if (strcmp(argv[i], "--harmonic") == 0) {
             harmonic_mode = true;
+        } else if (strcmp(argv[i], "--lattice-lock") == 0) {
+            lattice_lock_mode = true;
         } else if (strcmp(argv[i], "--pulse") == 0) {
             session_limit = 10000; // Default 10s
         } else if (strcmp(argv[i], "--duration") == 0 && i + 1 < argc) {
@@ -71,7 +74,13 @@ int main(int argc, char* argv[]) {
         renderer->setLayer(1); // Mode 1: Core IVM Skeleton
     } else if (harmonic_mode) {
         renderer->toggleHarmonic();
-    } else if (!forensic_mode) {
+    }
+    
+    if (lattice_lock_mode) {
+        renderer->toggleLatticeLock();
+    }
+
+    if (!forensic_mode && !deep_sea_mode && !skeletal_mode && !harmonic_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
     }
 

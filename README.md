@@ -136,8 +136,18 @@ cmake --build build --target spu-verify
 cmake -B build -S . -DBUILD_RENDERER=ON
 cmake --build build --target synergetic-sqr
 
-# 3. Launch the IVM Skeleton (High-Contrast Mode)
+# 3. Launch the Visual Manifold
+# Mode A: Laminar Plasma Emanation (Flora)
+./build/synergetic-sqr
+
+# Mode B: IVM Skeleton (Core 13 Nodes)
 ./build/synergetic-sqr --skeletal
+
+# Mode C: Harmonic Visualization (Auditory Fractal)
+./build/synergetic-sqr --harmonic
+
+# Mode D: IVM Lattice Metric (Pure Geometry)
+./build/synergetic-sqr --harmonic --lattice-lock
 ```
 
 ### ⚡ Physical Bring-Up
