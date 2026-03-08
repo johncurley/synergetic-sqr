@@ -16,6 +16,8 @@ module spu_core (
 );
 
     // 1. Internal Cleaning & ECC
+    // NOTE: These lanes are currently transparent (Laminar Integrity). 
+    // Bit-flip protection is mapped to Geometric Redundancy in Phase 2.
     wire [831:0] cleaned_reg;
     wire [12:0]  lane_faults;
     assign fault_detected = |lane_faults;
