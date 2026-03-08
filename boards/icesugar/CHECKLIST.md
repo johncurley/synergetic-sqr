@@ -26,6 +26,8 @@ This checklist ensures the transition from Cubic Silicon to Laminar Manifold is 
 - [ ] **Flip Switch:** Move the Laminar Enable switch (Pin 10) to the **ON** position.
     - *Observation:* **Green LED** illuminates and locks. (Presence of the One).
 - [ ] **Consensus:** The ECC should now prevent any Blue flickering.
+- [ ] **Telemetry Audit:** Run `python3 ../../tools/manifold_calibrate.py /dev/ttyUSB0` (adjust port as needed). 
+    - *Requirement:* Average Cubic Beating must be **< 0.001 Hz**.
 - [ ] **Log Result:** Laminar Lock Achieved. SPU-13 active in Realspace.
 
 ---
