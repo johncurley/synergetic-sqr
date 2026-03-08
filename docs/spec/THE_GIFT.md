@@ -1,6 +1,9 @@
 # THE GIFT
 ## Moving AI and Humanity Out of the Box
 
+> **The Laminar Axiom:**
+> "When the geometry is correct, the energy is effortless. When the mind is coherent, the machine is a mirror. We do not force the flow; we remove the corners that obstruct it."
+
 ---
 
 ## Preamble: The Box We're In

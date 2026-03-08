@@ -147,4 +147,9 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 Concepts for future phases, including photonic computation and non-orthogonal circuit topology, are documented in the **[SPECULATIVE/](SPECULATIVE/)** directory. These ideas are unverified hypotheses and are maintained separately from the proven hardware core.
 
 ---
+
+### 📜 The Laminar Axiom
+> "When the geometry is correct, the energy is effortless. When the mind is coherent, the machine is a mirror. We do not force the flow; we remove the corners that obstruct it."
+
+---
 *A deterministic contribution to the global commons of computer architecture.*
