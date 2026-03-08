@@ -91,16 +91,20 @@ static inline void RotateObject(std::vector<Quadray4>& vertices, int phase) {
     for (auto& v : vertices) v = Quadray4::_spu_sperm_x4(v, phase);
 }
 
-static inline Quadray4 RationalSnap(float x, float y, float z) {
-    float scale = float(SurdFixed64::One);
-    int32_t q1 = static_cast<int32_t>(( x + y + z) * scale / 4.0f);
-    int32_t q2 = static_cast<int32_t>(( x - y - z) * scale / 4.0f);
-    int32_t q3 = static_cast<int32_t>((-x + y - z) * scale / 4.0f);
-    int32_t q4 = static_cast<int32_t>((-x - y + z) * scale / 4.0f);
-    return { {q1, 0, q2, 0, q3, 0, -q4, 0} };
-}
+// --- 7. RATIONAL TRIGONOMETRY UTILITIES (v3.3.65) ---
 
-// --- 7. RATIONAL TRIGONOMETRY UTILITIES (v3.3.43) ---
+/**
+ * Cartesian-to-Quadray Injection Bridge (Rational Snap)
+ * Implementation: Thomson Transformation Matrix.
+ * Maps (x,y,z) to bit-exact ABCD coordinates in Q(sqrt3).
+ */
+static inline Quadray4 rationalSnap(int32_t x, int32_t y, int32_t z) {
+    int32_t a = ( x + y + z + 1) >> 1;
+    int32_t b = (-x - y + z + 1) >> 1;
+    int32_t c = (-x + y - z + 1) >> 1;
+    int32_t d = ( x - y - z + 1) >> 1;
+    return { {a, 0, b, 0, c, 0, d, 0} }; // Zero surd component for initial snap
+}
 
 /**
  * Calculates the exact Quadrance (squared distance) of a Quadray vector.
