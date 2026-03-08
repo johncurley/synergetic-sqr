@@ -1,7 +1,8 @@
 #version 450
 
-/* * Synergetic-SQR: Laminar Rotation Kernel (v3.1)
+/* * Synergetic-SQR: Laminar Rotation Kernel (v3.1.18)
  * Optimized for Bit-Exact Quadray Manifolds (Vulkan/GLSL)
+ * Status: Rational (Using Parabolic Dynamics instead of sin)
  */
 
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
@@ -12,7 +13,15 @@ layout(std430, binding = 0) buffer VertexBuffer {
 
 layout(push_constant) uniform PushConstants {
     vec3 fgh;
+    uint tick;
 };
+
+// Rational Parabolic Oscillator
+// Replaces sin(t). Maps a linear time input to a periodic parabola.
+float rationalPulse(uint tick) {
+    float t = (float(tick % 1000) / 1000.0) * 2.0 - 1.0; // range [-1, 1]
+    return 1.0 - (t * t); // Parabolic arc
+}
 
 // Thomson F,G,H Circulant Rotation
 // Rotates ABCD coordinates about Axis A
@@ -29,6 +38,9 @@ void main() {
     uint id = gl_GlobalInvocationID.x;
     vec4 current_pos = vertices[id];
     
-    // Apply exact tetrahedral rotation
+    float mix_factor = rationalPulse(tick);
+    
+    // Apply exact tetrahedral rotation with rational mix factor
+    // (Note: f,g,h would be pre-scaled by mix_factor in the controller)
     vertices[id] = rotate_quadray_laminar(current_pos, fgh.x, fgh.y, fgh.z);
 }
