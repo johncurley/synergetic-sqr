@@ -1,6 +1,6 @@
-// ULX3S Top-Level Integration (v3.1.36)
+// ULX3S Top-Level Integration (v3.3.54)
 // Target: Lattice ECP5
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module ulx3s_top (
     input  wire clk_25mhz,
@@ -15,6 +15,7 @@ module ulx3s_top (
     wire [831:0] next_state;
     wire         fault;
     wire [3:0]   bridge_leds;
+    wire         henosis_pass;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -26,7 +27,7 @@ module ulx3s_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core Manifold (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~btn[0]),
@@ -39,7 +40,16 @@ module ulx3s_top (
         .fault_detected(fault)
     );
 
-    // 3. IO Bridge (UART Telemetry)
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
+        .clk(clk_resonant),
+        .reset(~btn[0]),
+        .reg_in(next_state),
+        .pass(henosis_pass),
+        .fail()
+    );
+
+    // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
         .CLK_PHYS_HZ(25000000)
     ) u_io (
@@ -57,6 +67,7 @@ module ulx3s_top (
 
     assign led[3:0] = bridge_leds;
     assign led[4]   = clk_resonant;
+    assign led[5]   = henosis_pass;
     assign led[7]   = fault;
 
 endmodule

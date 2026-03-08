@@ -1,6 +1,6 @@
-// Arty A7-35T Top-Level Integration (v3.1.36)
+// Arty A7-35T Top-Level Integration (v3.3.54)
 // Target: Xilinx Artix-7
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module arty_a7_top (
     input  wire       clk_100mhz,
@@ -16,7 +16,7 @@ module arty_a7_top (
     wire [831:0] reg_state;
     wire [831:0] next_state;
     wire         fault;
-    wire         henosis_active;
+    wire         henosis_pass;
     
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -24,11 +24,11 @@ module arty_a7_top (
     ) fractal_osc (
         .clk_in(clk_100mhz),
         .rst_n(btn_rst_n),
-        .en(1'b1), // Always enabled for Arty A7
+        .en(1'b1), 
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core Manifold (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
@@ -41,14 +41,13 @@ module arty_a7_top (
         .fault_detected(fault)
     );
 
-    // 3. Power Dispatcher (Laminar Logic)
-    spu_laminar_power u_power (
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
-        .boot_phase(sw[2:0]),
         .reg_in(next_state),
-        .reg_out(reg_state),
-        .henosis_active(henosis_active)
+        .pass(henosis_pass),
+        .fail()
     );
 
     // 4. IO Bridge (UART Telemetry)
@@ -58,7 +57,7 @@ module arty_a7_top (
         .clk_phys(clk_100mhz),
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
-        .spu_reg_in(reg_state),
+        .spu_reg_in(next_state),
         .fault_detected(fault),
         .led_status(led),
         .pmod_ja_out(pmod_ja),

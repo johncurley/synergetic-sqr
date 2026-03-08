@@ -1,6 +1,6 @@
-// Tang Nano 20k Top-Level Integration (v3.1.36)
+// Tang Nano 20k Top-Level Integration (v3.3.54)
 // Target: Gowin GW2A-18C
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module tang_nano_20k_top (
     input  wire sys_clk, // 27MHz
@@ -14,7 +14,7 @@ module tang_nano_20k_top (
     wire [831:0] reg_state;
     wire [831:0] next_state;
     wire         fault;
-    wire         henosis_active;
+    wire         henosis_pass;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -26,7 +26,7 @@ module tang_nano_20k_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core Manifold (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~sys_rst_n),
@@ -39,14 +39,13 @@ module tang_nano_20k_top (
         .fault_detected(fault)
     );
 
-    // 3. Power Dispatcher
-    spu_laminar_power u_power (
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~sys_rst_n),
-        .boot_phase(3'b001),
         .reg_in(next_state),
-        .reg_out(reg_state),
-        .henosis_active(henosis_active)
+        .pass(henosis_pass),
+        .fail()
     );
 
     // 4. IO Bridge
@@ -56,7 +55,7 @@ module tang_nano_20k_top (
         .clk_phys(sys_clk),
         .clk_resonant(clk_resonant),
         .reset(~sys_rst_n),
-        .spu_reg_in(reg_state),
+        .spu_reg_in(next_state),
         .fault_detected(fault),
         .led_status(led[3:0]),
         .pmod_ja_out(),
@@ -66,6 +65,6 @@ module tang_nano_20k_top (
     );
 
     assign led[4] = clk_resonant;
-    assign led[5] = fault;
+    assign led[5] = henosis_pass;
 
 endmodule

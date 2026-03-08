@@ -1,6 +1,6 @@
-// TinyFPGA BX Top-Level Integration (v3.1.36)
+// TinyFPGA BX Top-Level Integration (v3.3.54)
 // Target: Lattice iCE40LP8K
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module tinyfpga_bx_top (
     input  wire clk, // 16MHz
@@ -22,6 +22,7 @@ module tinyfpga_bx_top (
     wire [831:0] next_state;
     wire         fault;
     wire [3:0]   bridge_leds;
+    wire         henosis_pass;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -33,7 +34,7 @@ module tinyfpga_bx_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(1'b0),
@@ -46,11 +47,20 @@ module tinyfpga_bx_top (
         .fault_detected(fault)
     );
 
-    // 3. IO Bridge (UART Telemetry)
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
+        .clk(clk_resonant),
+        .reset(1'b0),
+        .reg_in(next_state),
+        .pass(henosis_pass),
+        .fail()
+    );
+
+    // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
         .CLK_PHYS_HZ(16000000)
     ) u_io (
-        .clk_phys(clk_resonant), // Using clk_resonant as clk_phys for low-speed TinyFPGA simplicity
+        .clk_phys(clk),
         .clk_resonant(clk_resonant),
         .reset(1'b0),
         .spu_reg_in(next_state),
@@ -62,6 +72,6 @@ module tinyfpga_bx_top (
         .serial_tx(uart_tx)
     );
 
-    assign pin_led = clk_resonant;
+    assign pin_led = henosis_pass;
 
 endmodule

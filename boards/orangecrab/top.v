@@ -1,6 +1,6 @@
-// OrangeCrab Top-Level Integration (v3.1.36)
+// OrangeCrab Top-Level Integration (v3.3.54)
 // Target: Lattice ECP5
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module orangecrab_top (
     input  wire clk_48mhz,
@@ -17,6 +17,7 @@ module orangecrab_top (
     wire [831:0] next_state;
     wire         fault;
     wire [3:0]   bridge_leds;
+    wire         henosis_pass;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -28,7 +29,7 @@ module orangecrab_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core Manifold (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
@@ -41,7 +42,16 @@ module orangecrab_top (
         .fault_detected(fault)
     );
 
-    // 3. IO Bridge (UART Telemetry)
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
+        .clk(clk_resonant),
+        .reset(~btn_rst_n),
+        .reg_in(next_state),
+        .pass(henosis_pass),
+        .fail()
+    );
+
+    // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
         .CLK_PHYS_HZ(48000000)
     ) u_io (
@@ -58,7 +68,7 @@ module orangecrab_top (
     );
 
     assign led_red   = fault;
-    assign led_green = clk_resonant;
-    assign led_blue  = 1'b0;
+    assign led_green = henosis_pass;
+    assign led_blue  = clk_resonant;
 
 endmodule
