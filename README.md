@@ -25,6 +25,12 @@ We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$
 *   **Tetrahedral Symmetry:** For 60° angles, $s = 0.75$ (Exactly representable as $3/4$).
 *   **Hardware Impact:** Zero SOH-CAH-TOA dependencies. No CORDIC engines. No Taylor series. Just high-speed integer Multiply-Accumulate (MAC).
 
+#### 4. Instruction Set Architecture (ISA)
+The SPU-13 core implements a **3-bit operational instruction set** designed for high-dimensional spatial manipulation.
+*   **Core Opcodes:** Includes Basis Permutation, Phyllotaxis Multiplication, Quadrance Audit, and G-RAM Access.
+*   **Expansion:** Now features integrated **Deterministic Fluid Solving** and **Isotropic Annealing**.
+*   👉 **[Full ISA Manifest](docs/spec/TECHNICAL_REPORT.md#33-instruction-set-architecture-isa)**
+
 ---
 *   **Solver:** Yosys-SMTBMC + Minisat.
 *   **Assertion:** The internal state manifold remains within the **Indestructible Invariant** ($V_d = 1.0$) across all 4-axis rotations.
