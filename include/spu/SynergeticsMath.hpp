@@ -182,6 +182,28 @@ static inline float spu_rational_pulse(uint64_t tick) {
     return 1.0f - (t * t); // Parabolic arc
 }
 
+// --- 6. HARMONIC VISUALIZATION (v3.3.30) ---
+
+struct HarmonicProjector {
+    static inline void project(uint16_t freq, uint8_t amp, float& x, float& y, uint32_t& color) {
+        uint8_t octave = (freq >> 12) & 0xF;
+        uint16_t phase = freq & 0xFFF;
+        
+        // Recursive Inward Spiral
+        float radius = 1.0f - (octave / 16.0f);
+        float angle = (phase / 4096.0f) * 2.0f * 3.14159265f;
+        
+        x = radius * std::cos(angle) * (amp / 255.0f);
+        y = radius * std::sin(angle) * (amp / 255.0f);
+        
+        // Harmonic Color Mapping
+        uint8_t r = octave * 16;
+        uint8_t g = (phase >> 4) & 0xFF;
+        uint8_t b = amp;
+        color = (0xFF << 24) | (b << 16) | (g << 8) | r;
+    }
+};
+
 } // namespace Synergetics
 
 #endif
