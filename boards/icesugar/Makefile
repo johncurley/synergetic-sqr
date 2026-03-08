@@ -9,7 +9,8 @@ PACKAGE = sg48
 
 # RTL Sources
 SRC = spu13_top.v \
-      ../../rtl/spu_fractal_clk.v
+      ../../rtl/spu_fractal_clk.v \
+      ../../rtl/spu_coherence_ecc.v
 
 all: $(PROJ).bin
 
