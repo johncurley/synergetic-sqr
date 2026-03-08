@@ -2,7 +2,7 @@
 // Target: Lattice iCE40UP5K (iCeSugar Nano/Pro)
 // Objective: Physical realization of the SPU-13 Manifold
 
-module icesugar_top (
+module icesugar_full_manifold (
     input  wire clk_resonant, // Pin 35 (Global Clock)
     output wire led_red,      // Pin 39
     output wire led_green,    // Pin 40
