@@ -18,14 +18,14 @@ The SPU-13 does not use IEEE-754 Floating Point. It uses a **Dual-Integer Surd R
 *   **Storage:** Each value is a pair of signed integers $(I, S)$ representing $I + S\sqrt{3}$.
 *   **Multiplication Rule:** $(I_1 + S_1\sqrt{3}) \times (I_2 + S_2\sqrt{3}) = (I_1I_2 + 3S_1S_2) + (I_1S_2 + S_1I_2)\sqrt{3}$
 *   **The Result:** **Zero Rounding Error.** The product is bit-exact and algebraically closed.
-
 #### 3. Rational Trigonometry (Universal Geometry)
-We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$)**.
-*   **Quadrance:** $Q = d^2$ (Distance squared).
-*   **Spread:** $s = \sin^2(\theta)$.
+We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$)** (as defined by Norman Wildberger).
+*   **Quadrance:** $Q = d^2$ (Distance squared). Pure integer calculation.
+*   **Spread:** $s = \sin^2(\theta)$. Exact rational values.
 *   **Tetrahedral Symmetry:** For 60° angles, $s = 0.75$ (Exactly representable as $3/4$).
-*   **Hardware Impact:** No CORDIC engines. No Taylor series. Just high-speed integer Multiply-Accumulate (MAC).
-#### 4. Formal Verification: 10-Cycle Induction
+*   **Hardware Impact:** Zero SOH-CAH-TOA dependencies. No CORDIC engines. No Taylor series. Just high-speed integer Multiply-Accumulate (MAC).
+
+---
 *   **Solver:** Yosys-SMTBMC + Minisat.
 *   **Assertion:** The internal state manifold remains within the **Indestructible Invariant** ($V_d = 1.0$) across all 4-axis rotations.
 *   **Proof:** Formally proven for a 10-cycle induction bound, ensuring no state-space "leaks" into the "Nothing" (rounding drift).

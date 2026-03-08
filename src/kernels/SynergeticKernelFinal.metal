@@ -1,9 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 PE-1 "Sunflower" Kernel (v3.1.37)
+// SPU-13 PE-1 "Sunflower" Kernel (v3.1.38)
 // Skeletal Restoration: Core IVM 13-Node Logic.
-// Status: Coherence-Aware (Visualizing the Presence of the One).
+// Status: Rational (Using Parabolic Dynamics instead of Transcendental sin).
 
 struct Surd {
     int divisor;
@@ -22,7 +22,7 @@ struct SPUControl {
     int layer;
     uint phase;
     uint dss;
-    uint coherence; // 0=Absence, 1=Presence
+    uint coherence; 
 };
 
 float surdToFloat(Surd s) {
@@ -30,10 +30,17 @@ float surdToFloat(Surd s) {
     return (float(s.a) + float(s.b) * 1.73205081f) / float(s.divisor);
 }
 
+// Rational Parabolic Oscillator
+// Replaces sin(t). Maps a linear time input to a periodic parabola.
+float rationalPulse(uint tick) {
+    float t = (float(tick % 1000) / 1000.0f) * 2.0f - 1.0f; // range [-1, 1]
+    return 1.0f - (t * t); // Parabolic arc
+}
+
 float3 barycentricProject(int n, float scale, float mix_factor) {
     const float GOLDEN_ANGLE = 2.39996323f; 
     float theta = (float)n * GOLDEN_ANGLE;
-    float r = 0.12f * sqrt((float)n); // Tighter radius
+    float r = 0.12f * sqrt((float)n); 
     float forward_lean = pow(0.618f, (float)(n % 13)) * mix_factor;
     float x = r * cos(theta) * (1.0f + forward_lean);
     float y = r * sin(theta) * (1.0f + forward_lean);
@@ -56,7 +63,7 @@ kernel void renderSynergeticV9_Master(
     uv.x *= aspect;
 
     float3 color = float3(0.0);
-    float time = float(control.tick) * 0.016f;
+    float mix_factor = rationalPulse(control.tick);
 
     // 1. ISOTROPIC ROTATION
     float sw = surdToFloat(rotor.w);
@@ -71,17 +78,14 @@ kernel void renderSynergeticV9_Master(
     bool isSkeletal = (control.layer == 1);
     int nodeCount = isSkeletal ? 13 : 144;
     
-    // High-Contrast Calibration (DSS/Damper influence)
     float sharpness = (control.dss == 1) ? 18.0f : 45.0f;
-    
-    // Coherence Pulse: If "The One" is absent, the nodes dim.
     float coherence_mult = (control.coherence == 1) ? 1.0f : 0.2f;
     float brightness = (isSkeletal ? 0.06f : 0.04f) * coherence_mult;
     
     float3 nodeColor = isSkeletal ? float3(1.0f) : float3(0.54f, 0.17f, 0.89f);
 
     for(int n=1; n<=nodeCount; n++) {
-        float3 p = barycentricProject(n, 2.0f, 0.5f + 0.5f * sin(time * 0.5f));
+        float3 p = barycentricProject(n, 2.0f, mix_factor);
         float3 rv;
         rv.x = p.x * F + p.y * H + p.z * G;
         rv.y = p.x * G + p.y * F + p.z * H;
