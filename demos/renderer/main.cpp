@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
     
     if (lattice_lock_mode) {
         renderer->toggleLatticeLock();
+        renderer->setLayer(-1); // Mode D: Pure IVM Metric
     }
 
     if (!forensic_mode && !deep_sea_mode && !skeletal_mode && !harmonic_mode) {
@@ -107,7 +108,13 @@ int main(int argc, char* argv[]) {
                     case SDLK_J: renderer->toggleJanus(); break;
                     case SDLK_D: renderer->toggleDSS(); break;
                     case SDLK_H: renderer->toggleHarmonic(); break;
-                    case SDLK_L: renderer->toggleLatticeLock(); break;
+                    case SDLK_L: 
+                        renderer->toggleLatticeLock(); 
+                        // If lattice lock is engaged, we can optionally suppress nodes
+                        // for Mode D (Pure IVM Metric). 
+                        if (renderer->isLatticeLocked()) renderer->setLayer(-1);
+                        else renderer->setLayer(0);
+                        break;
                     case SDLK_1: renderer->setLayer(0); break;
                     case SDLK_2: renderer->setLayer(1); break;
                 }
