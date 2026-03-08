@@ -186,6 +186,18 @@ void RunRationalDamperTest() {
     }
 }
 
+void RunRationalTrigAudit() {
+    std::cout << "--- Test 13: Rational Trigonometry Identity (Quadrance) ---" << std::endl;
+    Quadray4 v = { {10000, 0, 20000, 0, 30000, 0, 40000, 0} };
+    int64_t q = v.quadrance();
+    // 10000^2 + 20000^2 + 30000^2 + 40000^2 = 100M + 400M + 900M + 1600M = 3000M
+    if (q == 3000000000LL) {
+        std::cout << "PASS: Bit-Exact Quadrance Verified (Q=3,000,000,000)." << std::endl;
+    } else {
+        std::cerr << "FAIL: Quadrance mismatch! Got: " << q << std::endl;
+    }
+}
+
 int main() {
     std::cout << "=======================================" << std::endl;
     std::cout << " SPU-1 Deterministic Verification Suite v1.7 " << std::endl;
@@ -201,6 +213,7 @@ int main() {
     RunRepeatedNormalizationStress();
     RunParityGuardTest();
     RunRationalDamperTest();
+    RunRationalTrigAudit();
     std::cout << "=======================================" << std::endl;
     return 0;
 }

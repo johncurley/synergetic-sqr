@@ -104,6 +104,15 @@ struct Quadray4 {
     static inline Quadray4 _spu_damp(Quadray4 q) { Quadray4 res = q; for(int i=0; i<8; i++) res.data.v[i] >>= 1; return res; }
     static inline Quadray4 _spu_add_q4(Quadray4 a, Quadray4 b) { Quadray4 res; for(int i=0; i<8; i++) res.data.v[i] = a.data.v[i] + b.data.v[i]; return res; }
     static inline Quadray4 _spu_sub_q4(Quadray4 a, Quadray4 b) { Quadray4 res; for(int i=0; i<8; i++) res.data.v[i] = a.data.v[i] - b.data.v[i]; return res; }
+    
+    int64_t quadrance() const {
+        int64_t q = 0;
+        for(int i=0; i<8; i+=2) {
+            int64_t val = data.v[i];
+            q += val * val;
+        }
+        return q;
+    }
 };
 
 struct SPU_Vector832 { int32_t v[26]; };
