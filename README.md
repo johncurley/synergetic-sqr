@@ -1,4 +1,4 @@
-# Technical Specification: SPU-13 (Signal Processing Unit 13)
+# Technical Specification: SPU-13 (Synergetic Processing Unit 13)
 ## A Quadray-Native Coprocessor for Exact Spatial Calculus
 
 [![Full-Stack Verification](https://github.com/johncurley/synergetic-sqr/actions/workflows/verify.yml/badge.svg)](https://github.com/johncurley/synergetic-sqr/actions)
