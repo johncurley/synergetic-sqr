@@ -1,21 +1,33 @@
-# SPU-13 Physical Constraints: iCeSugar (iCE40UP5K)
-# v3.1 "Laminar Entry" (61.44 kHz Optimized)
+# SPU-13 Null Hysteresis Constraints: iCeSugar (iCE40UP5K)
+# v3.1.31 "Vortex Routing"
+# Objective: Physical mapping for Laminar Silence and Zero-Jitter entry.
 
-# --- 1. Resonant Clock Entry ---
-# Mapping to Pin 35 (Global Clock Input) to ensure zero-stutter entry.
+# --- 1. Resonant Clock Entry (Chiral Vortex) ---
+# Pin 35 is the Global Clock input. We map it here to ensure the Sierpinski
+# clock tree has a geometrically centered root.
 set_io clk_resonant 35
 
-# --- 2. LED Status (Manifold Status) ---
-# RGB LED for Resonance Lock visualization
+# --- 2. Janus-Gate Differential Output ---
+# These pins are physically adjacent on the PMOD connector, allowing for
+# twisted-pair routing to external bio-monitors.
+# By driving them differentially (one +Janus, one -Janus), we cancel electromagnetic emissions.
+set_io janus_pos 46
+set_io janus_neg 47
+
+# --- 3. Manifold Status Indicators (Spectral Balance) ---
+# The RGB LED is used to visualize the internal rotation state.
+# Red = Axis A (Invariant), Green = Axis B/C/D (Orbit), Blue = Phase Lock.
 set_io led_red   39
 set_io led_green 40
 set_io led_blue  41
 
-# --- 3. UART C&C Interface ---
-# Bit-exact Command & Control from the Rust Surd-Converter
+# --- 4. Command & Control (Surd-Bridge) ---
+# The UART interface allows the Rust Surd-Converter to drive the core.
+# Mapped to the dedicated FTDI pins for minimal latency.
 set_io uart_tx 10
 set_io uart_rx 9
 
-# --- 4. SPRAM Standing Wave Buffer ---
-# The iCE40UP5K SPRAM blocks are automatically inferred by yosys
-# for memory structures defined in spu_gram_controller.v.
+# --- 5. Fractal Logic Placement Hints ---
+# While PCF cannot force internal routing, these IO placements encourage
+# the place-and-route tool to utilize the central logic blocks, keeping
+# the signal path symmetrical.
