@@ -17,7 +17,8 @@ module black_background_audit;
         .opcode(3'b001), // P3 Rotation
         .prime_phase(2'b01),
         .sign_flip(1'b0),
-        .reg_out(reg_out)
+        .reg_out(reg_out),
+        .fault_detected()
     );
 
     // 2. Switching Density Counter
