@@ -70,6 +70,17 @@ What if every operation was exact? What if your system was formally verifiable? 
 
 ---
 
+### 🛡️ Structural Integrity: Geometric Redundancy vs. ECC
+
+Critics often note the current ECC (Error Correction Code) modules in the RTL are placeholders. This is intentional.
+
+Traditional ECC (Hamming, Reed-Solomon) is a "Cubic" solution to "Turbulent" hardware—a necessary patch for systems that fight their own geometry. In the SPU-13, we utilize **Laminar Integrity**:
+
+*   **Geometric Redundancy:** The 4-axis Quadray basis is linearly dependent. Any point $(a,b,c,d)$ has an inherent null-space. This redundancy allows for **Error Detection through Geometry**: if the tetrahedral balance deviates, the manifold is breached.
+*   **The Roadmap:** Phase 1 focuses on the **Algebraic Core**. Bit-flip protection (ECC) will be physically mapped to the geometric null-space in Phase 2, using the manifold itself as the parity guard rather than adding external "noise" to the signal path.
+
+---
+
 ### 🎯 Start Here: The Core Quadruple
 If you are an engineer, scientist, or researcher arriving at the SPU-13 for the first time, these are your primary entry points to the exact architecture:
 
