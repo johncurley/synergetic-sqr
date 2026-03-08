@@ -21,6 +21,8 @@ module spu13_top (
     wire janus_state;
     wire coherence_lock;
     wire phase_correct;
+    wire sonic_handshake;
+    wire boot_done;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -32,15 +34,24 @@ module spu13_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. The Janus-Gate: Enable-Gated Inversion
-    // Included phase_correct logic to kickstart stalled manifold
-    assign janus_state = (clk_resonant ^ phase_correct) & laminar_en;
+    // 2. The Harmonic Handshake: Sonic Self-Diagnostic
+    spu_harmonic_handshake u_sonic (
+        .clk_resonant(clk_resonant),
+        .rst_n(rst_n),
+        .en(laminar_en & !coherence_lock), // Active during Primer phase
+        .tone_out(sonic_handshake),
+        .handshake_done(boot_done)
+    );
 
-    // 3. Physical Manifold Drive
+    // 3. The Janus-Gate: Enable-Gated Inversion
+    // Included phase_correct and sonic_handshake to kickstart stalled manifold
+    assign janus_state = (clk_resonant ^ phase_correct ^ sonic_handshake) & laminar_en;
+
+    // 4. Physical Manifold Drive
     assign vector_A = janus_state;
     assign vector_B = ~janus_state & laminar_en;
 
-    // 4. Topological Guard: Coherence Monitor
+    // 5. Topological Guard: Coherence Monitor
     spu_coherence_ecc guard (
         .clk_fractal(clk_resonant),
         .rst_n(rst_n),
@@ -49,9 +60,9 @@ module spu13_top (
         .phase_correct(phase_correct)
     );
 
-    // 5. Status Reification (The Visual Handshake)
+    // 6. Status Reification (The Visual Handshake)
     assign led_sat_red = !rst_n;                                // Red = Stall/Reset
     assign led_sat_grn = coherence_lock & laminar_en;           // Green = The One is Present
-    assign led_sat_blu = !coherence_lock & laminar_en & clk_resonant; // Blue Breathing = Searching
+    assign led_sat_blu = !coherence_lock & laminar_en & (clk_resonant | sonic_handshake); // Blue Breathing + Sonic Presence
 
 endmodule

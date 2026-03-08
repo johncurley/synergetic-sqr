@@ -17,7 +17,8 @@ yosys -p "synth_ice40 -top spu13_top -json spu13.json" \
     ../../rtl/spu_tensegrity_balancer.v \
     ../../rtl/spu_harmonic_vis.v \
     ../../rtl/spu_identity_monad.v \
-    ../../rtl/spu_fractal_bypass.v
+    ../../rtl/spu_fractal_bypass.v \
+    ../../rtl/spu_harmonic_handshake.v
 
 # 2. Place & Route (nextpnr) - Mapping the IVM Geometry
 # Using --force to allow for Virtual Induction 'unconnected' pins
