@@ -32,7 +32,7 @@ The SPU-13 core implements a 3-bit operational instruction set:
 
 | Opcode | Mnemonic | Description |
 | :--- | :--- | :--- |
-| `000` | `NOP` | Laminar Pass-through (Identity). |
+| `000` | `SNAP` | Cartesian-to-Quadray Injection Bridge. |
 | `001` | `SPERM_X4` | 4-Axis Basis Permutation (Thomson Rotor). |
 | `010` | `SMUL_13` | Phyllotaxis Multiplier (ℚ(√3, √5) field). |
 | `011` | `Q_AUDIT` | Rational Quadrance Audit (Bit-exact squared distance). |

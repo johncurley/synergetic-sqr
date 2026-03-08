@@ -39,7 +39,8 @@ SRC="$TOP.v \
     $RTL_DIR/spu_self_test.v \
     $RTL_DIR/spu_io_bridge.v \
     $RTL_DIR/surd_uart_tx.v \
-    $RTL_DIR/surd_multiplier.v"
+    $RTL_DIR/surd_multiplier.v \
+    $RTL_DIR/spu_rational_snap.v"
 
 # 3. Synthesis (Yosys)
 yosys -p "synth_ice40 -top $TOP -json $PROJ.json" $SRC

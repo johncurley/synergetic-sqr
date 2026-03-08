@@ -56,12 +56,19 @@ module spu_core (
     wire [831:0] fluid_out;
     wire [831:0] annealed_out;
     wire [255:0] bypass_out;
+    wire [127:0] snap_q_out;
 
     // Sierpiński Quadrance Bypass (Phase-Isolated Tunnels)
     spu_fractal_bypass u_bypass (
         .q_in(fluid_reg[255:0]),
         .phase(prime_phase),
         .q_out(bypass_out)
+    );
+
+    // Rational Snap: 3D-to-4D Injection Bridge
+    spu_rational_snap u_snap (
+        .x(fluid_reg[31:0]), .y(fluid_reg[63:32]), .z(fluid_reg[95:64]),
+        .a(snap_q_out[31:0]), .b(snap_q_out[63:32]), .c(snap_q_out[95:64]), .d(snap_q_out[127:96])
     );
 
     spu_permute x4_unit (
@@ -151,6 +158,7 @@ module spu_core (
             reg_out <= 832'b0;
         end else begin
             case (opcode)
+                3'b000: reg_out <= {fluid_reg[831:128], snap_q_out}; // SNAP / INJECT
                 3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out}; // SPERM_X4
                 3'b010: reg_out <= {fluid_reg[831:128], smul_13_out}; // SMUL_13
                 3'b011: reg_out <= {fluid_reg[831:64],  quadrance_out}; // Q_AUDIT
