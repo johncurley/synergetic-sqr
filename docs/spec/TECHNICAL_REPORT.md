@@ -51,6 +51,12 @@ The SPU-13 includes a self-diagnostic layer that ensures the system never drifts
 | **Anamnesis Buffer** | Stores original 60° lattice state | Allows the system to "remember" its true nature under load. |
 | **Lattice-Lock Damper** | Monitors recursive feedback loops | Safety rail; prevents singularities from causing a freeze. |
 
+#### 3.5 Phyllotaxis Interconnects (Multi-Core Lattice)
+The SPU-13 architecture supports multi-core expansion via **Phyllotaxis Interconnects**. 
+- **Collective Manifold:** 13 cores are wired in a Fibonacci-spiral arrangement, mirroring the organic data-flow of phyllotactic growth.
+- **Isotropic Propagation:** Each core shares its state with 12 neighbors in the IVM lattice, enabling bit-exact fluid dynamics and tensegrity balancing across the entire fabric simultaneously.
+- **Zero-Impedance Bus:** Inter-core communication is implemented as direct wiring permutations, maintaining the "Laminar Silence" of the system.
+
 ### 4. Visual Manifestation
 #### 4.1 Harmonic Visualization Engine
 The SPU-13 includes a projective geometry engine for visualizing auditory fractals. It utilizes **Octave Nesting** (recursive shells) and **Rational Intervals** to rendered frequency transitions as bit-exact folds in the manifold.
