@@ -115,7 +115,18 @@ module spu_core (
         .reg_out(annealed_out)
     );
 
-    // 7. Register Dispatch (ISA Expansion)
+    // 7. Harmonic Visualization Engine (Auditory Fractal Bridge)
+    wire [31:0] harmonic_color;
+    wire [63:0] harmonic_vector;
+    spu_harmonic_vis u_vis (
+        .clk(clk), .reset(reset),
+        .freq_in(fluid_reg[15:0]),
+        .amplitude(fluid_reg[23:16]),
+        .color_out(harmonic_color),
+        .vector_out(harmonic_vector)
+    );
+
+    // 8. Register Dispatch (ISA Expansion)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
@@ -123,7 +134,7 @@ module spu_core (
             case (opcode)
                 3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out}; // SPERM_X4
                 3'b010: reg_out <= {fluid_reg[831:128], smul_13_out}; // SMUL_13
-                3'b011: reg_out <= {fluid_reg[831:64], quadrance_out}; // Q_AUDIT
+                3'b011: reg_out <= {fluid_reg[831:64],  quadrance_out}; // Q_AUDIT
                 3'b100: reg_out <= gram_data_out;                     // G_RAM
                 3'b101: reg_out <= fluid_out;                         // FLUID_SOLVE
                 3'b110: reg_out <= sperm_13_out;                      // SPERM_13
