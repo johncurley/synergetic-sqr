@@ -1,12 +1,18 @@
 # iCEBreaker Target Support
-## Open-Source Toolchain Synthesis
+## SPU-13 Universal Fractal Heart (v3.1.36)
+
+The iCEBreaker target is synchronized to the **61.44 kHz** resonant manifold using the **Sierpiński Fractal Oscillator**.
 
 ### Build Instructions
 ```bash
-yosys -p "synth_ice40 -top icebreaker_top -json top.json" ../../rtl/*.v top.v
-nextpnr-ice40 --up5k --package sg48 --json top.json --pcf icebreaker.pcf --asc top.asc
-icepack top.asc top.bin
+# Required: Yosys / nextpnr-ice40
+yosys -p "synth_ice40 -top icebreaker_top -json spu13.json" top.v ../../rtl/*.v
+nextpnr-ice40 --up5k --package sg48 --pcf icebreaker.pcf --json spu13.json --asc spu13.asc
+icepack spu13.asc spu13.bin
+iceprog spu13.bin
 ```
-### Verification
-*   **LED Green:** Resonance Lock
-*   **LED Red:** Fault Detected
+
+### Pin Map
+*   **LED Red:** Turbulence/Fault Detected
+*   **LED Green:** Resonance Lock (Henosis)
+*   **UART:** Bit-exact telemetry to the **Rust Surd-Converter**.

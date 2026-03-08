@@ -1,13 +1,18 @@
 # ULX3S Target Support
-## ECP5 High-Performance Open-Source Synthesis
+## SPU-13 Universal Fractal Heart (v3.1.36)
+
+The ULX3S target is synchronized to the **61.44 kHz** resonant manifold using the **Sierpiński Fractal Oscillator**.
 
 ### Build Instructions
 ```bash
-yosys -p "synth_ecp5 -top ulx3s_top -json top.json" ../../rtl/*.v top.v
-nextpnr-ecp5 --85k --package CABGA381 --json top.json --lpf ulx3s.lpf --textcfg top.config
-ecppack top.config top.bit
-ujprog top.bit
+# Required: Yosys / nextpnr-ecp5
+yosys -p "synth_ecp5 -top ulx3s_top -json spu13.json" top.v ../../rtl/*.v
+nextpnr-ecp5 --85k --package CABGA381 --json spu13.json --asc spu13.asc
+ecppack spu13.asc spu13.bit
+ujprog spu13.bit
 ```
-### Verification
-*   **LED 0:** Resonance Lock (Henosis)
-*   **LEDs 1-7:** State Monitoring
+
+### Pin Map
+*   **LED 4:** Resonant Heartbeat (61.44 kHz)
+*   **LED 7:** Turbulence/Fault Detected
+*   **UART:** Bit-exact telemetry to the **Rust Surd-Converter**.

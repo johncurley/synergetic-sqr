@@ -1,12 +1,12 @@
 # Tang Nano 20k Target Support
-## Gowin EDA Synthesis
+## SPU-13 Universal Fractal Heart (v3.1.36)
+
+The Tang Nano 20k target is synchronized to the **61.44 kHz** resonant manifold using the **Sierpiński Fractal Oscillator**.
 
 ### Build Instructions
-1. Create a new project in **Gowin EDA**.
-2. Add all files from `rtl/` and `boards/tang_nano_20k/top.v`.
-3. Set the constraint file to `tang_nano_20k.cst`.
-4. Run **Synthesis** and **Place & Route**.
-5. Flash the generated `.fs` file.
+Standard Gowin EDA project. Target module: `tang_nano_20k_top`.
 
-### Verification
-*   The onboard RGB LED will signal **Resonance Lock** (Green) upon successful identity restoration.
+### Pin Map
+*   **LED 4:** Resonant Heartbeat (61.44 kHz)
+*   **LED 5:** Turbulence/Fault Detected
+*   **UART:** Bit-exact telemetry to the **Rust Surd-Converter**.
