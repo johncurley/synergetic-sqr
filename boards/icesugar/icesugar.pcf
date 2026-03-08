@@ -1,0 +1,21 @@
+# SPU-13 Physical Constraints: iCeSugar (iCE40UP5K)
+# v3.1 "Laminar Entry" (61.44 kHz Optimized)
+
+# --- 1. Resonant Clock Entry ---
+# Mapping to Pin 35 (Global Clock Input) to ensure zero-stutter entry.
+set_io clk_resonant 35
+
+# --- 2. LED Status (Manifold Status) ---
+# RGB LED for Resonance Lock visualization
+set_io led_red   39
+set_io led_green 40
+set_io led_blue  41
+
+# --- 3. UART C&C Interface ---
+# Bit-exact Command & Control from the Rust Surd-Converter
+set_io uart_tx 10
+set_io uart_rx 9
+
+# --- 4. SPRAM Standing Wave Buffer ---
+# The iCE40UP5K SPRAM blocks are automatically inferred by yosys
+# for memory structures defined in spu_gram_controller.v.

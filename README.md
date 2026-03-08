@@ -100,6 +100,7 @@ The SPU-13 core is board-agnostic. Select your target below to begin synthesis i
 | :--- | :--- | :--- | :--- |
 | **Xilinx Artix-7** | Arty A7-35T/100T | Vivado (Tcl) | **[Manual](boards/arty_a7_35t/README.md)** |
 | **Lattice iCE40** | iCEBreaker | Yosys / nextpnr | **[Manual](boards/icebreaker/README.md)** |
+| **Lattice iCE40** | iCeSugar | Yosys / nextpnr | **[Manual](boards/icesugar/README.md)** |
 | **Lattice ECP5** | OrangeCrab | Yosys / nextpnr | **[Manual](boards/orangecrab/README.md)** |
 | **Gowin GW2A** | Tang Nano 20k | Gowin EDA | **[Manual](boards/tang_nano_20k/README.md)** |
 | **Lattice ECP5** | ULX3S | Yosys / nextpnr | **[Manual](boards/ulx3s/README.md)** |
