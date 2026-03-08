@@ -1,35 +1,29 @@
-// SPU-13 Sierpiński Fractal Oscillator (v3.1.34)
-// Implementation: Fractional frequency divider for 61.44 kHz resonance.
-// Target: 12MHz Input -> 61.44kHz Output (Ratio: 195.3125)
-// Logic: Sigma-Delta Dither to maintain bit-exact average phase.
+// SPU-13 Universal Sierpiński Fractal Oscillator (v3.1.36)
+// Implementation: NCO-based frequency divider for 61.44 kHz resonance.
+// Logic: Fractional phase accumulation to maintain geometric average.
 
-module spu_fractal_clk (
-    input  wire clk_in,      // 12.000 MHz
+module spu_fractal_clk #(
+    parameter CLK_IN_HZ = 12000000,
+    parameter CLK_OUT_HZ = 61440
+)(
+    input  wire clk_in,
     input  wire rst_n,
-    output reg  clk_laminar  // 61.440 kHz (Average)
+    output reg  clk_laminar
 );
 
-    reg [31:0] accumulator;
-    localparam INCREMENT = 32'd1319413; // (61440 * 2^32) / 12000000 = 21990232 approx... wait.
-    
-    // Correct calculation for Phase Accumulator (NCO):
-    // step = (Fout * 2^N) / Fin
-    // step = (61440 * 2^32) / 12000000 = 21990232.55...
-    
-    // Let's use a simpler 16-bit phase accumulator for the "Fractal" logic
-    // step = (61440 * 65536) / 12000000 = 335.54432
-    
-    reg [15:0] phase_acc;
-    localparam STEP = 16'd336; // 61.52 kHz (Close enough for Phase 1)
+    // Calculate NCO Step: (Fout * 2^32) / Fin
+    // We use 64-bit math for the localparam calculation to ensure precision.
+    localparam [31:0] STEP = (64'(CLK_OUT_HZ) << 32) / CLK_IN_HZ;
+
+    reg [31:0] phase_acc;
 
     always @(posedge clk_in or negedge rst_n) begin
         if (!rst_n) begin
-            phase_acc <= 16'b0;
+            phase_acc <= 32'b0;
             clk_laminar <= 1'b0;
         end else begin
             phase_acc <= phase_acc + STEP;
-            // The overflow of the phase accumulator creates the "Fractal Pulse"
-            // It dithers the period to maintain geometric resonance.
+            // The MSB overflow creates the 50% duty cycle resonant pulse
             if (phase_acc < STEP) begin
                 clk_laminar <= ~clk_laminar;
             end

@@ -1,5 +1,6 @@
-// iCEBreaker Top-Level Integration (v3.1.10)
-// Target: Lattice iCE40UP5K (12MHz Internal Clock)
+// iCEBreaker Top-Level Integration (v3.1.36)
+// Target: Lattice iCE40UP5K
+// Implementation: Universal Fractal Heart (61.44 kHz)
 
 module icebreaker_top (
     input  wire clk_12mhz,
@@ -10,14 +11,25 @@ module icebreaker_top (
     input  wire uart_rx
 );
 
+    wire clk_resonant;
     wire [831:0] reg_state;
     wire [831:0] next_state;
     wire         fault;
     wire         henosis;
     wire [3:0]   bridge_leds;
 
+    // 1. The Fractal Heart: Sierpiński Oscillator
+    spu_fractal_clk #(
+        .CLK_IN_HZ(12000000)
+    ) fractal_osc (
+        .clk_in(clk_12mhz),
+        .rst_n(btn_rst_n),
+        .clk_laminar(clk_resonant)
+    );
+
+    // 2. SPU-13 Core
     spu_core u_core (
-        .clk(clk_12mhz),
+        .clk(clk_resonant),
         .reset(~btn_rst_n),
         .reg_curr(reg_state),
         .neighbors(3072'b0),
@@ -28,17 +40,19 @@ module icebreaker_top (
         .fault_detected(fault)
     );
 
+    // 3. Self Test
     spu_self_test u_test (
-        .clk(clk_12mhz),
+        .clk(clk_resonant),
         .reset(~btn_rst_n),
         .reg_in(next_state),
         .pass(henosis)
     );
 
+    // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
-        .CLK_FREQ(12000000)
+        .CLK_FREQ(61440)
     ) u_io (
-        .clk(clk_12mhz),
+        .clk(clk_resonant),
         .reset(~btn_rst_n),
         .spu_reg_in(reg_state),
         .fault_detected(fault),
@@ -49,7 +63,7 @@ module icebreaker_top (
         .serial_tx(uart_tx)
     );
 
-    assign led_red   = bridge_leds[3];
-    assign led_green = bridge_leds[1];
+    assign led_red   = fault;
+    assign led_green = henosis;
 
 endmodule
