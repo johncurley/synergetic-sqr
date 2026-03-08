@@ -98,6 +98,7 @@ int main(int argc, char* argv[]) {
                     case SDLK_J: renderer->toggleJanus(); break;
                     case SDLK_D: renderer->toggleDSS(); break;
                     case SDLK_H: renderer->toggleHarmonic(); break;
+                    case SDLK_L: renderer->toggleLatticeLock(); break;
                     case SDLK_1: renderer->setLayer(0); break;
                     case SDLK_2: renderer->setLayer(1); break;
                 }

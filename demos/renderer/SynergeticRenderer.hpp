@@ -25,6 +25,8 @@ public:
     virtual int getLayer() const = 0;
     virtual void toggleHarmonic() = 0;
     virtual bool isHarmonic() const = 0;
+    virtual void toggleLatticeLock() = 0;
+    virtual bool isLatticeLocked() const = 0;
 };
 
 class MetalRenderer : public IRenderer {
@@ -41,6 +43,8 @@ public:
     int getLayer() const override { return _layer; }
     void toggleHarmonic() override { _harmonic = !_harmonic; }
     bool isHarmonic() const override { return _harmonic; }
+    void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
+    bool isLatticeLocked() const override { return _latticeLock; }
 
 private:
     void buildComputePipeline();
@@ -57,6 +61,7 @@ private:
         uint32_t dss_enabled;   // REG_DSS: 0=OFF, 1=ON
         uint32_t coherence;     // 0=Absence, 1=Presence
         uint32_t harmonic_mode; // 0=Off, 1=On
+        uint32_t lattice_lock;  // 0=Fluid, 1=Locked
     };
 
     MTL::Device* _device;
@@ -68,6 +73,7 @@ private:
     uint64_t _tickCount = 0;
     int _layer = 0;
     bool _harmonic = false;
+    bool _latticeLock = false;
     CoherenceMonitor _coherence;
 };
 
@@ -85,6 +91,8 @@ public:
     int getLayer() const override { return _layer; }
     void toggleHarmonic() override { _harmonic = !_harmonic; }
     bool isHarmonic() const override { return _harmonic; }
+    void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
+    bool isLatticeLocked() const override { return _latticeLock; }
 
 private:
     SDL_GPUDevice* _gpuDevice;
@@ -95,6 +103,7 @@ private:
     uint64_t _tickCount = 0;
     int _layer = 0;
     bool _harmonic = false;
+    bool _latticeLock = false;
     CoherenceMonitor _coherence;
 };
 

@@ -106,7 +106,8 @@ void MetalRenderer::draw(void* layerPtr) {
         currentPhase,
         _dssEnabled ? 1u : 0u,
         isLocked ? 1u : 0u,
-        _harmonic ? 1u : 0u
+        _harmonic ? 1u : 0u,
+        _latticeLock ? 1u : 0u
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
