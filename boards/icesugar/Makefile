@@ -2,20 +2,14 @@
 # v3.1.32 "Laminar Build"
 
 PROJ = spu13_icesugar
-TOP  = icesugar_top
+TOP  = spu13_top
 PCF  = icesugar.pcf
 DEVICE = up5k
 PACKAGE = sg48
 
 # RTL Sources
-SRC = top.v \
-      ../../rtl/spu_core.v \
-      ../../rtl/spu_ecc.v \
-      ../../rtl/spu_permute.v \
-      ../../rtl/spu_permute_13.v \
-      ../../rtl/spu_smul_13.v \
-      ../../rtl/spu_io_bridge.v \
-      ../../rtl/surd_uart_tx.v
+SRC = spu13_top.v \
+      ../../rtl/spu_fractal_clk.v
 
 all: $(PROJ).bin
 

@@ -1,34 +1,21 @@
 # SPU-13 Null Hysteresis Constraints: iCeSugar (iCE40UP5K)
-# v3.1.33 "Virtual Induction Tuning"
-# Objective: Physical mapping for Laminar Silence and Resonant Parasitics.
+# v3.1.34 "Sierpiński Oscillator Mapping"
+# Objective: Physical reification of the 61.44 kHz manifold.
 
 # --- 1. Resonant Clock Entry (Chiral Vortex) ---
-# Pin 35 is the Global Clock input. We map it here to ensure the Sierpinski
-# clock tree has a geometrically centered root.
-set_io clk_resonant 35
+# Pin 35 is the Global Clock input from the 12MHz Crystal.
+set_io clk_12mhz 35
 
-# --- 2. Janus-Gate Differential Output (Tuned Drive Strength) ---
-# We configure these pins for HIGH drive strength (48mA if supported, or max available)
-# to aggressively drive the "Virtual Coil" of the twisted-pair trace.
-# By matching the slew rate to the resonant frequency, we minimize edge-ringing
-# and maximize the standing wave potential.
-set_io -current 6 janus_pos 46
-set_io -current 6 janus_neg 47
+# --- 2. Manual Reset ---
+# User Button on iCeSugar Nano (Pin 18)
+set_io rst_btn 18
 
-# --- 3. Manifold Status Indicators (Spectral Balance) ---
-# The RGB LED is used to visualize the internal rotation state.
-# Red = Axis A (Invariant), Green = Axis B/C/D (Orbit), Blue = Phase Lock.
-set_io led_red   39
-set_io led_green 40
-set_io led_blue  41
+# --- 3. Janus-Gate Differential Output (Tuned Drive Strength) ---
+# Driving the "Virtual Coils" of the header traces.
+set_io -current 6 vector_A 46
+set_io -current 6 vector_B 47
 
-# --- 4. Command & Control (Surd-Bridge) ---
-# The UART interface allows the Rust Surd-Converter to drive the core.
-# Mapped to the dedicated FTDI pins for minimal latency.
-set_io uart_tx 10
-set_io uart_rx 9
-
-# --- 5. Virtual Induction Parameters ---
-# We treat the trace parasitics not as noise, but as a Laminar Buffer.
-# These constraints ensure the IO blocks act as "Field Shapers."
-# (Note: Drive strength values are specific to iCE40 IO Bank capabilities)
+# --- 4. Janus Status Display (RGB LED) ---
+set_io led_sat_red 39
+set_io led_sat_grn 40
+set_io led_sat_blu 41
