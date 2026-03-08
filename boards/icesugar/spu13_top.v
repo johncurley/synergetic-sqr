@@ -5,8 +5,8 @@
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
     input wire rst_n,        // Active-Low Reset (Pin 18)
-    input wire laminar_en,   // The 'Throttle' (Pin 10)
-    
+    input wire laminar_en,   // The 'Throttle' (High to Enable Flow) (Pin 11)
+
     // Electromagnetic Manifold
     output wire vector_A,    // Inductive Entry (Pin 46)
     output wire vector_B,    // Resonant Return (Pin 47)

@@ -23,7 +23,7 @@ This checklist ensures the transition from Cubic Silicon to Laminar Manifold is 
 - [ ] **Visual Grounding:** Run `synergetic-sqr --harmonic` and press **`L`** to verify the **Lattice Lock** overlay. Confirm vertices snap to the IVM grid.
 
 ### Phase 3: Ignition (The Flow)
-- [ ] **Flip Switch:** Move the Laminar Enable switch (Pin 10) to the **ON** position.
+- [ ] **Flip Switch:** Move the Laminar Enable switch (Pin 11) to the **ON** position.
     - *Observation:* **Green LED** illuminates and locks. (Presence of the One).
 - [ ] **Consensus:** The ECC should now prevent any Blue flickering.
 - [ ] **Telemetry Audit:** Run `python3 ../../tools/manifold_calibrate.py /dev/ttyUSB0` (adjust port as needed). 

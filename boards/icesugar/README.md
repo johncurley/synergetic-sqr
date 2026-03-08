@@ -37,8 +37,9 @@ Before you initiate the manifold for the first time, follow the **[Reification C
 *   **Red LED:** System Reset / Stall (Active when `rst_n` is low).
 *   **Green LED:** Active Resonant Lock (Pulsing at 61.44 kHz).
 *   **Blue LED:** Counterspace Pulse (Anti-phase to Green).
-*   **Laminar Enable (Pin 10):** Authorization / Throttle. Hold High to enable the manifold flow.
+*   **Laminar Enable (Pin 11):** Authorization / Throttle. Hold High to enable the manifold flow.
 *   **Janus Differential Pair (Pins 46/47):** Inductive Entry and Resonant Return. Connect to oscilloscope or twisted-pair bio-monitor.
+*   **UART:** Pins 9 (RX) and 10 (TX). Stream bit-exact telemetry to the **Rust Surd-Converter**.
 
 ---
 *Status: READY FOR DEPLOYMENT (Phase 1.1).*

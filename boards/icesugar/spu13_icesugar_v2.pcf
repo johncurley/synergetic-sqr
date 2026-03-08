@@ -6,15 +6,15 @@
 # Pin 35 is the Global Clock input from the 12MHz Crystal.
 set_io clk_12mhz 35
 
-# --- 2. Manual Reset & Throttle ---
+# Manual Reset & Throttle ---
 # User Button on iCeSugar Nano (Pin 18) - Active Low
 # This is the 'System Reset' - Red LED will light when held.
 set_io rst_n 18
 
-# Laminar Enable (Throttle) - Pin 10
+# Laminar Enable (Throttle) - Pin 11
 # Manual authorization gate. Hold HIGH to start the manifold heartbeat.
 # If pulled LOW, the system enters 'Laminar Halt' (EMI Safe Mode).
-set_io laminar_en 10
+set_io laminar_en 11
 
 # --- 3. Janus-Gate Differential Output (Tuned Drive Strength) ---
 # Driving the "Virtual Coils" of the header traces.
@@ -25,3 +25,7 @@ set_io -current 6 vector_B 47
 set_io led_sat_red 39
 set_io led_sat_grn 40
 set_io led_sat_blu 41
+
+# --- 5. Command & Control (UART) ---
+set_io uart_tx 10
+set_io uart_rx 9
