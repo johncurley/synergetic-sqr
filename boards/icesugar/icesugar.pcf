@@ -1,6 +1,6 @@
 # SPU-13 Null Hysteresis Constraints: iCeSugar (iCE40UP5K)
-# v3.3.4 "Phase 1.1: Throttle Mapping"
-# Objective: Physical reification with enable gating.
+# v3.3.5 "Manual Start / Throttle Mapping"
+# Objective: Physical authorization and safety-gating for the manifold.
 
 # --- 1. Resonant Clock Entry (Chiral Vortex) ---
 # Pin 35 is the Global Clock input from the 12MHz Crystal.
@@ -8,8 +8,12 @@ set_io clk_12mhz 35
 
 # --- 2. Manual Reset & Throttle ---
 # User Button on iCeSugar Nano (Pin 18) - Active Low
+# This is the 'System Reset' - Red LED will light when held.
 set_io rst_n 18
+
 # Laminar Enable (Throttle) - Pin 10
+# Manual authorization gate. Hold HIGH to start the manifold heartbeat.
+# If pulled LOW, the system enters 'Laminar Halt' (EMI Safe Mode).
 set_io laminar_en 10
 
 # --- 3. Janus-Gate Differential Output (Tuned Drive Strength) ---
