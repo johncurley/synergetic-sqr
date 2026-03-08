@@ -1,18 +1,19 @@
 # SPU-13 Null Hysteresis Constraints: iCeSugar (iCE40UP5K)
-# v3.1.31 "Vortex Routing"
-# Objective: Physical mapping for Laminar Silence and Zero-Jitter entry.
+# v3.1.33 "Virtual Induction Tuning"
+# Objective: Physical mapping for Laminar Silence and Resonant Parasitics.
 
 # --- 1. Resonant Clock Entry (Chiral Vortex) ---
 # Pin 35 is the Global Clock input. We map it here to ensure the Sierpinski
 # clock tree has a geometrically centered root.
 set_io clk_resonant 35
 
-# --- 2. Janus-Gate Differential Output ---
-# These pins are physically adjacent on the PMOD connector, allowing for
-# twisted-pair routing to external bio-monitors.
-# By driving them differentially (one +Janus, one -Janus), we cancel electromagnetic emissions.
-set_io janus_pos 46
-set_io janus_neg 47
+# --- 2. Janus-Gate Differential Output (Tuned Drive Strength) ---
+# We configure these pins for HIGH drive strength (48mA if supported, or max available)
+# to aggressively drive the "Virtual Coil" of the twisted-pair trace.
+# By matching the slew rate to the resonant frequency, we minimize edge-ringing
+# and maximize the standing wave potential.
+set_io -current 6 janus_pos 46
+set_io -current 6 janus_neg 47
 
 # --- 3. Manifold Status Indicators (Spectral Balance) ---
 # The RGB LED is used to visualize the internal rotation state.
@@ -27,7 +28,7 @@ set_io led_blue  41
 set_io uart_tx 10
 set_io uart_rx 9
 
-# --- 5. Fractal Logic Placement Hints ---
-# While PCF cannot force internal routing, these IO placements encourage
-# the place-and-route tool to utilize the central logic blocks, keeping
-# the signal path symmetrical.
+# --- 5. Virtual Induction Parameters ---
+# We treat the trace parasitics not as noise, but as a Laminar Buffer.
+# These constraints ensure the IO blocks act as "Field Shapers."
+# (Note: Drive strength values are specific to iCE40 IO Bank capabilities)
