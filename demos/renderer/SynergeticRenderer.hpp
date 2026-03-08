@@ -27,6 +27,7 @@ public:
     virtual bool isHarmonic() const = 0;
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
+    virtual void ground() = 0; // Somatic Reset: Return to 'Known Good State'
 };
 
 class MetalRenderer : public IRenderer {
@@ -45,6 +46,10 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void ground() override { 
+        _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
+        std::cout << "WATCHDOG: Somatic Reset Triggered. Manifold Grounded." << std::endl;
+    }
 
 private:
     void buildComputePipeline();
@@ -93,6 +98,10 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void ground() override { 
+        _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
+        std::cout << "WATCHDOG: Somatic Reset Triggered (Vulkan). Manifold Grounded." << std::endl;
+    }
 
 private:
     SDL_GPUDevice* _gpuDevice;

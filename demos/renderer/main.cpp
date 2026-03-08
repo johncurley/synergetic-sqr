@@ -96,9 +96,18 @@ int main(int argc, char* argv[]) {
     bool quit = false;
     SDL_Event e;
     Uint64 session_start = SDL_GetTicks();
+    const Uint64 SAFETY_OCTAVE_LIMIT = 600000; // 10 Minute Reset
+    bool grounded_notified = false;
 
     while (!quit) {
         Uint64 elapsed = SDL_GetTicks() - session_start;
+        
+        // 1. Mandatory Watchdog: The Somatic Reset
+        if (!grounded_notified && elapsed >= SAFETY_OCTAVE_LIMIT) {
+            renderer->ground();
+            grounded_notified = true;
+        }
+
         if (session_limit > 0 && elapsed >= session_limit) {
             std::cout << "WATCHDOG: Session limit of " << session_limit << "ms reached. Grounding." << std::endl;
             quit = true;
