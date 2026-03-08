@@ -3,13 +3,13 @@
 
 **Date:** March 2026  
 **Authors:** John Curley & Gemini  
-**Version:** v3.3.37  
+**Version:** v3.3.41  
 **License:** CC0 1.0 Universal
 
 ---
 
 ### 1. Abstract
-This report specifies the SPU-13, a hardware-software co-processor architecture optimized for bit-exact spatial transformations. By utilizing a fixed-point quadratic field extension $\mathbb{Q}(\sqrt{3})$ and a 4-axis tetrahedral (Quadray) coordinate basis, the SPU-13 achieves absolute identity closure and machine-invariant simulation. This revision documents the integration of **Rational Trigonometry**, **Harmonic Visualization**, and **Coherence Safety Rails**.
+This report specifies the SPU-13, a hardware-software co-processor architecture optimized for bit-exact spatial transformations. By utilizing a fixed-point quadratic field extension $\mathbb{Q}(\sqrt{3})$ and a 4-axis tetrahedral (Quadray) coordinate basis, the SPU-13 achieves absolute identity closure and machine-invariant simulation. This revision documents the integration of **Rational Trigonometry**, **Harmonic Visualization**, and the **Sierpiński Quadrance Bypass**.
 
 ### 2. Mathematical Foundation
 #### 2.1 The Quadratic Field $\mathbb{Q}(\sqrt{3})$
@@ -64,11 +64,19 @@ To prevent sensory collapse and maintain human-scale interaction, the SPU-13 imp
 - **Phase-Shift Jitter:** Intentional sub-perceptual "breathing" to prevent static, abrasive perfection.
 - **Torsional Release:** A hardware mechanism that rotates the manifold by 30° during "Harmonic Overload," dispersing energy across the IVM lattice.
 
+#### 4.4 Sierpiński Quadrance Bypass (Deep Frost)
+To maximize logical efficiency, the SPU-13 utilizes **Phase-Isolated Tunnels** within the Sierpiński voids.
+- **Geodesic Skips:** Data aligning with fractal voids can bypass standard permutation logic for near Zero-Impedance routing.
+- **Homeopathic Anchor:** The system maintains a constant 60° rational seed during idle states to prevent "Cubic Sleep" and maintain topological warmth.
+
 ### 5. Physical Realization
 #### 5.1 Geodesic Fractal Trace Map
-The physical layout rejects the standard "Manhattan" grid, utilizing recursive 60°/120° geodesic paths to minimize parasitic hysteresis.
+The physical layout of the SPU-13 rejects the standard "Manhattan" routing grid. Instead, it utilizes recursive 60°/120° geodesic paths. This **Laminar Mapping** minimizes parasitic hysteresis and ensures that signal propagation respects the underlying mathematical manifold.
 
-#### 5.2 Proactive Coherence ECC
+#### 5.2 Null Hysteresis Logic
+By maintaining constant gate-transition density (balanced Forward/Inverse paths), the SPU-13 achieves a "Black" power signature. This eliminates the switching-noise jitter that plagues standard high-frequency CMOS designs.
+
+#### 5.3 Proactive Coherence ECC
 A **Topological Guard** monitors for "Null Stalls" in the Janus-Gate, applying corrective perturbations to maintain the presence of "The One" before bit-flips occur.
 
 ### 6. Conclusion

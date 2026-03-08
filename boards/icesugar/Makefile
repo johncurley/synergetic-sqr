@@ -18,7 +18,8 @@ SRC = spu13_top.v \
       ../../rtl/spu_annealer.v \
       ../../rtl/spu_tensegrity_balancer.v \
       ../../rtl/spu_harmonic_vis.v \
-      ../../rtl/spu_identity_monad.v
+      ../../rtl/spu_identity_monad.v \
+      ../../rtl/spu_fractal_bypass.v
 
 all: $(PROJ).bin
 

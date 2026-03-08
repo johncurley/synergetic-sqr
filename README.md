@@ -29,6 +29,7 @@ We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$
 The SPU-13 core implements a **3-bit operational instruction set** designed for high-dimensional spatial manipulation.
 *   **Core Opcodes:** Includes Basis Permutation, Phyllotaxis Multiplication, Quadrance Audit, and G-RAM Access.
 *   **Expansion:** Now features integrated **Deterministic Fluid Solving** and **Isotropic Annealing**.
+*   **Optimization:** Utilizes the **Sierpiński Quadrance Bypass** (Phase-Isolated Tunnels) for near Zero-Impedance routing.
 *   👉 **[Full ISA Manifest](docs/spec/TECHNICAL_REPORT.md#33-instruction-set-architecture-isa)**
 
 ---

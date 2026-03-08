@@ -55,10 +55,18 @@ module spu_core (
     wire [63:0]  quadrance_out;
     wire [831:0] fluid_out;
     wire [831:0] annealed_out;
+    wire [255:0] bypass_out;
+
+    // Sierpiński Quadrance Bypass (Phase-Isolated Tunnels)
+    spu_fractal_bypass u_bypass (
+        .q_in(fluid_reg[255:0]),
+        .phase(prime_phase),
+        .q_out(bypass_out)
+    );
 
     spu_permute x4_unit (
         .clk(clk), .reset(reset), 
-        .q_in(fluid_reg[255:0]), .prime_phase(prime_phase), 
+        .q_in(bypass_out), .prime_phase(prime_phase), 
         .sign_flip(sign_flip), .q_out(sperm_x4_out)
     );
 
@@ -128,10 +136,13 @@ module spu_core (
 
     // 8. Identity Gate: The Rational Guard
     wire identity_lock;
+    wire [63:0] h_seed;
     spu_identity_monad u_identity (
+        .clk(clk),
         .current_quadrance(quadrance_out),
         .lattice_state(fluid_reg),
-        .identity_aligned(identity_lock)
+        .identity_aligned(identity_lock),
+        .homeopathic_seed(h_seed)
     );
 
     // 9. Register Dispatch (ISA Expansion)
