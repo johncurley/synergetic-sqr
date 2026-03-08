@@ -1,5 +1,6 @@
-// SPU-13 Integrated Core (v2.9.14 Phyllotaxis)
+// SPU-13 Integrated Core (v3.3.19 Phyllotaxis)
 // Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
+// Guard: Geometry Fluidizer integrated to purge Cubic Jitter.
 
 module spu_core (
     input  wire         clk,
@@ -30,28 +31,39 @@ module spu_core (
         end
     endgenerate
 
-    // 2. Phyllotaxis Interconnects (The SQR-Link)
-    // Direct feedback paths between Fibonacci-indexed lanes to ensure 
-    // data grows through the chip following the Golden Angle.
-    wire [63:0] f1  = cleaned_reg[63:0];   // Lane 1
-    wire [63:0] f2  = cleaned_reg[127:64]; // Lane 2
-    wire [63:0] f3  = cleaned_reg[191:128];// Lane 3
-    wire [63:0] f5  = cleaned_reg[319:256];// Lane 5
-    wire [63:0] f8  = cleaned_reg[511:448];// Lane 8
-    wire [63:0] f13 = cleaned_reg[831:768];// Lane 13
+    // 2. Geometry Fluidization
+    // Quantizing coordinates to the IVM lattice nodes.
+    wire [831:0] fluid_reg;
+    generate
+        for (i = 0; i < 26; i = i + 1) begin : fluidizer_lanes
+            spu_geometry_fluidizer fluidizer (
+                .brick_coord_in(cleaned_reg[i*32 +: 12]), // Quantizing lower 12 bits of each component
+                .laminar_coord_out(fluid_reg[i*32 +: 12])
+            );
+            assign fluid_reg[i*32+12 +: 20] = cleaned_reg[i*32+12 +: 20];
+        end
+    endgenerate
 
-    // 3. High-Dimensional Logic Units
+    // 3. Phyllotaxis Interconnects (The SQR-Link)
+    wire [63:0] f1  = fluid_reg[63:0];   // Lane 1
+    wire [63:0] f2  = fluid_reg[127:64]; // Lane 2
+    wire [63:0] f3  = fluid_reg[191:128];// Lane 3
+    wire [63:0] f5  = fluid_reg[319:256];// Lane 5
+    wire [63:0] f8  = fluid_reg[511:448];// Lane 8
+    wire [63:0] f13 = fluid_reg[831:768];// Lane 13
+
+    // 4. High-Dimensional Logic Units
     wire [255:0] sperm_x4_out;
     wire [831:0] sperm_13_out;
     wire [127:0] smul_13_out;
 
     spu_permute x4_unit (
         .clk(clk), .reset(reset), 
-        .q_in(cleaned_reg[255:0]), .prime_phase(prime_phase), 
+        .q_in(fluid_reg[255:0]), .prime_phase(prime_phase), 
         .sign_flip(sign_flip), .q_out(sperm_x4_out)
     );
 
-    spu_permute_13 x13_unit (.q_in(cleaned_reg), .q_out(sperm_13_out));
+    spu_permute_13 x13_unit (.q_in(fluid_reg), .q_out(sperm_13_out));
 
     // Integrated Phyllotaxis Multiplication
     spu_smul_13 phi_multiplier (
@@ -61,16 +73,16 @@ module spu_core (
         .res_c(smul_13_out[95:64]), .res_d(smul_13_out[127:96])
     );
 
-    // 4. Register Dispatch (Organic Flow)
+    // 5. Register Dispatch (Organic Flow)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
         end else begin
             case (opcode)
-                3'b001: reg_out <= {cleaned_reg[831:256], sperm_x4_out};
+                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out};
                 3'b110: reg_out <= sperm_13_out;
-                3'b010: reg_out <= {cleaned_reg[831:128], smul_13_out};
-                default: reg_out <= cleaned_reg;
+                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out};
+                default: reg_out <= fluid_reg;
             endcase
         end
     end
