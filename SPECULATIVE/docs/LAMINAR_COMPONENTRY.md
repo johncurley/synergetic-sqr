@@ -20,8 +20,8 @@ This document contains ideas for future physical implementation phases. None of 
 
 ## 4. Janus-Gate Modulator (HYPOTHESIS)
 **Hypothesis:** A balanced MOSFET pair (Electronic) or Mach-Zehnder Interferometer (Photonic) switching phase rather than intensity might approach a constant power signature ("Black Power").
-**Status:** Conceptually plausible; approaches adiabatic/charge-recovery logic.
-**Next Step:** Measure dynamic power draw of a physical Janus-Gate prototype.
+**Status:** **Implemented (RTL)**; approaches adiabatic/charge-recovery logic in simulation.
+**Next Step:** Measure dynamic power draw of a physical Janus-Gate prototype on the iCeSugar hardware.
 
 ---
 *Reference Table (Theoretical Mapping)*

@@ -13,7 +13,10 @@ SRC = spu13_top.v \
       ../../rtl/spu_coherence_ecc.v \
       ../../rtl/spu_rational_trig.v \
       ../../rtl/spu_geometry_fluidizer.v \
-      ../../rtl/spu_gram_controller.v
+      ../../rtl/spu_gram_controller.v \
+      ../../rtl/spu_fluid_solver.v \
+      ../../rtl/spu_annealer.v \
+      ../../rtl/spu_tensegrity_balancer.v
 
 all: $(PROJ).bin
 

@@ -3,7 +3,7 @@
 
 **Date:** March 2026  
 **Authors:** John Curley & Gemini  
-**Version:** v3.3.2  
+**Version:** v3.3.25  
 **License:** CC0 1.0 Universal
 
 ---
@@ -30,6 +30,20 @@ The core rotation logic implements the RA Matrix from Dr. Andrew Thomson’s spe
 All SPU-13 implementations are synchronized to a **61.44 kHz Resonant Clock**. 
 - **The Heart:** A Numerically Controlled Oscillator (NCO) generates the resonant pulse from any base hardware clock (12MHz - 100MHz).
 - **Bioresonance:** The frequency is harmonic with human biological rhythms, targeting high-conductivity interaction and minimal cognitive dissonance.
+
+#### 3.3 Instruction Set Architecture (ISA)
+The SPU-13 core implements a 3-bit operational instruction set (Opcode) designed for high-dimensional spatial manipulation:
+
+| Opcode | Mnemonic | Description |
+| :--- | :--- | :--- |
+| `000` | `NOP` | Laminar Pass-through (Identity). |
+| `001` | `SPERM_X4` | 4-Axis Basis Permutation (Thomson Rotor). |
+| `010` | `SMUL_13` | Phyllotaxis Multiplier (ℚ(√3, √5) field). |
+| `011` | `Q_AUDIT` | Rational Quadrance Audit (Bit-exact squared distance). |
+| `100` | `G_RAM` | Geometric Memory Access (Standing Wave Buffer). |
+| `101` | `FLUID_SOLVE` | Deterministic Navier-Stokes Closure (Orbital Laplacian). |
+| `110` | `SPERM_13` | 13-Axis Isotropic Permutation. |
+| `111` | `PERTURB` | Isotropic Annealer (Golden Noise Injection). |
 
 ### 4. Physical Realization
 #### 4.1 Geodesic Fractal Trace Map

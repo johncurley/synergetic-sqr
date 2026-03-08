@@ -1,7 +1,8 @@
-// SPU-13 Integrated Core (v3.3.21 Phyllotaxis)
+// SPU-13 Integrated Core (v3.3.25 Phyllotaxis)
 // Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
 // Guard: Geometry Fluidizer integrated to purge Cubic Jitter.
 // Bridge: Rational Trigonometry integrated for bit-exact Quadrance Audits.
+// Flow: Fluid Solver and Isotropic Annealer integrated into the Dispatch.
 
 module spu_core (
     input  wire         clk,
@@ -52,6 +53,8 @@ module spu_core (
     wire [831:0] sperm_13_out;
     wire [127:0] smul_13_out;
     wire [63:0]  quadrance_out;
+    wire [831:0] fluid_out;
+    wire [831:0] annealed_out;
 
     spu_permute x4_unit (
         .clk(clk), .reset(reset), 
@@ -77,7 +80,7 @@ module spu_core (
         .c(fluid_reg[95:64]), .d(fluid_reg[127:96]),
         .quadrance(quadrance_out),
         .spread_60_fixed(),
-        .a_cubic_laminar(), // Internally balanced
+        .a_cubic_laminar(),
         .b_cubic_laminar(),
         .c_cubic_laminar(),
         .d_cubic_laminar()
@@ -95,18 +98,37 @@ module spu_core (
         .ready()
     );
 
-    // 5. Register Dispatch (Organic Flow)
+    // 5. Deterministic Fluid Solver (Navier-Stokes Closure)
+    spu_fluid_solver u_solver (
+        .clk(clk), .reset(reset),
+        .velocity_in(fluid_reg),
+        .neighbors(neighbors),
+        .velocity_out(fluid_out),
+        .laminar_lock()
+    );
+
+    // 6. Isotropic Annealer (Golden Noise)
+    spu_annealer u_annealer (
+        .clk(clk), .reset(reset),
+        .enable(opcode == 3'b111), // Opcode 111: Perturb
+        .reg_in(fluid_reg),
+        .reg_out(annealed_out)
+    );
+
+    // 7. Register Dispatch (ISA Expansion)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
         end else begin
             case (opcode)
-                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out};
-                3'b110: reg_out <= sperm_13_out;
-                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out};
-                3'b011: reg_out <= {fluid_reg[831:64], quadrance_out}; // Opcode 011: Quadrance Audit
-                3'b100: reg_out <= gram_data_out;                     // Opcode 100: G-RAM Read/Return
-                default: reg_out <= fluid_reg;
+                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out}; // SPERM_X4
+                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out}; // SMUL_13
+                3'b011: reg_out <= {fluid_reg[831:64], quadrance_out}; // Q_AUDIT
+                3'b100: reg_out <= gram_data_out;                     // G_RAM
+                3'b101: reg_out <= fluid_out;                         // FLUID_SOLVE
+                3'b110: reg_out <= sperm_13_out;                      // SPERM_13
+                3'b111: reg_out <= annealed_out;                    // PERTURB
+                default: reg_out <= fluid_reg;                        // NOP / PASS
             endcase
         end
     end
