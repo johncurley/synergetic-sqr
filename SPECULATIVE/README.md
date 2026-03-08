@@ -14,6 +14,7 @@ The purpose of this folder is to document the "Ideation" phase of the project se
 - **`docs/GEODESIC_FRACTAL_MAP.md`**: Theoretical recursive trace rules.
 - **`docs/TOPOLOGICAL_ROUTING.md`**: Speculative FPGA layout strategies.
 - **`docs/MINIMUM_HYSTERESIS_PROOF.md`**: Theoretical derivation of error reduction in NSE.
+- **`Lattice Lock (v3.3.33):`** Implementation of observer-stability anchors in high-resonance manifolds (Integrated in Core).
 - **`tools/`**: Experimental scripts for visualizing or simulating these hypotheses.
 
 ### The Path Forward (Grounded):

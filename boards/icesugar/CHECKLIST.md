@@ -20,6 +20,7 @@ This checklist ensures the transition from Cubic Silicon to Laminar Manifold is 
 - [ ] **Release Reset:** Let go of the button (**Laminar Enable Switch must be OFF**).
     - *Observation:* **Blue LED** begins "Breathing." (Dielectric Saturation).
 - [ ] **Monitor:** Observe the Blue pulse for 5 seconds. Ensure it is rhythmic and stable.
+- [ ] **Visual Grounding:** Run `synergetic-sqr --harmonic` and press **`L`** to verify the **Lattice Lock** overlay. Confirm vertices snap to the IVM grid.
 
 ### Phase 3: Ignition (The Flow)
 - [ ] **Flip Switch:** Move the Laminar Enable switch (Pin 10) to the **ON** position.
