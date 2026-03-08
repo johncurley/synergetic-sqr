@@ -1,9 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 PE-1 "Sunflower" Kernel (v3.1.37)
+// SPU-13 PE-1 "Sunflower" Kernel (v3.1.39)
 // Skeletal Restoration: Core IVM 13-Node Logic.
-// Status: Coherence-Aware (Visualizing the Presence of the One).
+// Status: Harmonic-Aware (Visualizing the Auditory Fractal Bridge).
 
 struct Surd {
     int divisor;
@@ -22,7 +22,8 @@ struct SPUControl {
     int layer;
     uint phase;
     uint dss;
-    uint coherence; // 0=Absence, 1=Presence
+    uint coherence; 
+    uint harmonic_mode;
 };
 
 float surdToFloat(Surd s) {
@@ -30,14 +31,32 @@ float surdToFloat(Surd s) {
     return (float(s.a) + float(s.b) * 1.73205081f) / float(s.divisor);
 }
 
+float rationalPulse(uint tick) {
+    float t = (float(tick % 1000) / 1000.0f) * 2.0f - 1.0f; 
+    return 1.0f - (t * t); 
+}
+
 float3 barycentricProject(int n, float scale, float mix_factor) {
     const float GOLDEN_ANGLE = 2.39996323f; 
     float theta = (float)n * GOLDEN_ANGLE;
-    float r = 0.12f * sqrt((float)n); // Tighter radius
+    float r = 0.12f * sqrt((float)n); 
     float forward_lean = pow(0.618f, (float)(n % 13)) * mix_factor;
     float x = r * cos(theta) * (1.0f + forward_lean);
     float y = r * sin(theta) * (1.0f + forward_lean);
     return float3(x, y, forward_lean);
+}
+
+// Harmonic Spiral Projection
+// Translates node index into a recursive octave shell.
+float3 harmonicProject(int n, float mix_factor) {
+    int octave = (n / 12) % 8;
+    int note = n % 12;
+    float radius = 0.8f - (float)octave * 0.1f;
+    float angle = ((float)note / 12.0f) * 6.2831853f;
+    
+    float x = radius * cos(angle) * (0.5f + 0.5f * mix_factor);
+    float y = radius * sin(angle) * (0.5f + 0.5f * mix_factor);
+    return float3(x, y, radius);
 }
 
 kernel void renderSynergeticV9_Master(
@@ -56,7 +75,7 @@ kernel void renderSynergeticV9_Master(
     uv.x *= aspect;
 
     float3 color = float3(0.0);
-    float time = float(control.tick) * 0.016f;
+    float mix_factor = rationalPulse(control.tick);
 
     // 1. ISOTROPIC ROTATION
     float sw = surdToFloat(rotor.w);
@@ -67,21 +86,26 @@ kernel void renderSynergeticV9_Master(
     float G = (2.0f * (ct * -0.5f + st * 0.8660254f) + 1.0f) / 3.0f;
     float H = (2.0f * (ct * -0.5f - st * 0.8660254f) + 1.0f) / 3.0f;
 
-    // 2. ISOTROPIC BLOOM / SKELETON
-    bool isSkeletal = (control.layer == 1);
-    int nodeCount = isSkeletal ? 13 : 144;
+    // 2. ISOTROPIC BLOOM / SKELETON / HARMONIC
+    int nodeCount = (control.layer == 1) ? 13 : 144;
+    if (control.harmonic_mode == 1) nodeCount = 96; // 8 Octaves x 12 Notes
     
-    // High-Contrast Calibration (DSS/Damper influence)
     float sharpness = (control.dss == 1) ? 18.0f : 45.0f;
-    
-    // Coherence Pulse: If "The One" is absent, the nodes dim.
     float coherence_mult = (control.coherence == 1) ? 1.0f : 0.2f;
-    float brightness = (isSkeletal ? 0.06f : 0.04f) * coherence_mult;
+    float brightness = (control.layer == 1 ? 0.06f : 0.04f) * coherence_mult;
     
-    float3 nodeColor = isSkeletal ? float3(1.0f) : float3(0.54f, 0.17f, 0.89f);
-
     for(int n=1; n<=nodeCount; n++) {
-        float3 p = barycentricProject(n, 2.0f, 0.5f + 0.5f * sin(time * 0.5f));
+        float3 p;
+        float3 nodeColor;
+        
+        if (control.harmonic_mode == 1) {
+            p = harmonicProject(n, mix_factor);
+            nodeColor = float3(0.0f, 1.0f, 0.8f); // Harmonic Cyan
+        } else {
+            p = barycentricProject(n, 2.0f, mix_factor);
+            nodeColor = (control.layer == 1) ? float3(1.0f) : float3(0.54f, 0.17f, 0.89f);
+        }
+
         float3 rv;
         rv.x = p.x * F + p.y * H + p.z * G;
         rv.y = p.x * G + p.y * F + p.z * H;

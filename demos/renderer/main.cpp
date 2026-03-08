@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <string.h>
+#include <string>
 #include "SynergeticRenderer.hpp"
 #include "spu/SynergeticsMath.hpp"
 
@@ -14,6 +15,7 @@ int main(int argc, char* argv[]) {
     bool forensic_mode = false;
     bool deep_sea_mode = false;
     bool skeletal_mode = false;
+    bool harmonic_mode = false;
     Uint64 session_limit = 0; // 0 = Infinite
 
     for (int i = 1; i < argc; ++i) {
@@ -23,6 +25,8 @@ int main(int argc, char* argv[]) {
             deep_sea_mode = true;
         } else if (strcmp(argv[i], "--skeletal") == 0) {
             skeletal_mode = true;
+        } else if (strcmp(argv[i], "--harmonic") == 0) {
+            harmonic_mode = true;
         } else if (strcmp(argv[i], "--pulse") == 0) {
             session_limit = 10000; // Default 10s
         } else if (strcmp(argv[i], "--duration") == 0 && i + 1 < argc) {
@@ -63,13 +67,12 @@ int main(int argc, char* argv[]) {
 
     if (deep_sea_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
-        SDL_SetWindowTitle(window, "SPU-1 [PHASE 1: ANCHOR]");
     } else if (skeletal_mode) {
         renderer->setLayer(1); // Mode 1: Core IVM Skeleton
-        SDL_SetWindowTitle(window, "SPU-1 [IVM SKELETON]");
+    } else if (harmonic_mode) {
+        renderer->toggleHarmonic();
     } else if (!forensic_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
-        SDL_SetWindowTitle(window, "SPU-1 [SAFE MODE]");
     }
 
 #ifdef __APPLE__
@@ -89,7 +92,24 @@ int main(int argc, char* argv[]) {
 
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_EVENT_QUIT) quit = true;
+            if (e.type == SDL_EVENT_KEY_DOWN) {
+                switch (e.key.key) {
+                    case SDLK_ESCAPE: quit = true; break;
+                    case SDLK_J: renderer->toggleJanus(); break;
+                    case SDLK_D: renderer->toggleDSS(); break;
+                    case SDLK_H: renderer->toggleHarmonic(); break;
+                    case SDLK_1: renderer->setLayer(0); break;
+                    case SDLK_2: renderer->setLayer(1); break;
+                }
+            }
         }
+
+        // Update Window Title based on current mode
+        std::string title = "SPU-1 [";
+        if (renderer->isHarmonic()) title += "HARMONIC VIS]";
+        else if (renderer->getLayer() == 1) title += "IVM SKELETON]";
+        else title += "FLORA]";
+        SDL_SetWindowTitle(window, title.c_str());
 
         Uint32 flags = SDL_GetWindowFlags(window);
         if (!(flags & SDL_WINDOW_HIDDEN) && !(flags & SDL_WINDOW_MINIMIZED)) {
