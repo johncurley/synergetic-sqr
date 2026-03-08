@@ -37,7 +37,8 @@ SRC = $(TOP).v \
       $(RTL_DIR)/spu_io_bridge.v \
       $(RTL_DIR)/surd_uart_tx.v \
       $(RTL_DIR)/surd_multiplier.v \
-      $(RTL_DIR)/spu_rational_snap.v
+      $(RTL_DIR)/spu_rational_snap.v \
+      $(RTL_DIR)/spu_proprioception.v
 
 all: $(PROJ).bin
 

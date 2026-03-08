@@ -1,8 +1,9 @@
-// SPU-13 Integrated Core (v3.3.25 Phyllotaxis)
+// SPU-13 Integrated Core (v3.3.66 Phyllotaxis)
 // Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
 // Guard: Geometry Fluidizer integrated to purge Cubic Jitter.
 // Bridge: Rational Trigonometry integrated for bit-exact Quadrance Audits.
 // Flow: Fluid Solver and Isotropic Annealer integrated into the Dispatch.
+// Proprioception: Thermal Feedback for Self-Regulated Homeostasis.
 
 module spu_core (
     input  wire         clk,
@@ -16,12 +17,20 @@ module spu_core (
     output wire         fault_detected
 );
 
-    // 1. Internal Cleaning & ECC
-    // NOTE: These lanes are currently transparent (Laminar Integrity). 
-    // Bit-flip protection is mapped to Geometric Redundancy in Phase 2.
+    // 1. Proprioceptive Feedback (Thermal Sense)
+    wire [31:0] thermal_pressure;
+    wire        damping_active;
+    spu_proprioception u_feeling (
+        .clk(clk), .reset(reset),
+        .manifold_state(reg_curr),
+        .thermal_pressure(thermal_pressure),
+        .damping_active(damping_active)
+    );
+
+    // 2. Internal Cleaning & ECC
     wire [831:0] cleaned_reg;
     wire [12:0]  lane_faults;
-    assign fault_detected = |lane_faults;
+    wire         identity_lock;
 
     genvar i;
     generate
@@ -35,20 +44,20 @@ module spu_core (
         end
     endgenerate
 
-    // 2. Geometry Fluidization
-    // Quantizing coordinates to the IVM lattice nodes.
+    // 3. Geometry Fluidization (Dynamic Damping)
     wire [831:0] fluid_reg;
     generate
         for (i = 0; i < 26; i = i + 1) begin : fluidizer_lanes
             spu_geometry_fluidizer fluidizer (
                 .brick_coord_in(cleaned_reg[i*32 +: 12]), 
+                .dampen(damping_active),
                 .laminar_coord_out(fluid_reg[i*32 +: 12])
             );
             assign fluid_reg[i*32+12 +: 20] = cleaned_reg[i*32+12 +: 20];
         end
     endgenerate
 
-    // 3. High-Dimensional Logic Units
+    // 4. High-Dimensional Logic Units
     wire [255:0] sperm_x4_out;
     wire [831:0] sperm_13_out;
     wire [127:0] smul_13_out;
@@ -58,14 +67,10 @@ module spu_core (
     wire [255:0] bypass_out;
     wire [127:0] snap_q_out;
 
-    // Sierpiński Quadrance Bypass (Phase-Isolated Tunnels)
     spu_fractal_bypass u_bypass (
-        .q_in(fluid_reg[255:0]),
-        .phase(prime_phase),
-        .q_out(bypass_out)
+        .q_in(fluid_reg[255:0]), .phase(prime_phase), .q_out(bypass_out)
     );
 
-    // Rational Snap: 3D-to-4D Injection Bridge
     spu_rational_snap u_snap (
         .x(fluid_reg[31:0]), .y(fluid_reg[63:32]), .z(fluid_reg[95:64]),
         .a(snap_q_out[31:0]), .b(snap_q_out[63:32]), .c(snap_q_out[95:64]), .d(snap_q_out[127:96])
@@ -80,93 +85,53 @@ module spu_core (
     spu_permute_13 x13_unit (.q_in(fluid_reg), .q_out(sperm_13_out));
 
     spu_smul_13 phi_multiplier (
-        .a1(fluid_reg[31:0]),   .b1(fluid_reg[63:32]), 
-        .c1(fluid_reg[95:64]),  .d1(fluid_reg[127:96]),
-        .a2(fluid_reg[159:128]), .b2(fluid_reg[191:160]), 
-        .c2(fluid_reg[223:192]), .d2(fluid_reg[255:224]),
-        .res_a(smul_13_out[31:0]), .res_b(smul_13_out[63:32]), 
-        .res_c(smul_13_out[95:64]), .res_d(smul_13_out[127:96])
+        .a1(fluid_reg[31:0]),   .b1(fluid_reg[63:32]), .c1(fluid_reg[95:64]),  .d1(fluid_reg[127:96]),
+        .a2(fluid_reg[159:128]), .b2(fluid_reg[191:160]), .c2(fluid_reg[223:192]), .d2(fluid_reg[255:224]),
+        .res_a(smul_13_out[31:0]), .res_b(smul_13_out[63:32]), .res_c(smul_13_out[95:64]), .res_d(smul_13_out[127:96])
     );
 
-    // Rational Trigonometry: Quadrance of the first Quadray vector
-    // Guarded by the Symmetry Guard (Lego-to-Laminar)
     spu_rational_trig trig_unit (
-        .a(fluid_reg[31:0]), .b(fluid_reg[63:32]), 
-        .c(fluid_reg[95:64]), .d(fluid_reg[127:96]),
-        .quadrance(quadrance_out),
-        .spread_60_fixed(),
-        .a_cubic_laminar(),
-        .b_cubic_laminar(),
-        .c_cubic_laminar(),
-        .d_cubic_laminar()
+        .a(fluid_reg[31:0]), .b(fluid_reg[63:32]), .c(fluid_reg[95:64]), .d(fluid_reg[127:96]),
+        .quadrance(quadrance_out), .spread_60_fixed(),
+        .a_cubic_laminar(), .b_cubic_laminar(), .c_cubic_laminar(), .d_cubic_laminar()
     );
 
-    // 4. G-RAM: Geometric Memory (Standing Wave Buffer)
     wire [831:0] gram_data_out;
     spu_gram_controller u_gram (
-        .clk(clk), .reset(reset),
-        .janus_bit(sign_flip),
-        .addr_in(fluid_reg[31:0]),
-        .data_in(fluid_reg),
-        .write_en(opcode == 3'b100), // Opcode 100: G-RAM Write
-        .data_out(gram_data_out),
-        .ready()
+        .clk(clk), .reset(reset), .janus_bit(sign_flip),
+        .addr_in(fluid_reg[31:0]), .data_in(fluid_reg),
+        .write_en(opcode == 3'b100), .data_out(gram_data_out), .ready()
     );
 
-    // 5. Deterministic Fluid Solver (Navier-Stokes Closure)
     spu_fluid_solver u_solver (
-        .clk(clk), .reset(reset),
-        .velocity_in(fluid_reg),
-        .neighbors(neighbors),
-        .velocity_out(fluid_out),
-        .laminar_lock()
+        .clk(clk), .reset(reset), .velocity_in(fluid_reg), .neighbors(neighbors),
+        .velocity_out(fluid_out), .laminar_lock()
     );
 
-    // 6. Isotropic Annealer (Golden Noise)
     spu_annealer u_annealer (
-        .clk(clk), .reset(reset),
-        .enable(opcode == 3'b111), // Opcode 111: Perturb
-        .reg_in(fluid_reg),
-        .reg_out(annealed_out)
+        .clk(clk), .reset(reset), .enable(opcode == 3'b111), .reg_in(fluid_reg), .reg_out(annealed_out)
     );
 
-    // 7. Harmonic Visualization Engine (Auditory Fractal Bridge)
-    wire [31:0] harmonic_color;
-    wire [63:0] harmonic_vector;
-    spu_harmonic_vis u_vis (
-        .clk(clk), .reset(reset),
-        .freq_in(fluid_reg[15:0]),
-        .amplitude(fluid_reg[23:16]),
-        .color_out(harmonic_color),
-        .vector_out(harmonic_vector)
-    );
-
-    // 8. Identity Gate: The Rational Guard
-    wire identity_lock;
-    wire [63:0] h_seed;
     spu_identity_monad u_identity (
-        .clk(clk),
-        .current_quadrance(quadrance_out),
-        .lattice_state(fluid_reg),
-        .identity_aligned(identity_lock),
-        .homeopathic_seed(h_seed)
+        .clk(clk), .current_quadrance(quadrance_out), .lattice_state(fluid_reg),
+        .identity_aligned(identity_lock), .homeopathic_seed()
     );
 
-    // 9. Register Dispatch (ISA Expansion)
+    // 5. Register Dispatch
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
         end else begin
             case (opcode)
-                3'b000: reg_out <= {fluid_reg[831:128], snap_q_out}; // SNAP / INJECT
-                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out}; // SPERM_X4
-                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out}; // SMUL_13
-                3'b011: reg_out <= {fluid_reg[831:64],  quadrance_out}; // Q_AUDIT
-                3'b100: reg_out <= gram_data_out;                     // G_RAM
-                3'b101: reg_out <= fluid_out;                         // FLUID_SOLVE
-                3'b110: reg_out <= sperm_13_out;                      // SPERM_13
-                3'b111: reg_out <= annealed_out;                    // PERTURB
-                default: reg_out <= fluid_reg;                        // NOP / PASS
+                3'b000: reg_out <= {fluid_reg[831:128], snap_q_out};
+                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out};
+                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out};
+                3'b011: reg_out <= {fluid_reg[831:64],  quadrance_out};
+                3'b100: reg_out <= gram_data_out;
+                3'b101: reg_out <= fluid_out;
+                3'b110: reg_out <= sperm_13_out;
+                3'b111: reg_out <= annealed_out;
+                default: reg_out <= fluid_reg;
             endcase
         end
     end
