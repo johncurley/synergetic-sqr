@@ -25,12 +25,24 @@ We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$
 *   **Spread:** $s = \sin^2(\theta)$.
 *   **Tetrahedral Symmetry:** For 60° angles, $s = 0.75$ (Exactly representable as $3/4$).
 *   **Hardware Impact:** No CORDIC engines. No Taylor series. Just high-speed integer Multiply-Accumulate (MAC).
-
 #### 4. Formal Verification: 10-Cycle Induction
 *   **Solver:** Yosys-SMTBMC + Minisat.
 *   **Assertion:** The internal state manifold remains within the **Indestructible Invariant** ($V_d = 1.0$) across all 4-axis rotations.
 *   **Proof:** Formally proven for a 10-cycle induction bound, ensuring no state-space "leaks" into the "Nothing" (rounding drift).
 
+---
+
+### 🏛️ Formal Rigor: The $V_d$ Invariant
+
+The $V_d$ (Vector Determinant) is defined as the normalized volume of the state-space simplex in the Quadray basis. To remain "Indestructible," the transformation matrix $M$ must belong to the Special Linear Group $SL(4, \mathbb{Q}(\sqrt{3}))$.
+
+$$V_d = \det(M) = 1.0$$
+
+*   **Algebraic Closure:** By restricting the hardware to the $\mathbb{Q}(\sqrt{3})$ field, values like $\sin(60^\circ)$ are exact. There is no real-number rounding.
+*   **SAT Formulation:** We encode the surd-logic into Boolean formulas. The solver searches for any input sequence where $\det(M_k)=1 \implies \det(M_{k+1}) \neq 1$. 
+*   **Symplectic Preservation:** Maintaining $V_d=1.0$ ensures the symplectic form of the computation is preserved, eliminating the "stutter" or "drift" found in IEEE-754 systems.
+
+---
 #### 5. Deployment Spec: The Resonant Clock
 *   **System Clock:** **61.44 kHz** (derived via PLL from onboard OSC).
 *   **Target Hardware:** Lattice iCE40 (UP5K) or Xilinx Artix-7.

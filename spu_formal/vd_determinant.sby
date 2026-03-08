@@ -1,0 +1,13 @@
+[options]
+mode bmc
+depth 10
+
+[engines]
+smtbmc minisat
+
+[script]
+read -sv vd_determinant.sv
+prep -top vd_determinant_formal
+
+[files]
+vd_determinant.sv
