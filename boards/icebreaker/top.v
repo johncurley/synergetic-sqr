@@ -1,6 +1,6 @@
-// iCEBreaker Top-Level Integration (v3.1.36)
+// iCEBreaker Top-Level Integration (v3.3.53)
 // Target: Lattice iCE40UP5K
-// Implementation: Universal Fractal Heart (61.44 kHz)
+// Implementation: Universal Fractal Heart & Expanded ISA
 
 module icebreaker_top (
     input  wire clk_12mhz,
@@ -17,6 +17,8 @@ module icebreaker_top (
     wire         fault;
     wire         henosis;
     wire [3:0]   bridge_leds;
+    wire         coherence_lock;
+    wire         identity_lock;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -28,25 +30,26 @@ module icebreaker_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core
+    // 2. SPU-13 Core Manifold (Expanded ISA)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
         .reg_curr(reg_state),
         .neighbors(3072'b0),
-        .opcode(3'b001),      // SPERM_X4
+        .opcode(3'b001),      // Thomson Rotation Path
         .prime_phase(2'b01),
         .sign_flip(1'b0),
         .reg_out(next_state),
         .fault_detected(fault)
     );
 
-    // 3. Self Test
-    spu_self_test u_test (
+    // 3. One-Second Stability Audit
+    spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
         .reg_in(next_state),
-        .pass(henosis)
+        .pass(henosis),
+        .fail()
     );
 
     // 4. IO Bridge (UART Telemetry)
@@ -56,7 +59,7 @@ module icebreaker_top (
         .clk_phys(clk_12mhz),
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
-        .spu_reg_in(reg_state),
+        .spu_reg_in(next_state),
         .fault_detected(fault),
         .led_status(bridge_leds),
         .pmod_ja_out(),
