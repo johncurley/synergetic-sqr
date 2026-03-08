@@ -5,7 +5,12 @@
 echo "--- Initializing SPU-13 Manifold Synthesis ---"
 
 # 1. Synthesis (Yosys) - Creating the Logic Manifold
-yosys -p "synth_ice40 -top spu13_top -json spu13.json" spu13_top.v ../../rtl/spu_fractal_clk.v
+yosys -p "synth_ice40 -top spu13_top -json spu13.json" \
+    spu13_top.v \
+    ../../rtl/spu_fractal_clk.v \
+    ../../rtl/spu_coherence_ecc.v \
+    ../../rtl/spu_rational_trig.v \
+    ../../rtl/spu_geometry_fluidizer.v
 
 # 2. Place & Route (nextpnr) - Mapping the IVM Geometry
 # Using --force to allow for Virtual Induction 'unconnected' pins
