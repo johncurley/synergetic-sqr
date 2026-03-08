@@ -1,9 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 PE-1 "Sunflower" Kernel (v3.1.42)
+// SPU-13 PE-1 "Sunflower" Kernel (v3.1.43)
 // Skeletal Restoration: Core IVM 13-Node Logic.
-// Status: Pure Geometry Enabled (Mode D).
+// Status: IVM Ground Dominant (Default Mode D).
 
 struct Surd {
     int divisor;
@@ -60,13 +60,15 @@ float3 harmonicProject(int n, float mix_factor, uint tick) {
     return float3(x, y, radius);
 }
 
+// IVM Lattice Grid Function
+// Renders a high-contrast 60-degree vector matrix background.
 float ivmGrid(float2 uv) {
     float2 q_uv;
     q_uv.x = uv.x * 1.73205081f - uv.y;
     q_uv.y = uv.y * 2.0f;
     float2 grid = abs(fract(q_uv * 10.0f) - 0.5f);
     float line = min(grid.x, grid.y);
-    return smoothstep(0.02f, 0.0f, line);
+    return smoothstep(0.025f, 0.0f, line); // Sharper grid
 }
 
 kernel void renderSynergeticV9_Master(
@@ -86,13 +88,12 @@ kernel void renderSynergeticV9_Master(
 
     float3 color = float3(0.0);
     
-    // 1. IVM Grid: Always active if lattice_lock is enabled.
+    // 1. IVM Grid: Dominant Layer if locked
     if (control.lattice_lock == 1) {
-        color += float3(0.1f, 0.15f, 0.2f) * ivmGrid(uv);
+        color += float3(0.2f, 0.3f, 0.4f) * ivmGrid(uv); // Higher contrast blue-grey
     }
 
     // 2. Node Suppression: Mode D (Pure Geometry)
-    // If layer is -1, skip node rendering.
     if (control.layer == -1) {
         outTexture.write(float4(color, 1.0f), gid);
         return;
@@ -113,17 +114,19 @@ kernel void renderSynergeticV9_Master(
     
     float sharpness = (control.dss == 1) ? 18.0f : 45.0f;
     float coherence_mult = (control.coherence == 1) ? 1.0f : 0.2f;
-    float brightness = (control.layer == 1 ? 0.06f : 0.04f) * coherence_mult;
+    
+    // Subtler brightness for non-skeletal modes
+    float brightness = (control.layer == 1 ? 0.06f : 0.025f) * coherence_mult;
     
     for(int n=1; n<=nodeCount; n++) {
         float3 p;
         float3 nodeColor;
         if (control.harmonic_mode == 1) {
             p = harmonicProject(n, mix_factor, control.tick);
-            nodeColor = float3(0.0f, 1.0f, 0.8f); 
+            nodeColor = float3(0.0f, 0.8f, 0.6f); // Subtler Harmonic Cyan
         } else {
             p = barycentricProject(n, 2.0f, mix_factor);
-            nodeColor = (control.layer == 1) ? float3(1.0f) : float3(0.54f, 0.17f, 0.89f);
+            nodeColor = (control.layer == 1) ? float3(1.0f) : float3(0.44f, 0.12f, 0.79f); // Damped Flora
         }
 
         float3 rv;

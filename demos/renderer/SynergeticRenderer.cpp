@@ -14,6 +14,9 @@ MetalRenderer::MetalRenderer(MTL::Device* device) : _device(device) {
     _janus = 1;
     _dssEnabled = true; // SAFETY DEFAULT: ON
     _tickCount = 0;
+    _layer = -1;        // DEFAULT: Mode D (Pure IVM Metric)
+    _harmonic = false;
+    _latticeLock = true; // DEFAULT: GROUNDED
     buildComputePipeline();
 }
 
@@ -149,7 +152,9 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     _tickCount = 0;
     _janus = 1;
     _dssEnabled = true; // SAFETY DEFAULT: ON
-    _layer = 0;
+    _layer = -1;        // DEFAULT: Mode D (Pure IVM Metric)
+    _harmonic = false;
+    _latticeLock = true; // DEFAULT: GROUNDED
     _computePipeline = nullptr;
     
     // Shader loading logic would go here (SPIR-V)

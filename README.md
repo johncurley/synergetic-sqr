@@ -138,17 +138,19 @@ cmake -B build -S . -DBUILD_RENDERER=ON
 cmake --build build --target synergetic-sqr
 
 # 3. Launch the Visual Manifold
-# Mode A: Laminar Plasma Emanation (Flora)
+The SPU-13 initializes with the **IVM Lattice Metric** as the default ground to provide structural accountability.
+
+# Mode D: IVM Lattice Metric (Default Ground)
 ./build/synergetic-sqr
+
+# Mode A: Laminar Plasma Emanation (Flora)
+./build/synergetic-sqr --layer 0 --lattice-lock off
 
 # Mode B: IVM Skeleton (Core 13 Nodes)
 ./build/synergetic-sqr --skeletal
 
 # Mode C: Harmonic Visualization (Auditory Fractal)
 ./build/synergetic-sqr --harmonic
-
-# Mode D: IVM Lattice Metric (Pure Geometry)
-./build/synergetic-sqr --harmonic --lattice-lock
 ```
 
 ### ⚡ Physical Bring-Up

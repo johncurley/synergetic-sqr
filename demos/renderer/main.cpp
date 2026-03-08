@@ -16,8 +16,9 @@ int main(int argc, char* argv[]) {
     bool deep_sea_mode = false;
     bool skeletal_mode = false;
     bool harmonic_mode = false;
-    bool lattice_lock_mode = false;
-    Uint64 session_limit = 0; // 0 = Infinite
+    bool lattice_lock_mode = true; // DEFAULT ON
+    int initial_layer = -1;        // DEFAULT MODE D
+    Uint64 session_limit = 0;      // 0 = Infinite
 
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--forensic") == 0) {
@@ -26,10 +27,19 @@ int main(int argc, char* argv[]) {
             deep_sea_mode = true;
         } else if (strcmp(argv[i], "--skeletal") == 0) {
             skeletal_mode = true;
+            initial_layer = 1;
         } else if (strcmp(argv[i], "--harmonic") == 0) {
             harmonic_mode = true;
+            initial_layer = 0;
         } else if (strcmp(argv[i], "--lattice-lock") == 0) {
-            lattice_lock_mode = true;
+            if (i + 1 < argc && strcmp(argv[i+1], "off") == 0) {
+                lattice_lock_mode = false;
+                i++;
+            } else {
+                lattice_lock_mode = true;
+            }
+        } else if (strcmp(argv[i], "--layer") == 0 && i + 1 < argc) {
+            initial_layer = std::stoi(argv[++i]);
         } else if (strcmp(argv[i], "--pulse") == 0) {
             session_limit = 10000; // Default 10s
         } else if (strcmp(argv[i], "--duration") == 0 && i + 1 < argc) {
@@ -68,21 +78,15 @@ int main(int argc, char* argv[]) {
     renderer = new VulkanRenderer(window);
 #endif
 
+    // Apply initial state
+    renderer->setLayer(initial_layer);
+    if (renderer->isLatticeLocked() != lattice_lock_mode) renderer->toggleLatticeLock();
+    if (harmonic_mode) renderer->toggleHarmonic();
+
     if (deep_sea_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 
-    } else if (skeletal_mode) {
-        renderer->setLayer(1); // Mode 1: Core IVM Skeleton
-    } else if (harmonic_mode) {
-        renderer->toggleHarmonic();
-    }
-    
-    if (lattice_lock_mode) {
-        renderer->toggleLatticeLock();
-        renderer->setLayer(-1); // Mode D: Pure IVM Metric
-    }
-
-    if (!forensic_mode && !deep_sea_mode && !skeletal_mode && !harmonic_mode) {
-        if (!renderer->getDSS()) renderer->toggleDSS(); 
+    } else if (!forensic_mode && !skeletal_mode && !harmonic_mode && initial_layer == -1) {
+        // Default Mode D setup handled by initializers above
     }
 
 #ifdef __APPLE__
@@ -110,8 +114,6 @@ int main(int argc, char* argv[]) {
                     case SDLK_H: renderer->toggleHarmonic(); break;
                     case SDLK_L: 
                         renderer->toggleLatticeLock(); 
-                        // If lattice lock is engaged, we can optionally suppress nodes
-                        // for Mode D (Pure IVM Metric). 
                         if (renderer->isLatticeLocked()) renderer->setLayer(-1);
                         else renderer->setLayer(0);
                         break;
@@ -125,7 +127,8 @@ int main(int argc, char* argv[]) {
         std::string title = "SPU-1 [";
         if (renderer->isHarmonic()) title += "HARMONIC VIS]";
         else if (renderer->getLayer() == 1) title += "IVM SKELETON]";
-        else title += "FLORA]";
+        else if (renderer->getLayer() == -1) title += "IVM METRIC]";
+        else title += "LAMINAR PLASMA]";
         SDL_SetWindowTitle(window, title.c_str());
 
         Uint32 flags = SDL_GetWindowFlags(window);
