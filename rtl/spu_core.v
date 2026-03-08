@@ -83,7 +83,19 @@ module spu_core (
         .d_cubic_laminar()
     );
 
-    // 4. Register Dispatch (Organic Flow)
+    // 4. G-RAM: Geometric Memory (Standing Wave Buffer)
+    wire [831:0] gram_data_out;
+    spu_gram_controller u_gram (
+        .clk(clk), .reset(reset),
+        .janus_bit(sign_flip),
+        .addr_in(fluid_reg[31:0]),
+        .data_in(fluid_reg),
+        .write_en(opcode == 3'b100), // Opcode 100: G-RAM Write
+        .data_out(gram_data_out),
+        .ready()
+    );
+
+    // 5. Register Dispatch (Organic Flow)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
@@ -93,6 +105,7 @@ module spu_core (
                 3'b110: reg_out <= sperm_13_out;
                 3'b010: reg_out <= {fluid_reg[831:128], smul_13_out};
                 3'b011: reg_out <= {fluid_reg[831:64], quadrance_out}; // Opcode 011: Quadrance Audit
+                3'b100: reg_out <= gram_data_out;                     // Opcode 100: G-RAM Read/Return
                 default: reg_out <= fluid_reg;
             endcase
         end
