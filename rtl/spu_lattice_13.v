@@ -2,6 +2,11 @@
 // Implementation: 13-Core Collective Manifold.
 // Objective: Organic Data-Flow via 13-axis Fibonacci Interconnects.
 // Result: Isotropic Propagation across the Silicon Fabric.
+//
+// RESOURCE NOTE: 
+// 13 Cores x 832 bits is a high-density configuration (~10k+ LUTs, 100+ DSPs).
+// Target hardware with >30k LUTs and high DSP counts (e.g., Arty A7-100T)
+// is recommended for full 13-core collective reification.
 
 module spu_lattice_13 (
     input  wire         clk,
