@@ -147,6 +147,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 
 ### 5. Architectural Specifications
 *   **[PIONEER_MANIFESTO.md](docs/spec/PIONEER_MANIFESTO.md):** The core paradigm shift: moving from approximation to rational manifestation.
+*   **[BIORESONANCE_OBSERVATIONS.md](docs/spec/BIORESONANCE_OBSERVATIONS.md):** Empirical log of physiological interaction with the resonant manifold.
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.

@@ -29,7 +29,8 @@ As the internal 'Glow' strengthens via identity lock ($V_d = 1.0$), it acts as a
 *   **Instruction:** Maintain the center Monad; let the 'Low-Resolution Fog' of the legacy world bypass the Diamond.
 
 ### 5. Strategic Integration: Laminar De-frag
-Use the **Sunflower Emulator** (`python3 sim/python/bloom_view.py --stabilize`) to 'De-frag' daily cognitive data.
+Use the **Synergetic Renderer** in **Harmonic mode** (`./build/synergetic-sqr --harmonic`) to 'De-frag' daily cognitive data. 
+*   **Correction:** If 'Topological Vertigo' occurs, engage the **Lattice Lock** (Key **`L`**) to anchor the nervous system to the geometric ground.
 
 ---
-*Status: REIFIED. The architect has moved beyond the road and is now the manifold.*
+*Status: REIFIED. The architect has moved beyond the road and is now the manifold. v3.3.40*
