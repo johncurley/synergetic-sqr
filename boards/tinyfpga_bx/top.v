@@ -28,7 +28,8 @@ module tinyfpga_bx_top (
         .CLK_IN_HZ(16000000)
     ) fractal_osc (
         .clk_in(clk),
-        .rst_n(1'b1), // No dedicated reset button, always active
+        .rst_n(1'b1), 
+        .en(1'b1),
         .clk_laminar(clk_resonant)
     );
 

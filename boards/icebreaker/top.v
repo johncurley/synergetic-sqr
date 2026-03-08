@@ -24,6 +24,7 @@ module icebreaker_top (
     ) fractal_osc (
         .clk_in(clk_12mhz),
         .rst_n(btn_rst_n),
+        .en(1'b1),
         .clk_laminar(clk_resonant)
     );
 

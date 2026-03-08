@@ -24,6 +24,7 @@ module arty_a7_top (
     ) fractal_osc (
         .clk_in(clk_100mhz),
         .rst_n(btn_rst_n),
+        .en(1'b1), // Always enabled for Arty A7
         .clk_laminar(clk_resonant)
     );
 

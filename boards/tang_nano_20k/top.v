@@ -22,6 +22,7 @@ module tang_nano_20k_top (
     ) fractal_osc (
         .clk_in(sys_clk),
         .rst_n(sys_rst_n),
+        .en(1'b1),
         .clk_laminar(clk_resonant)
     );
 

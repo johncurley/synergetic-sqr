@@ -22,6 +22,7 @@ module ulx3s_top (
     ) fractal_osc (
         .clk_in(clk_25mhz),
         .rst_n(btn[0]),
+        .en(1'b1),
         .clk_laminar(clk_resonant)
     );
 

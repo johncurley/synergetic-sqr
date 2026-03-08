@@ -24,6 +24,7 @@ module orangecrab_top (
     ) fractal_osc (
         .clk_in(clk_48mhz),
         .rst_n(btn_rst_n),
+        .en(1'b1),
         .clk_laminar(clk_resonant)
     );
 
