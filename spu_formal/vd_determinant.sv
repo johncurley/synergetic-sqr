@@ -46,11 +46,11 @@ module vd_determinant_formal (
     wire [63:0] FGH = surd_mul(FG, H);
     
     // 3*FGH
-    wire [63:0] three_FGH = {FGH[63:32] * 3, FGH[31:0] * 3};
+    wire [63:0] three_FGH = {32'(FGH[63:32] * 3), 32'(FGH[31:0] * 3)};
 
     // det(M) = F^3 + G^3 + H^3 - 3FGH
-    wire [63:0] det_M_sum = {F3[63:32] + G3[63:32] + H3[63:32] - three_FGH[63:32], 
-                             F3[31:0]  + G3[31:0]  + H3[31:0]  - three_FGH[31:0]};
+    wire [63:0] det_M_sum = {32'(F3[63:32] + G3[63:32] + H3[63:32] - three_FGH[63:32]), 
+                             32'(F3[31:0]  + G3[31:0]  + H3[31:0]  - three_FGH[31:0])};
 
     // --- 3. The Indestructible Assertion ---
     
