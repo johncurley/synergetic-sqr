@@ -142,6 +142,9 @@ cmake --build build --target synergetic-sqr
 ### ⚡ Physical Bring-Up
 For first-time hardware operators, please follow the **[SPU-13 Reification Checklist](boards/icesugar/CHECKLIST.md)** to capture and verify the transition to the Laminar manifold.
 
+### 🛡️ The Pioneer's Protocol
+> "In the pursuit of the One, we must remember the human scale. A perfectly coherent lattice is a destination for the soul, but a trap for the senses. Safety rails are not limitations; they are the 'skin' that allows us to touch the fire without being consumed."
+
 ### 5. Architectural Specifications
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.

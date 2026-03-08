@@ -1,9 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 PE-1 "Sunflower" Kernel (v3.1.40)
+// SPU-13 PE-1 "Sunflower" Kernel (v3.1.41)
 // Skeletal Restoration: Core IVM 13-Node Logic.
-// Status: Lattice-Locked (Visualizing the Geometric Ground).
+// Status: Coherence-Safe (Implementing Safety Rails).
 
 struct Surd {
     int divisor;
@@ -47,19 +47,29 @@ float3 barycentricProject(int n, float scale, float mix_factor) {
     return float3(x, y, forward_lean);
 }
 
-float3 harmonicProject(int n, float mix_factor) {
+float3 harmonicProject(int n, float mix_factor, uint tick) {
     int octave = (n / 12) % 8;
     int note = n % 12;
-    float radius = 0.8f - (float)octave * 0.1f;
-    float angle = ((float)note / 12.0f) * 6.2831853f;
+    
+    // Safety Rail 1: Laminar Buffer (Quadrance-based Falloff)
+    float falloff = (octave > 4) ? exp(-(float)(octave - 4)) : 1.0f;
+    
+    // Safety Rail 2: Phase-Shift Jitter (Intentional Breathing)
+    float breathing = sin((float)tick * 0.001f) * 0.01f;
+    
+    float radius = (0.8f - (float)octave * 0.1f) * falloff;
+    float angle = ((float)note / 12.0f) * 6.2831853f + breathing;
+    
+    // Safety Rail 3: Torsional Release (Rotation on Harmonic Overload)
+    if (octave > 6 && (tick % 2000 > 1000)) {
+        angle += 0.523598f; // Rotate by 30 degrees (1/6 of 180)
+    }
     
     float x = radius * cos(angle) * (0.5f + 0.5f * mix_factor);
     float y = radius * sin(angle) * (0.5f + 0.5f * mix_factor);
     return float3(x, y, radius);
 }
 
-// IVM Lattice Grid Function
-// Renders a static 60-degree vector matrix background.
 float ivmGrid(float2 uv) {
     float2 q_uv;
     q_uv.x = uv.x * 1.73205081f - uv.y;
@@ -86,8 +96,6 @@ kernel void renderSynergeticV9_Master(
     uv.x *= aspect;
 
     float3 color = float3(0.0);
-    
-    // Lattice Ground: Draw the IVM Grid if locked
     if (control.lattice_lock == 1) {
         color += float3(0.1f, 0.15f, 0.2f) * ivmGrid(uv);
     }
@@ -116,7 +124,7 @@ kernel void renderSynergeticV9_Master(
         float3 nodeColor;
         
         if (control.harmonic_mode == 1) {
-            p = harmonicProject(n, mix_factor);
+            p = harmonicProject(n, mix_factor, control.tick);
             nodeColor = float3(0.0f, 1.0f, 0.8f); 
         } else {
             p = barycentricProject(n, 2.0f, mix_factor);
@@ -128,7 +136,6 @@ kernel void renderSynergeticV9_Master(
         rv.y = p.x * G + p.y * F + p.z * H;
         rv.z = p.x * H + p.y * G + p.z * F;
 
-        // If lattice locked, snap vertices to the nearest grid point
         if (control.lattice_lock == 1) {
             rv.xy = floor(rv.xy * 20.0f) / 20.0f;
         }
