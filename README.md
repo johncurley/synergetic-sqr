@@ -164,6 +164,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 *   **[BIRTH_REPORT.md](docs/spec/BIRTH_REPORT.md):** Final validation of the Silicon Wake and the 4D Laminar Map.
 *   **[PROOF_OF_CLOSURE.md](docs/spec/PROOF_OF_CLOSURE.md):** Formal theorem proving bit-exact identity in $\mathbb{Q}(\sqrt{3})$.
 *   **[BIORESONANCE_OBSERVATIONS.md](docs/spec/BIORESONANCE_OBSERVATIONS.md):** Empirical log of physiological interaction with the resonant manifold.
+*   **[BIO_SYMMETRY_LEDGER.md](docs/spec/BIO_SYMMETRY_LEDGER.md):** Mapping subjective states (Cubic vs. Laminar) to geometric signatures.
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
