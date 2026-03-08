@@ -1,0 +1,23 @@
+# SPU-13 Geodesic Fractal Constraints (Lattice iCE40)
+# v3.1 "Laminar Growth"
+
+# --- 1. Resonant Clock (61.44 kHz) ---
+# Constrained to the geometric center of the die
+set_io clk_resonant 35  # iCEBreaker Example
+
+# --- 2. Macro Placement Regions ---
+# These regions define the recursive hexagonal clusters.
+# We override the Manhattan router by confining Quadray logic to 60-degree wedges.
+
+# Level 0: Core A (Invariant Axis)
+# region core_a {0,0,10,10}
+
+# Level 1: Fractal Interconnects (60-degree offsets)
+# region core_b {15,0,25,10}
+# region core_c {7,12,17,22}
+# region core_d {22,12,32,22}
+
+# --- 3. High-Priority Geodesic Nets ---
+# Signals between lanes must maintain bit-exact phase.
+# We use 'set_location' to force the Thomson Rotor bypass into zero-gate swaps.
+# set_location u_rotor/bypass_p5_inst 10 10 0
