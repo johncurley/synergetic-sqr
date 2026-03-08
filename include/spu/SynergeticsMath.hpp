@@ -147,6 +147,25 @@ struct TensegrityLink {
     }
 };
 
+// --- 4. COHERENCE MONITORING (v3.3.11) ---
+
+struct CoherenceMonitor {
+    int32_t stall_counter = 0;
+    bool last_janus = false;
+    bool locked = false;
+
+    bool update(bool current_janus) {
+        if (current_janus == last_janus) {
+            if (stall_counter < 15) stall_counter++;
+        } else {
+            stall_counter = 0;
+        }
+        last_janus = current_janus;
+        locked = (stall_counter < 12);
+        return locked;
+    }
+};
+
 } // namespace Synergetics
 
 #endif

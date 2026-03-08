@@ -1,9 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 PE-1 "Sunflower" Kernel (v3.1.25)
+// SPU-13 PE-1 "Sunflower" Kernel (v3.1.37)
 // Skeletal Restoration: Core IVM 13-Node Logic.
-// Calibration: Calibrated for Vagal Calm and Prolonged Observation.
+// Status: Coherence-Aware (Visualizing the Presence of the One).
 
 struct Surd {
     int divisor;
@@ -22,6 +22,7 @@ struct SPUControl {
     int layer;
     uint phase;
     uint dss;
+    uint coherence; // 0=Absence, 1=Presence
 };
 
 float surdToFloat(Surd s) {
@@ -72,7 +73,11 @@ kernel void renderSynergeticV9_Master(
     
     // High-Contrast Calibration (DSS/Damper influence)
     float sharpness = (control.dss == 1) ? 18.0f : 45.0f;
-    float brightness = isSkeletal ? 0.06f : 0.04f;
+    
+    // Coherence Pulse: If "The One" is absent, the nodes dim.
+    float coherence_mult = (control.coherence == 1) ? 1.0f : 0.2f;
+    float brightness = (isSkeletal ? 0.06f : 0.04f) * coherence_mult;
+    
     float3 nodeColor = isSkeletal ? float3(1.0f) : float3(0.54f, 0.17f, 0.89f);
 
     for(int n=1; n<=nodeCount; n++) {

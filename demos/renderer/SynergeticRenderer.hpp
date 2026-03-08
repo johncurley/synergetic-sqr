@@ -51,6 +51,7 @@ private:
         int32_t layer;
         uint32_t prime_phase;
         uint32_t dss_enabled; // REG_DSS: 0=OFF, 1=ON
+        uint32_t coherence;   // 0=Absence, 1=Presence
     };
 
     MTL::Device* _device;
@@ -61,6 +62,7 @@ private:
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
     int _layer = 0;
+    CoherenceMonitor _coherence;
 };
 
 class VulkanRenderer : public IRenderer {
@@ -84,6 +86,7 @@ private:
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
     int _layer = 0;
+    CoherenceMonitor _coherence;
 };
 
 } // namespace Synergetics

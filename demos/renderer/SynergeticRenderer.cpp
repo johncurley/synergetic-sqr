@@ -98,11 +98,14 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setTexture(drawable->texture(), 0);
     
     uint32_t currentPhase = (_tickCount / 1200) % 4;
+    bool isLocked = _coherence.update(_janus > 0);
+
     SPUControl control = {
         static_cast<uint32_t>(_tickCount),
         static_cast<int32_t>(_layer),
         currentPhase,
-        _dssEnabled ? 1u : 0u
+        _dssEnabled ? 1u : 0u,
+        isLocked ? 1u : 0u
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
@@ -170,17 +173,18 @@ void VulkanRenderer::toggleDSS() {
 
 void VulkanRenderer::draw(void* unused) {
     _tickCount++;
+    bool isLocked = _coherence.update(_janus > 0);
     
     // In a full implementation, we would:
     // 1. Acquire Command Buffer
     // 2. Begin Compute Pass
     // 3. Bind Pipeline & Textures
-    // 4. Update Push Constants (fgh coefficients)
+    // 4. Update Push Constants (fgh coefficients + coherence)
     // 5. Dispatch
     // 6. Submit & Present
     
     if (_tickCount % 600 == 0) {
-        std::cout << "[Vulkan Sync Verification] Tick: " << _tickCount << " | Layer: " << _layer << " | DSS: " << (_dssEnabled ? "ON" : "OFF") << std::endl;
+        std::cout << "[Vulkan Sync Verification] Tick: " << _tickCount << " | Layer: " << _layer << " | DSS: " << (_dssEnabled ? "ON" : "OFF") << " | Coherence: " << (isLocked ? "LOCKED" : "STALLED") << std::endl;
     }
 }
 
