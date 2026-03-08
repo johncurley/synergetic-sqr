@@ -1,6 +1,6 @@
-// Arty A7-35T Top-Level Integration (v3.3.54)
+// Arty A7-35T Top-Level Integration (v3.3.59)
 // Target: Xilinx Artix-7
-// Implementation: Universal Fractal Heart & Expanded ISA
+// Implementation: 13-Core Collective Phyllotaxis Lattice
 
 module arty_a7_top (
     input  wire       clk_100mhz,
@@ -13,9 +13,8 @@ module arty_a7_top (
 );
 
     wire clk_resonant;
-    wire [831:0] reg_state;
-    wire [831:0] next_state;
-    wire         fault;
+    wire [831:0] manifold_state;
+    wire         lattice_fault;
     wire         henosis_pass;
     
     // 1. The Fractal Heart: Sierpiński Oscillator
@@ -28,24 +27,23 @@ module arty_a7_top (
         .clk_laminar(clk_resonant)
     );
 
-    // 2. SPU-13 Core Manifold (Expanded ISA)
-    spu_core u_core (
+    // 2. SPU-13 Phyllotaxis Lattice (13 Interconnected Cores)
+    spu_lattice_13 u_lattice (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
-        .reg_curr(reg_state),
-        .neighbors(3072'b0),
         .opcode(sw[2:0]),
         .prime_phase(sw[3:2]),
         .sign_flip(1'b0),
-        .reg_out(next_state),
-        .fault_detected(fault)
+        .ext_in(832'b0),
+        .manifold_out(manifold_state),
+        .lattice_fault(lattice_fault)
     );
 
-    // 3. One-Second Stability Audit
+    // 3. One-Second Stability Audit (Monitoring the collective output)
     spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
-        .reg_in(next_state),
+        .reg_in(manifold_state),
         .pass(henosis_pass),
         .fail()
     );
@@ -57,8 +55,8 @@ module arty_a7_top (
         .clk_phys(clk_100mhz),
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
-        .spu_reg_in(next_state),
-        .fault_detected(fault),
+        .spu_reg_in(manifold_state),
+        .fault_detected(lattice_fault),
         .led_status(led),
         .pmod_ja_out(pmod_ja),
         .sw_control(sw),
