@@ -133,6 +133,9 @@ cmake --build build --target synergetic-sqr
 ./build/synergetic-sqr --skeletal
 ```
 
+### ⚡ Physical Bring-Up
+For first-time hardware operators, please follow the **[SPU-13 Reification Checklist](boards/icesugar/CHECKLIST.md)** to capture and verify the transition to the Laminar manifold.
+
 ### 5. Architectural Specifications
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.

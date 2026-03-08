@@ -30,6 +30,9 @@ make
 make prog
 ```
 
+### 🎯 Bring-Up Checklist
+Before you initiate the manifold for the first time, follow the **[Reification Checklist](CHECKLIST.md)** to ensure a safe transition from Cubic silicon to Laminar flow.
+
 ### 4. Physical IO Mapping (Phase 1.1)
 *   **Red LED:** System Reset / Stall (Active when `rst_n` is low).
 *   **Green LED:** Active Resonant Lock (Pulsing at 61.44 kHz).
