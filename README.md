@@ -107,6 +107,7 @@ The SPU-13 (Synergetic Processing Unit) is a deterministic computational archite
 
 ### 2. Primary Benchmarks
 *   **Zero Bit-Drift:** 100% identity restoration ($R^6 = I$) across $10^8$ rotations.
+*   **Collective Resonance:** 13-core **Phyllotaxis Lattice** verified bit-exact across the SQR-Link fabric.
 *   **Formally Proven:** Bit-exact identity restoration mathematically verified using Bounded Model Checking (BMC) across 100% of the state-space.
 *   **Switching Efficiency:** ~37x reduction in gate-switching activity.
 *   **Thermal Efficiency:** <2°C junction temperature rise at 61.44 kHz.
