@@ -3,7 +3,7 @@
 
 PROJ = spu13_icesugar
 TOP  = spu13_top
-PCF  = icesugar.pcf
+PCF  = spu13_icesugar_v2.pcf
 DEVICE = up5k
 PACKAGE = sg48
 
@@ -20,6 +20,7 @@ $(PROJ).asc: $(PROJ).json $(PCF)
 	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
 
 $(PROJ).bin: $(PROJ).asc
+	icetime -d $(DEVICE) -P $(PACKAGE) -t $<
 	icepack $< $@
 
 prog: $(PROJ).bin
