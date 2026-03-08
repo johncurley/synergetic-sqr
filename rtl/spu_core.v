@@ -126,7 +126,15 @@ module spu_core (
         .vector_out(harmonic_vector)
     );
 
-    // 8. Register Dispatch (ISA Expansion)
+    // 8. Identity Gate: The Rational Guard
+    wire identity_lock;
+    spu_identity_monad u_identity (
+        .current_quadrance(quadrance_out),
+        .lattice_state(fluid_reg),
+        .identity_aligned(identity_lock)
+    );
+
+    // 9. Register Dispatch (ISA Expansion)
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
@@ -143,5 +151,7 @@ module spu_core (
             endcase
         end
     end
+
+    assign fault_detected = (|lane_faults) | (!identity_lock);
 
 endmodule

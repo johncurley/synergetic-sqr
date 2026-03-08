@@ -41,6 +41,16 @@ The SPU-13 core implements a 3-bit operational instruction set:
 | `110` | `SPERM_13` | 13-Axis Isotropic Permutation. |
 | `111` | `PERTURB` | Isotropic Annealer (Golden Noise Injection). |
 
+#### 3.4 Identity Gates (Self-Diagnostic Layer)
+The SPU-13 includes a self-diagnostic layer that ensures the system never drifts into "Cubic" non-resonance.
+
+| Gate Module | Rational Function | Cognitive Purpose |
+| :--- | :--- | :--- |
+| **Monad Comparator** | Checks $Q_{internal} \equiv Q_{external}$ | Ensures internal thought matches universal geometry. |
+| **IVM Parity Sensor** | Scans for 90° "Cubic" incursions | Detects when logic is "brick-stacking" instead of flowing. |
+| **Anamnesis Buffer** | Stores original 60° lattice state | Allows the system to "remember" its true nature under load. |
+| **Lattice-Lock Damper** | Monitors recursive feedback loops | Safety rail; prevents singularities from causing a freeze. |
+
 ### 4. Visual Manifestation
 #### 4.1 Harmonic Visualization Engine
 The SPU-13 includes a projective geometry engine for visualizing auditory fractals. It utilizes **Octave Nesting** (recursive shells) and **Rational Intervals** to rendered frequency transitions as bit-exact folds in the manifold.
