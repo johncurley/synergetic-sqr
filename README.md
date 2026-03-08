@@ -145,6 +145,8 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 ### 5. Architectural Specifications
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
+*   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
+*   **[MINIMUM_HYSTERESIS_PROOF.md](SPECULATIVE/docs/MINIMUM_HYSTERESIS_PROOF.md):** Theoretical derivation of error reduction in NSE.
 *   **[TECHNICAL_REPORT.md](docs/spec/TECHNICAL_REPORT.md):** Comprehensive derivation of the SPU-13 core.
 
 ---
