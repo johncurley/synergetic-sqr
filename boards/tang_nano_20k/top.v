@@ -51,9 +51,10 @@ module tang_nano_20k_top (
 
     // 4. IO Bridge
     spu_io_bridge #(
-        .CLK_FREQ(61440)
+        .CLK_PHYS_HZ(27000000)
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(sys_clk),
+        .clk_resonant(clk_resonant),
         .reset(~sys_rst_n),
         .spu_reg_in(reg_state),
         .fault_detected(fault),

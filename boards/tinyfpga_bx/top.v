@@ -48,9 +48,10 @@ module tinyfpga_bx_top (
 
     // 3. IO Bridge (UART Telemetry)
     spu_io_bridge #(
-        .CLK_FREQ(61440)
+        .CLK_PHYS_HZ(16000000)
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(clk_resonant), // Using clk_resonant as clk_phys for low-speed TinyFPGA simplicity
+        .clk_resonant(clk_resonant),
         .reset(1'b0),
         .spu_reg_in(next_state),
         .fault_detected(fault),

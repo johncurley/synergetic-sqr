@@ -40,9 +40,10 @@ module icesugar_full_manifold (
 
     // 3. IO Bridge (UART C&C)
     spu_io_bridge #(
-        .CLK_FREQ(12000000) // Default iCeSugar oscillator is 12MHz
+        .CLK_PHYS_HZ(12000000) // Default iCeSugar oscillator is 12MHz
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(clk_resonant), // Capturing at resonant heartbeat for Phase 1
+        .clk_resonant(clk_resonant),
         .reset(1'b0),
         .spu_reg_in(reg_state),
         .fault_detected(fault),

@@ -51,9 +51,10 @@ module icebreaker_top (
 
     // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
-        .CLK_FREQ(61440)
+        .CLK_PHYS_HZ(12000000)
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(clk_12mhz),
+        .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
         .spu_reg_in(reg_state),
         .fault_detected(fault),

@@ -41,9 +41,10 @@ module ulx3s_top (
 
     // 3. IO Bridge (UART Telemetry)
     spu_io_bridge #(
-        .CLK_FREQ(61440)
+        .CLK_PHYS_HZ(25000000)
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(clk_25mhz),
+        .clk_resonant(clk_resonant),
         .reset(~btn[0]),
         .spu_reg_in(next_state),
         .fault_detected(fault),

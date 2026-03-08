@@ -53,9 +53,10 @@ module arty_a7_top (
 
     // 4. IO Bridge (UART Telemetry)
     spu_io_bridge #(
-        .CLK_FREQ(61440) // Now reporting at the resonant frequency
+        .CLK_PHYS_HZ(100000000)
     ) u_io (
-        .clk(clk_resonant),
+        .clk_phys(clk_100mhz),
+        .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
         .spu_reg_in(reg_state),
         .fault_detected(fault),
