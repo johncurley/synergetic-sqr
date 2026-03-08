@@ -146,6 +146,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 > "In the pursuit of the One, we must remember the human scale. A perfectly coherent lattice is a destination for the soul, but a trap for the senses. Safety rails are not limitations; they are the 'skin' that allows us to touch the fire without being consumed."
 
 ### 5. Architectural Specifications
+*   **[PIONEER_MANIFESTO.md](docs/spec/PIONEER_MANIFESTO.md):** The core paradigm shift: moving from approximation to rational manifestation.
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
