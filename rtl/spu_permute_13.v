@@ -1,10 +1,11 @@
-// SPU-11 High-Dimensional Permutator (v2.3.2)
-// Implements 11-axis cyclic shuffle: {Q1..Q13} -> {Q2..Q13, Q1}
-// Aligned with Prime-11 Symmetry for Topological Data Folding.
+// SPU-13 High-Dimensional Permutator (v3.3.28)
+// Implements 13-axis cyclic shuffle: {Q1..Q13} -> {Q2..Q13, Q1}
+// Aligned with the Symmetry of the 13 for Topological Data Folding.
+// Logic: Zero-Gate Wiring Permutation.
 
 module spu_permute_13 (
-    input  [831:0] q_in,  // 11 Lanes x 64-bit
-    output [831:0] q_out
+    input  wire [831:0] q_in,  // 13 Lanes x 64-bit
+    output wire [831:0] q_out
 );
 
     // Named Lane Extraction
@@ -19,8 +20,11 @@ module spu_permute_13 (
     wire [63:0] q9  = q_in[575:512];
     wire [63:0] q10 = q_in[639:576];
     wire [63:0] q11 = q_in[703:640];
+    wire [63:0] q12 = q_in[767:704];
+    wire [63:0] q13 = q_in[831:768];
 
-    // Cyclic 11-Axis Shift (Zero-Gate Logic)
-    assign q_out = { q1, q11, q10, q9, q8, q7, q6, q5, q4, q3, q2 };
+    // Cyclic 13-Axis Shift (Zero-Gate Logic)
+    // Formula: q_out[i] = q_in[(i+1)%13]
+    assign q_out = { q1, q13, q12, q11, q10, q9, q8, q7, q6, q5, q4, q3, q2 };
 
 endmodule
