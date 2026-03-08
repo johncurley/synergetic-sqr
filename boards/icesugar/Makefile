@@ -1,26 +1,42 @@
 # SPU-13 Synthesis Makefile: iCeSugar (iCE40UP5K)
-# v3.1.32 "Laminar Build"
+# v3.3.47 "Universal Reification"
 
+# Target Selection: spu13_top (Phase 1.1) or icesugar_full_manifold (Phase 1.2)
+TOP = spu13_top
 PROJ = spu13_icesugar
-TOP  = spu13_top
-PCF  = spu13_icesugar_v2.pcf
+PCF = spu13_icesugar_v2.pcf
+
+ifeq ($(TOP), icesugar_full_manifold)
+    PCF = spu13_icesugar_full.pcf
+endif
+
 DEVICE = up5k
 PACKAGE = sg48
 
 # RTL Sources
-SRC = spu13_top.v \
-      ../../rtl/spu_fractal_clk.v \
-      ../../rtl/spu_coherence_ecc.v \
-      ../../rtl/spu_rational_trig.v \
-      ../../rtl/spu_geometry_fluidizer.v \
-      ../../rtl/spu_gram_controller.v \
-      ../../rtl/spu_fluid_solver.v \
-      ../../rtl/spu_annealer.v \
-      ../../rtl/spu_tensegrity_balancer.v \
-      ../../rtl/spu_harmonic_vis.v \
-      ../../rtl/spu_identity_monad.v \
-      ../../rtl/spu_fractal_bypass.v \
-      ../../rtl/spu_harmonic_handshake.v
+RTL_DIR = ../../rtl
+SRC = $(TOP).v \
+      $(RTL_DIR)/spu_fractal_clk.v \
+      $(RTL_DIR)/spu_harmonic_handshake.v \
+      $(RTL_DIR)/spu_coherence_ecc.v \
+      $(RTL_DIR)/spu_core.v \
+      $(RTL_DIR)/spu_ecc.v \
+      $(RTL_DIR)/spu_permute.v \
+      $(RTL_DIR)/spu_permute_13.v \
+      $(RTL_DIR)/spu_smul_13.v \
+      $(RTL_DIR)/spu_rational_trig.v \
+      $(RTL_DIR)/spu_geometry_fluidizer.v \
+      $(RTL_DIR)/spu_gram_controller.v \
+      $(RTL_DIR)/spu_fluid_solver.v \
+      $(RTL_DIR)/spu_annealer.v \
+      $(RTL_DIR)/spu_tensegrity_balancer.v \
+      $(RTL_DIR)/spu_harmonic_vis.v \
+      $(RTL_DIR)/spu_identity_monad.v \
+      $(RTL_DIR)/spu_fractal_bypass.v \
+      $(RTL_DIR)/spu_self_test.v \
+      $(RTL_DIR)/spu_io_bridge.v \
+      $(RTL_DIR)/surd_uart_tx.v \
+      $(RTL_DIR)/surd_multiplier.v
 
 all: $(PROJ).bin
 
