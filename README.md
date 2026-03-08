@@ -136,6 +136,7 @@ cmake --build build --target synergetic-sqr
 ### 5. Architectural Specifications
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
+*   **[PHOTONICS_PLAN.md](docs/spec/PHOTONICS_PLAN.md):** Roadmap for Zero-Hysteresis light-based computation.
 *   **[TECHNICAL_REPORT.md](docs/spec/TECHNICAL_REPORT.md):** Comprehensive derivation of the SPU-13 core.
 
 ---
