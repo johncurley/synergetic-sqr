@@ -1,0 +1,22 @@
+# SPU-13 Full Manifold Constraints: iCeSugar (iCE40UP5K)
+# v3.3.13 "Full SQR-Link Mapping"
+# Objective: Physical realization of the 832-bit manifold with stability audit.
+
+# --- 1. Resonant Clock Entry ---
+set_io clk_12mhz 35
+
+# --- 2. Manual Reset ---
+set_io rst_n 18
+
+# --- 3. Janus-Gate Differential Output ---
+set_io -current 6 janus_pos 46
+set_io -current 6 janus_neg 47
+
+# --- 4. Status Display (RGB LED) ---
+set_io led_red   39
+set_io led_green 40
+set_io led_blue  41
+
+# --- 5. Command & Control (UART) ---
+set_io uart_tx 10
+set_io uart_rx 9

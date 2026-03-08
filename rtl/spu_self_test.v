@@ -1,6 +1,7 @@
-// SPU-13 Self-Checking Audit Module (v2.9.31)
-// Function: Executes 61440 cycles of identity shuffles and verifies bit-perfection.
-// Result: 'pass' signal high indicates Resonance Lock (0 drift).
+// SPU-13 Self-Checking Audit Module (v3.3.13)
+// Function: Executes 61,440 cycles of identity shuffles and verifies bit-perfection.
+// Context: At the 61.44 kHz resonant frequency, this is a 1.0 second Stability Audit.
+// Result: 'pass' signal high indicates Resonance Lock (Zero Drift).
 
 module spu_self_test (
     input  wire         clk,

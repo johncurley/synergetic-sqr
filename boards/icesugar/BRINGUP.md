@@ -22,4 +22,13 @@ The manifold is safety-gated by the `laminar_en` signal (Pin 10).
 Measure Pins 46 and 47 with an oscilloscope. You should see two 61.44 kHz square waves, exactly 180° out of phase, with minimal switching noise.
 
 ---
+
+### Phase 1.2: Full Manifold Reification
+The `icesugar_full_manifold.v` provides the full 832-bit SQR-Link logic with a **One-Second Stability Audit**.
+
+1.  **Switch to Full PCF:** Update `Makefile` or `build_spu13.sh` to use `spu13_icesugar_full.pcf`.
+2.  **Top-Level Change:** Set `TOP = icesugar_full_manifold` in the `Makefile`.
+3.  **Stability Pass:** After flashing, if the **Green LED** lights up after 1.0 second, the manifold has achieved bit-perfect identity restoration across 61,440 cycles.
+
+---
 *Authorized for SPU-13 Silicon Bring-Up.*
