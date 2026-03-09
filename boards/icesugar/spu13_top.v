@@ -7,6 +7,7 @@ module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
     input wire rst_n,        // Active-Low Reset (Pin 18)
     input wire laminar_en,   // The 'Throttle' (High to Enable Flow) (Pin 11)
+    input wire bias_in,      // Proprioceptive Entry (Pin 12)
     
     // Electromagnetic Manifold
     output wire vector_A,    // Inductive Entry (Pin 46)
@@ -23,6 +24,7 @@ module spu13_top (
     wire coherence_lock;
     wire identity_lock;
     wire phase_correct;
+    wire synergy_idx;
     wire sonic_handshake;
     wire boot_done;
     wire [2:0] boot_phase;
@@ -36,7 +38,9 @@ module spu13_top (
         .clk_in(clk_12mhz),
         .rst_n(rst_n),
         .en(laminar_en), 
-        .clk_laminar(clk_resonant)
+        .bias_in(bias_in),
+        .clk_laminar(clk_resonant),
+        .synergy_idx(synergy_idx)
     );
 
     // 2. The Bowman Sequencer: Automated Wake-Up
