@@ -48,9 +48,9 @@ module spu_proprioception (
     end
 
     // 2. Homeostatic Damping
-    // If switching density exceeds 50% (approx 416 flips/cycle),
+    // If switching density exceeds 20% (approx 166 flips/cycle),
     // trigger the damping signal to restore Laminar Silence.
-    // Threshold: 416 * 256 = 106496 (approx 0x1A000)
-    assign damping_active = (thermal_pressure > 32'h0001A000);
+    // Threshold: 166 * 256 = 42496 (approx 0x0000A600)
+    assign damping_active = (thermal_pressure > 32'h0000A600);
 
 endmodule
