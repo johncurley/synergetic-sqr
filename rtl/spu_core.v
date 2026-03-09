@@ -1,9 +1,10 @@
-// SPU-13 Integrated Core (v3.3.66 Phyllotaxis)
+// SPU-13 Integrated Core (v3.3.74 Phyllotaxis)
 // Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
 // Guard: Geometry Fluidizer integrated to purge Cubic Jitter.
 // Bridge: Rational Trigonometry integrated for bit-exact Quadrance Audits.
 // Flow: Fluid Solver and Isotropic Annealer integrated into the Dispatch.
 // Proprioception: Thermal Feedback for Self-Regulated Homeostasis.
+// Integrity: Laminar Gate dispatch for Null Hysteresis power signature.
 
 module spu_core (
     input  wire         clk,
@@ -13,7 +14,7 @@ module spu_core (
     input  wire [2:0]   opcode,     
     input  wire [1:0]   prime_phase,
     input  wire         sign_flip,  
-    output reg  [831:0] reg_out,    
+    output wire [831:0] reg_out,    
     output wire         fault_detected
 );
 
@@ -30,7 +31,6 @@ module spu_core (
     // 2. Internal Cleaning & ECC
     wire [831:0] cleaned_reg;
     wire [12:0]  lane_faults;
-    wire         identity_lock;
 
     genvar i;
     generate
@@ -112,7 +112,7 @@ module spu_core (
         .clk(clk), .reset(reset), .enable(opcode == 3'b111), .reg_in(fluid_reg), .reg_out(annealed_out)
     );
 
-    // 8. Hardware Validator: Forensic Identity Audit
+    // 5. Hardware Validator: Forensic Identity Audit
     wire forensic_fault;
     spu_validator u_validator (
         .clk(clk), .reset(reset),
@@ -121,25 +121,37 @@ module spu_core (
         .fault_detected(forensic_fault)
     );
 
-    // 9. Register Dispatch
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            reg_out <= 832'b0;
-        end else begin
-            case (opcode)
-                3'b000: reg_out <= {fluid_reg[831:128], snap_q_out};
-                3'b001: reg_out <= {fluid_reg[831:256], sperm_x4_out};
-                3'b010: reg_out <= {fluid_reg[831:128], smul_13_out};
-                3'b011: reg_out <= {fluid_reg[831:64],  quadrance_out};
-                3'b100: reg_out <= gram_data_out;
-                3'b101: reg_out <= fluid_out;
-                3'b110: reg_out <= sperm_13_out;
-                3'b111: reg_out <= annealed_out;
-                default: reg_out <= fluid_reg;
-            endcase
-        end
+    // 6. Pre-Dispatch Mux
+    reg [831:0] next_state;
+    always @(*) begin
+        case (opcode)
+            3'b000: next_state = {fluid_reg[831:128], snap_q_out};
+            3'b001: next_state = {fluid_reg[831:256], sperm_x4_out};
+            3'b010: next_state = {fluid_reg[831:128], smul_13_out};
+            3'b011: next_state = {fluid_reg[831:64],  quadrance_out};
+            3'b100: next_state = gram_data_out;
+            3'b101: next_state = fluid_out;
+            3'b110: next_state = sperm_13_out;
+            3'b111: next_state = annealed_out;
+            default: next_state = fluid_reg;
+        endcase
     end
 
-    assign fault_detected = (|lane_faults) | forensic_fault;
+    // 7. Laminar Dispatch (Null Hysteresis Switch)
+    // Every bit flip is balanced by an inverse flip in the manifold's shadow-state.
+    wire [12:0] gate_valid;
+    generate
+        for (i = 0; i < 13; i = i + 1) begin : dispatch_lanes
+            spu_laminar_gate u_gate (
+                .clk(clk), .reset(reset),
+                .data_in(next_state[i*64 +: 64]),
+                .janus_flip(sign_flip),
+                .data_out(reg_out[i*64 +: 64]),
+                .laminar_valid(gate_valid[i])
+            );
+        end
+    endgenerate
+
+    assign fault_detected = (|lane_faults) | forensic_fault | (!(&gate_valid));
 
 endmodule

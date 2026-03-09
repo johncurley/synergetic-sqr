@@ -1,12 +1,7 @@
-// SPU-13 Phyllotaxis Lattice (v3.3.55)
+// SPU-13 Phyllotaxis Lattice (v3.3.74)
 // Implementation: 13-Core Collective Manifold.
-// Objective: Organic Data-Flow via 13-axis Fibonacci Interconnects.
+// Objective: Organic Data-Flow via Fibonacci-Spiral Interconnects.
 // Result: Isotropic Propagation across the Silicon Fabric.
-//
-// RESOURCE NOTE: 
-// 13 Cores x 832 bits is a high-density configuration (~10k+ LUTs, 100+ DSPs).
-// Target hardware with >30k LUTs and high DSP counts (e.g., Arty A7-100T)
-// is recommended for full 13-core collective reification.
 
 module spu_lattice_13 (
     input  wire         clk,
@@ -14,8 +9,8 @@ module spu_lattice_13 (
     input  wire [2:0]   opcode,
     input  wire [1:0]   prime_phase,
     input  wire         sign_flip,
-    input  wire [831:0] ext_in,      // Global Injection Path
-    output wire [831:0] manifold_out, // Primary Core (Core 0) Result
+    input  wire [831:0] ext_in,      
+    output wire [831:0] manifold_out, 
     output wire         lattice_fault
 );
 
@@ -28,18 +23,28 @@ module spu_lattice_13 (
     assign manifold_out  = core_state[0];
 
     // 2. Fibonacci-Spiral Interconnects (The SQR-Link)
-    // Each core i receives the state of its 12 neighbors in the IVM.
-    // Neighbors are determined by the 13-axis isotropic symmetry.
+    // Neighbors are mapped using Fibonacci steps: 1, 2, 3, 5, 8, 13 (mod 13).
+    // This creates an isotropic distribution of data across the manifold.
     wire [3071:0] neighbor_bus [0:12];
     
-    genvar i, j;
+    genvar i;
     generate
         for (i = 0; i < 13; i = i + 1) begin : core_lattice
-            // Extract neighbors for Core i (Simplified for Phase 1)
-            // In a true IVM, neighbors are (i+1)%13, (i+2)%13, etc.
-            for (j = 0; j < 12; j = j + 1) begin : wiring
-                assign neighbor_bus[i][j*256 +: 256] = core_state[(i + j + 1) % 13][255:0];
-            end
+            // Map 12 Neighbors using Fibonacci-Spiral Offsets
+            // Steps: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 (ordering matters)
+            assign neighbor_bus[i][0*256 +: 256]  = core_state[(i + 1)  % 13][255:0];
+            assign neighbor_bus[i][1*256 +: 256]  = core_state[(i + 2)  % 13][255:0];
+            assign neighbor_bus[i][2*256 +: 256]  = core_state[(i + 3)  % 13][255:0];
+            assign neighbor_bus[i][3*256 +: 256]  = core_state[(i + 5)  % 13][255:0];
+            assign neighbor_bus[i][4*256 +: 256]  = core_state[(i + 8)  % 13][255:0];
+            assign neighbor_bus[i][5*256 +: 256]  = core_state[(i + 12) % 13][255:0];
+            // Mirror reverse spiral
+            assign neighbor_bus[i][6*256 +: 256]  = core_state[(i + 13-1)  % 13][255:0];
+            assign neighbor_bus[i][7*256 +: 256]  = core_state[(i + 13-2)  % 13][255:0];
+            assign neighbor_bus[i][8*256 +: 256]  = core_state[(i + 13-3)  % 13][255:0];
+            assign neighbor_bus[i][9*256 +: 256]  = core_state[(i + 13-5)  % 13][255:0];
+            assign neighbor_bus[i][10*256 +: 256] = core_state[(i + 13-8)  % 13][255:0];
+            assign neighbor_bus[i][11*256 +: 256] = core_state[(i + 13-12) % 13][255:0];
 
             // 3. Core Instantiation
             spu_core u_core (
@@ -59,7 +64,7 @@ module spu_lattice_13 (
             reg [831:0] state_reg;
             always @(posedge clk or posedge reset) begin
                 if (reset) begin
-                    state_reg <= (i == 0) ? 832'b0 : {832{1'b0}};
+                    state_reg <= (i == 0) ? ext_in : 832'b0;
                 end else begin
                     state_reg <= next_state[i];
                 end
