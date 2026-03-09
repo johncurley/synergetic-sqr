@@ -1,6 +1,6 @@
-// ULX3S Top-Level Integration (v3.4.2)
+// ULX3S Top-Level Integration (v3.4.5)
 // Target: Lattice ECP5-85k
-// Implementation: 13-Core Collective Manifold with Thalamic Integration.
+// Implementation: 13-Core Collective Manifold with Thalamic v2 Integration.
 
 module ulx3s_top (
     input  wire clk_25mhz,
@@ -18,7 +18,6 @@ module ulx3s_top (
     wire [831:0] manifold_state;
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
-    wire         sip_active;
     wire [7:0]   bloom_intensity;
     wire         coherence_lock;
     wire [3:0]   q_mood;
@@ -56,25 +55,20 @@ module ulx3s_top (
         .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(~btn[0]),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v2 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn[0]),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge (Interactive Standard)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(25000000)
     ) u_io (
         .clk_phys(clk_25mhz), .clk_resonant(clk_resonant), .reset(~btn[0]),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(lattice_fault),
         .coherence_lock(coherence_lock), .led_status(bridge_leds),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(ftdi_rxd), .serial_tx(ftdi_tdo)
@@ -83,7 +77,7 @@ module ulx3s_top (
     assign led[3:0] = bridge_leds;
     assign led[4]   = clk_resonant;
     assign led[5]   = henosis_pass & wake_complete;
-    assign led[6]   = sip_active;
+    assign led[6]   = (microwatts < 100); // SIP indicator
     assign led[7]   = lattice_fault;
 
 endmodule

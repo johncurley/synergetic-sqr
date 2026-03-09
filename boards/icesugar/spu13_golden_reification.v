@@ -57,20 +57,15 @@ module spu13_golden_reification (
         .strike_in(strike_ripple), .manifold_out(manifold_state), .lattice_fault()
     );
 
-    // --- 5. Metabolic Self-Awareness ---
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(!rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // --- 6. Thalamus (Consciousness Relay) ---
+    // --- 5. Thalamus v2 (Central Sensory Relay) ---
     spu_thalamus u_relay (
         .clk_resonant(clk_resonant), .reset(!rst_n),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(identity_lock),
-        .bloom_intensity(), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(identity_lock),
+        .microwatts(microwatts), .bloom_intensity(), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // --- 7. IO Bridge (Interactive Standard) ---
+    // --- 6. IO Bridge (Interactive Standard) ---
     spu_io_bridge u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
         .spu_reg_in(manifold_state), .microwatts(microwatts), .sip_active(sip_active),

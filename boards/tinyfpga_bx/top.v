@@ -1,4 +1,4 @@
-// TinyFPGA BX Top-Level Integration (v3.4.2)
+// TinyFPGA BX Top-Level Integration (v3.4.5)
 // Target: Lattice iCE40LP8K
 // Implementation: Automated Bowman Wake & Interactive Resonance.
 
@@ -62,30 +62,25 @@ module tinyfpga_bx_top (
         .reg_in(next_state), .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(1'b0),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v2 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(1'b0),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge (Interactive Standard)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(16000000)
     ) u_io (
         .clk_phys(clk), .clk_resonant(clk_resonant), .reset(1'b0),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(fault),
         .coherence_lock(coherence_lock), .led_status(),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    assign pin_led = henosis_pass & wake_complete & sip_active;
+    assign pin_led = henosis_pass & wake_complete & (microwatts < 100);
 
 endmodule

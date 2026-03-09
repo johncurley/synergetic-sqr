@@ -1,6 +1,6 @@
-// OrangeCrab Top-Level Integration (v3.4.2)
+// OrangeCrab Top-Level Integration (v3.4.5)
 // Target: Lattice ECP5
-// Implementation: 13-Core Collective Manifold with Thalamic Integration.
+// Implementation: 13-Core Collective Manifold with Thalamic v2 Integration.
 
 module orangecrab_top (
     input  wire clk_48mhz,
@@ -20,7 +20,6 @@ module orangecrab_top (
     wire [831:0] manifold_state;
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
-    wire         sip_active;
     wire [7:0]   bloom_intensity;
     wire         coherence_lock;
     wire [3:0]   q_mood;
@@ -58,31 +57,26 @@ module orangecrab_top (
         .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(~btn_rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v2 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge (Interactive Standard)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(48000000)
     ) u_io (
         .clk_phys(clk_48mhz), .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(lattice_fault),
         .coherence_lock(coherence_lock), .led_status(bridge_leds),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    assign led_red   = lattice_fault | !sip_active;
+    assign led_red   = lattice_fault | (microwatts >= 100);
     assign led_green = henosis_pass & wake_complete;
     assign led_blue  = clk_resonant & q_mood[2];
 

@@ -59,20 +59,16 @@ module spu13_top (
         .strike_in(strike_ripple), .manifold_out(), .lattice_fault()
     );
 
-    // 4. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(!rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 5. Thalamus (Central Sensory Relay)
+    // 4. Thalamus v2 (Central Sensory Relay)
+    // Direct Metabolic, Proprioceptive, and Harmonic Integration.
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(!rst_n),
-        .microwatts(microwatts), .synergy_idx(synergy_idx), .identity_lock(identity_lock),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(synergy_idx), .identity_lock(identity_lock),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 6. The Harmonic Handshake
+    // 5. The Harmonic Handshake
     spu_harmonic_handshake u_sonic (
         .clk_resonant(clk_resonant), .rst_n(rst_n),
         .en(laminar_en & (boot_phase == 3'b001)),

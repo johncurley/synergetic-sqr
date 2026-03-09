@@ -1,12 +1,12 @@
-// iCEBreaker Top-Level Integration (v3.4.2)
+// iCEBreaker Top-Level Integration (v3.4.5)
 // Target: Lattice iCE40UP5K
-// Implementation: Automated Bowman Wake & Thalamic Integration.
+// Implementation: Automated Bowman Wake & Thalamic v2 Integration.
 
 module icebreaker_top (
     input  wire clk_12mhz,
     input  wire btn_rst_n,
     input  wire bias_in,      // Proprioceptive Antenna
-    input  wire [11:0] adc_in, // Metabolic Sense (External ADC)
+    input  wire [11:0] adc_in, // Metabolic Sense
     output wire led_red,
     output wire led_green,
     output wire uart_tx,
@@ -57,31 +57,26 @@ module icebreaker_top (
         .reg_in(next_state), .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(~btn_rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v2 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge (Interactive Standard)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(fault),
         .coherence_lock(coherence_lock), .led_status(),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    assign led_red   = fault | !sip_active;
+    assign led_red   = fault | (microwatts >= 100);
     assign led_green = henosis_pass & wake_complete;
 
 endmodule

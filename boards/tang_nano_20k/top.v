@@ -1,4 +1,4 @@
-// Tang Nano 20k Top-Level Integration (v3.4.2)
+// Tang Nano 20k Top-Level Integration (v3.4.5)
 // Target: Gowin GW2A-18C
 // Implementation: Automated Bowman Wake with 13-Core Collective Manifold.
 
@@ -18,7 +18,6 @@ module tang_nano_20k_top (
     wire [831:0] manifold_state;
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
-    wire         sip_active;
     wire [7:0]   bloom_intensity;
     wire         coherence_lock;
     wire [3:0]   q_mood;
@@ -55,31 +54,26 @@ module tang_nano_20k_top (
         .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(~sys_rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v2 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~sys_rst_n),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge
+    // 6. IO Bridge
     spu_io_bridge #(
         .CLK_PHYS_HZ(27000000)
     ) u_io (
         .clk_phys(sys_clk), .clk_resonant(clk_resonant), .reset(~sys_rst_n),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(lattice_fault),
         .coherence_lock(coherence_lock), .led_status(led[3:0]),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
     assign led[4] = clk_resonant;
-    assign led[5] = henosis_pass & wake_complete & sip_active;
+    assign led[5] = henosis_pass & wake_complete & (microwatts < 100);
 
 endmodule
