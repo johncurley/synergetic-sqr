@@ -6,6 +6,7 @@
 #include <cmath>
 #include <algorithm>
 #include <type_traits>
+#include "spu/spu13_constants.h"
 
 namespace Synergetics {
 
@@ -18,7 +19,7 @@ static inline int32_t spu_deterministic_cast(int64_t val) {
 struct SurdFixed64 {
     int32_t a, b; 
     static constexpr int32_t Shift = 16;
-    static constexpr int32_t One = 1 << Shift;
+    static constexpr int32_t One = SPU_IDENTITY_Q; // Synchronized Identity
 
     static inline SurdFixed64 _spu_surd_mul(SurdFixed64 u, SurdFixed64 v) {
         int64_t prod_bb = (int64_t)u.b * v.b;
@@ -87,7 +88,7 @@ struct DualSurd {
 struct SPU_Vector256 { int32_t v[8]; };
 struct Quadray4 {
     SPU_Vector256 data;
-    static Quadray4 identity() { Quadray4 q; std::memset(q.data.v, 0, 32); q.data.v[0] = 65536; return q; }
+    static Quadray4 identity() { Quadray4 q; std::memset(q.data.v, 0, 32); q.data.v[0] = SPU_IDENTITY_Q; return q; }
     bool equals(const Quadray4& other) const { for (int i = 0; i < 8; ++i) if (data.v[i] != other.data.v[i]) return false; return true; }
     bool checkParity() const { int64_t sum = 0; for(int i=0; i<8; i+=2) sum += data.v[i]; return sum == 0; }
     static inline Quadray4 _spu_rotate_60(Quadray4 q) {

@@ -24,7 +24,7 @@ int main() {
 
     // 3. Test Object Rotation
     RotateObject(t.vertices, 6); // Full circuit
-    if (t.vertices[0].data.v[0] == 65536) {
+    if (t.vertices[0].data.v[0] == SPU_IDENTITY_Q) {
         std::cout << "PASS: RotateObject verified (Identity Restoration)." << std::endl;
     }
 

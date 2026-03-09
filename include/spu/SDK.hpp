@@ -119,7 +119,7 @@ static inline int64_t GetQuadrance(const Quadray4& v) {
  * Always exactly 0.75 (3/4).
  */
 static inline float GetIVMSpread() {
-    return 0.75f;
+    return (float)SPU_SPREAD_LAMINAR / 65536.0f;
 }
 
 } // namespace SDK
