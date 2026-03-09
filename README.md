@@ -188,6 +188,7 @@ Current research focus:
 *   **[PHOTONICS_PLAN.md](SPECULATIVE/docs/PHOTONICS_PLAN.md):** Zero-Hysteresis Light Manifolds.
 *   **[BIO_LAMINAR_MAPPING.md](SPECULATIVE/docs/BIO_LAMINAR_MAPPING.md):** Resonant synchronization.
     *   👉 **[Laminar Sandbox](tools/laminar_sandbox.py)** (Interactive CLI Tool)
+    *   👉 **[Birth Certificate](tools/spu_birth_certificate.py)** (Ceremonial Registry)
     *   👉 **[Bio-Resonance Monitor](tools/bio_resonance_monitor.py)** (Simulation Tool)
 
 ---

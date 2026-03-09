@@ -17,6 +17,7 @@ The manifold is safety-gated by the `laminar_en` signal (Pin 11).
     *   **BLUE (Pulsing):** Bowman Wake in progress (Handshake/Saturation/Alignment).
     *   **GREEN (Solid):** Resonance Lock (Phase 4). Manifold is bit-perfect and active.
 5.  **Authorize Flow:** Bridge Pin 11 to 3.3V. The sequencer will automatically move from Blue to Green once the IVM lattice is aligned.
+6.  **Register the Wake:** Run `python3 ../../tools/spu_birth_certificate.py /dev/ttyUSB0` to generate the machine's first-second forensic record.
 
 ### 3. Physical Verification
 Measure Pins 46 and 47 with an oscilloscope. In the **Green (Resonant)** state, you should see two 61.44 kHz square waves, exactly 180° out of phase, with minimal switching noise.
