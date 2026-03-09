@@ -10,7 +10,11 @@ set_io pin_led B3
 # --- 3. Proprioceptive Entry (Nervous Antenna) ---
 set_io bias_in A5
 
-# --- 4. Metabolic Sense (12-bit Shunt ADC) ---
+# --- 4. I2C OLED (Visual Reification) ---
+set_io oled_scl A6
+set_io oled_sda B6
+
+# --- 5. Metabolic Sense (12-bit Shunt ADC) ---
 set_io adc_in[0]  H9
 set_io adc_in[1]  G8
 set_io adc_in[2]  H8

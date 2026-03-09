@@ -28,6 +28,12 @@ IOBUF PORT "ftdi_rxd" IO_TYPE=LVCMOS33;
 LOCATE COMP "bias_in" SITE "B11"; # GP0
 IOBUF PORT "bias_in" IO_TYPE=LVCMOS33;
 
+# I2C OLED (Visual Reification)
+LOCATE COMP "oled_scl" SITE "F1"; # GP13
+LOCATE COMP "oled_sda" SITE "F2"; # GP14
+IOBUF PORT "oled_scl" IO_TYPE=LVCMOS33;
+IOBUF PORT "oled_sda" IO_TYPE=LVCMOS33;
+
 # Metabolic Sense (12-bit Shunt ADC)
 LOCATE COMP "adc_in[0]"  SITE "C11"; # GP1
 LOCATE COMP "adc_in[1]"  SITE "A10"; # GP2

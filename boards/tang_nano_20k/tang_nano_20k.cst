@@ -24,6 +24,12 @@ IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
 IO_LOC "bias_in" 71;
 IO_PORT "bias_in" IO_TYPE=LVCMOS33;
 
+# I2C OLED (Visual Reification)
+IO_LOC "oled_scl" 73;
+IO_LOC "oled_sda" 74;
+IO_PORT "oled_scl" IO_TYPE=LVCMOS33;
+IO_PORT "oled_sda" IO_TYPE=LVCMOS33;
+
 # Metabolic Sense (12-bit Shunt ADC)
 IO_LOC "adc_in[0]"  25;
 IO_LOC "adc_in[1]"  26;
