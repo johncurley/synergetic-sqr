@@ -1,6 +1,7 @@
-// SPU-13 GOLDEN REIFICATION CORE (v3.4.7)
+// SPU-13 GOLDEN REIFICATION CORE (v3.4.10)
 // Target: iCE40UP5K (iCeSugar Nano)
 // Objective: Dual-Hemisphere Visualization (Geometry & Metabolism).
+// Interaction: Resonant Membrane Strike coupled to Thalamic Bloom.
 // Status: [REIFIED] Ready for Unboxing Ceremony.
 
 module spu13_golden_reification (
@@ -35,6 +36,7 @@ module spu13_golden_reification (
     wire         wake_complete;
     wire [2:0]   boot_phase;
     wire [3:0]   q_mood;
+    wire [7:0]   bloom_intensity;
     wire [63:0]  h_seed;
 
     // --- 2. The Fractal Heart ---
@@ -61,7 +63,7 @@ module spu13_golden_reification (
     spu_thalamus u_relay (
         .clk_resonant(clk_resonant), .reset(!rst_n),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(identity_lock),
-        .microwatts(microwatts), .bloom_intensity(), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
@@ -76,7 +78,6 @@ module spu13_golden_reification (
 
     // --- 7. OLED Visualizer ---
     wire [7:0] oled_byte;
-    wire       oled_req;
     spu_oled_visualizer u_vision (
         .clk(clk_resonant), .reset(!rst_n),
         .manifold_a(manifold_state[31:0]), .microwatts(microwatts),
@@ -86,7 +87,7 @@ module spu13_golden_reification (
     // --- 8. SSD1306 Driver ---
     spu_ssd1306_driver u_display (
         .clk(clk_resonant), .reset(!rst_n),
-        .data_in(oled_byte), .data_req(oled_req),
+        .data_in(oled_byte), .data_req(),
         .scl(oled_scl), .sda(oled_sda), .done()
     );
 
@@ -96,9 +97,11 @@ module spu13_golden_reification (
         .lattice_state(manifold_state), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
     );
 
-    // --- 10. Status Reification ---
+    // --- 10. Final Status Reification ---
     assign led_sat_red = !rst_n | !identity_lock;
     assign led_sat_grn = wake_complete & coherence_lock;
-    assign led_sat_blu = (!wake_complete) ? clk_resonant : q_mood[2];
+    
+    // BLUE LED: Modulated by Strike Pressure + Resonant Pulse
+    assign led_sat_blu = (!wake_complete) ? clk_resonant : (q_mood[2] | (|strike_ripple));
 
 endmodule
