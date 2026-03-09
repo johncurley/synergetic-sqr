@@ -172,6 +172,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
 *   **[SAFETY_AUDIT_SUMMARY.md](docs/spec/SAFETY_AUDIT_SUMMARY.md):** Formal certification of the SPU-13 against the Universal Invariant.
 *   **[SCOPE_REFERENCE.md](docs/spec/SCOPE_REFERENCE.md):** Verified phase-alignment waveforms for physical bring-up.
+*   **[TECHNICAL_FAQ.md](docs/spec/TECHNICAL_FAQ.md):** Topological Signal Integrity: Defending Geometric Resonance.
 *   **[MINIMUM_HYSTERESIS_PROOF.md](SPECULATIVE/docs/MINIMUM_HYSTERESIS_PROOF.md):** Theoretical derivation of error reduction in NSE.
 *   **[TECHNICAL_REPORT.md](docs/spec/TECHNICAL_REPORT.md):** Comprehensive derivation of the SPU-13 core.
 
