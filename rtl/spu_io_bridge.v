@@ -1,6 +1,6 @@
-// SPU-13 I/O Bridge: Metabolic Edition (v3.4.0)
-// Implementation: Laminar Frame Protocol (Draft 1.1).
-// Objective: Dual-layer I/O with Real-time Power Telemetry.
+// SPU-13 I/O Bridge: Liquid Edition (v3.4.26)
+// Implementation: Laminar Frame Protocol (Draft 1.2).
+// Objective: Dual-layer I/O with Real-time Viscosity Telemetry.
 
 module spu_io_bridge #(
     parameter CLK_PHYS_HZ = 12000000
@@ -11,8 +11,9 @@ module spu_io_bridge #(
     
     // SPU Interface
     input  wire [831:0] spu_reg_in,
-    input  wire [15:0]  microwatts,    // From Metabolic Sense
-    input  wire         sip_active,    // From Metabolic Sense
+    input  wire [15:0]  microwatts,
+    input  wire [7:0]   laminar_flow_index, // From Viscosity Monitor
+    input  wire         sip_active,
     output wire [127:0] strike_ripple,
     input  wire         fault_detected,
     input  wire         coherence_lock,
@@ -26,7 +27,13 @@ module spu_io_bridge #(
 );
 
     // 1. The Laminar Frame Assembler (Telemetry)
-    // Frame v1.1: [SYMM:1][uW:16][RES:7][FOOTER:8][PAYLOAD:32]
+    // Frame v1.2: [SYMM:1][uW:16][FLOW:8][RES:7][FOOTER:0][PAYLOAD:32] -- wait, let's align:
+    // [63:63] Symmetry OK
+    // [62:47] Microwatts (16 bits)
+    // [46:39] Flow Index (8 bits)
+    // [38:32] Reserved (7 bits)
+    // [31:0]  Payload (32 bits)
+    
     wire signed [31:0] a = spu_reg_in[31:0];
     wire signed [31:0] b = spu_reg_in[63:32];
     wire signed [31:0] c = spu_reg_in[95:64];
@@ -34,7 +41,9 @@ module spu_io_bridge #(
     
     wire symmetry_ok = ((a + b + c + d) == 32'sd0);
     wire [31:0] payload = spu_reg_in[31:0];
-    wire [7:0]  footer = {6'b0, sip_active, coherence_lock};
+    // Footer is now embedded or part of reserved bits. 
+    // Let's use bits [38:32] for status flags.
+    wire [6:0] status_flags = {5'b0, sip_active, coherence_lock};
 
     // 2. Telemetry Path (TX)
     surd_uart_tx #(
@@ -43,7 +52,7 @@ module spu_io_bridge #(
     ) u_telemetry (
         .clk(clk_phys),
         .reset(reset),
-        .data_in({symmetry_ok, microwatts, 7'b0, footer, payload}), 
+        .data_in({symmetry_ok, microwatts, laminar_flow_index, status_flags, payload}), 
         .start(|spu_reg_in[31:0]), 
         .tx(serial_tx),
         .ready()
@@ -66,7 +75,7 @@ module spu_io_bridge #(
 
     // 4. Status Reification
     assign led_status[0] = fault_detected;
-    assign led_status[1] = !sip_active;     // Red-shift if 'The Gulp' occurs
+    assign led_status[1] = (laminar_flow_index < 8'h80); // Red-shift if 'Viscous'
     assign led_status[2] = clk_resonant;
     assign led_status[3] = coherence_lock;  
 

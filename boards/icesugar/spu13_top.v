@@ -102,7 +102,8 @@ module spu13_top (
         .CLK_PHYS_HZ(12000000)
     ) u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
-        .spu_reg_in(manifold_out), .microwatts(microwatts), .sip_active(microwatts < 100),
+        .spu_reg_in(manifold_out), .microwatts(microwatts), 
+        .laminar_flow_index(laminar_flow_index), .sip_active(sip_active),
         .strike_ripple(strike_ripple), .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock), .led_status(), 
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(1'b1), .serial_tx()
