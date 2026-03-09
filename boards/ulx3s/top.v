@@ -1,6 +1,6 @@
-// ULX3S Top-Level Integration (v3.4.5)
+// ULX3S Top-Level Integration (v3.4.22)
 // Target: Lattice ECP5-85k
-// Implementation: 13-Core Collective Manifold with Thalamic v2 Integration.
+// Implementation: 13-Core Collective Manifold with Thalamic v3 Homeostasis.
 
 module ulx3s_top (
     input  wire clk_25mhz,
@@ -19,6 +19,7 @@ module ulx3s_top (
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire         coherence_lock;
     wire [3:0]   q_mood;
     wire [2:0]   boot_phase;
@@ -27,12 +28,13 @@ module ulx3s_top (
     wire         wake_complete;
     wire [3:0]   bridge_leds;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(25000000)
     ) fractal_osc (
         .clk_in(clk_25mhz), .rst_n(btn[0]), .en(1'b1),
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // 2. The Bowman Sequencer
@@ -52,14 +54,15 @@ module ulx3s_top (
     // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(~btn[0]), .boot_phase(boot_phase),
-        .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(manifold_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Thalamus v2 (Central Sensory Relay)
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn[0]),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
@@ -77,7 +80,7 @@ module ulx3s_top (
     assign led[3:0] = bridge_leds;
     assign led[4]   = clk_resonant;
     assign led[5]   = henosis_pass & wake_complete;
-    assign led[6]   = (microwatts < 100); // SIP indicator
+    assign led[6]   = (microwatts < 100); 
     assign led[7]   = lattice_fault;
 
 endmodule

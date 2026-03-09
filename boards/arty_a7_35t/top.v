@@ -1,6 +1,6 @@
-// Arty A7-35T Top-Level Integration (v3.4.2)
+// Arty A7-35T Top-Level Integration (v3.4.22)
 // Target: Xilinx Artix-7
-// Implementation: 13-Core Collective Manifold with Thalamic Integration.
+// Implementation: 13-Core Collective Manifold with Thalamic Homeostasis.
 
 module arty_a7_top (
     input  wire       clk_100mhz,
@@ -20,8 +20,8 @@ module arty_a7_top (
     wire [831:0] manifold_state;
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
-    wire         sip_active;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire         coherence_lock;
     wire [3:0]   q_mood;
     wire [2:0]   boot_phase;
@@ -29,12 +29,13 @@ module arty_a7_top (
     wire         henosis_pass;
     wire         wake_complete;
     
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(100000000)
     ) fractal_osc (
         .clk_in(clk_100mhz), .rst_n(btn_rst_n), .en(sw[3]), 
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // 2. The Bowman Sequencer
@@ -54,28 +55,24 @@ module arty_a7_top (
     // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(~btn_rst_n), .boot_phase(boot_phase),
-        .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(manifold_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Metabolic Sense
-    spu_metabolic_sense u_metabolic (
-        .clk(clk_resonant), .reset(~btn_rst_n),
-        .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
-    );
-
-    // 6. Thalamus (Consciousness Relay)
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .microwatts(microwatts), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+        .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
+        .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 7. IO Bridge (Interactive Standard)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(100000000)
     ) u_io (
         .clk_phys(clk_100mhz), .clk_resonant(clk_resonant), .reset(~btn_rst_n),
-        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(reg_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(lattice_fault),
         .coherence_lock(coherence_lock), .led_status(led),
         .pmod_ja_out(pmod_ja), .sw_control(sw), .serial_rx(usb_uart_rx), .serial_tx(usb_uart_tx)

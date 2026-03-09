@@ -1,4 +1,4 @@
-// Tang Nano 20k Top-Level Integration (v3.4.5)
+// Tang Nano 20k Top-Level Integration (v3.4.22)
 // Target: Gowin GW2A-18C
 // Implementation: Automated Bowman Wake with 13-Core Collective Manifold.
 
@@ -19,6 +19,7 @@ module tang_nano_20k_top (
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire         coherence_lock;
     wire [3:0]   q_mood;
     wire [2:0]   boot_phase;
@@ -26,12 +27,13 @@ module tang_nano_20k_top (
     wire         henosis_pass;
     wire         wake_complete;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(27000000)
     ) fractal_osc (
         .clk_in(sys_clk), .rst_n(sys_rst_n), .en(1'b1),
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // 2. The Bowman Sequencer
@@ -51,14 +53,15 @@ module tang_nano_20k_top (
     // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(~sys_rst_n), .boot_phase(boot_phase),
-        .reg_in(manifold_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(manifold_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Thalamus v2 (Central Sensory Relay)
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~sys_rst_n),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!lattice_fault),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 

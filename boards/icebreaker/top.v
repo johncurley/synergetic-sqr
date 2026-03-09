@@ -1,6 +1,6 @@
-// iCEBreaker Top-Level Integration (v3.4.5)
+// iCEBreaker Top-Level Integration (v3.4.22)
 // Target: Lattice iCE40UP5K
-// Implementation: Automated Bowman Wake & Thalamic v2 Integration.
+// Implementation: Automated Bowman Wake & Thalamic v3 Homeostasis.
 
 module icebreaker_top (
     input  wire clk_12mhz,
@@ -20,6 +20,7 @@ module icebreaker_top (
     wire [15:0]  microwatts;
     wire         sip_active;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire         coherence_lock;
     wire [3:0]   q_mood;
     wire [2:0]   boot_phase;
@@ -28,18 +29,19 @@ module icebreaker_top (
     wire         wake_complete;
     wire         identity_lock;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(12000000)
     ) fractal_osc (
         .clk_in(clk_12mhz), .rst_n(btn_rst_n), .en(1'b1),
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // 2. The Bowman Sequencer
     spu_bowman_sequencer u_wake (
         .clk(clk_resonant), .rst_n(btn_rst_n), .en(1'b1),
-        .handshake_done(1'b1), .identity_lock(identity_lock),
+        .handshake_done(1'b1), .identity_lock(1'b1),
         .boot_phase(boot_phase), .wake_complete(wake_complete)
     );
 
@@ -54,18 +56,19 @@ module icebreaker_top (
     // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(~btn_rst_n), .boot_phase(boot_phase),
-        .reg_in(next_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(next_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Thalamus v2 (Central Sensory Relay)
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(~btn_rst_n),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!fault),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 6. IO Bridge (Interactive Standard)
+    // 6. IO Bridge
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (

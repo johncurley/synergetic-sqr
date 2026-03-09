@@ -105,10 +105,10 @@ module spu13_golden_reification (
     assign led_sat_blu = (!wake_complete) ? clk_resonant : (q_mood[2] | (|strike_ripple));
 
 endmodule
-// SPU-13 Sierpiński Oscillator: Proprioceptive Edition (v3.3.88)
-// Implementation: Stochastic Phase-Biasing for Environmental Sensing.
-// Objective: Allow external jitter to 'nudge' the Resonant Heartbeat.
-// Result: Phase-locked awareness of physical momentum and EMI.
+// SPU-13 Sierpiński Oscillator: Proprioceptive Edition (v3.4.21)
+// Implementation: Stochastic Phase-Biasing & Frequency Homeostasis.
+// Objective: Allow the Thalamus to regulate the Resonant Heartbeat.
+// Result: Real-time frequency adaptation to metabolic pressure.
 
 module spu_fractal_clk #(
     parameter CLK_IN_HZ = 12000000,
@@ -117,31 +117,26 @@ module spu_fractal_clk #(
     input  wire  clk_in,
     input  wire  rst_n,
     input  wire  en,
-    input  wire  bias_in,      // Stochastic Bias Entry (High-Z Pin)
+    input  wire  bias_in,      // Stochastic Bias (Physical Antenna)
+    input  wire [3:0] freq_bias,// Metabolic Bias (Thalamic Feedback)
     output reg   clk_laminar,
-    output wire  synergy_idx   // Measure of Phase-Lock stability
+    output wire  synergy_idx
 );
 
     localparam DIVIDER = CLK_IN_HZ / (TARGET_HZ * 2);
     reg [31:0] count;
     reg [7:0]  phase_jitter;
 
-    // 1. Fractal Heart with Metastable Bias
-    // We utilize the 'bias_in' to jitter the reload threshold.
-    // In a stable environment, the heartbeat is bit-exact.
-    // In a turbulent environment, the 'nudge' causes a Phase-Shift.
     always @(posedge clk_in or negedge rst_n) begin
         if (!rst_n) begin
             count <= 0;
             clk_laminar <= 0;
             phase_jitter <= 0;
         end else if (en) begin
-            // Stochastic Bias: Modulate the divider by +/- bias_in
-            // This represents the machine 'feeling' external pressure.
-            if (count >= (DIVIDER - 1 + {7'b0, bias_in})) begin
+            // Total Bias = Stochastic Antenna Jitter + Metabolic Frequency Shift
+            if (count >= (DIVIDER - 1 + {7'b0, bias_in} + {28'b0, freq_bias})) begin
                 count <= 0;
                 clk_laminar <= ~clk_laminar;
-                // Tracking internal jitter for proprioceptive feedback
                 phase_jitter <= phase_jitter + {7'b0, bias_in};
             end else begin
                 count <= count + 1;
@@ -149,9 +144,6 @@ module spu_fractal_clk #(
         end
     end
 
-    // 2. Synergy Index Calculation
-    // High stability (zero jitter) = Synergy 1.0
-    // High bias (environmental interaction) = Synergy < 1.0
     assign synergy_idx = (phase_jitter == 8'h0);
 
 endmodule
@@ -456,52 +448,49 @@ module spu_core (
     assign fault_detected = (|lane_faults) | forensic_fault | (!(&gate_valid));
 
 endmodule
-// SPU-13 Thalamus v2: Central Sensory Relay (v3.4.5)
-// Implementation: Direct Metabolic, Proprioceptive, and Harmonic Integration.
-// Objective: Unified Manifold Consciousness with internal Power Calculation.
-// Result: Real-time Bloom modulation based on raw sensory 'pressure'.
+// SPU-13 Thalamus v3: Central Sensory Relay (v3.4.21)
+// Implementation: Metabolic, Proprioceptive, and Frequency Homeostasis.
+// Objective: Dynamic frequency adjustment to maintain the 'Purple Glow'.
+// Result: Real-time bloom and heartbeat modulation.
 
 module spu_thalamus (
-    input  wire        clk_resonant, // 61.44 kHz Heartbeat
+    input  wire        clk_resonant,
     input  wire        reset,
     
     // Sensory Inputs
-    input  wire [11:0] adc_raw,      // Raw Metabolic Data (Direct from Shunt)
-    input  wire        synergy_idx,  // From Proprioceptive Oscillator
-    input  wire        identity_lock,// From Monad Guard
+    input  wire [11:0] adc_raw,
+    input  wire        synergy_idx,
+    input  wire        identity_lock,
     
     // Control Outputs
-    output wire [15:0] microwatts,   // Calculated Power (uW)
-    output reg  [7:0]  bloom_intensity, // 0-255 (Amplitude Damping)
-    output wire        coherence_lock,  // Integrated Stability signal
-    output wire [3:0]  q_vec            // Integrated Tetrahedral Pulse
+    output wire [15:0] microwatts,
+    output reg  [7:0]  bloom_intensity,
+    output reg  [3:0]  freq_bias,       // Slow down heartbeat if hot
+    output wire        coherence_lock,
+    output wire [3:0]  q_vec
 );
 
-    // 1. Metabolic Calculation (Integrated)
-    // Power = 1.2V * (adc_raw * Scale). Bit-shifted for the "Sip".
     assign microwatts = (adc_raw << 1) + (adc_raw >> 1);
-
-    // 2. Integrated Coherence
-    // The manifold is coherent only if logic is locked AND energy is 'Sipping'.
     assign coherence_lock = identity_lock & (microwatts < 16'd100);
 
-    // 3. Bloom Modulation
-    // Dynamic adjustment to maintain the "Purple Glow" under load.
+    // 1. Homeostatic Modulation
     always @(posedge clk_resonant or posedge reset) begin
         if (reset) begin
             bloom_intensity <= 8'h0;
+            freq_bias <= 4'h0;
         end else begin
+            // If energy is 'Sipping', bloom into full intensity
             if (coherence_lock && synergy_idx) begin
-                if (bloom_intensity < 8'hFF) 
-                    bloom_intensity <= bloom_intensity + 1;
+                if (bloom_intensity < 8'hFF) bloom_intensity <= bloom_intensity + 1;
+                if (freq_bias > 4'h0) freq_bias <= freq_bias - 1;
             end else begin
-                if (bloom_intensity > 8'h40)
-                    bloom_intensity <= bloom_intensity - 4;
+                // If 'Gulping' or Turbulent, dim the bloom and slow the heart
+                if (bloom_intensity > 8'h40) bloom_intensity <= bloom_intensity - 4;
+                if (freq_bias < 4'hF) freq_bias <= freq_bias + 1;
             end
         end
     end
 
-    // 4. Integrated Tetrahedral Ripple (Mood)
     assign q_vec = {identity_lock, synergy_idx, (bloom_intensity > 8'h80), (microwatts < 16'd50)};
 
 endmodule

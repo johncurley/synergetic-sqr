@@ -1,4 +1,4 @@
-// TinyFPGA BX Top-Level Integration (v3.4.5)
+// TinyFPGA BX Top-Level Integration (v3.4.22)
 // Target: Lattice iCE40LP8K
 // Implementation: Automated Bowman Wake & Interactive Resonance.
 
@@ -26,6 +26,7 @@ module tinyfpga_bx_top (
     wire [15:0]  microwatts;
     wire         sip_active;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire         coherence_lock;
     wire [3:0]   q_mood;
     wire [2:0]   boot_phase;
@@ -33,12 +34,13 @@ module tinyfpga_bx_top (
     wire         henosis_pass;
     wire         wake_complete;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(16000000)
     ) fractal_osc (
         .clk_in(clk), .rst_n(1'b1), .en(1'b1),
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // 2. The Bowman Sequencer
@@ -59,14 +61,15 @@ module tinyfpga_bx_top (
     // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(1'b0), .boot_phase(boot_phase),
-        .reg_in(next_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(next_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
-    // 5. Thalamus v2 (Central Sensory Relay)
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(1'b0),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(!fault),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
