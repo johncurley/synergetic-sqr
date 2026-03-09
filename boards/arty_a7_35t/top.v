@@ -1,6 +1,6 @@
-// Arty A7-35T Top-Level Integration (v3.3.70)
+// Arty A7-35T Top-Level Integration (v3.3.90)
 // Target: Xilinx Artix-7
-// Implementation: Automated Bowman Wake with 13-Core Collective Manifold
+// Implementation: 13-Core Collective Manifold with Interactive Resonance.
 
 module arty_a7_top (
     input  wire       clk_100mhz,
@@ -16,22 +16,25 @@ module arty_a7_top (
     wire [831:0] reg_state;
     wire [831:0] next_state;
     wire [831:0] manifold_state;
+    wire [127:0] strike_ripple;
     wire [2:0]   boot_phase;
     wire         lattice_fault;
     wire         henosis_pass;
     wire         wake_complete;
     
-    // 1. The Fractal Heart: Sierpiński Oscillator
+    // 1. The Fractal Heart
     spu_fractal_clk #(
         .CLK_IN_HZ(100000000)
     ) fractal_osc (
         .clk_in(clk_100mhz),
         .rst_n(btn_rst_n),
-        .en(sw[3]), // Switch 3 acts as the Throttle
-        .clk_laminar(clk_resonant)
+        .en(sw[3]), 
+        .bias_in(1'b0),
+        .clk_laminar(clk_resonant),
+        .synergy_idx()
     );
 
-    // 2. The Bowman Sequencer: Automated Wake-Up
+    // 2. The Bowman Sequencer
     spu_bowman_sequencer u_wake (
         .clk(clk_resonant),
         .rst_n(btn_rst_n),
@@ -42,7 +45,7 @@ module arty_a7_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Phyllotaxis Lattice (13 Interconnected Cores)
+    // 3. SPU-13 Phyllotaxis Lattice (13-Core Manifold)
     spu_lattice_13 u_lattice (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
@@ -50,11 +53,12 @@ module arty_a7_top (
         .prime_phase(sw[2:1]),
         .sign_flip(1'b0),
         .ext_in(832'b0),
+        .strike_in(strike_ripple),
         .manifold_out(manifold_state),
         .lattice_fault(lattice_fault)
     );
 
-    // 4. Power Dispatcher (Laminar Logic)
+    // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
@@ -73,7 +77,7 @@ module arty_a7_top (
         .fail()
     );
 
-    // 6. IO Bridge (UART Telemetry)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(100000000)
     ) u_io (
@@ -81,7 +85,9 @@ module arty_a7_top (
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
         .spu_reg_in(reg_state),
+        .strike_ripple(strike_ripple),
         .fault_detected(lattice_fault),
+        .coherence_lock(1'b1),
         .led_status(led),
         .pmod_ja_out(pmod_ja),
         .sw_control(sw),

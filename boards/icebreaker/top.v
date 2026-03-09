@@ -1,6 +1,6 @@
-// iCEBreaker Top-Level Integration (v3.3.71)
+// iCEBreaker Top-Level Integration (v3.3.90)
 // Target: Lattice iCE40UP5K
-// Implementation: Automated Bowman Wake with Expanded ISA
+// Implementation: Automated Bowman Wake & Interactive Resonance.
 
 module icebreaker_top (
     input  wire clk_12mhz,
@@ -14,24 +14,26 @@ module icebreaker_top (
     wire clk_resonant;
     wire [831:0] reg_state;
     wire [831:0] next_state;
+    wire [127:0] strike_ripple;
     wire [2:0]   boot_phase;
     wire         fault;
     wire         henosis_pass;
     wire         wake_complete;
-    wire [3:0]   bridge_leds;
+    wire         coherence_lock;
 
-    // 1. The Fractal Heart: Sierpiński Oscillator
-    // Using led_green as a temporary throttle for iCEBreaker bring-up
+    // 1. The Fractal Heart
     spu_fractal_clk #(
         .CLK_IN_HZ(12000000)
     ) fractal_osc (
         .clk_in(clk_12mhz),
         .rst_n(btn_rst_n),
-        .en(1'b1), 
-        .clk_laminar(clk_resonant)
+        .en(1'b1),
+        .bias_in(1'b0), // Tied low for iCEBreaker bring-up
+        .clk_laminar(clk_resonant),
+        .synergy_idx()
     );
 
-    // 2. The Bowman Sequencer: Automated Wake-Up
+    // 2. The Bowman Sequencer
     spu_bowman_sequencer u_wake (
         .clk(clk_resonant),
         .rst_n(btn_rst_n),
@@ -42,12 +44,13 @@ module icebreaker_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Core Manifold (Expanded ISA)
+    // 3. SPU-13 Core
     spu_core u_core (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
         .reg_curr(reg_state),
         .neighbors(3072'b0),
+        .strike_in(strike_ripple),
         .opcode(3'b001),
         .prime_phase(2'b01),
         .sign_flip(1'b0),
@@ -55,7 +58,7 @@ module icebreaker_top (
         .fault_detected(fault)
     );
 
-    // 4. Power Dispatcher (Laminar Logic)
+    // 4. Power Dispatcher
     spu_laminar_power u_power (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
@@ -74,7 +77,7 @@ module icebreaker_top (
         .fail()
     );
 
-    // 6. IO Bridge (UART Telemetry)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
@@ -82,10 +85,12 @@ module icebreaker_top (
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
         .spu_reg_in(reg_state),
+        .strike_ripple(strike_ripple),
         .fault_detected(fault),
-        .led_status(bridge_leds),
+        .coherence_lock(1'b1), // Assume locked for iCEBreaker
+        .led_status(),
         .pmod_ja_out(),
-        .sw_control(),
+        .sw_control(4'b0),
         .serial_rx(uart_rx),
         .serial_tx(uart_tx)
     );
