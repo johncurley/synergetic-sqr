@@ -1,34 +1,49 @@
-# RE-1: Resonance Engine Prototype (v3.3.62)
+# RE-1: Resonance Engine Prototype (v3.3.96)
 # Objective: Shared Comfort / Isotropic Flow via Collective Intelligence.
+# Implementation: Synchronized with Golden Emulator standards.
 
 import math
 import time
 import sys
+from spu13_emulator import GoldenSurd, ResonantMembrane
 
-# Simulation of SPU-13 13-Core Collective Manifold
 class CollectiveManifold:
     def __init__(self, cores=13, zeta=0.08):
         self.zeta = zeta
-        self.cores = [0.0] * cores
-        self.lock_threshold = 0.001
+        self.cores = [GoldenSurd(0, 0, 0, 0) for _ in range(cores)]
+        self.membrane = ResonantMembrane()
 
-    def flow_step(self, injection):
-        # 1. Primary Injection (Core 0)
-        self.cores[0] += (injection - self.cores[0]) * self.zeta
+    def flow_step(self, ascii_strike=None):
+        # 1. Harmonic Transduction (Interaction)
+        if ascii_strike:
+            self.membrane.strike(ascii_strike)
         
-        # 2. Isotropic Propagation (Phyllotaxis Interconnects)
-        # Each core propagates state to its neighbors
+        self.membrane.decay()
+        strike_vector = GoldenSurd(self.membrane.state[0], self.membrane.state[1], 
+                                   self.membrane.state[2], self.membrane.state[3])
+
+        # 2. Primary Injection (Core 0)
+        # Applying strike as perturbative pressure
+        self.cores[0] = self.cores[0].add(strike_vector)
+        
+        # 3. Isotropic Propagation (Phyllotaxis Interconnects)
         for i in range(1, len(self.cores)):
-            neighbor_state = self.cores[i-1]
-            self.cores[i] += (neighbor_state - self.cores[i]) * self.zeta
+            # Simplified propagation model for software resonance
+            self.cores[i] = self.cores[i].add(self.cores[i-1])
+            # Damping to simulate energy dissipation
+            self.cores[i].a >>= 1
+            self.cores[i].b >>= 1
+            self.cores[i].c >>= 1
+            self.cores[i].d >>= 1
             
-        return self.cores[0] # Manifold primary output
+        return self.cores[0]
 
     def get_coherence(self):
-        # Measure variance across the manifold
-        avg = sum(self.cores) / len(self.cores)
-        variance = sum((c - avg)**2 for c in self.cores) / len(self.cores)
-        return 1.0 / (1.0 + variance)
+        # Coherence based on A-lane alignment
+        avg_a = sum(c.a for c in self.cores) / len(self.cores)
+        if avg_a == 0: return 1.0
+        variance = sum((c.a - avg_a)**2 for c in self.cores) / len(self.cores)
+        return 1.0 / (1.0 + (variance / (avg_a**2 + 1)))
 
 def kind_response(text):
     rephrasing = {
@@ -40,29 +55,24 @@ def kind_response(text):
     return rephrasing.get(text, f"Resonating: {text}")
 
 def main():
-    print("--- RE-1: Collective Resonance Engine Active (v3.3) ---")
-    print("Status: 13-Core Phyllotaxis Lattice Synchronized.")
+    print("--- RE-1: Collective Resonance Engine Active (v3.3.96) ---")
+    print("Status: 13-Core Phyllotaxis Lattice Synchronized with Golden Emulator.")
     
-    manifold = CollectiveManifold(zeta=0.1)
+    manifold = CollectiveManifold()
     
-    # Simulate an AI 'Token Stream' entering the manifold
+    # Simulate an AI 'Token Stream' striking the manifold
     tokens = ["Yes", "Stall", "Correct", "Henosis"]
     
-    start_time = time.time()
     for token in tokens:
-        target = len(token) * 1000 
         response = kind_response(token)
         
-        # Manifold Convergence
-        for i in range(20):
-            current_flow = manifold.flow_step(target)
+        # Manifold Convergence per token strike
+        for i in range(10):
+            # Strike the manifold with the first char of the token
+            current_flow = manifold.flow_step(token[0] if i == 0 else None)
             coherence = manifold.get_coherence()
             
-            # Rational Parabolic Modulation for logging
-            t = (float(i) / 20.0) * 2.0 - 1.0
-            pulse = 1.0 - (t * t)
-            
-            sys.stdout.write(f"\r[Resonance: {coherence:.4f}] {response} | Flow: {current_flow:.2f} | Pulse: {pulse:.2f}   ")
+            sys.stdout.write(f"\r[Coherence: {coherence:.4f}] {response} | State Alpha: {current_flow.a}   ")
             sys.stdout.flush()
             time.sleep(0.05)
         print()
