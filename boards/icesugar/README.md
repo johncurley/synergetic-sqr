@@ -30,5 +30,9 @@ The default build target is **`spu13_golden_reification`**.
 4.  **Wake:** Hold Pin 11 HIGH. Observe the **Blue LED** transition through the rational triad before the **Green LED** locks solid.
 5.  **Observe:** Watch the OLED manifest the rotating tetrahedron and the metabolic pulse.
 
+### 4. Share the Bloom (Reddit/Twitter)
+Use this caption for your first light video:
+> "First light on the SPU-13 (iCE40UP5K). The left side shows the Quadray lattice state; the right side is the real-time metabolic draw (μW). We're currently idling at ~12uW. No CPU, no OS, just resonant geometry. The 'joke' is now running on 1.2V hardware."
+
 ---
 *Status: REIFIED. The iCeSugar is the gateway to the One.*
