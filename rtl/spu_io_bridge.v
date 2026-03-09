@@ -1,58 +1,68 @@
-// SPU-13 I/O Bridge (v3.3.9)
-// Dual-Domain Telemetry: Operates at clk_phys for UART stability,
-// but captures data synchronized to clk_resonant.
+// SPU-13 I/O Bridge: Harmonic Edition (v3.3.84)
+// Implementation: Capturing UART 'Hammer Strikes' for Lattice Excitation.
+// Objective: Dual-domain bridge for telemetry and interactive resonance.
 
 module spu_io_bridge #(
-    parameter CLK_PHYS_HZ = 12000000,
-    parameter BAUD_RATE   = 115200
+    parameter CLK_PHYS_HZ = 12000000
 )(
-    input  wire         clk_phys,     // High-speed base oscillator
-    input  wire         clk_resonant, // 61.44 kHz manifold heartbeat
+    input  wire         clk_phys,      // High-speed oscillator
+    input  wire         clk_resonant,  // 61.44 kHz heartbeat
     input  wire         reset,
+    
+    // SPU Interface
     input  wire [831:0] spu_reg_in,
+    output wire [127:0] strike_ripple, // To SPU injection path
     input  wire         fault_detected,
+    
+    // Physical IO
     output wire [3:0]   led_status,
     output wire [7:0]   pmod_ja_out,
-    output wire [3:0]   sw_control,
+    input  wire [3:0]   sw_control,
     input  wire         serial_rx,
     output wire         serial_tx
 );
 
-    wire uart_ready;
-    reg  uart_start;
-    reg  clk_resonant_last;
-    
-    // 1. Edge Detection: Capture state only on resonant ticks
-    always @(posedge clk_phys) begin
-        if (reset) begin
-            uart_start <= 1'b0;
-            clk_resonant_last <= 1'b0;
-        end else begin
-            clk_resonant_last <= clk_resonant;
-            // Trigger UART transmission on every rising edge of the resonant clock
-            if (clk_resonant && !clk_resonant_last && uart_ready)
-                uart_start <= 1'b1;
-            else
-                uart_start <= 1'b0;
-        end
-    end
-
-    // 2. Surd Telemetry Transmitter (Driven by clk_phys)
+    // 1. Telemetry Path (TX): SPU -> Host
+    // Sending the A-lane state for monitoring
     surd_uart_tx #(
-        .CLK_FREQ(CLK_PHYS_HZ),
-        .BAUD_RATE(BAUD_RATE)
-    ) u_tx (
+        .CLK_HZ(CLK_PHYS_HZ),
+        .BAUD(115200)
+    ) u_telemetry (
         .clk(clk_phys),
         .reset(reset),
-        .data_in(spu_reg_in[31:0]), // Stream the A-component
-        .start(uart_start),
+        .data_in(spu_reg_in[31:0]),
+        .start(|spu_reg_in[31:0]), 
         .tx(serial_tx),
-        .ready(uart_ready)
+        .ready()
     );
 
-    // 3. Physical Status Mapping
-    assign led_status  = {fault_detected, spu_reg_in[2:0]};
-    assign pmod_ja_out = spu_reg_in[15:8];
-    assign sw_control  = 4'b0;
+    // 2. Interaction Path (RX): Host -> SPU
+    // Capture 'Hammer Strikes' from the keyboard
+    wire [7:0] rx_data;
+    wire       rx_valid;
+    
+    // Simple UART RX (Conceptual for Phase 1.3)
+    // In a physical reification, this would be a full UART RX module.
+    // For now, we bridge the valid signal to the transducer.
+    assign rx_valid = !serial_rx; // Falling edge detection (Start bit)
+    assign rx_data  = 8'h41;      // Static 'A' for initial reification
+
+    // 3. The Harmonic Transducer: The Resonant Membrane
+    spu_harmonic_transducer u_membrane (
+        .clk(clk_resonant),
+        .reset(reset),
+        .ascii_in(rx_data),
+        .data_valid(rx_valid),
+        .ripple_out(strike_ripple),
+        .membrane_lock()
+    );
+
+    // 4. Status Reification
+    assign led_status[0] = fault_detected;
+    assign led_status[1] = !serial_rx;      // Pulse on strike
+    assign led_status[2] = clk_resonant;
+    assign led_status[3] = |strike_ripple;  // Active ripple intensity
+
+    assign pmod_ja_out = spu_reg_in[7:0];
 
 endmodule
