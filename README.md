@@ -170,6 +170,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 *   **[TECHNICAL_WHITEPAPER_SPU13.md](docs/spec/TECHNICAL_WHITEPAPER_SPU13.md):** Laminar Computation: Overcoming the Cubic Bottleneck in Spatial Processing.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
+*   **[SAFETY_AUDIT_SUMMARY.md](docs/spec/SAFETY_AUDIT_SUMMARY.md):** Formal certification of the SPU-13 against the Universal Invariant.
 *   **[SCOPE_REFERENCE.md](docs/spec/SCOPE_REFERENCE.md):** Verified phase-alignment waveforms for physical bring-up.
 *   **[MINIMUM_HYSTERESIS_PROOF.md](SPECULATIVE/docs/MINIMUM_HYSTERESIS_PROOF.md):** Theoretical derivation of error reduction in NSE.
 *   **[TECHNICAL_REPORT.md](docs/spec/TECHNICAL_REPORT.md):** Comprehensive derivation of the SPU-13 core.
