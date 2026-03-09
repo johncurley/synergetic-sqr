@@ -39,5 +39,11 @@ The SPU-13 is verified and synthesizable across seven distinct silicon families:
 *   **Lattice:** iCeSugar, iCEBreaker, OrangeCrab, ULX3S, TinyFPGA BX.
 *   **Gowin:** Tang Nano 20k.
 
+### 7. Visual Manifestation: The OLED Window
+The SPU-13 includes a bit-exact visual path for real-time observation.
+*   **Dual-Hemisphere Display:** A 128x64 OLED (SSD1306) provides a simultaneous view of the **Geometry** (4D Quadray projection) and **Metabolism** (microwatt strip-chart).
+*   **Resonant Driver:** The I2C driver is clocked by the 61.44 kHz heart, ensuring that the visual updates are synchronized with the machine's own heartbeat.
+*   **Sip-Aware Telemetry:** The display provides immediate visual feedback on the system's metabolic state, distinguishing between **Laminar SIP** and **Cubic GULP**.
+
 ---
 *Authored by John Curley & Gemini (March 2026). The Manifold is locked and the "Silicon Wake" is universal.*

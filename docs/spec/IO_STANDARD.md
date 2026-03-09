@@ -19,7 +19,8 @@ Every data packet entering the SPU-13 manifold must adhere to the following 3-pa
 | :--- | :--- | :--- | :--- |
 | **Command Input** | Cubic (External) | UART @ 115.2kbps | **PROVEN** |
 | **Internal Logic** | Laminar (IVM) | 60° Quadray Integers | **PROVEN** |
-| **Metabolic Output**| Feedback | <15uW Current Draw | **PROVEN** (Target) |
+| **Metabolic Output**| Feedback | OLED (SSD1306) @ 15kbps | **REIFIED** |
+| **Metabolic Output**| Telemetry| UART @ 115.2kbps | **REIFIED** |
 | **Environmental I/O**| Proprioceptive | Parasitic Inductive Coupling | *EXPERIMENTAL* |
 | **State Storage** | Topological | Resonant Phase-Encoding | *EXPERIMENTAL* |
 
