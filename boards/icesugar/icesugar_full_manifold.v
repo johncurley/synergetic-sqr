@@ -1,6 +1,6 @@
-// iCeSugar Full Manifold Realization (v3.3.70)
+// iCeSugar Full Manifold Realization (v3.3.92)
 // Target: Lattice iCE40UP5K (iCeSugar Nano/Pro)
-// Objective: Full 832-bit SQR-Link with Automated Bowman Wake.
+// Objective: Full 832-bit SQR-Link with Interactive Bowman Wake.
 
 module icesugar_full_manifold (
     input  wire clk_12mhz,    // Pin 35 (Physical Oscillator)
@@ -18,13 +18,13 @@ module icesugar_full_manifold (
     wire clk_resonant;
     wire [831:0] reg_state;
     wire [831:0] next_state;
+    wire [127:0] strike_ripple;
     wire [2:0]   boot_phase;
     wire         fault;
     wire         henosis_pass;
     wire         henosis_fail;
     wire         wake_complete;
     wire [3:0]   bridge_leds;
-    wire         identity_lock;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
     spu_fractal_clk #(
@@ -33,7 +33,9 @@ module icesugar_full_manifold (
         .clk_in(clk_12mhz),
         .rst_n(rst_n),
         .en(laminar_en),
-        .clk_laminar(clk_resonant)
+        .bias_in(1'b0),
+        .clk_laminar(clk_resonant),
+        .synergy_idx()
     );
 
     // 2. The Bowman Sequencer: Automated Wake-Up
@@ -41,18 +43,19 @@ module icesugar_full_manifold (
         .clk(clk_resonant),
         .rst_n(rst_n),
         .en(laminar_en),
-        .handshake_done(1'b1), // Simplified for Phase 1.2
-        .identity_lock(1'b1),  // Assuming lock for pilot
+        .handshake_done(1'b1), 
+        .identity_lock(1'b1),  
         .boot_phase(boot_phase),
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Core Manifold
+    // 3. SPU-13 Core Manifold (Interactive)
     spu_core u_core (
         .clk(clk_resonant),
         .reset(!rst_n),
         .reg_curr(reg_state),
         .neighbors(3072'b0),
+        .strike_in(strike_ripple),
         .opcode(3'b001),      
         .prime_phase(2'b01),
         .sign_flip(1'b0),
@@ -61,7 +64,6 @@ module icesugar_full_manifold (
     );
 
     // 4. Power Dispatcher (Laminar Logic)
-    // Orchestrates the gradual introduction of energy to the manifold.
     spu_laminar_power u_power (
         .clk(clk_resonant),
         .reset(!rst_n),
@@ -80,11 +82,7 @@ module icesugar_full_manifold (
         .fail(henosis_fail)
     );
 
-    // 6. Janus-Gate Differential Modulation
-    assign janus_pos = reg_state[0];
-    assign janus_neg = ~reg_state[0];
-
-    // 7. IO Bridge (UART C&C)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
@@ -92,17 +90,23 @@ module icesugar_full_manifold (
         .clk_resonant(clk_resonant),
         .reset(!rst_n),
         .spu_reg_in(reg_state),
+        .strike_ripple(strike_ripple),
         .fault_detected(fault | henosis_fail),
+        .coherence_lock(wake_complete), 
         .led_status(bridge_leds),
         .pmod_ja_out(),
-        .sw_control(),
+        .sw_control(4'b0),
         .serial_rx(uart_rx),
         .serial_tx(uart_tx)
     );
 
+    // 7. Janus-Gate Differential Modulation
+    assign janus_pos = reg_state[0];
+    assign janus_neg = ~reg_state[0];
+
     // 8. LED Status Mapping
-    assign led_red   = fault | henosis_fail; 
-    assign led_green = henosis_pass;         
+    assign led_red   = bridge_leds[0]; // Fault
+    assign led_green = henosis_pass;   // Resonance Lock
     assign led_blue  = clk_resonant & wake_complete;
 
 endmodule
