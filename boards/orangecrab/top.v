@@ -1,6 +1,6 @@
-// OrangeCrab Top-Level Integration (v3.3.74)
+// OrangeCrab Top-Level Integration (v3.3.91)
 // Target: Lattice ECP5
-// Implementation: 13-Core Collective Phyllotaxis Lattice
+// Implementation: 13-Core Collective Manifold with Interactive Resonance.
 
 module orangecrab_top (
     input  wire clk_48mhz,
@@ -13,24 +13,29 @@ module orangecrab_top (
 );
 
     wire clk_resonant;
+    wire [831:0] reg_state;
+    wire [831:0] next_state;
     wire [831:0] manifold_state;
+    wire [127:0] strike_ripple;
+    wire [2:0]   boot_phase;
     wire         lattice_fault;
     wire         henosis_pass;
     wire         wake_complete;
-    wire [2:0]   boot_phase;
     wire [3:0]   bridge_leds;
 
-    // 1. The Fractal Heart: Sierpiński Oscillator
+    // 1. The Fractal Heart
     spu_fractal_clk #(
         .CLK_IN_HZ(48000000)
     ) fractal_osc (
         .clk_in(clk_48mhz),
         .rst_n(btn_rst_n),
         .en(1'b1),
-        .clk_laminar(clk_resonant)
+        .bias_in(1'b0),
+        .clk_laminar(clk_resonant),
+        .synergy_idx()
     );
 
-    // 2. The Bowman Sequencer: Automated Wake-Up
+    // 2. The Bowman Sequencer
     spu_bowman_sequencer u_wake (
         .clk(clk_resonant),
         .rst_n(btn_rst_n),
@@ -41,39 +46,52 @@ module orangecrab_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Phyllotaxis Lattice (13 Interconnected Cores)
+    // 3. SPU-13 Phyllotaxis Lattice (13-Core Manifold)
     spu_lattice_13 u_lattice (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
-        .opcode(3'b001), // Default: SPERM_X4
+        .opcode(3'b001), 
         .prime_phase(2'b01),
         .sign_flip(1'b0),
         .ext_in(832'b0),
+        .strike_in(strike_ripple),
         .manifold_out(manifold_state),
         .lattice_fault(lattice_fault)
     );
 
-    // 4. One-Second Stability Audit
+    // 4. Power Dispatcher
+    spu_laminar_power u_power (
+        .clk(clk_resonant),
+        .reset(~btn_rst_n),
+        .boot_phase(boot_phase),
+        .reg_in(manifold_state),
+        .reg_out(reg_state),
+        .henosis_active()
+    );
+
+    // 5. One-Second Stability Audit
     spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~btn_rst_n),
-        .reg_in(manifold_state),
+        .reg_in(reg_state),
         .pass(henosis_pass),
         .fail()
     );
 
-    // 5. IO Bridge (UART Telemetry)
+    // 6. IO Bridge (Interactive Standard)
     spu_io_bridge #(
         .CLK_PHYS_HZ(48000000)
     ) u_io (
         .clk_phys(clk_48mhz),
         .clk_resonant(clk_resonant),
         .reset(~btn_rst_n),
-        .spu_reg_in(manifold_state),
+        .spu_reg_in(reg_state),
+        .strike_ripple(strike_ripple),
         .fault_detected(lattice_fault),
+        .coherence_lock(1'b1),
         .led_status(bridge_leds),
         .pmod_ja_out(),
-        .sw_control(),
+        .sw_control(4'b0),
         .serial_rx(uart_rx),
         .serial_tx(uart_tx)
     );
