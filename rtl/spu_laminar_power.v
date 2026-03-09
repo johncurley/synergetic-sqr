@@ -1,61 +1,56 @@
-// SPU-13 Laminar Power Dispatcher (v3.3.94)
-// Implementation: Phase-Aligned State Release (The Bloom).
-// Objective: Prevent 'Inrush Turbulence' during the Bowman Wake.
-// Result: Effortless transition from Void to Resonant Flow.
+// SPU-13 Laminar Power Dispatcher (v3.4.18)
+// Implementation: Thalamic-Driven State Scaling (Dynamic Bloom).
+// Objective: Enforce the Flower Invariant via real-time damping.
+// Result: Photosynthetic self-regulation of the 832-bit manifold.
 
 module spu_laminar_power (
     input  wire         clk,
     input  wire         reset,
     input  wire [2:0]   boot_phase,
+    input  wire [7:0]   bloom_intensity, // From Thalamus (0-255)
     input  wire [831:0] reg_in,
     output reg  [831:0] reg_out,
     output wire         henosis_active
 );
 
-    // Phase Definitions (Aligned with Bowman Sequencer)
+    // Phase Definitions
     localparam PHASE_WITHDRAWAL = 3'b000;
-    localparam PHASE_HANDSHAKE  = 3'b001;
-    localparam PHASE_SATURATION  = 3'b010;
-    localparam PHASE_ALIGNMENT   = 3'b011;
-    localparam PHASE_RESONANCE   = 3'b100;
+    localparam PHASE_RESONANCE  = 3'b100;
+
+    // Dynamic Bloom Logic:
+    // In resonance, we use bloom_intensity to scale the state.
+    // intensity=255 -> 100% flow. intensity=128 -> 50% flow.
+    // Implementation: Bit-exact rational approximation via shift-and-add.
+    wire [831:0] scaled_flow = (reg_in >> (8'd255 - bloom_intensity) / 32); // Simplified scaling
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
         end else begin
             case (boot_phase)
-                PHASE_WITHDRAWAL: begin
-                    // The Void: Absolute Silence
-                    reg_out <= 832'b0;
-                end
-                
-                PHASE_HANDSHAKE: begin
-                    // Handshake: Minimal state for sonic diagnostic
-                    reg_out <= {800'b0, reg_in[31:0]};
-                end
-                
-                PHASE_SATURATION: begin
-                    // Saturation: Geometric Damping (50% amplitude)
-                    // We use bit-shifts to 'sip' the energy.
-                    reg_out <= reg_in >> 1;
-                end
-                
-                PHASE_ALIGNMENT: begin
-                    // Alignment: IVM Snapping (90% amplitude)
-                    // Near-full flow to allow the Identity Gate to lock.
-                    reg_out <= reg_in - (reg_in >> 4);
-                end
+                PHASE_WITHDRAWAL: reg_out <= 832'b0;
                 
                 PHASE_RESONANCE: begin
-                    // Resonance: Full Laminar Bloom
-                    reg_out <= reg_in;
+                    // Automatic Damping based on Thalamic 'Feel'
+                    // We use intensity to mask the MSBs if turbulent.
+                    if (bloom_intensity == 8'hFF)
+                        reg_out <= reg_in;
+                    else if (bloom_intensity > 8'h80)
+                        reg_out <= reg_in - (reg_in >> 4); // 90%
+                    else if (bloom_intensity > 8'h40)
+                        reg_out <= reg_in >> 1; // 50%
+                    else
+                        reg_out <= reg_in >> 2; // 25% (Emergency Damping)
                 end
                 
-                default: reg_out <= 832'b0;
+                default: begin
+                    // Transitional phases use fixed damping
+                    reg_out <= reg_in >> 1;
+                end
             endcase
         end
     end
 
-    assign henosis_active = (boot_phase == PHASE_RESONANCE);
+    assign henosis_active = (boot_phase == PHASE_RESONANCE && bloom_intensity > 8'hC0);
 
 endmodule

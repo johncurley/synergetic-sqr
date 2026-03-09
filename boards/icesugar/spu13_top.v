@@ -59,7 +59,17 @@ module spu13_top (
         .strike_in(strike_ripple), .manifold_out(), .lattice_fault()
     );
 
-    // 4. Thalamus v2 (Central Sensory Relay)
+    // 4. Power Dispatcher (Laminar Logic)
+    // Orchestrates the gradual release of state and dynamic damping.
+    wire [831:0] dispatched_state;
+    spu_laminar_power u_power (
+        .clk(clk_resonant), .reset(!rst_n),
+        .boot_phase(boot_phase), .bloom_intensity(bloom_intensity),
+        .reg_in({768'b0, h_seed}), .reg_out(dispatched_state),
+        .henosis_active()
+    );
+
+    // 5. Thalamus v2 (Central Sensory Relay)
     // Direct Metabolic, Proprioceptive, and Harmonic Integration.
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(!rst_n),
