@@ -46,7 +46,8 @@ SRC = $(TOP).v \
       $(RTL_DIR)/spu_harmonic_transducer.v \
       $(RTL_DIR)/spu_laminar_power.v \
       $(RTL_DIR)/spu_laminar_gate.v \
-      $(RTL_DIR)/spu_oled_visualizer.v
+      $(RTL_DIR)/spu_oled_visualizer.v \
+      $(RTL_DIR)/spu_viscosity_monitor.v
 
 all: $(PROJ).bin
 

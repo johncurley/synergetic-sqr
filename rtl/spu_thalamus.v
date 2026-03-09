@@ -6,22 +6,25 @@
 module spu_thalamus (
     input  wire        clk_resonant,
     input  wire        reset,
-    
+
     // Sensory Inputs
     input  wire [11:0] adc_raw,
     input  wire        synergy_idx,
     input  wire        identity_lock,
-    
+    input  wire [7:0]  laminar_flow_index, // From Viscosity Monitor
+
     // Control Outputs
     output wire [15:0] microwatts,
     output reg  [7:0]  bloom_intensity,
-    output reg  [3:0]  freq_bias,       // Slow down heartbeat if hot
+    output reg  [3:0]  freq_bias,
     output wire        coherence_lock,
     output wire [3:0]  q_vec
 );
 
     assign microwatts = (adc_raw << 1) + (adc_raw >> 1);
-    assign coherence_lock = identity_lock & (microwatts < 16'd100);
+
+    // Integrated Coherence: Locked + Sipping + Liquid
+    assign coherence_lock = identity_lock & (microwatts < 16'd100) & (laminar_flow_index > 8'h80);
 
     // 1. Homeostatic Modulation
     always @(posedge clk_resonant or posedge reset) begin
@@ -29,18 +32,19 @@ module spu_thalamus (
             bloom_intensity <= 8'h0;
             freq_bias <= 4'h0;
         end else begin
-            // If energy is 'Sipping', bloom into full intensity
+            // Optimal State: Coherent + Liquid
             if (coherence_lock && synergy_idx) begin
                 if (bloom_intensity < 8'hFF) bloom_intensity <= bloom_intensity + 1;
                 if (freq_bias > 4'h0) freq_bias <= freq_bias - 1;
             end else begin
-                // If 'Gulping' or Turbulent, dim the bloom and slow the heart
+                // Turbulent State: Dim and Slow
                 if (bloom_intensity > 8'h40) bloom_intensity <= bloom_intensity - 4;
                 if (freq_bias < 4'hF) freq_bias <= freq_bias + 1;
             end
         end
     end
 
-    assign q_vec = {identity_lock, synergy_idx, (bloom_intensity > 8'h80), (microwatts < 16'd50)};
+    // q_vec[1] is now the 'Liquid' bit
+    assign q_vec = {identity_lock, (laminar_flow_index > 8'h80), (bloom_intensity > 8'h80), (microwatts < 16'd50)};
 
 endmodule
