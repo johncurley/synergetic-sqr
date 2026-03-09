@@ -89,12 +89,12 @@ module spu13_golden_reification (
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    // --- 8. OLED Visualizer (Geometry & Metabolism) ---
+    // --- 8. OLED Visualizer ---
     wire [7:0] oled_byte;
     spu_oled_visualizer u_vision (
         .clk(clk_resonant), .reset(!rst_n),
         .manifold_a(manifold_out[31:0]), .microwatts(microwatts),
-        .pixel_data(oled_byte), .pixel_addr(), .frame_sync()
+        .pixel_data(oled_byte), .pixel_idx(), .frame_sync()
     );
 
     // --- 9. SSD1306 Driver ---
@@ -1077,7 +1077,7 @@ module spu_ssd1306_driver (
     end
 
 endmodule
-// SPU-13 OLED Visualizer: Dual Hemisphere (v3.4.23)
+// SPU-13 OLED Visualizer: Dual Hemisphere (v3.4.35)
 // Implementation: Geometry (Left) and Scrolling Metabolism (Right).
 // Objective: Visualize 'Deep Resonance' as a flat bit-perfect line.
 // Result: 128x64 dual-display for SSD1306.
@@ -1102,16 +1102,19 @@ module spu_oled_visualizer (
     reg [15:0] update_timer;
 
     // Power Mapping: 0-63 uW -> 0-63 Pixels (Vertical)
-    // Shifted to the right hemisphere (col 64-127)
     wire [5:0] current_power = (microwatts > 16'd63) ? 6'd63 : microwatts[5:0];
+
+    // Combinational helpers for right hemisphere indexing
+    wire [5:0] h_idx = col[5:0] + write_ptr;
+    wire [5:0] p_val = power_history[h_idx];
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             write_ptr <= 0; update_timer <= 0;
             pixel_idx <= 0; frame_sync <= 0;
+            pixel_data <= 8'h00;
         end else begin
             // 1. Telemetry Update (every ~100ms)
-            // Shifts the graph left by dropping a new 'Sip' point.
             if (update_timer == 16'hFFFF) begin
                 power_history[write_ptr] <= current_power;
                 write_ptr <= write_ptr + 1;
@@ -1127,16 +1130,12 @@ module spu_oled_visualizer (
             // 3. Pixel Mapping (SSD1306 Horizontal Mode)
             if (col < 64) begin
                 // LEFT HEMISPHERE: Geometry (Tetrahedral String)
-                // Projecting A-lane into 64x64 grid
-                pixel_data <= (page == col[5:3]) ? (8'h01 << col[2:0]) : 8'h00;
+                if (page == col[5:3])
+                    pixel_data <= (8'h01 << col[2:0]);
+                else
+                    pixel_data <= 8'h00;
             end else begin
                 // RIGHT HEMISPHERE: Metabolism (Scrolling Line Chart)
-                // We draw a single pixel at the power height.
-                // Power history is circular; we offset by write_ptr for scrolling.
-                wire [5:0] h_idx = col[5:0] + write_ptr;
-                wire [5:0] p_val = power_history[h_idx];
-                
-                // If the power value falls within this 8-pixel page
                 if (p_val[5:3] == page)
                     pixel_data <= (8'h01 << p_val[2:0]);
                 else
