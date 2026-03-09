@@ -1,7 +1,8 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.25)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.28)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Wake: Bowman Boot Sequence Automated.
-// Sensory: Metabolic, Proprioceptive, and Viscosity (Liquid Flow) Integration.
+// Sensory: Metabolic, Proprioceptive, and Viscosity Integration.
+// Power: Laminar Buffer (Dielectric Reservoir) enabled.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
@@ -39,7 +40,7 @@ module spu13_top (
     wire [63:0] h_seed;
     wire [831:0] manifold_out;
 
-    // 1. The Fractal Heart: Regulated by Thalamic Bias
+    // 1. The Fractal Heart
     spu_fractal_clk #(
         .CLK_IN_HZ(12000000)
     ) fractal_osc (
@@ -55,14 +56,14 @@ module spu13_top (
         .boot_phase(boot_phase), .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Core Lattice (The 13-axis Manifold)
+    // 3. SPU-13 Core Lattice
     spu_lattice_13 u_manifold (
         .clk(clk_resonant), .reset(!rst_n), .opcode(3'b001), 
         .prime_phase(2'b01), .sign_flip(1'b0), .ext_in({768'b0, h_seed}),
         .strike_in(strike_ripple), .manifold_out(manifold_out), .lattice_fault()
     );
 
-    // 4. Viscosity Monitor (Liquid Flow Sense)
+    // 4. Viscosity Monitor
     spu_viscosity_monitor u_viscosity (
         .clk(clk_resonant), .reset(!rst_n),
         .abcd_vector(manifold_out[127:0]),
@@ -97,13 +98,13 @@ module spu13_top (
         .coherence_lock(coherence_lock), .phase_correct(phase_correct)
     );
 
-    // 9. IO Bridge (The Standard Interface)
+    // 9. IO Bridge (Interactive Standard v1.2)
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
         .spu_reg_in(manifold_out), .microwatts(microwatts), 
-        .laminar_flow_index(laminar_flow_index), .sip_active(sip_active),
+        .laminar_flow_index(laminar_flow_index), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock), .led_status(), 
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(1'b1), .serial_tx()
@@ -112,7 +113,7 @@ module spu13_top (
     // 10. Status Reification
     assign led_sat_red = !rst_n | !identity_lock;
     assign led_sat_grn = wake_complete & coherence_lock;
-    assign led_sat_blu = (!wake_complete) ? (clk_resonant | sonic_handshake) : q_mood[2];
+    assign led_sat_blu = (!wake_complete) ? (clk_resonant | sonic_handshake) : (q_mood[2] | (|strike_ripple));
 
     assign vector_A = (clk_resonant ^ phase_correct ^ sonic_handshake) & laminar_en;
     assign vector_B = ~vector_A & laminar_en;

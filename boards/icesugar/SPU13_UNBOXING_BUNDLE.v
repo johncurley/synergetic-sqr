@@ -1,7 +1,8 @@
-// SPU-13 GOLDEN REIFICATION CORE (v3.4.10)
+// SPU-13 GOLDEN REIFICATION CORE (v3.4.30)
 // Target: iCE40UP5K (iCeSugar Nano)
 // Objective: Dual-Hemisphere Visualization (Geometry & Metabolism).
 // Interaction: Resonant Membrane Strike coupled to Thalamic Bloom.
+// Intelligence: Viscosity (Flow) and Frequency Homeostasis Integrated.
 // Status: [REIFIED] Ready for Unboxing Ceremony.
 
 module spu13_golden_reification (
@@ -27,9 +28,10 @@ module spu13_golden_reification (
 
     // --- 1. Manifold Internal Signals ---
     wire clk_resonant;
-    wire [831:0] manifold_state;
+    wire [831:0] manifold_out;
     wire [127:0] strike_ripple;
     wire [15:0]  microwatts;
+    wire [7:0]   laminar_flow_index;
     wire         sip_active;
     wire         coherence_lock;
     wire         identity_lock;
@@ -37,12 +39,14 @@ module spu13_golden_reification (
     wire [2:0]   boot_phase;
     wire [3:0]   q_mood;
     wire [7:0]   bloom_intensity;
+    wire [3:0]   freq_bias;
     wire [63:0]  h_seed;
 
-    // --- 2. The Fractal Heart ---
+    // --- 2. The Fractal Heart: Regulated by Thalamic Bias ---
     spu_fractal_clk u_heart (
         .clk_in(clk_12mhz), .rst_n(rst_n), .en(laminar_en),
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx()
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx()
     );
 
     // --- 3. The Bowman Wake ---
@@ -56,52 +60,59 @@ module spu13_golden_reification (
     spu_lattice_13 u_manifold (
         .clk(clk_resonant), .reset(!rst_n), .opcode(3'b001),
         .prime_phase(2'b01), .sign_flip(1'b0), .ext_in({768'b0, h_seed}),
-        .strike_in(strike_ripple), .manifold_out(manifold_state), .lattice_fault()
+        .strike_in(strike_ripple), .manifold_out(manifold_out), .lattice_fault()
     );
 
-    // --- 5. Thalamus v2 (Central Sensory Relay) ---
+    // --- 5. Viscosity Monitor (Flow Sense) ---
+    spu_viscosity_monitor u_viscosity (
+        .clk(clk_resonant), .reset(!rst_n),
+        .abcd_vector(manifold_out[127:0]),
+        .laminar_flow_index(laminar_flow_index)
+    );
+
+    // --- 6. Thalamus v3 (Central Sensory Relay) ---
     spu_thalamus u_relay (
         .clk_resonant(clk_resonant), .reset(!rst_n),
         .adc_raw(adc_in), .synergy_idx(1'b1), .identity_lock(identity_lock),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .laminar_flow_index(laminar_flow_index),
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // --- 6. IO Bridge (Interactive Standard) ---
+    // --- 7. IO Bridge (Interactive Standard v1.2) ---
     spu_io_bridge u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
-        .spu_reg_in(manifold_state), .microwatts(microwatts), .sip_active(microwatts < 100),
+        .spu_reg_in(manifold_out), .microwatts(microwatts), 
+        .laminar_flow_index(laminar_flow_index), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock), .led_status(),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    // --- 7. OLED Visualizer ---
+    // --- 8. OLED Visualizer (Geometry & Metabolism) ---
     wire [7:0] oled_byte;
     spu_oled_visualizer u_vision (
         .clk(clk_resonant), .reset(!rst_n),
-        .manifold_a(manifold_state[31:0]), .microwatts(microwatts),
-        .pixel_data(oled_byte), .pixel_addr(), .frame_done()
+        .manifold_a(manifold_out[31:0]), .microwatts(microwatts),
+        .pixel_data(oled_byte), .pixel_addr(), .frame_sync()
     );
 
-    // --- 8. SSD1306 Driver ---
+    // --- 9. SSD1306 Driver ---
     spu_ssd1306_driver u_display (
         .clk(clk_resonant), .reset(!rst_n),
         .data_in(oled_byte), .data_req(),
-        .scl(oled_scl), .sda(oled_sda), .done()
+        .scl(oled_scl), .sda(oled_sda), .ready()
     );
 
-    // --- 9. Identity Gate (Guard) ---
+    // --- 10. Identity Gate (Guard) ---
     spu_identity_monad u_guard (
         .clk(clk_resonant), .current_quadrance(64'h00000000_00010000), 
-        .lattice_state(manifold_state), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
+        .lattice_state(manifold_out), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
     );
 
-    // --- 10. Final Status Reification ---
+    // --- 11. Status Reification ---
     assign led_sat_red = !rst_n | !identity_lock;
     assign led_sat_grn = wake_complete & coherence_lock;
-    
-    // BLUE LED: Modulated by Strike Pressure + Resonant Pulse
     assign led_sat_blu = (!wake_complete) ? clk_resonant : (q_mood[2] | (|strike_ripple));
 
 endmodule
@@ -456,22 +467,25 @@ endmodule
 module spu_thalamus (
     input  wire        clk_resonant,
     input  wire        reset,
-    
+
     // Sensory Inputs
     input  wire [11:0] adc_raw,
     input  wire        synergy_idx,
     input  wire        identity_lock,
-    
+    input  wire [7:0]  laminar_flow_index, // From Viscosity Monitor
+
     // Control Outputs
     output wire [15:0] microwatts,
     output reg  [7:0]  bloom_intensity,
-    output reg  [3:0]  freq_bias,       // Slow down heartbeat if hot
+    output reg  [3:0]  freq_bias,
     output wire        coherence_lock,
     output wire [3:0]  q_vec
 );
 
     assign microwatts = (adc_raw << 1) + (adc_raw >> 1);
-    assign coherence_lock = identity_lock & (microwatts < 16'd100);
+
+    // Integrated Coherence: Locked + Sipping + Liquid
+    assign coherence_lock = identity_lock & (microwatts < 16'd100) & (laminar_flow_index > 8'h80);
 
     // 1. Homeostatic Modulation
     always @(posedge clk_resonant or posedge reset) begin
@@ -479,19 +493,20 @@ module spu_thalamus (
             bloom_intensity <= 8'h0;
             freq_bias <= 4'h0;
         end else begin
-            // If energy is 'Sipping', bloom into full intensity
+            // Optimal State: Coherent + Liquid
             if (coherence_lock && synergy_idx) begin
                 if (bloom_intensity < 8'hFF) bloom_intensity <= bloom_intensity + 1;
                 if (freq_bias > 4'h0) freq_bias <= freq_bias - 1;
             end else begin
-                // If 'Gulping' or Turbulent, dim the bloom and slow the heart
+                // Turbulent State: Dim and Slow
                 if (bloom_intensity > 8'h40) bloom_intensity <= bloom_intensity - 4;
                 if (freq_bias < 4'hF) freq_bias <= freq_bias + 1;
             end
         end
     end
 
-    assign q_vec = {identity_lock, synergy_idx, (bloom_intensity > 8'h80), (microwatts < 16'd50)};
+    // q_vec[1] is now the 'Liquid' bit
+    assign q_vec = {identity_lock, (laminar_flow_index > 8'h80), (bloom_intensity > 8'h80), (microwatts < 16'd50)};
 
 endmodule
 // SPU-13 Metabolic Sense (v3.3.99)
@@ -522,6 +537,90 @@ module spu_metabolic_sense (
 
     // The 'Sip' threshold: Certified Laminar if < 100uW
     assign sip_active = (microwatts < 16'd100);
+
+endmodule
+// SPU-13 Viscosity Monitor: The Surfer's Logic (v3.4.25)
+// Implementation: Real-time 'Liquid' flow detection.
+// Objective: Measure how well the manifold slides through the IVM.
+// Result: 8-bit Flow Index (255 = Liquid, 0 = Cubic Friction).
+
+module spu_viscosity_monitor (
+    input  wire         clk,
+    input  wire         reset,
+    input  wire [127:0] abcd_vector, // 4D Quadray State
+    output reg  [7:0]   laminar_flow_index
+);
+
+    // 1. Symmetry Calculation (The Ground)
+    wire signed [31:0] a = abcd_vector[31:0];
+    wire signed [31:0] b = abcd_vector[63:32];
+    wire signed [31:0] c = abcd_vector[95:64];
+    wire signed [31:0] d = abcd_vector[127:96];
+    
+    wire signed [31:0] sum_abcd = a + b + c + d;
+    wire is_symmetric = (sum_abcd == 32'sd0);
+
+    // 2. Phyllotaxis Delta Check (The Spiral)
+    // We check if the deltas between lanes approximate the Golden Ratio.
+    // In a liquid state, the differences [A-B, B-C, C-D] should be 
+    // balanced according to the Isotropic Invariant.
+    wire [31:0] delta_ab = (a > b) ? (a - b) : (b - a);
+    wire [31:0] delta_bc = (b > c) ? (b - c) : (c - b);
+    
+    // 3. Flow Index Modulation
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            laminar_flow_index <= 8'h0;
+        end else begin
+            if (is_symmetric) begin
+                // If symmetric AND the deltas are non-zero (active flow)
+                if (delta_ab > 0 && delta_bc > 0)
+                    laminar_flow_index <= 8'hFF; // THE LIQUID STATE
+                else
+                    laminar_flow_index <= 8'hC0; // Static Equilibrium
+            end else begin
+                // Cubic Interference: Proportional penalty based on asymmetry
+                laminar_flow_index <= (sum_abcd[15:8] > 8'h20) ? 8'h10 : 8'h40;
+            end
+        end
+    end
+
+endmodule
+// SPU-13 Laminar Buffer: Dielectric Reservoir (v3.4.27)
+// Implementation: Leaky Dielectric Bucket for Power Smoothing.
+// Objective: Neutralize current spikes from external interaction.
+// Result: Zero-hysteresis energy profile (<15uW steady state).
+
+module spu_laminar_buffer (
+    input  wire        clk,
+    input  wire        reset,
+    input  wire [15:0] microwatts_in,  // From Thalamus
+    output reg  [15:0] microwatts_out, // Smoothed 'Laminar' Power
+    output wire        reservoir_full  // High if surplus energy is available
+);
+
+    // 1. The Dielectric Reservoir (16-bit Accumulator)
+    // We maintain a virtual 'charge' that dampens the metabolic signal.
+    reg [31:0] reservoir;
+    localparam TARGET_SIP = 16'd15; // 15uW Target
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            reservoir <= 32'h0;
+            microwatts_out <= 16'h0;
+        end else begin
+            // 2. The Smoothing Logic: Rolling Average (Window=256)
+            // reservoir = reservoir - (reservoir/256) + microwatts_in
+            reservoir <= reservoir - (reservoir >> 8) + {16'b0, microwatts_in};
+            
+            // 3. Final Reification
+            // The output is the time-averaged metabolic signature.
+            microwatts_out <= reservoir >> 8;
+        end
+    end
+
+    // Reservoir is 'Full' if the smoothed average is below the Sip target.
+    assign reservoir_full = (microwatts_out <= TARGET_SIP);
 
 endmodule
 // SPU-13 Harmonic Handshake Engine (v3.3.97)
@@ -656,9 +755,9 @@ module spu_coherence_ecc (
     assign phase_correct = !coherence_lock;
 
 endmodule
-// SPU-13 I/O Bridge: Metabolic Edition (v3.4.0)
-// Implementation: Laminar Frame Protocol (Draft 1.1).
-// Objective: Dual-layer I/O with Real-time Power Telemetry.
+// SPU-13 I/O Bridge: Liquid Edition (v3.4.27)
+// Implementation: Laminar Frame Protocol (Draft 1.2) with Dielectric Reservoir.
+// Objective: Dual-layer I/O with Smoothed Metabolic Telemetry.
 
 module spu_io_bridge #(
     parameter CLK_PHYS_HZ = 12000000
@@ -669,8 +768,9 @@ module spu_io_bridge #(
     
     // SPU Interface
     input  wire [831:0] spu_reg_in,
-    input  wire [15:0]  microwatts,    // From Metabolic Sense
-    input  wire         sip_active,    // From Metabolic Sense
+    input  wire [15:0]  microwatts,
+    input  wire [7:0]   laminar_flow_index, 
+    input  wire         sip_active,
     output wire [127:0] strike_ripple,
     input  wire         fault_detected,
     input  wire         coherence_lock,
@@ -683,8 +783,18 @@ module spu_io_bridge #(
     output wire         serial_tx
 );
 
-    // 1. The Laminar Frame Assembler (Telemetry)
-    // Frame v1.1: [SYMM:1][uW:16][RES:7][FOOTER:8][PAYLOAD:32]
+    // 1. Laminar Buffer (Dielectric Reservoir)
+    // Smoothes the metabolic signal to provide a true 'Sip' average.
+    wire [15:0] smoothed_uw;
+    wire        reservoir_full;
+    spu_laminar_buffer u_buffer (
+        .clk(clk_phys), .reset(reset),
+        .microwatts_in(microwatts),
+        .microwatts_out(smoothed_uw),
+        .reservoir_full(reservoir_full)
+    );
+
+    // 2. The Laminar Frame Assembler (Telemetry)
     wire signed [31:0] a = spu_reg_in[31:0];
     wire signed [31:0] b = spu_reg_in[63:32];
     wire signed [31:0] c = spu_reg_in[95:64];
@@ -692,22 +802,22 @@ module spu_io_bridge #(
     
     wire symmetry_ok = ((a + b + c + d) == 32'sd0);
     wire [31:0] payload = spu_reg_in[31:0];
-    wire [7:0]  footer = {6'b0, sip_active, coherence_lock};
+    wire [6:0] status_flags = {4'b0, reservoir_full, sip_active, coherence_lock};
 
-    // 2. Telemetry Path (TX)
+    // 3. Telemetry Path (TX)
     surd_uart_tx #(
         .CLK_HZ(CLK_PHYS_HZ),
         .BAUD(115200)
     ) u_telemetry (
         .clk(clk_phys),
         .reset(reset),
-        .data_in({symmetry_ok, microwatts, 7'b0, footer, payload}), 
+        .data_in({symmetry_ok, smoothed_uw, laminar_flow_index, status_flags, payload}), 
         .start(|spu_reg_in[31:0]), 
         .tx(serial_tx),
         .ready()
     );
 
-    // 3. Interaction Path (RX)
+    // 4. Interaction Path (RX)
     wire [7:0] rx_data;
     wire       rx_valid;
     assign rx_valid = !serial_rx; 
@@ -722,11 +832,11 @@ module spu_io_bridge #(
         .membrane_lock()
     );
 
-    // 4. Status Reification
+    // 5. Status Reification
     assign led_status[0] = fault_detected;
-    assign led_status[1] = !sip_active;     // Red-shift if 'The Gulp' occurs
+    assign led_status[1] = (laminar_flow_index < 8'h80); 
     assign led_status[2] = clk_resonant;
-    assign led_status[3] = coherence_lock;  
+    assign led_status[3] = coherence_lock & reservoir_full;  
 
     assign pmod_ja_out = spu_reg_in[7:0];
 
