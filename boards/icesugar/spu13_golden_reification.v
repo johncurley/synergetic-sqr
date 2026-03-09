@@ -1,4 +1,4 @@
-// SPU-13 GOLDEN REIFICATION CORE (v3.4.4)
+// SPU-13 GOLDEN REIFICATION CORE (v3.4.7)
 // Target: iCE40UP5K (iCeSugar Nano)
 // Objective: Dual-Hemisphere Visualization (Geometry & Metabolism).
 // Status: [REIFIED] Ready for Unboxing Ceremony.
@@ -68,17 +68,26 @@ module spu13_golden_reification (
     // --- 6. IO Bridge (Interactive Standard) ---
     spu_io_bridge u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
-        .spu_reg_in(manifold_state), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in(manifold_state), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock), .led_status(),
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    // --- 8. OLED Visualizer (Geometry & Metabolism) ---
+    // --- 7. OLED Visualizer ---
+    wire [7:0] oled_byte;
+    wire       oled_req;
     spu_oled_visualizer u_vision (
         .clk(clk_resonant), .reset(!rst_n),
         .manifold_a(manifold_state[31:0]), .microwatts(microwatts),
-        .pixel_data(), .pixel_addr(), .frame_done()
+        .pixel_data(oled_byte), .pixel_addr(), .frame_done()
+    );
+
+    // --- 8. SSD1306 Driver ---
+    spu_ssd1306_driver u_display (
+        .clk(clk_resonant), .reset(!rst_n),
+        .data_in(oled_byte), .data_req(oled_req),
+        .scl(oled_scl), .sda(oled_sda), .done()
     );
 
     // --- 9. Identity Gate (Guard) ---
@@ -87,13 +96,9 @@ module spu13_golden_reification (
         .lattice_state(manifold_state), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
     );
 
-    // --- 10. Final Status Reification ---
+    // --- 10. Status Reification ---
     assign led_sat_red = !rst_n | !identity_lock;
     assign led_sat_grn = wake_complete & coherence_lock;
     assign led_sat_blu = (!wake_complete) ? clk_resonant : q_mood[2];
-
-    // SSD1306 Pins (Tied to Resonant Heart)
-    assign oled_scl = clk_resonant;
-    assign oled_sda = q_mood[0];
 
 endmodule
