@@ -1,8 +1,9 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.3.89)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.3.97)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Guard: Proactive Coherence ECC & Identity Gate Integrated.
 // Wake: Bowman Boot Sequence Automated.
 // Interaction: Resonant Membrane Strike Path Enabled.
+// Ceremony: Ceremonial Blue-LED modulation for Tone Triad.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
@@ -27,6 +28,7 @@ module spu13_top (
     wire phase_correct;
     wire synergy_idx;
     wire sonic_handshake;
+    wire [1:0] tone_id;
     wire boot_done;
     wire [2:0] boot_phase;
     wire wake_complete;
@@ -75,6 +77,7 @@ module spu13_top (
         .rst_n(rst_n),
         .en(laminar_en & (boot_phase == 3'b001)),
         .tone_out(sonic_handshake),
+        .tone_id(tone_id),
         .handshake_done(boot_done)
     );
 
@@ -124,9 +127,15 @@ module spu13_top (
     // 10. Status Reification (Visual Handshake)
     // Red = Reset OR Identity Breach
     assign led_sat_red = !rst_n | !identity_lock;
+    
     // Green = Manifold Locked and Aligned
     assign led_sat_grn = wake_complete & coherence_lock;
-    // Blue = Searching / Handshake / Saturation
-    assign led_sat_blu = (!wake_complete) & laminar_en & (clk_resonant | sonic_handshake);
+    
+    // Blue = Ceremonial Feedback
+    // Pulse patterns: 1:Slow, 2:Medium, 3:Fast, else: Pulse-Awareness
+    assign led_sat_blu = (boot_phase == 3'b001) ? sonic_handshake :
+                         (boot_phase == 3'b010) ? clk_resonant :
+                         (boot_phase == 3'b011) ? (clk_resonant & synergy_idx) :
+                         (!wake_complete) ? clk_resonant : 1'b0;
 
 endmodule
