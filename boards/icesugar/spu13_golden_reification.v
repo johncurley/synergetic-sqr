@@ -89,12 +89,12 @@ module spu13_golden_reification (
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(uart_rx), .serial_tx(uart_tx)
     );
 
-    // --- 8. OLED Visualizer (Geometry & Metabolism) ---
+    // --- 8. OLED Visualizer ---
     wire [7:0] oled_byte;
     spu_oled_visualizer u_vision (
         .clk(clk_resonant), .reset(!rst_n),
         .manifold_a(manifold_out[31:0]), .microwatts(microwatts),
-        .pixel_data(oled_byte), .pixel_addr(), .frame_sync()
+        .pixel_data(oled_byte), .pixel_idx(), .frame_sync()
     );
 
     // --- 9. SSD1306 Driver ---
