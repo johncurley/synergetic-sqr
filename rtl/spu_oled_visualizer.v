@@ -1,49 +1,58 @@
-// SPU-13 OLED Visualizer: Dual Hemisphere (v3.4.4)
+// SPU-13 OLED Visualizer: Dual Hemisphere (v3.4.11)
 // Implementation: Geometry (Left) and Metabolism (Right).
-// Objective: Turn the invisible Laminar Flow into a visible Pulse.
-// Result: 128x64 bit-map representing the SPU-13 'Mood'.
+// Objective: Format 128x64 data for SSD1306 Horizontal Mode.
+// Result: 1024 bytes per frame cycle.
 
 module spu_oled_visualizer (
     input  wire        clk,
     input  wire        reset,
-    input  wire [31:0] manifold_a,   // Primary state lane
-    input  wire [15:0] microwatts,   // Real-time power
-    output reg  [7:0]  pixel_data,   // Byte stream for I2C driver
-    output reg  [6:0]  pixel_addr,   // Current column/page
-    output wire        frame_done
+    input  wire [31:0] manifold_a,
+    input  wire [15:0] microwatts,
+    output reg  [7:0]  pixel_data,
+    output reg  [9:0]  pixel_idx,    // 0-1023 bytes
+    output reg         frame_sync
 );
 
-    // 1. Strip Chart Memory (Right Hemisphere)
-    // 64 columns of power data
+    // Internal Page/Column Mapping
+    // Page: 0-7 (8 rows each)
+    // Column: 0-127
+    wire [2:0] page = pixel_idx[9:7];
+    wire [6:0] col  = pixel_idx[6:0];
+
+    // Strip Chart History (64 columns)
     reg [5:0] power_history [0:63];
     reg [5:0] write_ptr;
-    
-    // 2. Projection Logic (Left Hemisphere)
-    // Projecting the 32-bit A-lane into a 64x64 visual field.
-    // We use the MSBs for position and LSBs for intensity.
-    wire [5:0] geom_x = manifold_a[31:26] + 6'd32;
-    wire [5:0] geom_y = manifold_a[25:20] + 6'd32;
+    reg [15:0] update_timer;
 
-    // 3. Frame Buffering (Conceptual byte-stream)
-    // In a physical SSD1306, we stream pages (8 rows high).
-    reg [15:0] frame_timer;
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            write_ptr <= 0;
-            frame_timer <= 0;
+            write_ptr <= 0; update_timer <= 0;
+            pixel_idx <= 0; frame_sync <= 0;
         end else begin
-            // Every ~100ms, update the history
-            if (frame_timer == 16'hFFFF) begin
+            // 1. Telemetry Update (every ~100ms)
+            if (update_timer == 16'hFFFF) begin
                 power_history[write_ptr] <= (microwatts > 16'd63) ? 6'd63 : microwatts[5:0];
                 write_ptr <= write_ptr + 1;
-                frame_timer <= 0;
+                update_timer <= 0;
             end else begin
-                frame_timer <= frame_timer + 1;
+                update_timer <= update_timer + 1;
+            end
+
+            // 2. Data Sequencing
+            pixel_idx <= pixel_idx + 1;
+            frame_sync <= (pixel_idx == 1023);
+
+            // 3. Pixel Mapping
+            if (col < 64) begin
+                // LEFT HEMISPHERE: Geometry (Simple projection)
+                // Drawing a single 'pixel' for the A-axis string
+                pixel_data <= (page == col[5:3]) ? (8'h01 << col[2:0]) : 8'h00;
+            end else begin
+                // RIGHT HEMISPHERE: Metabolism (Strip Chart)
+                // col[5:0] indexes power_history
+                pixel_data <= (power_history[col-64] >> page) ? 8'hFF : 8'h00;
             end
         end
     end
-
-    // Pixel Output Logic (Simplified for Bridge)
-    assign frame_done = (pixel_addr == 7'd127);
 
 endmodule
