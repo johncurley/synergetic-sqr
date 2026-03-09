@@ -1,5 +1,5 @@
 # Tang Nano 20k SPU-13 Constraints
-# v3.3.95 "Proprioceptive Sensing"
+# v3.4.3 "Physical Metabolic Mapping"
 
 IO_LOC "sys_clk" 4;
 IO_PORT "sys_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
@@ -23,3 +23,30 @@ IO_PORT "uart_rx" IO_TYPE=LVCMOS33;
 # Proprioceptive Bias (Nervous Antenna)
 IO_LOC "bias_in" 71;
 IO_PORT "bias_in" IO_TYPE=LVCMOS33;
+
+# Metabolic Sense (12-bit Shunt ADC)
+IO_LOC "adc_in[0]"  25;
+IO_LOC "adc_in[1]"  26;
+IO_LOC "adc_in[2]"  27;
+IO_LOC "adc_in[3]"  28;
+IO_LOC "adc_in[4]"  29;
+IO_LOC "adc_in[5]"  30;
+IO_LOC "adc_in[6]"  31;
+IO_LOC "adc_in[7]"  32;
+IO_LOC "adc_in[8]"  33;
+IO_LOC "adc_in[9]"  34;
+IO_LOC "adc_in[10]" 35;
+IO_LOC "adc_in[11]" 36;
+
+IO_PORT "adc_in[0]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[1]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[2]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[3]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[4]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[5]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[6]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[7]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[8]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[9]"  IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[10]" IO_TYPE=LVCMOS33;
+IO_PORT "adc_in[11]" IO_TYPE=LVCMOS33;

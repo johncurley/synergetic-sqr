@@ -20,6 +20,10 @@ set_io laminar_en 11
 # High-Z entry for stochastic phase-biasing.
 set_io bias_in 12
 
+# Metabolic Sense (Shunt ADC) - Pin 13
+# 12-bit input from current-sense amplifier.
+set_io adc_in 13
+
 # --- 3. Janus-Gate Differential Output (Tuned Drive Strength) ---
 # Driving the "Virtual Coils" of the header traces.
 set_io -current 6 vector_A 46

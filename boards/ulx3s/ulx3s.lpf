@@ -1,5 +1,5 @@
 # ULX3S SPU-13 Constraints
-# v3.3.95 "Proprioceptive Sensing"
+# v3.4.3 "Physical Metabolic Mapping"
 
 LOCATE COMP "clk_25mhz" SITE "G2";
 IOBUF PORT "clk_25mhz" IO_TYPE=LVCMOS33;
@@ -25,5 +25,32 @@ IOBUF PORT "ftdi_tdo" IO_TYPE=LVCMOS33;
 IOBUF PORT "ftdi_rxd" IO_TYPE=LVCMOS33;
 
 # Proprioceptive Bias (Nervous Antenna)
-LOCATE COMP "bias_in" SITE "B11"; # GP0 on Header
+LOCATE COMP "bias_in" SITE "B11"; # GP0
 IOBUF PORT "bias_in" IO_TYPE=LVCMOS33;
+
+# Metabolic Sense (12-bit Shunt ADC)
+LOCATE COMP "adc_in[0]"  SITE "C11"; # GP1
+LOCATE COMP "adc_in[1]"  SITE "A10"; # GP2
+LOCATE COMP "adc_in[2]"  SITE "A11"; # GP3
+LOCATE COMP "adc_in[3]"  SITE "B10"; # GP4
+LOCATE COMP "adc_in[4]"  SITE "B12"; # GP5
+LOCATE COMP "adc_in[5]"  SITE "A12"; # GP6
+LOCATE COMP "adc_in[6]"  SITE "B13"; # GP7
+LOCATE COMP "adc_in[7]"  SITE "A13"; # GP8
+LOCATE COMP "adc_in[8]"  SITE "C13"; # GP9
+LOCATE COMP "adc_in[9]"  SITE "D13"; # GP10
+LOCATE COMP "adc_in[10]" SITE "E13"; # GP11
+LOCATE COMP "adc_in[11]" SITE "F13"; # GP12
+
+IOBUF PORT "adc_in[0]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[1]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[2]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[3]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[4]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[5]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[6]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[7]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[8]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[9]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[10]" IO_TYPE=LVCMOS33;
+IOBUF PORT "adc_in[11]" IO_TYPE=LVCMOS33;
