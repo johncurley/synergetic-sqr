@@ -18,6 +18,7 @@ RTL_DIR = ../../rtl
 SRC = $(TOP).v \
       $(RTL_DIR)/spu_fractal_clk.v \
       $(RTL_DIR)/spu_harmonic_handshake.v \
+      $(RTL_DIR)/spu_bowman_sequencer.v \
       $(RTL_DIR)/spu_coherence_ecc.v \
       $(RTL_DIR)/spu_core.v \
       $(RTL_DIR)/spu_ecc.v \
