@@ -1,6 +1,6 @@
-// Tang Nano 20k Top-Level Integration (v3.3.71)
+// Tang Nano 20k Top-Level Integration (v3.3.75)
 // Target: Gowin GW2A-18C
-// Implementation: Automated Bowman Wake with Expanded ISA
+// Implementation: Automated Bowman Wake with 13-Core Collective Manifold
 
 module tang_nano_20k_top (
     input  wire sys_clk, // 27MHz
@@ -11,10 +11,9 @@ module tang_nano_20k_top (
 );
 
     wire clk_resonant;
-    wire [831:0] reg_state;
-    wire [831:0] next_state;
+    wire [831:0] manifold_state;
     wire [2:0]   boot_phase;
-    wire         fault;
+    wire         lattice_fault;
     wire         henosis_pass;
     wire         wake_complete;
 
@@ -39,47 +38,36 @@ module tang_nano_20k_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Core Manifold (Expanded ISA)
-    spu_core u_core (
+    // 3. SPU-13 Phyllotaxis Lattice (13 Interconnected Cores)
+    spu_lattice_13 u_lattice (
         .clk(clk_resonant),
         .reset(~sys_rst_n),
-        .reg_curr(reg_state),
-        .neighbors(3072'b0),
         .opcode(3'b001),
         .prime_phase(2'b01),
         .sign_flip(1'b0),
-        .reg_out(next_state),
-        .fault_detected(fault)
+        .ext_in(832'b0),
+        .manifold_out(manifold_state),
+        .lattice_fault(lattice_fault)
     );
 
-    // 4. Power Dispatcher (Laminar Logic)
-    spu_laminar_power u_power (
-        .clk(clk_resonant),
-        .reset(~sys_rst_n),
-        .boot_phase(boot_phase),
-        .reg_in(next_state),
-        .reg_out(reg_state),
-        .henosis_active()
-    );
-
-    // 5. One-Second Stability Audit
+    // 4. One-Second Stability Audit
     spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~sys_rst_n),
-        .reg_in(reg_state),
+        .reg_in(manifold_state),
         .pass(henosis_pass),
         .fail()
     );
 
-    // 6. IO Bridge
+    // 5. IO Bridge
     spu_io_bridge #(
         .CLK_PHYS_HZ(27000000)
     ) u_io (
         .clk_phys(sys_clk),
         .clk_resonant(clk_resonant),
         .reset(~sys_rst_n),
-        .spu_reg_in(reg_state),
-        .fault_detected(fault),
+        .spu_reg_in(manifold_state),
+        .fault_detected(lattice_fault),
         .led_status(led[3:0]),
         .pmod_ja_out(),
         .sw_control(),

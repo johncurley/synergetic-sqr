@@ -1,6 +1,6 @@
-// ULX3S Top-Level Integration (v3.3.71)
-// Target: Lattice ECP5
-// Implementation: Automated Bowman Wake with Expanded ISA
+// ULX3S Top-Level Integration (v3.3.75)
+// Target: Lattice ECP5-85k
+// Implementation: 13-Core Collective Phyllotaxis Lattice
 
 module ulx3s_top (
     input  wire clk_25mhz,
@@ -11,12 +11,11 @@ module ulx3s_top (
 );
 
     wire clk_resonant;
-    wire [831:0] reg_state;
-    wire [831:0] next_state;
-    wire [2:0]   boot_phase;
-    wire         fault;
+    wire [831:0] manifold_state;
+    wire         lattice_fault;
     wire         henosis_pass;
     wire         wake_complete;
+    wire [2:0]   boot_phase;
     wire [3:0]   bridge_leds;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
@@ -40,47 +39,36 @@ module ulx3s_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. SPU-13 Core Manifold (Expanded ISA)
-    spu_core u_core (
+    // 3. SPU-13 Phyllotaxis Lattice (13 Interconnected Cores)
+    spu_lattice_13 u_lattice (
         .clk(clk_resonant),
         .reset(~btn[0]),
-        .reg_curr(reg_state),
-        .neighbors(3072'b0),
-        .opcode(3'b001),
+        .opcode(3'b001), 
         .prime_phase(2'b01),
         .sign_flip(1'b0),
-        .reg_out(next_state),
-        .fault_detected(fault)
+        .ext_in(832'b0),
+        .manifold_out(manifold_state),
+        .lattice_fault(lattice_fault)
     );
 
-    // 4. Power Dispatcher (Laminar Logic)
-    spu_laminar_power u_power (
-        .clk(clk_resonant),
-        .reset(~btn[0]),
-        .boot_phase(boot_phase),
-        .reg_in(next_state),
-        .reg_out(reg_state),
-        .henosis_active()
-    );
-
-    // 5. One-Second Stability Audit
+    // 4. One-Second Stability Audit
     spu_self_test u_audit (
         .clk(clk_resonant),
         .reset(~btn[0]),
-        .reg_in(reg_state),
+        .reg_in(manifold_state),
         .pass(henosis_pass),
         .fail()
     );
 
-    // 6. IO Bridge (UART Telemetry)
+    // 5. IO Bridge (UART Telemetry)
     spu_io_bridge #(
         .CLK_PHYS_HZ(25000000)
     ) u_io (
         .clk_phys(clk_25mhz),
         .clk_resonant(clk_resonant),
         .reset(~btn[0]),
-        .spu_reg_in(reg_state),
-        .fault_detected(fault),
+        .spu_reg_in(manifold_state),
+        .fault_detected(lattice_fault),
         .led_status(bridge_leds),
         .pmod_ja_out(),
         .sw_control(),
@@ -91,6 +79,6 @@ module ulx3s_top (
     assign led[3:0] = bridge_leds;
     assign led[4]   = clk_resonant;
     assign led[5]   = henosis_pass & wake_complete;
-    assign led[7]   = fault;
+    assign led[7]   = lattice_fault;
 
 endmodule
