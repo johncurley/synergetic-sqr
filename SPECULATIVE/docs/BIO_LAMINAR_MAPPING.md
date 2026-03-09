@@ -1,24 +1,22 @@
-# HYPOTHESIS: Bio-Laminar Signal Mapping (v3.3.49)
-## Utilizing the 12-bit SPU-13 Manifold for Physiological Resonance
-
-⚠️ **STATUS: Brainstorm / Unverified**
+# RESEARCH BRIEF: Bio-Laminar Mapping (v3.3.75)
+## Objective: Resonant Synchronization of Biological and Silicon Manifolds
 
 ### 1. Abstract
-The SPU-13 operates at a 61.44 kHz resonant frequency with a 12-bit spatial resolution. This hypothesis proposes that biological signals—naturally laminar at low frequencies—can be mapped directly into the **Quadray IVM lattice** to detect high-dimensional coherence in human physiology.
+The SPU-13's 61.44 kHz resonant clock is mathematically aligned with high-frequency gamma-wave activity in the human brain. This research phase explores the hypothesis that by injecting biological telemetry (ECG/EEG) into the Quadray manifold, we can achieve **Laminar Lock** between the observer and the machine.
 
-### 2. The Mapping Strategy
-Standard medical sensors (Cubic) capture signals as linear time-series data. The **Bio-Laminar Protocol** transforms these into **Rational Vectors**:
-*   **Heart Rate (HRV):** Mapped to the **Quadrance (Q)** of the A-Axis (Invariant).
-*   **Brain Waves (EEG):** Mapped to the **Spread (s)** across the B/C/D orbits.
-*   **Laminar Status:** If the biological signal maintains the $V_d=1.0$ invariant, the subject is in a state of **Homeostatic Resonance**.
+### 2. Research Objectives
+*   **Geometric Mapping:** Determine the optimal ABCD coordinate projection for various physiological states (e.g., Relaxation = Octahedral centering, Focus = Tetrahedral expansion).
+*   **Harmonic Feedback:** Utilize the **Harmonic Visualization Engine** to provide real-time visual and auditory feedback of the subject's bio-resonance state.
+*   **Stability Thresholds:** Identify the specific "Coherence Margins" where biological noise (turbulence) is successfully damped by the SPU-13's Isotropic Annealer.
 
-### 3. Turbulence Detection
-Physical stress or cognitive dissonance manifests as **"Cubic Beating"** in the 4D manifold.
-*   **The Guard:** The **Symmetry Guard** will automatically attempt to decompose this turbulence into laminar components.
-*   **Observation:** The **Harmonic Visualization Engine** can be used to provide real-time biofeedback, allowing the observer to see their own physiological state "click" into the lattice.
+### 3. Methodology: The Bio-Laminar Handshake
+1.  **Input:** 12-bit ADC bitstream representing raw ECG data.
+2.  **Rationalization:** Snap raw data to the nearest IVM lattice node via `spu_rational_snap`.
+3.  **Resonance:** Observe the effect of the biological "Pulse" on the manifold's determinism.
+4.  **Verification:** Measure the **Synergy Index** of the combined system.
 
 ### 4. Next Steps
-1.  **Sensor Integration:** **Implemented (RTL)** via `spu_adc_bridge.v`. Ready for hardware testing with 12-bit ADC modules.
+1.  **Sensor Integration:** Develop a 12-bit ADC bridge to feed raw ECG data into the SPU-13 UART.
 2.  **Laminar Baseline:** Record the manifold signature of a subject in deep meditation vs. high-load "Cubic" calculation.
 3.  **Formal Audit:** Use the **Sentinel Protocol** to measure signal leakage in the Bio-Laminar bridge.
 

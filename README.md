@@ -178,7 +178,12 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 ---
 
 ### 🧪 Future Research & Hypotheses
-Concepts for future phases, including photonic computation and non-orthogonal circuit topology, are documented in the **[SPECULATIVE/](SPECULATIVE/)** directory. These ideas are unverified hypotheses and are maintained separately from the proven hardware core.
+Concepts for future phases, including photonic computation and non-orthogonal circuit topology, are documented in the **[SPECULATIVE/](SPECULATIVE/)** directory. 
+
+Current research focus:
+*   **[PHOTONICS_PLAN.md](SPECULATIVE/docs/PHOTONICS_PLAN.md):** Zero-Hysteresis Light Manifolds.
+*   **[BIO_LAMINAR_MAPPING.md](SPECULATIVE/docs/BIO_LAMINAR_MAPPING.md):** Resonant synchronization between biological signals and the IVM lattice.
+    *   👉 **[Bio-Resonance Monitor](tools/bio_resonance_monitor.py)** (Simulation Tool)
 
 ---
 
