@@ -1,4 +1,4 @@
-# SPU-13 Golden Emulator (v3.3.96)
+# SPU-13 Golden Emulator (v3.4.15)
 # Objective: Bit-exact software model of the SPU-13 Isotropic Manifold.
 # Implementation: Integer arithmetic in Q(sqrt3, sqrt5) field.
 
@@ -20,12 +20,10 @@ class GoldenSurd:
 
     @classmethod
     def Phi(cls):
-        # Golden Ratio: (1 + sqrt5) / 2 -> (0.5 + 0.5*sqrt5)
-        # Scaled to 16.16: 32768 + 32768*sqrt5
+        # Golden Ratio scaled to 16.16: 32768 + 32768*sqrt5
         return cls(32768, 0, 32768, 0)
 
     def multiply(self, other):
-        # Q(sqrt3, sqrt5) multiplication logic
         aa = self.a * other.a
         bb = self.b * other.b
         cc = self.c * other.c
@@ -48,10 +46,16 @@ class GoldenSurd:
     def add(self, other):
         return GoldenSurd(self.a + other.a, self.b + other.b, self.c + other.c, self.d + other.d)
 
+    def janus_flip(self):
+        """Bit-exact sign inversion of the surd component."""
+        return GoldenSurd(self.a, -self.b, self.c, -self.d)
+
+    def norm(self):
+        """Calculates the rational norm of the surd."""
+        return (self.a**2 - 3*self.b**2 - 5*self.c**2 + 15*self.d**2)
+
 class BowmanSequencer:
-    """
-    Software model of the 5-phase automated wake-up.
-    """
+    """Software model of the 5-phase automated wake-up."""
     WITHDRAWAL = 0
     HANDSHAKE  = 1
     SATURATION = 2
@@ -74,7 +78,7 @@ class BowmanSequencer:
             if handshake_done: self.phase = self.SATURATION
         elif self.phase == self.SATURATION:
             self.timer += 1
-            if self.timer >= 10: # Accelerated for simulation
+            if self.timer >= 10: 
                 self.phase = self.ALIGNMENT
                 self.timer = 0
         elif self.phase == self.ALIGNMENT:
@@ -83,9 +87,7 @@ class BowmanSequencer:
         return self.phase
 
 class ResonantMembrane:
-    """
-    Software model of the Harmonic Transducer.
-    """
+    """Software model of the Harmonic Transducer."""
     def __init__(self):
         self.state = [0, 0, 0, 0] # ABCD
 
