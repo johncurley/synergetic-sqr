@@ -40,7 +40,12 @@ SRC = $(TOP).v \
       $(RTL_DIR)/surd_multiplier.v \
       $(RTL_DIR)/spu_rational_snap.v \
       $(RTL_DIR)/spu_proprioception.v \
-      $(RTL_DIR)/spu_validator.v
+      $(RTL_DIR)/spu_validator.v \
+      $(RTL_DIR)/spu_metabolic_sense.v \
+      $(RTL_DIR)/spu_thalamus.v \
+      $(RTL_DIR)/spu_harmonic_transducer.v \
+      $(RTL_DIR)/spu_laminar_power.v \
+      $(RTL_DIR)/spu_laminar_gate.v
 
 all: $(PROJ).bin
 
