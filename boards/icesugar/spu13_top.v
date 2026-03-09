@@ -1,7 +1,8 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.3.69)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.3.89)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Guard: Proactive Coherence ECC & Identity Gate Integrated.
 // Wake: Bowman Boot Sequence Automated.
+// Interaction: Resonant Membrane Strike Path Enabled.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
@@ -29,6 +30,7 @@ module spu13_top (
     wire boot_done;
     wire [2:0] boot_phase;
     wire wake_complete;
+    wire [127:0] strike_ripple;
     wire [63:0] h_seed;
 
     // 1. The Fractal Heart: Sierpiński Oscillator
@@ -54,7 +56,20 @@ module spu13_top (
         .wake_complete(wake_complete)
     );
 
-    // 3. The Harmonic Handshake: Sonic Self-Diagnostic
+    // 3. SPU-13 Core Lattice (The 13-axis Manifold)
+    spu_lattice_13 u_manifold (
+        .clk(clk_resonant),
+        .reset(!rst_n),
+        .opcode(3'b001), 
+        .prime_phase(2'b01),
+        .sign_flip(1'b0),
+        .ext_in({768'b0, h_seed}),
+        .strike_in(strike_ripple),
+        .manifold_out(),
+        .lattice_fault()
+    );
+
+    // 4. The Harmonic Handshake: Sonic Self-Diagnostic
     spu_harmonic_handshake u_sonic (
         .clk_resonant(clk_resonant),
         .rst_n(rst_n),
@@ -63,7 +78,7 @@ module spu13_top (
         .handshake_done(boot_done)
     );
 
-    // 4. Identity Gate: The Rational Guard
+    // 5. Identity Gate: The Rational Guard
     spu_identity_monad u_identity (
         .clk(clk_resonant),
         .current_quadrance(64'h00000000_00010000), 
@@ -72,14 +87,14 @@ module spu13_top (
         .homeopathic_seed(h_seed)
     );
 
-    // 5. The Janus-Gate: Enable-Gated Inversion
+    // 6. The Janus-Gate: Enable-Gated Inversion
     assign janus_state = (clk_resonant ^ phase_correct ^ sonic_handshake) & laminar_en;
 
-    // 6. Physical Manifold Drive
+    // 7. Physical Manifold Drive
     assign vector_A = janus_state;
     assign vector_B = ~janus_state & laminar_en;
 
-    // 7. Topological Guard: Coherence Monitor
+    // 8. Topological Guard: Coherence Monitor
     spu_coherence_ecc guard (
         .clk_fractal(clk_resonant),
         .rst_n(rst_n),
@@ -88,25 +103,25 @@ module spu13_top (
         .phase_correct(phase_correct)
     );
 
-    // 8. IO Bridge (The Standard Interface)
+    // 9. IO Bridge (The Standard Interface)
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
         .clk_phys(clk_12mhz),
         .clk_resonant(clk_resonant),
         .reset(!rst_n),
-        .spu_reg_in({768'b0, h_seed}), // Telemetry of the Monad
-        .strike_ripple(),
+        .spu_reg_in({768'b0, h_seed}), 
+        .strike_ripple(strike_ripple),
         .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock),
-        .led_status(), // LEDs handled by direct assigns below
+        .led_status(), 
         .pmod_ja_out(),
         .sw_control(4'b0),
-        .serial_rx(1'b1), // Pin 9 handled by PCF
-        .serial_tx()      // Pin 10 handled by PCF
+        .serial_rx(1'b1), // UART RX Entry
+        .serial_tx()      // UART TX Entry
     );
 
-    // 9. Status Reification (Visual Handshake)
+    // 10. Status Reification (Visual Handshake)
     // Red = Reset OR Identity Breach
     assign led_sat_red = !rst_n | !identity_lock;
     // Green = Manifold Locked and Aligned

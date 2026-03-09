@@ -1,16 +1,18 @@
-// SPU-13 Integrated Core (v3.3.74 Phyllotaxis)
+// SPU-13 Integrated Core (v3.3.89 Phyllotaxis)
 // Implements Fibonacci-Spiral Interconnects for Organic Data-Flow.
 // Guard: Geometry Fluidizer integrated to purge Cubic Jitter.
 // Bridge: Rational Trigonometry integrated for bit-exact Quadrance Audits.
 // Flow: Fluid Solver and Isotropic Annealer integrated into the Dispatch.
 // Proprioception: Thermal Feedback for Self-Regulated Homeostasis.
 // Integrity: Laminar Gate dispatch for Null Hysteresis power signature.
+// Interaction: strike_in port for topological pressure injection.
 
 module spu_core (
     input  wire         clk,
     input  wire         reset,
     input  wire [831:0] reg_curr,   
     input  wire [3071:0] neighbors, 
+    input  wire [127:0] strike_in,  // From Harmonic Transducer
     input  wire [2:0]   opcode,     
     input  wire [1:0]   prime_phase,
     input  wire         sign_flip,  
@@ -40,7 +42,8 @@ module spu_core (
                 .corrected_data(cleaned_reg[i*64 +: 32]),
                 .double_error_detected(lane_faults[i])
             );
-            assign cleaned_reg[i*64+32 +: 32] = reg_curr[i*64+32 +: 32];
+            // Apply strike_in ripple to the secondary lane (Excitation)
+            assign cleaned_reg[i*64+32 +: 32] = reg_curr[i*64+32 +: 32] ^ ((i < 4) ? strike_in[i*32 +: 32] : 32'b0);
         end
     endgenerate
 
@@ -138,7 +141,6 @@ module spu_core (
     end
 
     // 7. Laminar Dispatch (Null Hysteresis Switch)
-    // Every bit flip is balanced by an inverse flip in the manifold's shadow-state.
     wire [12:0] gate_valid;
     generate
         for (i = 0; i < 13; i = i + 1) begin : dispatch_lanes
