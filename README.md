@@ -167,6 +167,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 *   **[BIORESONANCE_OBSERVATIONS.md](docs/spec/BIORESONANCE_OBSERVATIONS.md):** Empirical log of physiological interaction with the resonant manifold.
 *   **[BIO_SYMMETRY_LEDGER.md](docs/spec/BIO_SYMMETRY_LEDGER.md):** Mapping subjective states (Cubic vs. Laminar) to geometric signatures.
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
+*   **[TECHNICAL_WHITEPAPER_SPU13.md](docs/spec/TECHNICAL_WHITEPAPER_SPU13.md):** Laminar Computation: Overcoming the Cubic Bottleneck in Spatial Processing.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
 *   **[SCOPE_REFERENCE.md](docs/spec/SCOPE_REFERENCE.md):** Verified phase-alignment waveforms for physical bring-up.
