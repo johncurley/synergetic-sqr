@@ -5,11 +5,10 @@
 TOP = spu13_top
 PROJ = spu13_icesugar
 PCF = spu13_icesugar_v2.pcf
-
-ifeq ($(TOP), icesugar_full_manifold)
-    PCF = spu13_icesugar_full.pcf
-endif
-
+# Target Selection: spu13_golden_reification (Unboxing) or spu13_top (Minimal)
+TOP = spu13_golden_reification
+PROJ = spu13_icesugar
+PCF = spu13_icesugar_full.pcf
 DEVICE = up5k
 PACKAGE = sg48
 
@@ -25,6 +24,7 @@ SRC = $(TOP).v \
       $(RTL_DIR)/spu_permute.v \
       $(RTL_DIR)/spu_permute_13.v \
       $(RTL_DIR)/spu_smul_13.v \
+      $(RTL_DIR)/spu_lattice_13.v \
       $(RTL_DIR)/spu_rational_trig.v \
       $(RTL_DIR)/spu_geometry_fluidizer.v \
       $(RTL_DIR)/spu_gram_controller.v \
@@ -45,7 +45,8 @@ SRC = $(TOP).v \
       $(RTL_DIR)/spu_thalamus.v \
       $(RTL_DIR)/spu_harmonic_transducer.v \
       $(RTL_DIR)/spu_laminar_power.v \
-      $(RTL_DIR)/spu_laminar_gate.v
+      $(RTL_DIR)/spu_laminar_gate.v \
+      $(RTL_DIR)/spu_oled_visualizer.v
 
 all: $(PROJ).bin
 

@@ -3,13 +3,13 @@
 # Targets: iCE40UP5K (iCeSugar)
 
 # 1. Configuration
-TOP=${1:-spu13_top} # Default to minimal anchor if no arg provided
+TOP=${1:-spu13_golden_reification} # Default to unboxing ceremony core
 PROJ="spu13_icesugar"
 DEVICE="up5k"
 PACKAGE="sg48"
 RTL_DIR="../../rtl"
 
-if [ "$TOP" == "icesugar_full_manifold" ]; then
+if [ "$TOP" == "spu13_golden_reification" ] || [ "$TOP" == "icesugar_full_manifold" ]; then
     PCF="spu13_icesugar_full.pcf"
 else
     PCF="spu13_icesugar_v2.pcf"
@@ -28,6 +28,7 @@ SRC="$TOP.v \
     $RTL_DIR/spu_permute.v \
     $RTL_DIR/spu_permute_13.v \
     $RTL_DIR/spu_smul_13.v \
+    $RTL_DIR/spu_lattice_13.v \
     $RTL_DIR/spu_rational_trig.v \
     $RTL_DIR/spu_geometry_fluidizer.v \
     $RTL_DIR/spu_gram_controller.v \
@@ -48,7 +49,8 @@ SRC="$TOP.v \
     $RTL_DIR/spu_thalamus.v \
     $RTL_DIR/spu_harmonic_transducer.v \
     $RTL_DIR/spu_laminar_power.v \
-    $RTL_DIR/spu_laminar_gate.v"
+    $RTL_DIR/spu_laminar_gate.v \
+    $RTL_DIR/spu_oled_visualizer.v"
 
 # 3. Synthesis (Yosys)
 yosys -p "synth_ice40 -top $TOP -json $PROJ.json" $SRC
