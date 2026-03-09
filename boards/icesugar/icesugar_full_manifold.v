@@ -1,6 +1,7 @@
-// iCeSugar Full Manifold Realization (v3.4.16)
+// iCeSugar Full Manifold Realization (v3.4.19)
 // Target: Lattice iCE40UP5K (iCeSugar Nano/Pro)
 // Objective: Full 832-bit SQR-Link with Thalamic sensory integration.
+// Interaction: Dynamic Bloom self-regulation enabled.
 
 module icesugar_full_manifold (
     input  wire clk_12mhz,    // Pin 35 (Physical Oscillator)
@@ -56,10 +57,12 @@ module icesugar_full_manifold (
         .fault_detected(fault)
     );
 
-    // 4. Power Dispatcher
+    // 4. Power Dispatcher (Laminar Logic)
+    // Dynamic Bloom scaling based on Thalamic intensity.
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(!rst_n), .boot_phase(boot_phase),
-        .reg_in(next_state), .reg_out(reg_state), .henosis_active()
+        .bloom_intensity(bloom_intensity), .reg_in(next_state), 
+        .reg_out(reg_state), .henosis_active()
     );
 
     // 5. Thalamus v2 (Consciousness Relay)
