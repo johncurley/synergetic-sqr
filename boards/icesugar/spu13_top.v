@@ -1,15 +1,14 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.28)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.32)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Wake: Bowman Boot Sequence Automated.
-// Sensory: Metabolic, Proprioceptive, and Viscosity Integration.
-// Power: Laminar Buffer (Dielectric Reservoir) enabled.
+// Sensory: Metabolic, Proprioceptive, Viscosity, and Bio-Laminar Mapping.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
     input wire rst_n,        // Active-Low Reset (Pin 18)
     input wire laminar_en,   // The 'Throttle' (High to Enable Flow) (Pin 11)
     input wire bias_in,      // Proprioceptive Entry (Pin 12)
-    input wire [11:0] adc_in, // Metabolic Sense (Pin 13 - Header)
+    input wire [11:0] adc_in, // Metabolic/Bio Sense (Pin 13 - Header)
     
     // Electromagnetic Manifold
     output wire vector_A,    // Inductive Entry (Pin 46)
@@ -36,16 +35,19 @@ module spu13_top (
     wire [7:0]  laminar_flow_index;
     wire [7:0]  bloom_intensity;
     wire [3:0]  freq_bias;
+    wire [3:0]  bio_bias;
+    wire [31:0] bio_data;
+    wire        bio_sync;
     wire [3:0]  q_mood;
     wire [63:0] h_seed;
     wire [831:0] manifold_out;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Multi-Bias (Metabolic + Bio)
     spu_fractal_clk #(
         .CLK_IN_HZ(12000000)
     ) fractal_osc (
         .clk_in(clk_12mhz), .rst_n(rst_n), .en(laminar_en), 
-        .bias_in(bias_in), .freq_bias(freq_bias),
+        .bias_in(bias_in), .freq_bias(freq_bias | bio_bias),
         .clk_laminar(clk_resonant), .synergy_idx(synergy_idx)
     );
 
@@ -70,7 +72,19 @@ module spu13_top (
         .laminar_flow_index(laminar_flow_index)
     );
 
-    // 5. Thalamus v3 (Central Sensory Relay)
+    // 5. Bio-Laminar Gateway (Physiological Sync)
+    spu_adc_bridge u_bio_adc (
+        .clk(clk_resonant), .rst_n(rst_n), .adc_raw(adc_in), .adc_valid(1'b1),
+        .laminar_data(bio_data), .pulse_sync(bio_sync)
+    );
+
+    spu_bio_gateway u_bio_gate (
+        .clk(clk_resonant), .reset(!rst_n),
+        .bio_laminar_data(bio_data), .pulse_sync(bio_sync),
+        .bio_resonant_bias(bio_bias)
+    );
+
+    // 6. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(!rst_n),
         .adc_raw(adc_in), .synergy_idx(synergy_idx), .identity_lock(identity_lock),
@@ -79,26 +93,26 @@ module spu13_top (
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 6. The Harmonic Handshake
+    // 7. The Harmonic Handshake
     spu_harmonic_handshake u_sonic (
         .clk_resonant(clk_resonant), .rst_n(rst_n),
         .en(laminar_en & (boot_phase == 3'b001)),
         .tone_out(sonic_handshake), .tone_id(), .handshake_done(boot_done)
     );
 
-    // 7. Identity Gate
+    // 8. Identity Gate
     spu_identity_monad u_identity (
         .clk(clk_resonant), .current_quadrance(64'h00000000_00010000), 
         .lattice_state(manifold_out), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
     );
 
-    // 8. Topological Guard
+    // 9. Topological Guard
     spu_coherence_ecc guard (
         .clk_fractal(clk_resonant), .rst_n(rst_n), .janus_state(janus_state),
         .coherence_lock(coherence_lock), .phase_correct(phase_correct)
     );
 
-    // 9. IO Bridge (Interactive Standard v1.2)
+    // 10. IO Bridge
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
@@ -110,7 +124,7 @@ module spu13_top (
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(1'b1), .serial_tx()
     );
 
-    // 10. Status Reification
+    // 11. Status Reification
     assign led_sat_red = !rst_n | !identity_lock;
     assign led_sat_grn = wake_complete & coherence_lock;
     assign led_sat_blu = (!wake_complete) ? (clk_resonant | sonic_handshake) : (q_mood[2] | (|strike_ripple));
