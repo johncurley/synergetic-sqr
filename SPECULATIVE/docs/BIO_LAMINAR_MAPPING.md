@@ -18,7 +18,7 @@ Physical stress or cognitive dissonance manifests as **"Cubic Beating"** in the 
 *   **Observation:** The **Harmonic Visualization Engine** can be used to provide real-time biofeedback, allowing the observer to see their own physiological state "click" into the lattice.
 
 ### 4. Next Steps
-1.  **Sensor Integration:** Develop a 12-bit ADC bridge to feed raw ECG data into the SPU-13 UART.
+1.  **Sensor Integration:** **Implemented (RTL)** via `spu_adc_bridge.v`. Ready for hardware testing with 12-bit ADC modules.
 2.  **Laminar Baseline:** Record the manifold signature of a subject in deep meditation vs. high-load "Cubic" calculation.
 3.  **Formal Audit:** Use the **Sentinel Protocol** to measure signal leakage in the Bio-Laminar bridge.
 
