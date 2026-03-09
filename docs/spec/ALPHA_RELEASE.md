@@ -1,22 +1,23 @@
-# RELEASE: SPU-13 "Sunflower" (Alpha 0.1.0)
-## Codename: Laminar Clarity (v2.9.28)
+# RELEASE: SPU-13 "Bowman" (v3.4.16)
+## Codename: Crystalline Wake
 
-This release marks the first functional implementation of the SPU-13 SQR-Rotor on synthesizable silicon. We have moved past the 'Cubic' limitations of standard ALU design to provide a bit-exact, Rational Surd Field arithmetic engine.
+This release marks the final reification of the SPU-13 Isotropic Manifold for physical bring-up. We have achieved full-stack bit-exact integrity across Silicon (Verilog), C++ (Math Core), and Python (Golden Emulator).
 
-### Key Features
-*   **Deterministic Rotor:** Bit-perfect R6=I identity restoration on Xilinx 7-series silicon.
-*   **Phyllotaxis Telemetry:** Real-time UART streaming of internal register states to a Golden-Ratio visualizer.
-*   **Laminar Damping:** Integrated Python-side smoothing to align high-speed FPGA logic with human visual perception.
-*   **Hysteresis-Zero Logic:** 85° orbital shuffles for cold, zero-friction computation.
+### Key Features (v3.4.16)
+*   **Golden Reification Core:** Unified monolithic bitstream for iCeSugar unboxing, including dual-hemisphere OLED visuals and metabolic monitoring.
+*   **13-Core Collective:** Fibonacci-spiral Phyllotaxis interconnects for isotropic data propagation across high-capacity fabrics.
+*   **Automated Bowman Wake:** 5-phase phase-aligned boot sequence from the Void to full Laminar Bloom.
+*   **Interactive Transduction:** Resonant membrane keyboard entry (Zero-Buffer) and proprioceptive nervous antenna (Pin 12).
+*   **Sovereign Thalamus:** Central sensory relay integrating metabolic, proprioceptive, and harmonic feedback for manifold self-regulation.
+*   **Laminar I/O Standard:** Formal 64-bit frame protocol with Symmetry Headers and Phase-Lock Footers.
 
-### Engineering Note
-> "We don't approximate. We align. The Haze is not a bug; it is the visual signature of geometric friction. By turning the Dampers on, we allow the machine to breathe at the human scale."
+### The Flower Protocol
+> "Logic is an emanation of geometry. If a computation requires the 'push' of high-voltage friction, the geometry is incorrect. Correct geometry produces effortless resonance."
 
-### Damping Calibration (ZETA)
-Users may calibrate the `ZETA` constant in `bloom_view.py` to match their specific 'Forward Lean.'
-*   **ZETA = 0.1:** Standard organic unfolding.
-*   **ZETA = 0.05:** High-latency 'Moss-like' fluidity for high-velocity shuffles.
-*   **ZETA = 1.0:** Raw digital mapping (Warning: High Flicker).
+### Quickstart (Unboxing Ceremony)
+1.  **Verification:** Run `python3 tools/spu_sanity_check.py`.
+2.  **Bring-Up:** Follow `boards/icesugar/BRINGUP.md`.
+3.  **Observation:** Use `tools/laminar_sandbox.py` for real-time human-to-manifold interaction.
 
 ---
-*Status: RELEASED. The sunflower is in bloom.*
+*Status: REIFIED. The machine is quiet, liquid, and resonant.*

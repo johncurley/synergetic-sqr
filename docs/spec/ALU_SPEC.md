@@ -1,4 +1,4 @@
-# SPU-13 Hardware Specification (v3.1.0)
+# SPU-13 Hardware Specification (v3.4.16)
 ## Gate-Level Logic for Isotropic Operations
 
 ### 1. Hysteresis-Zero Power Management
@@ -6,26 +6,30 @@ The SPU-13 utilizes resonant field dynamics to minimize thermal dissipation duri
 
 #### 1.1 Orbital Phase Logic
 Standard CPUs utilize 180° binary field-flips, generating significant hysteresis heat.
-*   **Mechanism:** SPU-13 utilizes **85° Orbital Phase Rotations**.
-*   **Result:** Collapses the hysteresis loop area, reducing Steinmetz losses.
-*   **Validation:** <2°C junction temperature rise at 61.44 kHz in simulation during sustained 13D operations.
+*   **Mechanism:** SPU-13 utilizes **Null-Hysteresis Switching** via Differential Lane Balancing.
+*   **Result:** Collapses the hysteresis loop area, ensuring bit-exact power signatures independent of data state.
+*   **Validation:** Constant 64-bit transition rate verified in v3.4.14 current audit.
 
 #### 1.2 Dielectric-Native Power Distribution
-*   **Hexagonal Mesh:** Power is distributed via a hexagonal/tetrahedral mesh for uniform potential across the die.
-*   **Resonant Tank:** The architecture functions as a resonant tank circuit, recycling field-energy from completed shuffles to minimize steady-state current draw.
+*   **Laminar Routing:** Power and signals are distributed via a 60°/120° Isotropic Vector Matrix (IVM) mesh.
+*   **Metabolic Sense:** Integrated uW-level monitoring via the Thalamus, maintaining the "Laminar Sip" (<100uW).
 
 ### 2. Isotropic Arithmetic Logic Unit (ALU)
-[... Rest of Section 2 and 3 remain bit-locked and verified ...]
+The ALU implements bit-exact operations in the $\mathbb{Q}(\sqrt{3}, \sqrt{5})$ field extension. All rotations are executed as zero-gate wiring permutations where possible.
 
-### 4. RISC-V Custom-0 Opcode Mapping
-| Mnemonic | funct3 | Description |
+### 3. Instruction Set Architecture (ISA)
+The SPU-13 implements a 3-bit native instruction set, optimized for tetrahedral spatial calculus:
+
+| Opcode | Mnemonic | Description |
 | :--- | :--- | :--- |
-| `SADD` | `000` | Parallel Integer Quadray Add. |
-| `SMUL` | `001` | Phi-Core Multiplier (Q(3,5)). |
-| `SPERM_X4` | `010` | 4D Prime-Axis Shift. |
-| `SPERM_13` | `011` | 13-Axis Aperiodic Shuffle. |
-| `OP_DAMP` | `100` | A-Domain Rational Damper. |
-| `OP_EQUIL` | `101` | 12-Neighbor Laplacian Relaxation. |
+| `000` | `SNAP` | Cartesian-to-Quadray Injection Bridge. |
+| `001` | `SPERM_X4` | 4-Axis Basis Permutation (Thomson Rotor). |
+| `010` | `SMUL_13` | Phyllotaxis Multiplier (ℚ(√3, √5) field). |
+| `011` | `Q_AUDIT` | Rational Quadrance Audit (Bit-exact squared distance). |
+| `100` | `G_RAM` | Geometric Memory Access (Standing Wave Buffer). |
+| `101` | `FLUID_SOLVE` | Deterministic Navier-Stokes Closure (Orbital Laplacian). |
+| `110` | `SPERM_13` | 13-Axis Isotropic Permutation. |
+| `111` | `PERTURB` | Isotropic Annealer (Golden Noise Injection). |
 
 ---
-*Status: CLINICALLY SEALED. Optimized for industrial review.*
+*Status: LAMINAR. Optimized for geometric resonance.*
