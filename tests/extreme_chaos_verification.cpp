@@ -1,20 +1,18 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <cmath>
 #include "spu/SynergeticsMath.hpp"
 
 using namespace Synergetics;
 
 /**
- * SPU-1 Extreme Chaos Verification Suite v1.9.3
+ * SPU-1 Extreme Chaos Verification Suite v3.3.78
  * 
- * This suite subjects the SPU-1 architecture to conditions where conventional
- * floating-point systems fail: recursive feedback, non-linear shuffles, 
- * and extreme multi-scale oscillations.
- * 
- * Success Requirement: 100% bit-exact restoration or algebraic boundedness.
+ * Implementation: Strictly integer-based bit-exact verification.
+ * Zero floating-point linkage.
  */
+
+static inline int32_t i_abs(int32_t x) { return (x < 0) ? -x : x; }
 
 // --- 1. Nested Hyper-Surd Feedback Loops ---
 void RunRecursiveFeedbackTest() {
@@ -74,7 +72,6 @@ void RunCollisionAvalancheTest() {
         }
     }
     
-    // Check if any particle collapsed to absolute zero (vanished)
     bool integrity = true;
     for (const auto& p : particles) {
         bool all_zero = true;
@@ -110,7 +107,7 @@ void RunJanusFlipStorm() {
     
     bool stable = true;
     for(int i=0; i<8; i++) {
-        if (std::abs(current.data.v[i]) > 0x7FFFFFFF) {
+        if (i_abs(current.data.v[i]) > 0x7FFFFFFF) {
             stable = false;
             break;
         }
@@ -135,7 +132,7 @@ void RunTensegrityChaosTest() {
         SPU_TensegrityNode::_spu_verlet_step(node, accel, 1);
     }
 
-    if (std::abs(node.position.data.v[0]) < 65536) {
+    if (i_abs(node.position.data.v[0]) < 65536) {
         std::cout << "PASS: Sub-Integer Physics Determinism Verified." << std::endl;
     } else {
         std::cerr << "FAIL: Energy leak in micro-tensegrity!" << std::endl;
@@ -167,7 +164,7 @@ void RunSurdSwapTest() {
 
 int main() {
     std::cout << "=======================================" << std::endl;
-    std::cout << " SPU-1 EXTREME CHAOS SUITE v1.9.3      " << std::endl;
+    std::cout << " SPU-1 EXTREME CHAOS SUITE v3.3.78     " << std::endl;
     std::cout << "=======================================" << std::endl;
     
     RunRecursiveFeedbackTest();

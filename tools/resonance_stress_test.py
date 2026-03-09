@@ -1,39 +1,41 @@
-import numpy as np
-import math
-
-# SPU-13 Resonance Stress Test (v3.3.49)
+# SPU-13 Resonance Stress Test (v3.3.78)
 # Objective: Sweep 12-bit range and verify Sierpinski Tunnel stability.
-# Result: Measures Harmonic Residual (Signal Leakage).
+# Implementation: Integer-only bit-exact residual tracking.
 
 def run_resonance_sweep(bits=12):
     max_val = 2**bits
-    residuals = []
+    turbulent_nodes = 0
+    total_scanned = 0
     
     print(f"--- SPU-13 Sentinel Protocol: Initializing {bits}-bit Sweep ---")
     
     for freq in range(1, max_val, 64):
         # 1. Projective Equivalence Check
         # In a perfect Sierpinski void, the residual should be bit-exact zero.
-        octave = (freq >> 8) & 0xF
         phase = freq & 0xFF
         
-        # Simulating the 'Geodesic Skip' efficiency
+        # Simulating the 'Geodesic Skip' efficiency (rational bypass)
         is_void = (phase % 3 == 0)
         
-        # Harmonic Residual: The 'echo' of non-laminar logic
-        # In the SPU-13, this is suppressed by the Symmetry Guard.
-        residual = 0.0 if is_void else (1.0 / (freq + 1.0))
-        residuals.append(residual)
+        # 2. Forensic Residual Check
+        # In the SPU-13, any non-void logic must be damped by the Symmetry Guard.
+        # We track 'Turbulent Nodes' where logic fails to align with the 60-deg manifold.
+        if not is_void:
+            # Simulate a failure if the freq is a power of 2 (Cubic incursion)
+            is_cubic = (freq & (freq - 1) == 0)
+            if is_cubic:
+                turbulent_nodes += 1
         
-    avg_residual = sum(residuals) / len(residuals)
-    peak_leakage = max(residuals)
+        total_scanned += 1
+        
+    coherence_idx = ((total_scanned - turbulent_nodes) * 10000) // total_scanned
     
     print("\n--- Resonance Map: STABLE ---")
-    print(f"Average Harmonic Residual: {avg_residual:.12f}")
-    print(f"Peak Signal Leakage:      {peak_leakage:.12f}")
-    print(f"Manifold Coherence:       {100.0 * (1.0 - avg_residual):.6f}%")
+    print(f"Total Nodes Scanned:  {total_scanned}")
+    print(f"Turbulent Incursions: {turbulent_nodes}")
+    print(f"Manifold Coherence:   {coherence_idx // 100}.{coherence_idx % 100:02d}%")
     
-    if avg_residual < 1e-6:
+    if turbulent_nodes == 0:
         print("Status: CRYSTALLINE. The Tunnels are clear.")
     else:
         print("Status: TURBULENCE DETECTED. Check bypass logic.")

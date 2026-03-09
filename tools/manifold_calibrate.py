@@ -1,42 +1,34 @@
+# SPU-13 Manifold Calibration Utility (v3.3.78)
+# Objective: Measure Beat-Frequencies and Verify Resonance Lock.
+# Implementation: Integer-only rational comparison for bit-exact auditing.
+
 import serial
 import time
-import math
 import sys
-
-# SPU-13 Manifold Calibration Utility (v3.3.46)
-# Objective: Measure Beat-Frequencies and Verify Resonance Lock.
-# Target: 61.44 kHz Resonant Manifold (via UART Telemetry).
 
 class ManifoldAuditor:
     def __init__(self, port, baud=115200):
         self.ser = serial.Serial(port, baud, timeout=1)
-        self.ratios = {
-            "Unison": 1.0,
-            "Fourth": 4/3,
-            "Fifth": 3/2,
-            "Octave": 2.0
-        }
         print(f"--- SPU-13 Manifold Calibration: Listening on {port} ---")
-
-    def surd_to_float(self, i, s):
-        # Q(sqrt3) expansion
-        return float(i) + float(s) * math.sqrt(3)
 
     def analyze_beats(self, samples):
         """
-        Detects 'Cubic Beating' - deviations from rational harmonics.
+        Detects 'Cubic Beating' via integer deltas.
+        In a bit-exact manifold, identity-restored deltas must be ZERO.
         """
-        if len(samples) < 2: return 0.0
+        if len(samples) < 2: return 0
         
-        deltas = [abs(samples[i] - samples[i-1]) for i in range(1, len(samples))]
-        avg_delta = sum(deltas) / len(deltas)
+        # We track 'Non-Zero Deltas' as indicators of Cubic Friction
+        friction_events = 0
+        for i in range(1, len(samples)):
+            delta = abs(samples[i] - samples[i-1])
+            if delta != 0:
+                friction_events += 1
         
-        # Beat Frequency calculation: f_beat = |f1 - f2|
-        # In a laminar manifold, f_beat should approach 0.
-        return avg_delta
+        return friction_events
 
     def run_audit(self, duration=10):
-        print("Commencing Resonance Audit...")
+        print("Commencing Bit-Exact Resonance Audit...")
         samples = []
         start_time = time.time()
         
@@ -44,22 +36,27 @@ class ManifoldAuditor:
             line = self.ser.readline().decode('utf-8').strip()
             if line:
                 try:
-                    # Expecting hex telemetry: [Surd_S][Integer_I]
+                    # Expecting hex telemetry
                     val = int(line, 16)
                     # For Phase 1, we audit the A-component Integer (lower 32 bits)
                     samples.append(val & 0xFFFFFFFF)
                 except ValueError:
                     continue
 
-        beat_freq = self.analyze_beats(samples)
+        friction_events = self.analyze_beats(samples)
+        total_obs = len(samples)
         
         print("\n--- Manifold State: REIFIED ---")
-        print(f"Total Cycles Observed: {len(samples)}")
-        print(f"Average Cubic Beating: {beat_freq:.6f} Hz")
+        print(f"Total Cycles Observed: {total_obs}")
+        print(f"Friction Events:       {friction_events}")
         
-        if beat_freq < 0.001:
+        if total_obs > 0:
+            coherence_idx = ((total_obs - friction_events) * 10000) // total_obs
+            print(f"Laminar Coherence:     {coherence_idx // 100}.{coherence_idx % 100:02d}%")
+        
+        if friction_events == 0:
             print("Status: LAMINAR LOCK. Identity is Absolute.")
-        elif beat_freq < 1.0:
+        elif friction_events < (total_obs // 100):
             print("Status: COHERENT. Minimal torsion detected.")
         else:
             print("Status: TURBULENT. Cubic interference in the lattice.")

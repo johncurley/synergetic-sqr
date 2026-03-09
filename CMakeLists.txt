@@ -41,6 +41,7 @@ target_include_directories(spu_core_interface INTERFACE include sim/python)
 
 add_spu_test(spu-verify rigorous_verification.cpp)
 add_spu_test(spu-extreme-chaos extreme_chaos_verification.cpp)
+add_spu_test(spu-chaos chaos_verification.cpp)
 add_spu_test(spu-bulletproof bulletproof_verification.cpp)
 add_spu_test(spu-collision collision_verification.cpp)
 add_spu_test(spu-sdk-verify sdk_verification.cpp)
