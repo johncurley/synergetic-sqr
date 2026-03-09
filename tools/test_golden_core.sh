@@ -8,7 +8,7 @@ echo "======================================="
 
 # 1. Neural Warm-up (Software Emulator)
 echo "[1/3] INITIALIZING NEURAL WARM-UP..."
-python3 software/toolchain/spu13_emulator.py
+python3 sim/python/spu13_emulator.py
 sleep 2
 
 # 2. 10-Second Safe Pulse (Visual Bloom)

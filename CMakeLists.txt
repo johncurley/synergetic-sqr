@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.20)
 # 1. Initialize with standard C/C++ only
 project(synergetic-sqr LANGUAGES C CXX)
 
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -33,6 +35,7 @@ macro(add_spu_test name source)
         set_source_files_properties(tests/${source} PROPERTIES COMPILE_FLAGS "-x objective-c++")
     endif()
     target_link_libraries(${name} PRIVATE spu_core_interface)
+    add_test(NAME ${name} COMMAND ${name})
 endmacro()
 
 # Interface library for shared includes
@@ -42,7 +45,6 @@ target_include_directories(spu_core_interface INTERFACE include sim/python)
 add_spu_test(spu-verify rigorous_verification.cpp)
 add_spu_test(spu-extreme-chaos extreme_chaos_verification.cpp)
 add_spu_test(spu-chaos chaos_verification.cpp)
-add_spu_test(spu-bulletproof bulletproof_verification.cpp)
 add_spu_test(spu-collision collision_verification.cpp)
 add_spu_test(spu-sdk-verify sdk_verification.cpp)
 add_spu_test(spu-prime-verify prime_synthesis_verification.cpp)

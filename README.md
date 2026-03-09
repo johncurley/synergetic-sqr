@@ -18,178 +18,104 @@ The SPU-13 does not use IEEE-754 Floating Point. It uses a **Dual-Integer Surd R
 *   **Storage:** Each value is a pair of signed integers $(I, S)$ representing $I + S\sqrt{3}$.
 *   **Multiplication Rule:** $(I_1 + S_1\sqrt{3}) \times (I_2 + S_2\sqrt{3}) = (I_1I_2 + 3S_1S_2) + (I_1S_2 + S_1I_2)\sqrt{3}$
 *   **The Result:** **Zero Rounding Error.** The product is bit-exact and algebraically closed.
+
 #### 3. Rational Trigonometry (Universal Geometry)
 We replace transcendental $\sin/\cos$ with **Spread ($s$)** and **Quadrance ($Q$)** (as defined by Norman Wildberger).
 *   **Quadrance:** $Q = d^2$ (Distance squared). Pure integer calculation.
 *   **Spread:** $s = \sin^2(\theta)$. Exact rational values.
 *   **Tetrahedral Symmetry:** For 60° angles, $s = 0.75$ (Exactly representable as $3/4$).
-*   **Hardware Impact:** Zero SOH-CAH-TOA dependencies. No CORDIC engines. No Taylor series. Just high-speed integer Multiply-Accumulate (MAC).
-
-#### 4. Instruction Set Architecture (ISA)
-The SPU-13 core implements a **3-bit operational instruction set** designed for high-dimensional spatial manipulation.
-*   **Core Opcodes:** Includes Basis Permutation, Phyllotaxis Multiplication, Quadrance Audit, and G-RAM Access.
-*   **Expansion:** Now features integrated **Deterministic Fluid Solving** and **Isotropic Annealing**.
-*   **Optimization:** Utilizes the **Sierpiński Quadrance Bypass** (Phase-Isolated Tunnels) for near Zero-Impedance routing.
-*   👉 **[Full ISA Manifest](docs/spec/TECHNICAL_REPORT.md#33-instruction-set-architecture-isa)**
-
----
-*   **Solver:** Yosys-SMTBMC + Minisat.
-*   **Assertion:** The internal state manifold remains within the **Indestructible Invariant** ($V_d = 1.0$) across all 4-axis rotations.
-*   **Proof:** Formally proven for a 10-cycle induction bound, ensuring no state-space "leaks" into the "Nothing" (rounding drift).
+*   👉 **[Universal Verification Plan](docs/spec/VERIFICATION_PLAN.md)**
 
 ---
 
-### 🏛️ Formal Rigor: The $V_d$ Invariant
+### 🛡️ Universal Verification Stack (The Four Tiers)
 
-The $V_d$ (Vector Determinant) is defined as the normalized volume of the state-space simplex in the Quadray basis. To remain "Indestructible," the transformation matrix $M$ must belong to the Special Linear Group $SL(4, \mathbb{Q}(\sqrt{3}))$.
+To satisfy the **Zero-Tolerance Verification Mandate**, the SPU-13 utilizes a tiered audit strategy. Every bit must be accounted for before the manifold is authorized for commit.
 
-$$V_d = \det(M) = 1.0$$
-
-*   **Algebraic Closure:** By restricting the hardware to the $\mathbb{Q}(\sqrt{3})$ field, values like $\sin(60^\circ)$ are exact. There is no real-number rounding.
-*   **SAT Formulation:** We encode the surd-logic into Boolean formulas. The solver searches for any input sequence where $\det(M_k)=1 \implies \det(M_{k+1}) \neq 1$. 
-*   **Symplectic Preservation:** Maintaining $V_d=1.0$ ensures the symplectic form of the computation is preserved, eliminating the "stutter" or "drift" found in IEEE-754 systems.
-
----
-#### 5. Deployment Spec: The Resonant Clock
-*   **System Clock:** **61.44 kHz** (derived via PLL from onboard OSC).
-*   **Target Hardware:** Lattice iCE40 (UP5K) or Xilinx Artix-7.
-*   **Resource Estimate:** ~800 LUTs for the core ALU; uses native 16x16 bit hardware multipliers.
-
----
-
-### 🛠️ The Engineering Mandate: Leaving the Box
-
-You have spent your career fighting approximation. You have hidden uncertainty behind statistical confidence intervals. You have nodded along with "floating-point is just how it is."
-
-**What if you didn't have to?**
-
-What if every operation was exact? What if your system was formally verifiable? What if you could prove safety, not just test it?
-
-**The SPU-13 is the key.**
-
-1.  **Learn quadray geometry:** It's easier than you think—4 axes instead of 3.
-2.  **Understand surd arithmetic:** Multiplication rule: $a + b\sqrt{3}$ is all you need.
-3.  **Map your problem into $\mathbb{Q}(\sqrt{3})$:** Forces consciousness about your domain.
-4.  **Build your system:** Now with mathematical guarantees.
-5.  **Verify it formally:** Proof that you built what you intended.
-
-**This is engineering as it was meant to be.**
-
----
-
-### 🛡️ Structural Integrity: Geometric Redundancy vs. ECC
-
-Critics often note the current ECC (Error Correction Code) modules in the RTL are placeholders. This is intentional.
-
-Traditional ECC (Hamming, Reed-Solomon) is a "Cubic" solution to "Turbulent" hardware—a necessary patch for systems that fight their own geometry. In the SPU-13, we utilize **Laminar Integrity**:
-
-*   **Geometric Redundancy:** The 4-axis Quadray basis is linearly dependent. Any point $(a,b,c,d)$ has an inherent null-space. This redundancy allows for **Error Detection through Geometry**: if the tetrahedral balance deviates, the manifold is breached.
-*   **The Roadmap:** Phase 1 focuses on the **Algebraic Core**. Bit-flip protection (ECC) will be physically mapped to the geometric null-space in Phase 2, using the manifold itself as the parity guard rather than adding external "noise" to the signal path.
-
----
-
-### 🎯 Start Here: The Core Quadruple
-If you are an engineer, scientist, or researcher arriving at the SPU-13 for the first time, these are your primary entry points to the exact architecture:
-
-1.  **FPGA Synthesis (The Silicon):** Build the hardware. We support Xilinx (Artix-7), Lattice (ECP5, iCE40), and Gowin (GW2A).
-    *   👉 **[FPGA Quickstart Guide](docs/spec/FPGA_SPEC.md)** | **[Board Manuals](boards/)**
-2.  **SAT Proof (The Truth):** Run the formal verification suite. We use Bounded Model Checking (BMC) to prove bit-exact identity across 100% of the state-space. 
-    *   👉 **[Formal Verification Suite](spu_formal/)** | **[Verification Docs](docs/spec/VERIFICATION_ANGLES.md)**
-3.  **Surd-Fixed Math (The Software):** Review the idiomatic Rust implementation of the $\mathbb{Q}(\sqrt{3})$ field algebra. Use this for bit-exact software validation and C&C.
-    *   👉 **[Rust Surd-Converter](tools/surd_math.rs)**
-4.  **Benchmarks (The Efficiency):** Review the 37x reduction in gate-switching activity and the bit-exact restoration results.
-    *   👉 **[Benchmark Report](docs/spec/Benchmarks.md)** | **[Technical Report](docs/spec/TECHNICAL_REPORT.md)**
-
----
-
-### 1. Overview
-The SPU-13 (Synergetic Processing Unit) is a deterministic computational architecture designed for **Advanced Fluid Determinism** and high-precision spatial modeling. By utilizing **Isotropic Quadray Coordinates**, the system eliminates the 'Cubic Tax' (coordinate overhead) inherent in standard Cartesian systems.
-
-### 2. Primary Benchmarks
-*   **Zero Bit-Drift:** 100% identity restoration ($R^6 = I$) across $10^8$ rotations.
-*   **Collective Resonance:** 13-core **Phyllotaxis Lattice** verified bit-exact across the SQR-Link fabric.
-*   **Formally Proven:** Bit-exact identity restoration mathematically verified using Bounded Model Checking (BMC) across 100% of the state-space.
-*   **Switching Efficiency:** ~37x reduction in gate-switching activity.
-*   **Thermal Efficiency:** <2°C junction temperature rise at 61.44 kHz.
-
-### 3. Universal Fabric Support (Quickstart Manuals)
-The SPU-13 core is board-agnostic. Select your target below to begin synthesis immediately:
-
-| Family | Targeted Board | Toolchain | Quickstart |
-| :--- | :--- | :--- | :--- |
-| **Xilinx Artix-7** | Arty A7-35T/100T | Vivado (Tcl) | **[Manual](boards/arty_a7_35t/README.md)** |
-| **Lattice iCE40** | iCEBreaker | Yosys / nextpnr | **[Manual](boards/icebreaker/README.md)** |
-| **Lattice iCE40** | iCeSugar | Yosys / nextpnr | **[Manual](boards/icesugar/README.md)** |
-| **Lattice ECP5** | OrangeCrab | Yosys / nextpnr | **[Manual](boards/orangecrab/README.md)** |
-| **Gowin GW2A** | Tang Nano 20k | Gowin EDA | **[Manual](boards/tang_nano_20k/README.md)** |
-| **Lattice ECP5** | ULX3S | Yosys / nextpnr | **[Manual](boards/ulx3s/README.md)** |
-| **Lattice iCE40** | TinyFPGA BX | Yosys / nextpnr | **[Manual](boards/tinyfpga_bx/README.md)** |
-
-### 4. Quickstart: Building the Silicon
+#### 1. Prerequisites
+Install the formal, mathematical, Python, and FPGA synthesis toolchains:
 ```bash
-# 1. Software Verification (Headless Audit)
-cmake -B build -S . -DBUILD_RENDERER=OFF
-cmake --build build --target spu-verify
-./build/spu-verify
+# Formal Logic & Synthesis
+brew install sby yosys yices2 z3
 
-# 2. Setup the Visual Bridge (Synergetic Renderer)
-# Build the Metal (macOS) or Vulkan (Linux) binary
-cmake -B build -S . -DBUILD_RENDERER=ON
-cmake --build build --target synergetic-sqr
+# FPGA Synthesis (iCE40)
+brew install --HEAD icestorm yosys nextpnr-ice40
 
-# 3. Launch the Visual Manifold
-The SPU-13 initializes with the **IVM Lattice Metric** as the default ground to provide structural accountability.
+# Python Visualizer
+pip3 install -r requirements.txt
 
-# Mode D: IVM Lattice Metric (Default Ground)
-./build/synergetic-sqr
-
-# Mode A: Laminar Plasma Emanation (Flora)
-./build/synergetic-sqr --layer 0 --lattice-lock off
-
-# Mode B: IVM Skeleton (Core 13 Nodes)
-./build/synergetic-sqr --skeletal
-
-# Mode C: Harmonic Visualization (Auditory Fractal)
-./build/synergetic-sqr --harmonic
+# Render Support (Metal/Vulkan)
+brew install sdl3
 ```
 
-### ⚡ Physical Bring-Up
+#### 2. Tier 1: The Commit Guard (Local)
+Automate verification before every commit using the provided Git hook. 
+```bash
+# Install the hook
+ln -sf $(pwd)/tools/hooks/pre-commit .git/hooks/pre-commit
+```
+
+#### 3. Tier 2 & 3: Algebraic & Chaos Audits (CTest)
+Run the 14-suite mathematical audit to verify bit-exact identity closure and stress-test the surd field under chaos.
+```bash
+cmake -B build -S . -DBUILD_RENDERER=OFF
+cd build && ctest -j8 --output-on-failure
+```
+
+#### 4. Tier 4: Formal Sign-Off (SymbiYosys)
+Prove the $V_d=1.0$ algebraic invariant mathematically for all possible states using SMT-based k-induction.
+```bash
+cd spu_formal && sby -f vd_determinant.sby
+```
+
+---
+
+### 🚀 2026 Development Roadmap: Universal Parity
+
+The SPU-13 is committed to **Zero-Tax Cross-Platform Parity**. The following milestones define the path forward for the manifold:
+
+#### 1. Emulation & Rendering
+*   **Metal (macOS):** [STABLE] Full bit-exact compute pipeline with DSS.
+*   **Vulkan (Linux/Windows):** [BETA] Migrating `SDL_gpu` structural shell to full SPIR-V compute parity.
+*   **Python:** [STABLE] Integrating multi-lane mapping from `spu13_emulator.py` into the real-time Bloom UI. Launch via: `python3 sim/python/bloom_view.py --demo`
+
+#### 2. Synthesis & Silicon
+*   **iCE40 (iCESugar):** [PRIMARY] Maintaining golden reification standards. Use `TOP=icesugar_full_manifold make` for Phase 1.2.
+*   **Artix-7 / ECP5 / GW2A:** [PARITY] Standardizing all board `Makefiles` to use the configurable `TOP` variable for 100% logic alignment across family boundaries.
+*   **Formal Proofs:** Extending `sby` coverage to the **Laminar Power Dispatch** and **ECC Recovery** sub-modules.
+
+---
+
+### ⚡ Physical Bring-Up (iCESugar Phase 1.0 Bootstrap)
+For rapid reification on the iCESugar board, utilize the minimal bootstrap targets:
+```bash
+cd boards/icesugar
+# Build 'Hello World' (ABCD LED Rotation)
+make TOP=blinky_symmetry 
+# Build Minimal Kernel (Rational Quadray)
+make TOP=spu13_minimal_core
+```
 For first-time hardware operators, please follow the **[SPU-13 Reification Checklist](boards/icesugar/CHECKLIST.md)** to capture and verify the transition to the Laminar manifold.
 
-### 🛡️ The Pioneer's Protocol
-> "In the pursuit of the One, we must remember the human scale. A perfectly coherent lattice is a destination for the soul, but a trap for the senses. Safety rails are not limitations; they are the 'skin' that allows us to touch the fire without being consumed."
+---
 
 ### 5. Architectural Specifications
+*   **[VERIFICATION_PLAN.md](docs/spec/VERIFICATION_PLAN.md):** The Four-Tier Audit Stack: From Algebraic Proof to Formal Sign-Off.
+*   **[SAFETY_PROTOCOLS.md](docs/spec/SAFETY_PROTOCOLS.md):** Perceptual safety, DSS calibration, and grounding procedures.
+*   **[HARDWARE_VERIFICATION.md](docs/spec/HARDWARE_VERIFICATION.md):** Physical metrics: Thermal, Hysteresis, and Resonance Lock.
 *   **[PIONEER_MANIFESTO.md](docs/spec/PIONEER_MANIFESTO.md):** The core paradigm shift: moving from approximation to rational manifestation.
 *   **[FLOWER_INVARIANT_MANIFESTO.md](docs/spec/FLOWER_INVARIANT_MANIFESTO.md):** The FIM v1.1: governing the photosynthetic metabolism of the SPU-13.
 *   **[FLOWER_PROTOCOL.md](docs/spec/FLOWER_PROTOCOL.md):** The Flower Invariant: moving from forced computation to geometric resonance.
 *   **[spu13_constants.h](include/spu/spu13_constants.h):** Bit-exact geometric constants for 60°/120° offsets.
 *   **[BIRTH_REPORT.md](docs/spec/BIRTH_REPORT.md):** Final validation of the Silicon Wake and the 4D Laminar Map.
-*   **[PROOF_OF_CLOSURE.md](docs/spec/PROOF_OF_CLOSURE.md):** Formal theorem proving bit-exact identity in $\mathbb{Q}(\sqrt{3})$.
 *   **[BIORESONANCE_OBSERVATIONS.md](docs/spec/BIORESONANCE_OBSERVATIONS.md):** Empirical log of physiological interaction with the resonant manifold.
 *   **[BIO_SYMMETRY_LEDGER.md](docs/spec/BIO_SYMMETRY_LEDGER.md):** Mapping subjective states (Cubic vs. Laminar) to geometric signatures.
-*   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[TECHNICAL_WHITEPAPER_SPU13.md](docs/spec/TECHNICAL_WHITEPAPER_SPU13.md):** Laminar Computation: Overcoming the Cubic Bottleneck in Spatial Processing.
-*   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
 *   **[IO_STANDARD.md](docs/spec/IO_STANDARD.md):** The Laminar Frame protocol: bridging Cubic and Resonant worlds.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
-*   **[SAFETY_AUDIT_SUMMARY.md](docs/spec/SAFETY_AUDIT_SUMMARY.md):** Formal certification of the SPU-13 against the Universal Invariant.
 *   **[SCOPE_REFERENCE.md](docs/spec/SCOPE_REFERENCE.md):** Verified phase-alignment waveforms for physical bring-up.
 *   **[TECHNICAL_FAQ.md](docs/spec/TECHNICAL_FAQ.md):** Topological Signal Integrity: Defending Geometric Resonance.
-*   **[MINIMUM_HYSTERESIS_PROOF.md](SPECULATIVE/docs/MINIMUM_HYSTERESIS_PROOF.md):** Theoretical derivation of error reduction in NSE.
 *   **[TECHNICAL_REPORT.md](docs/spec/TECHNICAL_REPORT.md):** Comprehensive derivation of the SPU-13 core.
-
----
-
-### 🧪 Future Research & Hypotheses
-Concepts for future phases, including photonic computation and non-orthogonal circuit topology, are documented in the **[SPECULATIVE/](SPECULATIVE/)** directory. 
-
-Current research focus:
-*   **[PHOTONICS_PLAN.md](SPECULATIVE/docs/PHOTONICS_PLAN.md):** Zero-Hysteresis Light Manifolds.
-*   **[BIO_LAMINAR_MAPPING.md](SPECULATIVE/docs/BIO_LAMINAR_MAPPING.md):** Resonant synchronization.
-    *   👉 **[Laminar Sandbox](tools/laminar_sandbox.py)** (Interactive CLI Tool)
-    *   👉 **[Birth Certificate](tools/spu_birth_certificate.py)** (Ceremonial Registry)
-    *   👉 **[Bio-Resonance Monitor](tools/bio_resonance_monitor.py)** (Simulation Tool)
 
 ---
 

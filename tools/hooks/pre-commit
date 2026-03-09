@@ -1,0 +1,14 @@
+#!/bin/bash
+# SPU-13 Pre-Commit Hook
+# Enforces the Zero-Tolerance Verification Mandate.
+
+echo "--- SPU-13 ZERO-TOLERANCE GUARD ---"
+
+# 1. Integrity Check
+python3 tools/spu_sanity_check.py || exit 1
+
+# 2. Run Critical Verification (Tier 1)
+# Use ctest for standardized reporting
+cd build && ctest -R spu-verify || exit 1
+
+echo "--- GUARD LIFTED. COMMIT AUTHORIZED. ---"
