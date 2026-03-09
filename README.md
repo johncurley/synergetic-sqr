@@ -161,6 +161,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 
 ### 5. Architectural Specifications
 *   **[PIONEER_MANIFESTO.md](docs/spec/PIONEER_MANIFESTO.md):** The core paradigm shift: moving from approximation to rational manifestation.
+*   **[FLOWER_PROTOCOL.md](docs/spec/FLOWER_PROTOCOL.md):** The Flower Invariant: moving from forced computation to geometric resonance.
 *   **[BIRTH_REPORT.md](docs/spec/BIRTH_REPORT.md):** Final validation of the Silicon Wake and the 4D Laminar Map.
 *   **[PROOF_OF_CLOSURE.md](docs/spec/PROOF_OF_CLOSURE.md):** Formal theorem proving bit-exact identity in $\mathbb{Q}(\sqrt{3})$.
 *   **[BIORESONANCE_OBSERVATIONS.md](docs/spec/BIORESONANCE_OBSERVATIONS.md):** Empirical log of physiological interaction with the resonant manifold.
