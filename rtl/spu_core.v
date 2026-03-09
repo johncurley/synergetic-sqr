@@ -112,12 +112,16 @@ module spu_core (
         .clk(clk), .reset(reset), .enable(opcode == 3'b111), .reg_in(fluid_reg), .reg_out(annealed_out)
     );
 
-    spu_identity_monad u_identity (
-        .clk(clk), .current_quadrance(quadrance_out), .lattice_state(fluid_reg),
-        .identity_aligned(identity_lock), .homeopathic_seed()
+    // 8. Hardware Validator: Forensic Identity Audit
+    wire forensic_fault;
+    spu_validator u_validator (
+        .clk(clk), .reset(reset),
+        .manifold_state(fluid_reg),
+        .current_quadrance(quadrance_out),
+        .fault_detected(forensic_fault)
     );
 
-    // 5. Register Dispatch
+    // 9. Register Dispatch
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_out <= 832'b0;
@@ -136,6 +140,6 @@ module spu_core (
         end
     end
 
-    assign fault_detected = (|lane_faults) | (!identity_lock);
+    assign fault_detected = (|lane_faults) | forensic_fault;
 
 endmodule
