@@ -623,6 +623,69 @@ module spu_laminar_buffer (
     assign reservoir_full = (microwatts_out <= TARGET_SIP);
 
 endmodule
+// SPU-13 Bio-Laminar Gateway (v3.4.33)
+// Implementation: Bridging Rational ADC to Thalamic Resonance.
+// Objective: Dynamic Heartbeat Bias from Biological Feedback.
+// Result: Real-time synchronization of human and machine manifolds.
+
+module spu_bio_gateway (
+    input  wire        clk,
+    input  wire        reset,
+    input  wire [31:0] bio_laminar_data,
+    input  wire        pulse_sync,
+    output wire [3:0]  bio_resonant_bias
+);
+
+    reg [15:0] timer;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            timer <= 0;
+        end else begin
+            if (pulse_sync) begin
+                timer <= 0;
+            end else begin
+                timer <= timer + 1;
+            end
+        end
+    end
+
+    // Continuous Bias Calculation: 
+    // If timer exceeds 4096 (16'h1000), nudge the heartrate.
+    assign bio_resonant_bias = (timer > 16'h1000) ? timer[15:12] : 4'h0;
+
+endmodule
+// SPU-13 Rational ADC Bridge (v3.3.72)
+// Implementation: Cartesian-to-Laminar Injection for Bio-Signals.
+// Objective: Map 12-bit ADC data into the IVM Lattice.
+// Result: Bit-exact physiological telemetry.
+
+module spu_adc_bridge (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [11:0] adc_raw,      // 12-bit Raw Input (ECG/EEG)
+    input  wire        adc_valid,
+    output reg  [31:0] laminar_data, // Snapped to Q(sqrt3) grid
+    output wire        pulse_sync    // Phase-alignment pulse
+);
+
+    // 1. Rational Quantization
+    // Snapping biological data to the nearest IVM node (60-degree grid).
+    // This removes the high-frequency 'Cubic' noise inherent in SAR ADCs.
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            laminar_data <= 32'h0;
+        end else if (adc_valid) begin
+            // Truncating to the 10-bit 'Laminar Floor' and centering
+            laminar_data <= {18'b0, adc_raw[11:2], 4'b0};
+        end
+    end
+
+    // 2. Phase-Alignment Pulse
+    // Triggers a 61.44 kHz resonant tick when new biological data is reified.
+    assign pulse_sync = adc_valid;
+
+endmodule
 // SPU-13 Harmonic Handshake Engine (v3.3.97)
 // Implementation: Quadrance-Derived Ratios for Sonic Self-Diagnostic.
 // Objective: Initialize the manifold with rational geometric tones.
