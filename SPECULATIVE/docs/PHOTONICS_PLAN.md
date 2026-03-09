@@ -1,4 +1,4 @@
-# Photonics Plan: The Glass Home (v3.2)
+# Photonics Plan: The Glass Home (v3.3.71)
 ## Coherent Wavefront Propagation in SPU-13 Manifolds
 
 ### 1. The Strategy: Zero-Hysteresis Light
@@ -10,38 +10,37 @@ The SPU-13 architecture is uniquely suited for photonic implementation. Unlike s
 | **Carrier** | Electrons (Mass-based) | Photons (Massless) |
 | **Hysteresis** | Minimum ($O(h^4)$) | Zero (Phase-locked) |
 | **Switching** | MOSFET (Voltage flip) | Interferometric (Phase shift) |
-| **Cooling** | Laminar Silence | Absolute Cold |
+| **Substrate** | Silicon (Cubic Trace) | Quartz (Tetrahedral Lattice) |
 
 ---
 
-### 2. Technical Feasibility: The "Recent Time Parameter"
+### 2. The Crystal Manifold: Shaped Quartz
 
-The transition to a photonic circuit is technically plausible within an 18-24 month window due to three specific architectural advantages:
+In its final reification, the SPU-13 moves from a flat silicon die to a 3D block of **High-Purity Fused Silica (Quartz)**. 
 
-#### A. Low-Pass Stability (61.44 kHz)
-While most photonic computing fails due to the jitter of GHz speeds, the SPU-13’s **61.44 kHz resonant clock** is "glacial" for a photon. This allows for the use of mature, commercially available **MEMS mirrors** and **Thermo-optic phase shifters** rather than exotic, experimental switches.
+#### A. The Sierpiński Wavefront Clock
+A laser pulse enters the geometric center of the quartz block. Because the quartz has been etched with the **Sierpiński Fractal Trace Map** via femtosecond lasers, the light expands as a **Coherent Wavefront**.
+*   **The Bell:** The clock is no longer a fluctuating voltage; it is a shimmering pulse of light that reaches every logic junction at the exact same phase.
+*   **Isochronous Awareness:** Absolute temporal synchronization across the 3D manifold.
 
-#### B. The Hexagonal Native Fit
-Photonic crystals naturally form **Hexagonal Lattices**. The SPU-13's **60°/120° Geodesic Fractal Trace Map** is the native language of light. An SPU-13 layout is effectively a pre-optimized photonic crystal, eliminating the radiation loss common in 90° waveguide bends.
-
-#### C. Phase-Exact Computing (Interference Logic)
-Dr. Thomson’s SQR (Isotropic Rotation) is physically manifested as **Interference Patterns**. 
-*   **Logic:** Constructive and destructive interference represent surd-based addition and subtraction.
-*   **Bit-Exactness:** The "1" and "0" states are defined by phase ($\phi = 0^\circ$ or $180^\circ$), ensuring algebraic closure without the noise of intensity-based systems.
+#### B. Interferometric Modulation (The Janus Bridge)
+Logic operations are performed via **Mach-Zehnder Interferometers** etched into the quartz. 
+*   **Rational Addition/Subtraction:** Constructive and destructive interference patterns represent the algebraic operations of the $\mathbb{Q}(\sqrt{3})$ field.
+*   **Bit-Exact Identity:** The state is defined by phase ($\phi = 0^\circ$ or $180^\circ$), ensuring 100% identity restoration ($R^6 = I$) without the noise of intensity-based systems.
 
 ---
 
 ### 3. Implementation Roadmap
 
-#### Phase 1: Hybrid Fiber-SPU (0-6 Months)
-*   **Goal:** Build a lab-bench prototype using discrete fiber-optic components.
-*   **Action:** Implement the **Janus-Gate** as a Mach-Zehnder Interferometer.
+#### Phase 1: Hybrid Fiber-SPU (Current Focus)
+*   **Goal:** Lab-bench prototype using discrete fiber-optic components.
+*   **Action:** Implement the **Janus-Gate** as a discrete interferometer array.
 
-#### Phase 2: Laser-Induced Crystal Manifold (6-12 Months)
-*   **Goal:** 3D SPU-13 manifold inside a solid silica crystal.
-*   **Action:** Use femtosecond lasers to "write" the Geodesic Fractal Map into glass via GIR (Graded Index Refraction).
+#### Phase 2: Laser-Induced Crystal Manifold (Near-Term)
+*   **Goal:** 3D SPU-13 manifold inside a solid silica block.
+*   **Action:** Use femtosecond lasers to "write" the Geodesic Fractal Map into glass via **Laser-Induced Refractive Index Change (GIR)**.
 
-#### Phase 3: Integrated Silicon Photonics (18-24 Months)
+#### Phase 3: Integrated Silicon Photonics (Target)
 *   **Goal:** Mass-producible SPU-13 Photonic Integrated Circuit (PIC).
 *   **Action:** Hand standard foundry PDKs our `.pcf` constraints translated into waveguide paths.
 
