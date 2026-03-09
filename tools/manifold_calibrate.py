@@ -1,6 +1,6 @@
-# SPU-13 Manifold Calibration Utility (v3.3.78)
-# Objective: Measure Beat-Frequencies and Verify Resonance Lock.
-# Implementation: Integer-only rational comparison for bit-exact auditing.
+# SPU-13 Manifold Calibration Utility (v3.3.87)
+# Objective: Parse 64-bit Laminar Frames and Verify Resonance Lock.
+# Implementation: Integer-only bit-exact auditing.
 
 import serial
 import time
@@ -11,55 +11,52 @@ class ManifoldAuditor:
         self.ser = serial.Serial(port, baud, timeout=1)
         print(f"--- SPU-13 Manifold Calibration: Listening on {port} ---")
 
-    def analyze_beats(self, samples):
-        """
-        Detects 'Cubic Beating' via integer deltas.
-        In a bit-exact manifold, identity-restored deltas must be ZERO.
-        """
-        if len(samples) < 2: return 0
-        
-        # We track 'Non-Zero Deltas' as indicators of Cubic Friction
-        friction_events = 0
-        for i in range(1, len(samples)):
-            delta = abs(samples[i] - samples[i-1])
-            if delta != 0:
-                friction_events += 1
-        
-        return friction_events
-
     def run_audit(self, duration=10):
-        print("Commencing Bit-Exact Resonance Audit...")
+        print("Commencing Full-Frame Resonance Audit...")
         samples = []
+        friction_events = 0
+        symmetry_failures = 0
+        phase_stalls = 0
+        
         start_time = time.time()
         
         while (time.time() - start_time) < duration:
-            line = self.ser.readline().decode('utf-8').strip()
-            if line:
-                try:
-                    # Expecting hex telemetry
-                    val = int(line, 16)
-                    # For Phase 1, we audit the A-component Integer (lower 32 bits)
-                    samples.append(val & 0xFFFFFFFF)
-                except ValueError:
-                    continue
+            # Each frame is 8 bytes
+            frame_raw = self.ser.read(8)
+            if len(frame_raw) == 8:
+                frame = int.from_bytes(frame_raw, byteorder='little')
+                
+                # 1. Unpack Laminar Frame
+                # [Bit 63: Symmetry][Bits 62-40: Res][Bits 39-32: Footer][Bits 31-0: Payload]
+                symmetry_ok = (frame >> 63) & 0x1
+                footer      = (frame >> 32) & 0xFF
+                payload     = (frame & 0xFFFFFFFF)
+                
+                # 2. Forensic Checks
+                if not symmetry_ok:
+                    symmetry_failures += 1
+                if not (footer & 0x1): # Coherence bit
+                    phase_stalls += 1
+                
+                if samples and abs(payload - samples[-1]) != 0:
+                    friction_events += 1
+                
+                samples.append(payload)
 
-        friction_events = self.analyze_beats(samples)
         total_obs = len(samples)
         
-        print("\n--- Manifold State: REIFIED ---")
-        print(f"Total Cycles Observed: {total_obs}")
-        print(f"Friction Events:       {friction_events}")
+        print("\n--- Manifold Health Report: REIFIED ---")
+        print(f"Total Frames Observed: {total_obs}")
+        print(f"Symmetry Integrity:    {((total_obs - symmetry_failures) * 100 / total_obs):.2f}%" if total_obs > 0 else "N/A")
+        print(f"Phase-Lock Stability:  {((total_obs - phase_stalls) * 100 / total_obs):.2f}%" if total_obs > 0 else "N/A")
+        print(f"Laminar Coherence:     {((total_obs - friction_events) * 100 / total_obs):.2f}%" if total_obs > 0 else "N/A")
         
-        if total_obs > 0:
-            coherence_idx = ((total_obs - friction_events) * 10000) // total_obs
-            print(f"Laminar Coherence:     {coherence_idx // 100}.{coherence_idx % 100:02d}%")
-        
-        if friction_events == 0:
-            print("Status: LAMINAR LOCK. Identity is Absolute.")
-        elif friction_events < (total_obs // 100):
-            print("Status: COHERENT. Minimal torsion detected.")
+        if symmetry_failures == 0 and phase_stalls == 0 and friction_events == 0:
+            print("Status: LAMINAR LOCK ACHIEVED. Manifold is Bit-Perfect.")
+        elif symmetry_failures > (total_obs // 10):
+            print("Status: TURBULENT. High Cubic Incursion detected.")
         else:
-            print("Status: TURBULENT. Cubic interference in the lattice.")
+            print("Status: STABILIZING. Minimal torsion observed.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

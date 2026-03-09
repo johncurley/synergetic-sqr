@@ -1,72 +1,84 @@
-// SPU-13 UART Transmitter (v3.1.10)
-// Sends 32-bit Surd registers as four 8-bit UART frames (8-N-1).
-// Logic: Little-Endian transmission for direct ingestion by Bloom View UI.
+// SPU-13 Universal UART Transmitter (v3.3.87)
+// Implementation: 64-bit Laminar Frame Transmission.
+// Objective: Stream [Header][Payload][Footer] bit-exactly to the host.
 
 module surd_uart_tx #(
-    parameter CLK_FREQ = 100000000,
-    parameter BAUD_RATE = 115200
+    parameter CLK_HZ = 12000000,
+    parameter BAUD   = 115200
 )(
     input  wire        clk,
     input  wire        reset,
-    input  wire [31:0] data_in, 
+    input  wire [63:0] data_in, // Expanded to 64-bit Laminar Frame
     input  wire        start,
     output reg         tx,
-    output wire        ready
+    output reg         ready
 );
 
-    localparam WAIT_CYCLES = CLK_FREQ / BAUD_RATE;
-    
-    reg [31:0] buffer;
-    reg [15:0] count;
-    reg [3:0]  byte_idx; // 0-3 for data bytes
-    reg [3:0]  bit_idx;  // 0-9 for start, 8-data, stop
-    reg        active;
+    localparam BIT_PERIOD = CLK_HZ / BAUD;
+    localparam IDLE=0, START=1, DATA=2, STOP=3;
 
-    assign ready = !active;
+    reg [3:0]  state;
+    reg [31:0] clk_cnt;
+    reg [5:0]  bit_cnt; // 0-63 bits
+    reg [63:0] shift_reg;
 
-    initial begin
-        tx = 1'b1;
-        active = 1'b0;
-    end
-
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
         if (reset) begin
+            state <= IDLE;
             tx <= 1'b1;
-            active <= 1'b0;
-            count <= 0;
-            byte_idx <= 0;
-            bit_idx <= 0;
-        end else if (!active && start) begin
-            buffer <= data_in;
-            active <= 1'b1;
-            byte_idx <= 0;
-            bit_idx <= 0;
-            count <= 0;
-        end else if (active) begin
-            if (count < WAIT_CYCLES - 1) begin
-                count <= count + 1;
-            end else begin
-                count <= 0;
-                case (bit_idx)
-                    0: tx <= 1'b0; // Start bit
-                    1,2,3,4,5,6,7,8: begin
-                        // Send bits of current byte
-                        tx <= buffer[byte_idx*8 + (bit_idx-1)];
-                    end
-                    9: tx <= 1'b1; // Stop bit
-                endcase
-
-                if (bit_idx < 9) begin
-                    bit_idx <= bit_idx + 1;
-                end else begin
-                    bit_idx <= 0;
-                    if (byte_idx < 3) begin
-                        byte_idx <= byte_idx + 1;
-                    end else begin
-                        active <= 1'b0; // Done with all 4 bytes
+            ready <= 1'b1;
+            clk_cnt <= 0;
+            bit_cnt <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    ready <= 1'b1;
+                    tx <= 1'b1;
+                    if (start) begin
+                        shift_reg <= data_in;
+                        state <= START;
+                        ready <= 1'b0;
+                        clk_cnt <= 0;
                     end
                 end
-            end
+
+                START: begin
+                    tx <= 1'b0;
+                    if (clk_cnt == BIT_PERIOD - 1) begin
+                        clk_cnt <= 0;
+                        state <= DATA;
+                        bit_cnt <= 0;
+                    end else begin
+                        clk_cnt <= clk_cnt + 1;
+                    end
+                end
+
+                DATA: begin
+                    tx <= shift_reg[0];
+                    if (clk_cnt == BIT_PERIOD - 1) begin
+                        clk_cnt <= 0;
+                        if (bit_cnt == 63) begin
+                            state <= STOP;
+                        end else begin
+                            shift_reg <= shift_reg >> 1;
+                            bit_cnt <= bit_cnt + 1;
+                        end
+                    end else begin
+                        clk_cnt <= clk_cnt + 1;
+                    end
+                end
+
+                STOP: begin
+                    tx <= 1'b1;
+                    if (clk_cnt == BIT_PERIOD - 1) begin
+                        clk_cnt <= 0;
+                        state <= IDLE;
+                    end else begin
+                        clk_cnt <= clk_cnt + 1;
+                    end
+                end
+            endcase
         end
     end
+
 endmodule
