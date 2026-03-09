@@ -1,19 +1,21 @@
-// SPU-13 I/O Bridge: Standard Edition (v3.3.86)
-// Implementation: Laminar Frame Protocol (Draft 1.0).
-// Objective: Dual-layer I/O for bit-exact telemetry and experimental sensing.
+// SPU-13 I/O Bridge: Metabolic Edition (v3.4.0)
+// Implementation: Laminar Frame Protocol (Draft 1.1).
+// Objective: Dual-layer I/O with Real-time Power Telemetry.
 
 module spu_io_bridge #(
     parameter CLK_PHYS_HZ = 12000000
 )(
-    input  wire         clk_phys,      // High-speed oscillator
-    input  wire         clk_resonant,  // 61.44 kHz heartbeat
+    input  wire         clk_phys,
+    input  wire         clk_resonant,
     input  wire         reset,
     
     // SPU Interface
     input  wire [831:0] spu_reg_in,
-    output wire [127:0] strike_ripple, // To SPU injection path
+    input  wire [15:0]  microwatts,    // From Metabolic Sense
+    input  wire         sip_active,    // From Metabolic Sense
+    output wire [127:0] strike_ripple,
     input  wire         fault_detected,
-    input  wire         coherence_lock, // From Guard
+    input  wire         coherence_lock,
     
     // Physical IO
     output wire [3:0]   led_status,
@@ -24,20 +26,15 @@ module spu_io_bridge #(
 );
 
     // 1. The Laminar Frame Assembler (Telemetry)
-    // Frame: [HEADER: Parity][PAYLOAD: State][FOOTER: Coherence]
+    // Frame v1.1: [SYMM:1][uW:16][RES:7][FOOTER:8][PAYLOAD:32]
     wire signed [31:0] a = spu_reg_in[31:0];
     wire signed [31:0] b = spu_reg_in[63:32];
     wire signed [31:0] c = spu_reg_in[95:64];
     wire signed [31:0] d = spu_reg_in[127:96];
     
-    // Header: Symmetry Check (A+B+C+D must be Zero)
     wire symmetry_ok = ((a + b + c + d) == 32'sd0);
-    
-    // Payload: Primary Lane (A)
     wire [31:0] payload = spu_reg_in[31:0];
-    
-    // Footer: Phase-Lock Confirmation
-    wire [7:0] footer = {7'b0, coherence_lock};
+    wire [7:0]  footer = {6'b0, sip_active, coherence_lock};
 
     // 2. Telemetry Path (TX)
     surd_uart_tx #(
@@ -46,13 +43,13 @@ module spu_io_bridge #(
     ) u_telemetry (
         .clk(clk_phys),
         .reset(reset),
-        .data_in({symmetry_ok, 23'b0, footer, payload}), // Multiplexed Frame
+        .data_in({symmetry_ok, microwatts, 7'b0, footer, payload}), 
         .start(|spu_reg_in[31:0]), 
         .tx(serial_tx),
         .ready()
     );
 
-    // 3. Interaction Path (RX): Harmonic Transduction
+    // 3. Interaction Path (RX)
     wire [7:0] rx_data;
     wire       rx_valid;
     assign rx_valid = !serial_rx; 
@@ -69,9 +66,9 @@ module spu_io_bridge #(
 
     // 4. Status Reification
     assign led_status[0] = fault_detected;
-    assign led_status[1] = !symmetry_ok;    // Red-shift if symmetry fails
+    assign led_status[1] = !sip_active;     // Red-shift if 'The Gulp' occurs
     assign led_status[2] = clk_resonant;
-    assign led_status[3] = coherence_lock;  // Green-lock if resonant
+    assign led_status[3] = coherence_lock;  
 
     assign pmod_ja_out = spu_reg_in[7:0];
 

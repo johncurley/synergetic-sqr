@@ -1,6 +1,6 @@
-# SPU-13 Laminar Sandbox (v3.3.93)
+# SPU-13 Laminar Sandbox (v3.4.0)
 # Objective: Interactive human-to-manifold resonant coupling.
-# Implementation: Dual-domain dashboard for strikes and telemetry.
+# Implementation: Dual-domain dashboard with Metabolic Telemetry.
 
 import serial
 import time
@@ -14,11 +14,12 @@ class LaminarSandbox:
         self.stats = {
             "symmetry": 100.0,
             "resonance": 100.0,
-            "pressure": 0,
+            "sip": False,
+            "microwatts": 0,
             "last_payload": 0
         }
         print(f"--- SPU-13 Laminar Sandbox: Connected to {port} ---")
-        print("Protocol: Standard I/O (Draft 1.0) | Target: Bowman Core")
+        print("Protocol: Standard I/O (Draft 1.1) | Target: Bowman Core")
         print("Commands: Type to strike the manifold. [ESC] to ground.\n")
 
     def telemetry_loop(self):
@@ -28,32 +29,38 @@ class LaminarSandbox:
             if len(frame_raw) == 8:
                 frame = int.from_bytes(frame_raw, byteorder='little')
                 
-                # Unpack Laminar Frame
+                # Unpack Laminar Frame v1.1
+                # [Bit 63: Symmetry]
+                # [Bits 62-47: Microwatts]
+                # [Bits 46-40: Res]
+                # [Bits 39-32: Footer]
+                # [Bits 31-0: Payload]
                 symmetry_ok = (frame >> 63) & 0x1
+                microwatts  = (frame >> 47) & 0xFFFF
                 footer      = (frame >> 32) & 0xFF
                 payload     = (frame & 0xFFFFFFFF)
                 
                 self.stats["symmetry"] = 100.0 if symmetry_ok else 0.0
+                self.stats["microwatts"] = microwatts
+                self.stats["sip"] = bool(footer & 0x2)
                 self.stats["resonance"] = 100.0 if (footer & 0x1) else 0.0
                 self.stats["last_payload"] = payload
                 
-                # Update dashboard
                 self.refresh_dashboard()
 
     def refresh_dashboard(self):
-        sys.stdout.write(f"\r[SYMMETRY: {self.stats['symmetry']:>5.1f}%] "
+        sip_status = "SIP" if self.stats["sip"] else "GULP"
+        sys.stdout.write(f"\r[SYMM: {self.stats['symmetry']:>5.1f}%] "
                          f"[LOCK: {self.stats['resonance']:>5.1f}%] "
-                         f"[STATE: 0x{self.stats['last_payload']:08X}] "
-                         f"Strike to Resonate... ")
+                         f"[PWR: {self.stats['microwatts']:>4d} uW ({sip_status})] "
+                         f"[STATE: 0x{self.stats['last_payload']:08X}] ")
         sys.stdout.flush()
 
     def start(self):
-        # Start telemetry thread
         t = threading.Thread(target=self.telemetry_loop)
         t.daemon = True
         t.start()
         
-        # Main interaction loop
         try:
             import tty, termios
             fd = sys.stdin.fileno()
@@ -64,13 +71,10 @@ class LaminarSandbox:
                     char = sys.stdin.read(1)
                     if ord(char) == 27: # ESC
                         break
-                    # Send strike to FPGA
                     self.ser.write(char.encode('ascii'))
-                    self.refresh_dashboard()
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         except ImportError:
-            # Fallback for systems without tty support
             while True:
                 line = input()
                 self.ser.write(line.encode('ascii'))
