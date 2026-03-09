@@ -1,12 +1,18 @@
-# TinyFPGA BX Physical Constraints (v3.1.10)
-# Target: Lattice iCE40LP8K-CM81
+# TinyFPGA BX SPU-13 Constraints
+# v3.3.82 "Harmonic Transduction"
 
-# 1. System Clock (16MHz)
-set_io clk_16mhz B2
+# --- 1. Resonant Clock Entry ---
+set_io clk B2
 
-# 2. User LED
-set_io led B3
+# --- 2. Status Display ---
+set_io pin_led B3
 
-# 3. UART (Pins A2/A1 on header)
-set_io usb_tx A2
-set_io usb_rx A1
+# --- 3. Command & Control (UART) ---
+# Striking the IVM Lattice via Serial Keyboard
+set_io uart_tx A2
+set_io uart_rx A1
+
+# Disable USB
+set_io usb_p B4
+set_io usb_n A4
+set_io usb_pu A3

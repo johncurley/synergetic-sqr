@@ -1,16 +1,17 @@
-# iCEBreaker Physical Constraints (v3.1.10)
-# Target: Lattice iCE40UP5K-SG48
+# iCEBreaker SPU-13 Constraints
+# v3.3.82 "Harmonic Transduction"
 
-# 1. System Clock (12MHz)
+# --- 1. Resonant Clock Entry ---
 set_io clk_12mhz 35
 
-# 2. Global Reset (Button S1)
+# --- 2. Manual Reset ---
 set_io btn_rst_n 10
 
-# 3. Status LEDs
-set_io led_red 11
+# --- 3. Status Display ---
+set_io led_red   11
 set_io led_green 37
 
-# 4. USB-UART
+# --- 4. Command & Control (UART) ---
+# Striking the IVM Lattice via Serial Keyboard
 set_io uart_tx 9
 set_io uart_rx 6

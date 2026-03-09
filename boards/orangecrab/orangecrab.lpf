@@ -1,24 +1,18 @@
-# OrangeCrab Physical Constraints (v3.1.10)
-# Target: Lattice ECP5-25F
+# OrangeCrab SPU-13 Constraints
+# v3.3.82 "Harmonic Transduction"
 
-# 1. System Clock (48MHz)
 LOCATE COMP "clk_48mhz" SITE "A9";
 IOBUF PORT "clk_48mhz" IO_TYPE=LVCMOS33;
 
-# 2. Global Reset (Button S1)
 LOCATE COMP "btn_rst_n" SITE "V17";
 IOBUF PORT "btn_rst_n" IO_TYPE=LVCMOS33;
 
-# 3. Status LEDs (RGB)
-LOCATE COMP "led_r" SITE "K4";
-LOCATE COMP "led_g" SITE "M3";
-LOCATE COMP "led_b" SITE "J3";
-IOBUF PORT "led_r" IO_TYPE=LVCMOS33;
-IOBUF PORT "led_g" IO_TYPE=LVCMOS33;
-IOBUF PORT "led_b" IO_TYPE=LVCMOS33;
+LOCATE COMP "led_red"   SITE "V18";
+LOCATE COMP "led_green" SITE "T18";
+LOCATE COMP "led_blue"  SITE "R18";
 
-# 4. UART (Feather Pins 0/1)
-LOCATE COMP "uart_tx" SITE "V1";
+# UART (Strike entry)
+LOCATE COMP "uart_tx" SITE "N17"; # TXD
+LOCATE COMP "uart_rx" SITE "M18"; # RXD
 IOBUF PORT "uart_tx" IO_TYPE=LVCMOS33;
-LOCATE COMP "uart_rx" SITE "U1";
 IOBUF PORT "uart_rx" IO_TYPE=LVCMOS33;
