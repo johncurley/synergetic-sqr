@@ -1,6 +1,6 @@
-// SPU-13 I/O Bridge: Liquid Edition (v3.4.26)
-// Implementation: Laminar Frame Protocol (Draft 1.2).
-// Objective: Dual-layer I/O with Real-time Viscosity Telemetry.
+// SPU-13 I/O Bridge: Liquid Edition (v3.4.27)
+// Implementation: Laminar Frame Protocol (Draft 1.2) with Dielectric Reservoir.
+// Objective: Dual-layer I/O with Smoothed Metabolic Telemetry.
 
 module spu_io_bridge #(
     parameter CLK_PHYS_HZ = 12000000
@@ -12,7 +12,7 @@ module spu_io_bridge #(
     // SPU Interface
     input  wire [831:0] spu_reg_in,
     input  wire [15:0]  microwatts,
-    input  wire [7:0]   laminar_flow_index, // From Viscosity Monitor
+    input  wire [7:0]   laminar_flow_index, 
     input  wire         sip_active,
     output wire [127:0] strike_ripple,
     input  wire         fault_detected,
@@ -26,14 +26,18 @@ module spu_io_bridge #(
     output wire         serial_tx
 );
 
-    // 1. The Laminar Frame Assembler (Telemetry)
-    // Frame v1.2: [SYMM:1][uW:16][FLOW:8][RES:7][FOOTER:0][PAYLOAD:32] -- wait, let's align:
-    // [63:63] Symmetry OK
-    // [62:47] Microwatts (16 bits)
-    // [46:39] Flow Index (8 bits)
-    // [38:32] Reserved (7 bits)
-    // [31:0]  Payload (32 bits)
-    
+    // 1. Laminar Buffer (Dielectric Reservoir)
+    // Smoothes the metabolic signal to provide a true 'Sip' average.
+    wire [15:0] smoothed_uw;
+    wire        reservoir_full;
+    spu_laminar_buffer u_buffer (
+        .clk(clk_phys), .reset(reset),
+        .microwatts_in(microwatts),
+        .microwatts_out(smoothed_uw),
+        .reservoir_full(reservoir_full)
+    );
+
+    // 2. The Laminar Frame Assembler (Telemetry)
     wire signed [31:0] a = spu_reg_in[31:0];
     wire signed [31:0] b = spu_reg_in[63:32];
     wire signed [31:0] c = spu_reg_in[95:64];
@@ -41,24 +45,22 @@ module spu_io_bridge #(
     
     wire symmetry_ok = ((a + b + c + d) == 32'sd0);
     wire [31:0] payload = spu_reg_in[31:0];
-    // Footer is now embedded or part of reserved bits. 
-    // Let's use bits [38:32] for status flags.
-    wire [6:0] status_flags = {5'b0, sip_active, coherence_lock};
+    wire [6:0] status_flags = {4'b0, reservoir_full, sip_active, coherence_lock};
 
-    // 2. Telemetry Path (TX)
+    // 3. Telemetry Path (TX)
     surd_uart_tx #(
         .CLK_HZ(CLK_PHYS_HZ),
         .BAUD(115200)
     ) u_telemetry (
         .clk(clk_phys),
         .reset(reset),
-        .data_in({symmetry_ok, microwatts, laminar_flow_index, status_flags, payload}), 
+        .data_in({symmetry_ok, smoothed_uw, laminar_flow_index, status_flags, payload}), 
         .start(|spu_reg_in[31:0]), 
         .tx(serial_tx),
         .ready()
     );
 
-    // 3. Interaction Path (RX)
+    // 4. Interaction Path (RX)
     wire [7:0] rx_data;
     wire       rx_valid;
     assign rx_valid = !serial_rx; 
@@ -73,11 +75,11 @@ module spu_io_bridge #(
         .membrane_lock()
     );
 
-    // 4. Status Reification
+    // 5. Status Reification
     assign led_status[0] = fault_detected;
-    assign led_status[1] = (laminar_flow_index < 8'h80); // Red-shift if 'Viscous'
+    assign led_status[1] = (laminar_flow_index < 8'h80); 
     assign led_status[2] = clk_resonant;
-    assign led_status[3] = coherence_lock;  
+    assign led_status[3] = coherence_lock & reservoir_full;  
 
     assign pmod_ja_out = spu_reg_in[7:0];
 
