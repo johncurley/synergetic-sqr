@@ -1,12 +1,12 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.0)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.1)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Wake: Bowman Boot Sequence Automated.
-// Metabolic: Real-time Power Awareness Enabled.
+// Sensory: Metabolic, Proprioceptive, and Thalamic Integration.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
     input wire rst_n,        // Active-Low Reset (Pin 18)
-    input wire laminar_en,   // The 'Throttle' (Pin 11)
+    input wire laminar_en,   // The 'Throttle' (High to Enable Flow) (Pin 11)
     input wire bias_in,      // Proprioceptive Entry (Pin 12)
     input wire [11:0] adc_in, // Metabolic Sense (Pin 13 - Header)
     
@@ -33,6 +33,8 @@ module spu13_top (
     wire [127:0] strike_ripple;
     wire [15:0] microwatts;
     wire sip_active;
+    wire [7:0]  bloom_intensity;
+    wire [3:0]  q_mood;
     wire [63:0] h_seed;
 
     // 1. The Fractal Heart
@@ -57,32 +59,39 @@ module spu13_top (
         .strike_in(strike_ripple), .manifold_out(), .lattice_fault()
     );
 
-    // 4. Metabolic Sense (Self-Awareness)
+    // 4. Metabolic Sense
     spu_metabolic_sense u_metabolic (
         .clk(clk_resonant), .reset(!rst_n),
         .adc_raw(adc_in), .microwatts(microwatts), .sip_active(sip_active)
     );
 
-    // 5. The Harmonic Handshake
+    // 5. Thalamus (Central Sensory Relay)
+    spu_thalamus u_thalamus (
+        .clk_resonant(clk_resonant), .reset(!rst_n),
+        .microwatts(microwatts), .synergy_idx(synergy_idx), .identity_lock(identity_lock),
+        .bloom_intensity(bloom_intensity), .coherence_lock(coherence_lock), .q_vec(q_mood)
+    );
+
+    // 6. The Harmonic Handshake
     spu_harmonic_handshake u_sonic (
         .clk_resonant(clk_resonant), .rst_n(rst_n),
         .en(laminar_en & (boot_phase == 3'b001)),
         .tone_out(sonic_handshake), .tone_id(), .handshake_done(boot_done)
     );
 
-    // 6. Identity Gate
+    // 7. Identity Gate
     spu_identity_monad u_identity (
         .clk(clk_resonant), .current_quadrance(64'h00000000_00010000), 
         .lattice_state({768'b0, h_seed}), .identity_aligned(identity_lock), .homeopathic_seed(h_seed)
     );
 
-    // 7. Topological Guard
+    // 8. Topological Guard
     spu_coherence_ecc guard (
         .clk_fractal(clk_resonant), .rst_n(rst_n), .janus_state(janus_state),
         .coherence_lock(coherence_lock), .phase_correct(phase_correct)
     );
 
-    // 8. IO Bridge (The Standard Interface)
+    // 9. IO Bridge
     spu_io_bridge #(
         .CLK_PHYS_HZ(12000000)
     ) u_io (
@@ -93,10 +102,10 @@ module spu13_top (
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(1'b1), .serial_tx()
     );
 
-    // 9. Status Reification
+    // 10. Status Reification
     assign led_sat_red = !rst_n | !identity_lock;
-    assign led_sat_grn = wake_complete & coherence_lock & sip_active;
-    assign led_sat_blu = (!wake_complete) & laminar_en & (clk_resonant | sonic_handshake);
+    assign led_sat_grn = wake_complete & coherence_lock;
+    assign led_sat_blu = (!wake_complete) ? (clk_resonant | sonic_handshake) : q_mood[2];
 
     assign vector_A = (clk_resonant ^ phase_correct ^ sonic_handshake) & laminar_en;
     assign vector_B = ~vector_A & laminar_en;
