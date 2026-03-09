@@ -169,6 +169,7 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 *   **[RESONANT_NAVIGATION.md](docs/spec/RESONANT_NAVIGATION.md):** Dynamic stabilization and coordinate mapping.
 *   **[TECHNICAL_WHITEPAPER_SPU13.md](docs/spec/TECHNICAL_WHITEPAPER_SPU13.md):** Laminar Computation: Overcoming the Cubic Bottleneck in Spatial Processing.
 *   **[STABILIZATION.md](docs/spec/STABILIZATION.md):** Frequency regulation and pulse damping.
+*   **[IO_STANDARD.md](docs/spec/IO_STANDARD.md):** The Laminar Frame protocol: bridging Cubic and Resonant worlds.
 *   **[LATTICE_LOCK.md](docs/spec/LATTICE_LOCK.md):** Observer-stability anchors and grounding procedures.
 *   **[SAFETY_AUDIT_SUMMARY.md](docs/spec/SAFETY_AUDIT_SUMMARY.md):** Formal certification of the SPU-13 against the Universal Invariant.
 *   **[SCOPE_REFERENCE.md](docs/spec/SCOPE_REFERENCE.md):** Verified phase-alignment waveforms for physical bring-up.

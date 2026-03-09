@@ -84,7 +84,25 @@ module spu13_top (
         .phase_correct(phase_correct)
     );
 
-    // 8. Status Reification (Visual Handshake)
+    // 8. IO Bridge (The Standard Interface)
+    spu_io_bridge #(
+        .CLK_PHYS_HZ(12000000)
+    ) u_io (
+        .clk_phys(clk_12mhz),
+        .clk_resonant(clk_resonant),
+        .reset(!rst_n),
+        .spu_reg_in({768'b0, h_seed}), // Telemetry of the Monad
+        .strike_ripple(),
+        .fault_detected(!identity_lock),
+        .coherence_lock(coherence_lock),
+        .led_status(), // LEDs handled by direct assigns below
+        .pmod_ja_out(),
+        .sw_control(4'b0),
+        .serial_rx(1'b1), // Pin 9 handled by PCF
+        .serial_tx()      // Pin 10 handled by PCF
+    );
+
+    // 9. Status Reification (Visual Handshake)
     // Red = Reset OR Identity Breach
     assign led_sat_red = !rst_n | !identity_lock;
     // Green = Manifold Locked and Aligned
