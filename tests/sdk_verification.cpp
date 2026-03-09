@@ -7,13 +7,13 @@ int main() {
     std::cout << "--- Synergetic SDK v0.1 Verification ---" << std::endl;
 
     // 1. Test Rational Snap
-    // Snap (1.0, 1.0, 1.0) -> Expected Quadray (0, 0, 0, 1) in normalized IVM
-    Synergetics::Quadray4 snapped = RationalSnap(1.0f, 1.0f, 1.0f);
+    // Snap (1, 1, 1) -> Expected Quadray (2, 0, 0, 0) via Thomson Matrix
+    Synergetics::Quadray4 snapped = rationalSnap(1, 1, 1);
     
-    if (snapped.data.v[6] == 16384) { // (1.0 / 4 * 65536)
-        std::cout << "PASS: RationalSnap bit-exact (1.0, 1.0, 1.0) -> Q4 Identity." << std::endl;
+    if (snapped.data.v[0] == 2) { 
+        std::cout << "PASS: rationalSnap bit-exact (1, 1, 1) -> a=2 (Thomson Identity)." << std::endl;
     } else {
-        std::cerr << "FAIL: RationalSnap drift! Q4=" << snapped.data.v[6] << std::endl;
+        std::cerr << "FAIL: rationalSnap drift! a=" << snapped.data.v[0] << std::endl;
     }
 
     // 2. Test Primitive Creation
