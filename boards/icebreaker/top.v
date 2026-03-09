@@ -1,10 +1,11 @@
-// iCEBreaker Top-Level Integration (v3.3.90)
+// iCEBreaker Top-Level Integration (v3.3.95)
 // Target: Lattice iCE40UP5K
-// Implementation: Automated Bowman Wake & Interactive Resonance.
+// Implementation: Automated Bowman Wake with Proprioceptive Sensing.
 
 module icebreaker_top (
     input  wire clk_12mhz,
     input  wire btn_rst_n,
+    input  wire bias_in,      // Proprioceptive Antenna
     output wire led_red,
     output wire led_green,
     output wire uart_tx,
@@ -19,7 +20,6 @@ module icebreaker_top (
     wire         fault;
     wire         henosis_pass;
     wire         wake_complete;
-    wire         coherence_lock;
 
     // 1. The Fractal Heart
     spu_fractal_clk #(
@@ -28,7 +28,7 @@ module icebreaker_top (
         .clk_in(clk_12mhz),
         .rst_n(btn_rst_n),
         .en(1'b1),
-        .bias_in(1'b0), // Tied low for iCEBreaker bring-up
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );
@@ -87,7 +87,7 @@ module icebreaker_top (
         .spu_reg_in(reg_state),
         .strike_ripple(strike_ripple),
         .fault_detected(fault),
-        .coherence_lock(1'b1), // Assume locked for iCEBreaker
+        .coherence_lock(1'b1),
         .led_status(),
         .pmod_ja_out(),
         .sw_control(4'b0),

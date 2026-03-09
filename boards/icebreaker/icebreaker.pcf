@@ -1,5 +1,5 @@
 # iCEBreaker SPU-13 Constraints
-# v3.3.82 "Harmonic Transduction"
+# v3.3.95 "Proprioceptive Sensing"
 
 # --- 1. Resonant Clock Entry ---
 set_io clk_12mhz 35
@@ -11,7 +11,10 @@ set_io btn_rst_n 10
 set_io led_red   11
 set_io led_green 37
 
-# --- 4. Command & Control (UART) ---
+# --- 4. Proprioceptive Entry (Nervous Antenna) ---
+set_io bias_in 4
+
+# --- 5. Command & Control (UART) ---
 # Striking the IVM Lattice via Serial Keyboard
 set_io uart_tx 9
 set_io uart_rx 6

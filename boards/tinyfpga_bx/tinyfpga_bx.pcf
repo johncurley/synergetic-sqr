@@ -1,5 +1,5 @@
 # TinyFPGA BX SPU-13 Constraints
-# v3.3.82 "Harmonic Transduction"
+# v3.3.95 "Proprioceptive Sensing"
 
 # --- 1. Resonant Clock Entry ---
 set_io clk B2
@@ -7,7 +7,10 @@ set_io clk B2
 # --- 2. Status Display ---
 set_io pin_led B3
 
-# --- 3. Command & Control (UART) ---
+# --- 3. Proprioceptive Entry (Nervous Antenna) ---
+set_io bias_in A5
+
+# --- 4. Command & Control (UART) ---
 # Striking the IVM Lattice via Serial Keyboard
 set_io uart_tx A2
 set_io uart_rx A1

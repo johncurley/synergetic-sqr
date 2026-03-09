@@ -1,5 +1,5 @@
 # OrangeCrab SPU-13 Constraints
-# v3.3.82 "Harmonic Transduction"
+# v3.3.95 "Proprioceptive Sensing"
 
 LOCATE COMP "clk_48mhz" SITE "A9";
 IOBUF PORT "clk_48mhz" IO_TYPE=LVCMOS33;
@@ -12,7 +12,11 @@ LOCATE COMP "led_green" SITE "T18";
 LOCATE COMP "led_blue"  SITE "R18";
 
 # UART (Strike entry)
-LOCATE COMP "uart_tx" SITE "N17"; # TXD
-LOCATE COMP "uart_rx" SITE "M18"; # RXD
+LOCATE COMP "uart_tx" SITE "N17"; 
+LOCATE COMP "uart_rx" SITE "M18"; 
 IOBUF PORT "uart_tx" IO_TYPE=LVCMOS33;
 IOBUF PORT "uart_rx" IO_TYPE=LVCMOS33;
+
+# Proprioceptive Bias (Nervous Antenna)
+LOCATE COMP "bias_in" SITE "L18"; # Using Spare IO Pin
+IOBUF PORT "bias_in" IO_TYPE=LVCMOS33;

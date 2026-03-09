@@ -1,10 +1,11 @@
-// Arty A7-35T Top-Level Integration (v3.3.90)
+// Arty A7-35T Top-Level Integration (v3.3.95)
 // Target: Xilinx Artix-7
-// Implementation: 13-Core Collective Manifold with Interactive Resonance.
+// Implementation: 13-Core Collective Manifold with Proprioceptive Sensing.
 
 module arty_a7_top (
     input  wire       clk_100mhz,
     input  wire       btn_rst_n,      
+    input  wire       bias_in,        // Proprioceptive Antenna
     input  wire [3:0] sw,             
     output wire [3:0] led,            
     output wire [7:0] pmod_ja,
@@ -29,7 +30,7 @@ module arty_a7_top (
         .clk_in(clk_100mhz),
         .rst_n(btn_rst_n),
         .en(sw[3]), 
-        .bias_in(1'b0),
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );

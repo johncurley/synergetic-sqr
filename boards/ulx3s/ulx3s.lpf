@@ -1,11 +1,11 @@
 # ULX3S SPU-13 Constraints
-# v3.3.82 "Harmonic Transduction"
+# v3.3.95 "Proprioceptive Sensing"
 
 LOCATE COMP "clk_25mhz" SITE "G2";
 IOBUF PORT "clk_25mhz" IO_TYPE=LVCMOS33;
 
 # Buttons
-LOCATE COMP "btn[0]" SITE "D6"; # RESET_N
+LOCATE COMP "btn[0]" SITE "D6"; 
 IOBUF PORT "btn[0]" IO_TYPE=LVCMOS33;
 
 # LEDs
@@ -19,7 +19,11 @@ LOCATE COMP "led[6]" SITE "E1";
 LOCATE COMP "led[7]" SITE "H3";
 
 # UART (Strike entry)
-LOCATE COMP "ftdi_tdo" SITE "L4"; # TX
-LOCATE COMP "ftdi_rxd" SITE "M1"; # RX
+LOCATE COMP "ftdi_tdo" SITE "L4"; 
+LOCATE COMP "ftdi_rxd" SITE "M1"; 
 IOBUF PORT "ftdi_tdo" IO_TYPE=LVCMOS33;
 IOBUF PORT "ftdi_rxd" IO_TYPE=LVCMOS33;
+
+# Proprioceptive Bias (Nervous Antenna)
+LOCATE COMP "bias_in" SITE "B11"; # GP0 on Header
+IOBUF PORT "bias_in" IO_TYPE=LVCMOS33;

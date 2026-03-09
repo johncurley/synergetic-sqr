@@ -1,10 +1,11 @@
-// Tang Nano 20k Top-Level Integration (v3.3.91)
+// Tang Nano 20k Top-Level Integration (v3.3.95)
 // Target: Gowin GW2A-18C
 // Implementation: Automated Bowman Wake with 13-Core Collective Manifold.
 
 module tang_nano_20k_top (
     input  wire sys_clk, // 27MHz
     input  wire sys_rst_n,
+    input  wire bias_in, // Proprioceptive Antenna
     output wire [5:0] led,
     output wire uart_tx,
     input  wire uart_rx
@@ -27,7 +28,7 @@ module tang_nano_20k_top (
         .clk_in(sys_clk),
         .rst_n(sys_rst_n),
         .en(1'b1),
-        .bias_in(1'b0),
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );

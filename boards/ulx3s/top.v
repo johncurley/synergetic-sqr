@@ -1,10 +1,11 @@
-// ULX3S Top-Level Integration (v3.3.91)
+// ULX3S Top-Level Integration (v3.3.95)
 // Target: Lattice ECP5-85k
-// Implementation: 13-Core Collective Manifold with Interactive Resonance.
+// Implementation: 13-Core Collective Manifold with Proprioceptive Sensing.
 
 module ulx3s_top (
     input  wire clk_25mhz,
     input  wire [6:0] btn,
+    input  wire bias_in,      // Proprioceptive Antenna
     output wire [7:0] led,
     output wire ftdi_tdo, // UART TX
     input  wire ftdi_rxd  // UART RX
@@ -28,7 +29,7 @@ module ulx3s_top (
         .clk_in(clk_25mhz),
         .rst_n(btn[0]),
         .en(1'b1),
-        .bias_in(1'b0),
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );

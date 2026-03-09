@@ -1,10 +1,11 @@
-// OrangeCrab Top-Level Integration (v3.3.91)
+// OrangeCrab Top-Level Integration (v3.3.95)
 // Target: Lattice ECP5
-// Implementation: 13-Core Collective Manifold with Interactive Resonance.
+// Implementation: 13-Core Collective Manifold with Proprioceptive Sensing.
 
 module orangecrab_top (
     input  wire clk_48mhz,
     input  wire btn_rst_n,
+    input  wire bias_in,      // Proprioceptive Antenna
     output wire led_red,
     output wire led_green,
     output wire led_blue,
@@ -30,7 +31,7 @@ module orangecrab_top (
         .clk_in(clk_48mhz),
         .rst_n(btn_rst_n),
         .en(1'b1),
-        .bias_in(1'b0),
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );

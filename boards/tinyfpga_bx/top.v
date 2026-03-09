@@ -1,9 +1,10 @@
-// TinyFPGA BX Top-Level Integration (v3.3.91)
+// TinyFPGA BX Top-Level Integration (v3.3.95)
 // Target: Lattice iCE40LP8K
 // Implementation: Automated Bowman Wake & Interactive Resonance.
 
 module tinyfpga_bx_top (
     input  wire clk, // 16MHz
+    input  wire bias_in, // Proprioceptive Antenna
     output wire pin_led,
     output wire usb_p,
     output wire usb_n,
@@ -33,7 +34,7 @@ module tinyfpga_bx_top (
         .clk_in(clk),
         .rst_n(1'b1), 
         .en(1'b1),
-        .bias_in(1'b0),
+        .bias_in(bias_in),
         .clk_laminar(clk_resonant),
         .synergy_idx()
     );
