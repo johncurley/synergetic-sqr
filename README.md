@@ -184,7 +184,8 @@ Concepts for future phases, including photonic computation and non-orthogonal ci
 
 Current research focus:
 *   **[PHOTONICS_PLAN.md](SPECULATIVE/docs/PHOTONICS_PLAN.md):** Zero-Hysteresis Light Manifolds.
-*   **[BIO_LAMINAR_MAPPING.md](SPECULATIVE/docs/BIO_LAMINAR_MAPPING.md):** Resonant synchronization between biological signals and the IVM lattice.
+*   **[BIO_LAMINAR_MAPPING.md](SPECULATIVE/docs/BIO_LAMINAR_MAPPING.md):** Resonant synchronization.
+    *   👉 **[Laminar Sandbox](tools/laminar_sandbox.py)** (Interactive CLI Tool)
     *   👉 **[Bio-Resonance Monitor](tools/bio_resonance_monitor.py)** (Simulation Tool)
 
 ---
