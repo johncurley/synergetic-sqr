@@ -1,7 +1,7 @@
-// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.1)
+// SPU-13 TOP-LEVEL REIFICATION CORE (v3.4.21)
 // Phase 1.1: Polarity Corrected & Enable-Gated
 // Wake: Bowman Boot Sequence Automated.
-// Sensory: Metabolic, Proprioceptive, and Thalamic Integration.
+// Sensory: Metabolic, Proprioceptive, and Thalamic Frequency Homeostasis.
 
 module spu13_top (
     input wire clk_12mhz,    // Physical Oscillator (Pin 35)
@@ -32,17 +32,18 @@ module spu13_top (
     wire wake_complete;
     wire [127:0] strike_ripple;
     wire [15:0] microwatts;
-    wire sip_active;
     wire [7:0]  bloom_intensity;
+    wire [3:0]  freq_bias;
     wire [3:0]  q_mood;
     wire [63:0] h_seed;
 
-    // 1. The Fractal Heart
+    // 1. The Fractal Heart: Regulated by Thalamic Bias
     spu_fractal_clk #(
         .CLK_IN_HZ(12000000)
     ) fractal_osc (
         .clk_in(clk_12mhz), .rst_n(rst_n), .en(laminar_en), 
-        .bias_in(bias_in), .clk_laminar(clk_resonant), .synergy_idx(synergy_idx)
+        .bias_in(bias_in), .freq_bias(freq_bias),
+        .clk_laminar(clk_resonant), .synergy_idx(synergy_idx)
     );
 
     // 2. The Bowman Sequencer
@@ -60,7 +61,6 @@ module spu13_top (
     );
 
     // 4. Power Dispatcher (Laminar Logic)
-    // Orchestrates the gradual release of state and dynamic damping.
     wire [831:0] dispatched_state;
     spu_laminar_power u_power (
         .clk(clk_resonant), .reset(!rst_n),
@@ -69,16 +69,15 @@ module spu13_top (
         .henosis_active()
     );
 
-    // 5. Thalamus v2 (Central Sensory Relay)
-    // Direct Metabolic, Proprioceptive, and Harmonic Integration.
+    // 5. Thalamus v3 (Central Sensory Relay)
     spu_thalamus u_thalamus (
         .clk_resonant(clk_resonant), .reset(!rst_n),
         .adc_raw(adc_in), .synergy_idx(synergy_idx), .identity_lock(identity_lock),
-        .microwatts(microwatts), .bloom_intensity(bloom_intensity), 
+        .microwatts(microwatts), .bloom_intensity(bloom_intensity), .freq_bias(freq_bias),
         .coherence_lock(coherence_lock), .q_vec(q_mood)
     );
 
-    // 5. The Harmonic Handshake
+    // 6. The Harmonic Handshake
     spu_harmonic_handshake u_sonic (
         .clk_resonant(clk_resonant), .rst_n(rst_n),
         .en(laminar_en & (boot_phase == 3'b001)),
@@ -102,7 +101,7 @@ module spu13_top (
         .CLK_PHYS_HZ(12000000)
     ) u_io (
         .clk_phys(clk_12mhz), .clk_resonant(clk_resonant), .reset(!rst_n),
-        .spu_reg_in({768'b0, h_seed}), .microwatts(microwatts), .sip_active(sip_active),
+        .spu_reg_in({768'b0, h_seed}), .microwatts(microwatts), .sip_active(microwatts < 100),
         .strike_ripple(strike_ripple), .fault_detected(!identity_lock),
         .coherence_lock(coherence_lock), .led_status(), 
         .pmod_ja_out(), .sw_control(4'b0), .serial_rx(1'b1), .serial_tx()
