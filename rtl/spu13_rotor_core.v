@@ -17,6 +17,10 @@ module spu13_rotor_core (
     // Control: Enable Zero-Gate Bypass for P5 (120-degree) rotations
     input  wire        bypass_p5,
     
+    `ifdef FORMAL
+    output wire        is_sane,
+    `endif
+
     // Quadray Output Coordinates
     output reg  [63:0] A_out, B_out, C_out, D_out
 );
@@ -80,6 +84,7 @@ module spu13_rotor_core (
     // Simplified here to indicate the formal requirement).
     
     `ifdef FORMAL
+    assign is_sane = !bypass_p5;
     always @(posedge clk) begin
         if (rst_n && !bypass_p5) begin
             // Determinant assertion (Conceptually in Q(sqrt(3)))

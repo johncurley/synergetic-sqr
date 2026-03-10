@@ -1,0 +1,34 @@
+#!/bin/bash
+# SPU-13 Ephemeralization Script: iCeSugar Nano (v1.1)
+# Target: Lattice iCE40LP1K-CM36 (1,280 LUTs)
+
+# 1. Configuration
+TOP=${1:-spu13_fluid_nano}
+PROJ="spu13_nano_seed"
+DEVICE="lp1k"
+PACKAGE="cm36"
+PCF="nano.pcf"
+RTL_DIR="../../rtl"
+
+# Source Toolchain Path
+export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
+
+echo "--- Initializing SPU-13 Seed Synthesis: $TOP (iCeSugar Nano) ---"
+
+# 2. Source Files (Ephemeralized Serial List)
+SRC="top.v \
+    $RTL_DIR/spu_nano_core.v \
+    $RTL_DIR/spu_serial_davis_gate.v \
+    $RTL_DIR/spu_serial_multiplier.v \
+    $RTL_DIR/surd_uart_tx.v"
+
+# 3. Synthesis (Yosys)
+yosys -ql design.log -p "synth_ice40 -top $TOP -json $PROJ.json" $SRC
+
+# 4. Place & Route (nextpnr)
+nextpnr-ice40 --$DEVICE --package $PACKAGE --json $PROJ.json --pcf $PCF --asc $PROJ.asc --pcf-allow-unconstrained
+
+# 5. Packaging (icepack)
+icepack $PROJ.asc $PROJ.bin
+
+echo "--- Seed Reified: $PROJ.bin ready for Ephemeralization ---"

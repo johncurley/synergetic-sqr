@@ -1,18 +1,16 @@
-// SPU-13: Quadrance (Q) Calculator
-// Q = (a^2 + b^2 + c^2 + d^2) / 2
-// Zero Square Roots. Zero Floating Point.
+// SPU-13 Quadrance Calculator (v1.1 DSP-Optimized)
+// Objective: Efficient distance calculation using SB_MAC16.
+// Formula: Q = (a^2 + b^2 + c^2 + d^2) / 2
 
 module quadrance_calc (
-    input  wire [23:0] a, b, c, d,
-    output wire [47:0] q_out // Double width for the square
+    input  wire signed [15:0] a, b, c, d,
+    output wire [31:0] q_out 
 );
-    // Separate multipliers for each axis
-    // This is the "Asymmetrical" Sip in action
-    wire [47:0] sq_a = a * a;
-    wire [47:0] sq_b = b * b;
-    wire [47:0] sq_c = c * c;
-    wire [47:0] sq_d = d * d;
+    // These 16x16 multipliers fit exactly into the UP5K DSP slices.
+    wire signed [31:0] sq_a = a * a;
+    wire signed [31:0] sq_b = b * b;
+    wire signed [31:0] sq_c = c * c;
+    wire signed [31:0] sq_d = d * d;
 
-    // Summing them up through the Asymmetrical Adder logic
-    assign q_out = (sq_a + sq_b + sq_c + sq_d) >> 1; // Divide by 2 (Bit-shift)
+    assign q_out = (sq_a + sq_b + sq_c + sq_d) >> 1; 
 endmodule

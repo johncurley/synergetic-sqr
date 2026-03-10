@@ -1,39 +1,26 @@
-# SPU-13 Null Hysteresis Constraints: iCeSugar (iCE40UP5K)
-# v3.3.5 "Manual Start / Throttle Mapping"
-# Objective: Physical authorization and safety-gating for the manifold.
+# SPU-13 Unified Constraints: iCeSugar Nano (iCE40UP5K)
+# v1.1 HAL Mapping
 
-# --- 1. Resonant Clock Entry (Chiral Vortex) ---
-# Pin 35 is the Global Clock input from the 12MHz Crystal.
-set_io clk_12mhz 35
+# --- 1. Resonant Pulse (Clock) ---
+set_io clk_phys 35
 
-# Manual Reset & Throttle ---
-# User Button on iCeSugar Nano (Pin 18) - Active Low
-# This is the 'System Reset' - Red LED will light when held.
-set_io rst_n 18
-
-# Laminar Enable (Throttle) - Pin 11
-# Manual authorization gate. Hold HIGH to start the manifold heartbeat.
-# If pulled LOW, the system enters 'Laminar Halt' (EMI Safe Mode).
-set_io laminar_en 11
-
-# Proprioceptive Bias (Nervous Antenna) - Pin 12
-# High-Z entry for stochastic phase-biasing.
-set_io bias_in 12
-
-# Metabolic Sense (Shunt ADC) - Pin 13
-# 12-bit input from current-sense amplifier.
-set_io adc_in 13
-
-# --- 3. Janus-Gate Differential Output (Tuned Drive Strength) ---
-# Driving the "Virtual Coils" of the header traces.
-set_io -current 6 vector_A 46
-set_io -current 6 vector_B 47
+# --- 2. Temporal Anchor (Reset) ---
+set_io rst_phys_n 18
 
 # --- 4. Janus Status Display (RGB LED) ---
 set_io led_sat_red 39
 set_io led_sat_grn 40
 set_io led_sat_blu 41
 
-# --- 5. Command & Control (UART) ---
-set_io uart_tx 10
-set_io uart_rx 9
+# --- 5. OLED Interface (PMOD C) ---
+set_io oled_scl 43
+set_io oled_sda 38
+
+# --- 6. Command & Control (UART) ---
+
+set_io uart_phys_tx 10
+set_io uart_phys_rx 9
+
+# --- 5. Metabolic Sense (Sensing) ---
+set_io adc_phys_in 13
+set_io bias_phys_in 12

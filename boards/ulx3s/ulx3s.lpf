@@ -1,62 +1,26 @@
-# ULX3S SPU-13 Constraints
-# v3.4.3 "Physical Metabolic Mapping"
+# SPU-13 Unified Constraints: ULX3S (ECP5-85F)
+# v1.1 HAL Mapping
 
-LOCATE COMP "clk_25mhz" SITE "G2";
-IOBUF PORT "clk_25mhz" IO_TYPE=LVCMOS33;
+# --- 1. Resonant Pulse (Clock) ---
+LOCATE COMP "clk_phys" SITE "G2";
+IOBUF PORT "clk_phys" IO_TYPE=LVCMOS33;
 
-# Buttons
-LOCATE COMP "btn[0]" SITE "D6"; 
-IOBUF PORT "btn[0]" IO_TYPE=LVCMOS33;
+# --- 2. Temporal Anchor (Reset) ---
+# Mapping btn[0] to rst_phys_n
+LOCATE COMP "rst_phys_n" SITE "R1";
+IOBUF PORT "rst_phys_n" IO_TYPE=LVCMOS33;
 
-# LEDs
-LOCATE COMP "led[0]" SITE "B2";
-LOCATE COMP "led[1]" SITE "C2";
-LOCATE COMP "led[2]" SITE "C1";
-LOCATE COMP "led[3]" SITE "D2";
-LOCATE COMP "led[4]" SITE "D1";
-LOCATE COMP "led[5]" SITE "E2";
-LOCATE COMP "led[6]" SITE "E1";
-LOCATE COMP "led[7]" SITE "H3";
+# --- 3. Janus Status Display (RGB LED) ---
+# Mapping 3 onboard LEDs to RGB logicals
+LOCATE COMP "led_sat_red" SITE "B2";
+IOBUF PORT "led_sat_red" IO_TYPE=LVCMOS33;
+LOCATE COMP "led_sat_grn" SITE "C2";
+IOBUF PORT "led_sat_grn" IO_TYPE=LVCMOS33;
+LOCATE COMP "led_sat_blu" SITE "C1";
+IOBUF PORT "led_sat_blu" IO_TYPE=LVCMOS33;
 
-# UART (Strike entry)
-LOCATE COMP "ftdi_tdo" SITE "L4"; 
-LOCATE COMP "ftdi_rxd" SITE "M1"; 
-IOBUF PORT "ftdi_tdo" IO_TYPE=LVCMOS33;
-IOBUF PORT "ftdi_rxd" IO_TYPE=LVCMOS33;
-
-# Proprioceptive Bias (Nervous Antenna)
-LOCATE COMP "bias_in" SITE "B11"; # GP0
-IOBUF PORT "bias_in" IO_TYPE=LVCMOS33;
-
-# I2C OLED (Visual Reification)
-LOCATE COMP "oled_scl" SITE "F1"; # GP13
-LOCATE COMP "oled_sda" SITE "F2"; # GP14
-IOBUF PORT "oled_scl" IO_TYPE=LVCMOS33;
-IOBUF PORT "oled_sda" IO_TYPE=LVCMOS33;
-
-# Metabolic Sense (12-bit Shunt ADC)
-LOCATE COMP "adc_in[0]"  SITE "C11"; # GP1
-LOCATE COMP "adc_in[1]"  SITE "A10"; # GP2
-LOCATE COMP "adc_in[2]"  SITE "A11"; # GP3
-LOCATE COMP "adc_in[3]"  SITE "B10"; # GP4
-LOCATE COMP "adc_in[4]"  SITE "B12"; # GP5
-LOCATE COMP "adc_in[5]"  SITE "A12"; # GP6
-LOCATE COMP "adc_in[6]"  SITE "B13"; # GP7
-LOCATE COMP "adc_in[7]"  SITE "A13"; # GP8
-LOCATE COMP "adc_in[8]"  SITE "C13"; # GP9
-LOCATE COMP "adc_in[9]"  SITE "D13"; # GP10
-LOCATE COMP "adc_in[10]" SITE "E13"; # GP11
-LOCATE COMP "adc_in[11]" SITE "F13"; # GP12
-
-IOBUF PORT "adc_in[0]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[1]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[2]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[3]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[4]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[5]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[6]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[7]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[8]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[9]"  IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[10]" IO_TYPE=LVCMOS33;
-IOBUF PORT "adc_in[11]" IO_TYPE=LVCMOS33;
+# --- 4. Command & Control (UART) ---
+LOCATE COMP "uart_phys_tx" SITE "L4";
+IOBUF PORT "uart_phys_tx" IO_TYPE=LVCMOS33;
+LOCATE COMP "uart_phys_rx" SITE "M1";
+IOBUF PORT "uart_phys_rx" IO_TYPE=LVCMOS33;
