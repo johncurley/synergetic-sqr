@@ -1,7 +1,7 @@
-// SPU-13 NANO GUARDIAN (v1.0)
+// SPU-13 NANO GUARDIAN (v1.1 Whisper Edition)
 // Target: iCE40LP1K (iCeSugar Nano)
-// Objective: A silent, light-based sentinel for 1k LUTs.
-// Feature: Bit-Serial Davis Gasket + Piranha Aura.
+// Objective: A silent sentinel that whispers its vitals to the Cortex.
+// Feature: Bit-Serial Davis Gasket + Whisper Protocol.
 
 `include "../../include/spu/spu13_pins.vh"
 
@@ -10,7 +10,11 @@ module top_guardian (
     input  wire `SPU_PIN_RST_N,
     output wire `SPU_PIN_LED_R,
     output wire `SPU_PIN_LED_G,
-    output wire `SPU_PIN_LED_B
+    output wire `SPU_PIN_LED_B,
+    
+    // Lattice Protocol (The Whisper)
+    input  wire whisper_sync, // Trigger from Big Brother (PMOD Pin 5)
+    output wire whisper_out   // Status pulse to Big Brother (PMOD Pin 6)
 );
 
     // --- 1. Internal Metabolism (The Inhale/Exhale) ---
@@ -24,7 +28,6 @@ module top_guardian (
     wire audit_ready;
     reg  audit_start;
     
-    // Hard-coded Sanity Threshold (1.0 in 16.16)
     localparam [31:0] TAU_Q = 32'h00010000;
 
     spu_serial_davis_gate #(
@@ -37,9 +40,20 @@ module top_guardian (
         .ready(audit_ready)
     );
 
-    // --- 3. The Laminar Sequencer ---
+    // --- 3. The Whisper Transmitter ---
+    spu_whisper_tx #(
+        .CLK_HZ(12000000)
+    ) u_whisper (
+        .clk(`SPU_PIN_CLK), .reset(!`SPU_PIN_RST_N),
+        .sync_in(whisper_sync),
+        .tension_k(k_sim),
+        .fault_in(over_curvature),
+        .pulse_out(whisper_out)
+    );
+
+    // --- 4. The Laminar Sequencer ---
     reg [1:0] state;
-    localparam IDLE=0, AUDIT=1, RESET=2;
+    localparam IDLE=0, AUDIT=1;
 
     always @(posedge `SPU_PIN_CLK or negedge `SPU_PIN_RST_N) begin
         if (!`SPU_PIN_RST_N) begin
@@ -60,13 +74,12 @@ module top_guardian (
         end
     end
 
-    // --- 4. Aura Mapping (Piranha PWM) ---
+    // --- 5. Aura Mapping (Piranha PWM) ---
     reg [7:0] pwm_cnt;
     always @(posedge `SPU_PIN_CLK) pwm_cnt <= pwm_cnt + 1;
 
-    // Green = Stability, Red = Over-Curvature
     assign `SPU_PIN_LED_R = (pwm_cnt < 8'hFF) && over_curvature;
     assign `SPU_PIN_LED_G = (pwm_cnt < 8'h7F) && !over_curvature;
-    assign `SPU_PIN_LED_B = (pwm_cnt < 8'h3F) && timer[24]; // Subtle heartbeat pulse
+    assign `SPU_PIN_LED_B = (pwm_cnt < 8'h3F) && whisper_out; // Flash Blue during Whisper
 
 endmodule

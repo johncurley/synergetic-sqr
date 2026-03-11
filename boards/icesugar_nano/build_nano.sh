@@ -19,7 +19,8 @@ echo "--- Initializing SPU-13 Seed Synthesis: $TOP (iCeSugar Nano) ---"
 if [ "$TOP" == "top_guardian" ]; then
     SRC="top_guardian.v \
         $RTL_DIR/spu_serial_davis_gate.v \
-        $RTL_DIR/spu_serial_multiplier.v"
+        $RTL_DIR/spu_serial_multiplier.v \
+        $RTL_DIR/spu_whisper_tx.v"
 else
     SRC="top.v \
         $RTL_DIR/spu_nano_core.v \
