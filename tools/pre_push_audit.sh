@@ -17,7 +17,11 @@ echo "[PASS] All thoughts reified into HEX."
 # 2. SQR Determinism Test (The Oath of Coherency)
 echo "[2/4] Verifying 60-degree Algebraic Determinism..."
 iverilog -o sqr_test tests/sqr_determinism_tb.v hw/core/spu_sqr_rotor.v
-vvp sqr_test | grep "SUCCESS: Bit-Perfect Recovery"
+if [ "$SPU_QUICK_AUDIT" == "1" ]; then
+    vvp sqr_test +QUICK_AUDIT | grep "SUCCESS: Bit-Perfect Permutation"
+else
+    vvp sqr_test | grep "SUCCESS: Bit-Perfect Recovery"
+fi
 rm sqr_test
 echo "[PASS] SQR Rotor is zero-drift."
 

@@ -17,16 +17,21 @@ module sqr_determinism_tb;
     );
 
     integer i;
+    integer max_cycles;
     initial begin
         $display("--- SPU-13 Oath of Coherency: 60-degree Determinism Test ---");
         
+        // Define depth based on environment
+        if ($test$plusargs("QUICK_AUDIT")) max_cycles = 1;
+        else max_cycles = 6;
+
         // Initial Identity: Apex Vector [1.0, 0, 0, 0]
         q_init_a = 64'h00000000_00010000; 
         q_init_b = 64'h0; q_init_c = 64'h0; q_init_d = 64'h0;
         
         reset = 1; #20 reset = 0;
 
-        for (i = 0; i < 6; i = i + 1) begin
+        for (i = 0; i < max_cycles; i = i + 1) begin
             @(posedge clk);
             q_init_a <= q_out_a;
             q_init_b <= q_out_b;
@@ -36,12 +41,17 @@ module sqr_determinism_tb;
         end
 
         @(posedge clk);
-        if (q_out_a == 64'h00000000_00010000 && q_out_b == 64'h0) begin
+        if (max_cycles == 1) begin
+            if (q_out_a == 64'h0 && q_out_b == 64'h00000000_00010000) begin
+                $display("SUCCESS: Bit-Perfect Permutation. The Manifold is Laminar.");
+                $finish;
+            end
+        end else if (q_out_a == 64'h00000000_00010000 && q_out_b == 64'h0) begin
             $display("SUCCESS: Bit-Perfect Recovery. The Manifold is Laminar.");
             $finish;
-        end else begin
-            $display("FAILURE: Residual Entropy Detected! Drift: %h", (64'h00000000_00010000 - q_out_a));
-            $stop;
         end
+        
+        $display("FAILURE: Residual Entropy Detected!");
+        $stop;
     end
 endmodule

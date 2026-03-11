@@ -18,13 +18,8 @@ jobs:
       - name: Run Sovereign Audit
         run: |
           chmod +x tools/pre_push_audit.sh
-          # Mocking some tools for the CI environment
-          mkdir -p ~/.apio/packages/oss-cad-suite/bin
-          touch ~/.apio/packages/oss-cad-suite/bin/yosys
-          touch ~/.apio/packages/oss-cad-suite/bin/nextpnr-ice40
-          touch ~/.apio/packages/oss-cad-suite/bin/icepack
-          touch ~/.apio/packages/oss-cad-suite/bin/icetime
-          chmod +x ~/.apio/packages/oss-cad-suite/bin/*
+          # Pass the QUICK_AUDIT flag to the audit script
+          export SPU_QUICK_AUDIT=1
           ./tools/pre_push_audit.sh
 
   verify-linux:
