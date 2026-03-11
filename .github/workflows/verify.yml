@@ -1,9 +1,9 @@
-name: SPU-13 Purity Guard
+name: SPU-13 Manifest Audit
 
 on: [push, pull_request]
 
 jobs:
-  purity-guard:
+  manifest-audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,19 +13,11 @@ jobs:
         with:
           python-version: '3.10'
           
-      - name: Install Icarus Verilog
+      - name: Run Manifest Integrity Check
         run: |
-          sudo apt-get update
-          sudo apt-get install -y iverilog
-          
-      - name: Run Laminar Purity Audit
-        env:
-          SPU_PURITY_ONLY: 1
-        run: |
-          chmod +x tools/pre_push_audit.sh
-          ./tools/pre_push_audit.sh
+          python3 tools/spu_sanity_check.py
 
-      - name: Verify Species Evolution
+      - name: Verify Species Evolution Logic
         run: |
           chmod +x tests/species_integrity_test.sh
           ./tests/species_integrity_test.sh
