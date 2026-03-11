@@ -14,7 +14,8 @@ class LaminarCompiler:
             "rotr": 0b000, "tuck": 0b001, "sip":  0b010,
             "leap": 0b011, "wait": 0b100, "bapt": 0b101,
             "anne": 0b110, "reset": 0b111,
-            "spin": 0b000, "lock": 0b001 # Aliases
+            "spin": 0b000, "lock": 0b001, # Aliases
+            "jitter": 0b000, "tens": 0b001, "fold": 0b010 # Intrinsics mapped via SIP/Opcode
         }
         self.axes = {"A": 0, "B": 1, "C": 2, "D": 3}
         self.labels = {}
