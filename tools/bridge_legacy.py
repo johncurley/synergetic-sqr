@@ -1,59 +1,48 @@
-import math
+#!/usr/bin/env python3
+# SPU-13 Laminar Bridge (v1.0)
+# Objective: Proxy standard USB keyboard inputs into L-CLK/L-DAT pulses.
+# Vibe: The Neural Proxy.
 
-def xyz_to_quadray(v):
-    x, y, z = v
-    a = ( x + y + z) / 4.0
-    b = ( x - y - z) / 4.0
-    c = (-x + y - z) / 4.0
-    d = (-x - y + z) / 4.0
-    m = min(a, b, c, d)
-    return (a-m, b-m, c-m, d-m)
+import sys
+import time
+import serial
+import pygame # Used for raw keyboard capture
 
-def generate_jitterbug_with_edges():
-    # 12 vertices of the VE
-    ve_cartesian = [
-        (1,1,0), (1,-1,0), (-1,1,0), (-1,-1,0),
-        (1,0,1), (1,0,-1), (-1,0,1), (-1,0,-1),
-        (0,1,1), (0,1,-1), (0,-1,1), (0,-1,-1)
-    ]
+# --- QUADRAY MAPPING (Cubic -> 60 deg) ---
+KEY_MAP = {
+    pygame.K_w: 0x000F, # Apex (A)
+    pygame.K_a: 0x00F0, # Base-Left (B)
+    pygame.K_d: 0x0F00, # Base-Right (C)
+    pygame.K_s: 0xF000, # Center (D)
+    pygame.K_SPACE: 0xFFFF # Identity Flush
+}
+
+def start_bridge(port):
+    print(f"--- SPU-13 Laminar Bridge Active on {port} ---")
+    pygame.init()
+    screen = pygame.display.set_mode((100, 100))
+    pygame.display.set_caption("L-Bridge")
     
-    # Octahedron State (Contracted)
-    oct_cartesian = [
-        (1,0,0), (1,0,0), (-1,0,0), (-1,0,0),
-        (0,1,0), (0,1,0), (0,-1,0), (0,-1,0),
-        (0,0,1), (0,0,1), (0,0,-1), (0,0,-1)
-    ]
-
-    # Connectivity (24 Edges of the Vector Equilibrium)
-    # These indices refer to the ve_cartesian list
-    edges = [
-        (0,4), (0,5), (0,8), (0,9),
-        (1,4), (1,5), (1,10), (1,11),
-        (2,6), (2,7), (2,8), (2,9),
-        (3,6), (3,7), (3,10), (3,11),
-        (4,10), (4,11), (5,10), (5,11),
-        (6,8), (6,9), (7,8), (7,9)
-    ]
-
-    print("// Jitterbug VE State")
-    print("const float ve_data[] = {")
-    for v in ve_cartesian:
-        q = xyz_to_quadray(v)
-        print(f"    {q[0]}f, {q[1]}f, {q[2]}f, {q[3]}f,")
-    print("};\n")
-
-    print("// Jitterbug Octahedron State")
-    print("const float oct_data[] = {")
-    for v in oct_cartesian:
-        q = xyz_to_quadray(v)
-        print(f"    {q[0]}f, {q[1]}f, {q[2]}f, {q[3]}f,")
-    print("};\n")
-
-    print("// Edge Connectivity (Index Pairs)")
-    print("const int jitterbug_edges[] = {")
-    for e in edges:
-        print(f"    {e[0]}, {e[1]},")
-    print("};")
+    try:
+        ser = serial.Serial(port, 115200)
+        
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: running = False
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key in KEY_MAP:
+                        vector = KEY_MAP[event.key]
+                        # We send as [L-DAT_LOW][L-DAT_HIGH]
+                        ser.write(vector.to_bytes(2, byteorder='little'))
+                        print(f"[*] Strike: {hex(vector)}")
+                        
+        ser.close()
+    except Exception as e:
+        print(f"Error: {e}")
+    pygame.quit()
 
 if __name__ == "__main__":
-    generate_jitterbug_with_edges()
+    p = sys.argv[1] if len(sys.argv) > 1 else "/dev/tty.usbmodemXXXX"
+    start_bridge(p)
