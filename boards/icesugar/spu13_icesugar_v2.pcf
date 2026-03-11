@@ -9,13 +9,26 @@ set_io clk_phys 35
 # Mapping the Ear to a stable, low-latency entry point
 set_io uart_phys_rx 4
 
-# --- 3. THE GASKET (Physical Feedback) ---
+# --- 3. E-INK INTERFACE (PMOD A) ---
+set_io eink_cs      48
+set_io eink_dc      4
+set_io eink_rst     2
+set_io eink_busy_in 47
+set_io eink_mosi    46
+set_io eink_sck     45
+
+# --- 4. THE GASKET (Physical Feedback) ---
 # RGB LED bioluminescence
 set_io led_sat_red 39
 set_io led_sat_grn 40
 set_io led_sat_blu 41
 
-# --- 4. THE SHORELINE (60-Degree Branching) ---
+# --- 4. THE VISION & VOICE (PMOD C) ---
+set_io oled_scl 43
+set_io oled_sda 38
+set_io audio_out 44
+
+# --- 5. THE SHORELINE (60-Degree Branching) ---
 # Logical 60-degree offsets for manifold expansion
 set_io main_flow_out 2
 set_io sub_flow_l     46

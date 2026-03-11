@@ -27,6 +27,10 @@ SRC="spu13_cortex.v \
     $RTL_DIR/spu_artery.v \
     $RTL_DIR/spu_artery_phy.v \
     $RTL_DIR/spu_whisper_rx.v \
+    $RTL_DIR/spu_pwm_audio.v \
+    $RTL_DIR/spu_harmonic_transducer.v \
+    $RTL_DIR/spu_oled_visualizer.v \
+    $RTL_DIR/spu_eink_waveshare_driver.v \
     $RTL_DIR/spu_ssd1306_driver.v \
     $RTL_DIR/uart_tx_mini.v \
     $RTL_DIR/uart_rx_mini.v \
