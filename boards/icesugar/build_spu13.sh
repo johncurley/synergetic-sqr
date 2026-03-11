@@ -23,6 +23,7 @@ SRC="spu13_cortex.v \
     $RTL_DIR/spu_quadrance_calc.v \
     $RTL_DIR/spu_gram_controller.v \
     $RTL_DIR/spu_dream_log.v \
+    $RTL_DIR/spu_fractal_compressor.v \
     $RTL_DIR/spu_whisper_rx.v \
     $RTL_DIR/spu_ssd1306_driver.v \
     $RTL_DIR/uart_tx_mini.v \
