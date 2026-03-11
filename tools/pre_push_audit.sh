@@ -14,8 +14,15 @@ python3 tools/spu13_asm.py software/gulp.sas
 python3 tools/spu13_asm.py software/vacuum.sas
 echo "[PASS] All thoughts reified into HEX."
 
-# 2. Simulated Audit (Verification of the Invariant)
-echo "[2/3] Running Laminar Audit on baseline..."
+# 2. SQR Determinism Test (The Oath of Coherency)
+echo "[2/4] Verifying 60-degree Algebraic Determinism..."
+iverilog -o sqr_test tests/sqr_determinism_tb.v rtl/spu_sqr_rotor.v
+vvp sqr_test | grep "SUCCESS: Bit-Perfect Recovery"
+rm sqr_test
+echo "[PASS] SQR Rotor is zero-drift."
+
+# 3. Simulated Audit (Verification of the Invariant)
+echo "[3/4] Running Laminar Audit on baseline..."
 # We create a dummy 'perfect' log to verify the auditor itself
 echo "Timestamp,Object,A,B,C,D,Davis Ratio (C),Observation" > audit_pass.csv
 echo "00:00:00,Identity,0,0,0,0,inf,LAMINAR" >> audit_pass.csv
