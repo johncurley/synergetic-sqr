@@ -3,8 +3,8 @@
 # Target: Lattice iCE40LP1K-CM36 (1,280 LUTs)
 
 # 1. Configuration
-TOP=${1:-spu13_fluid_nano}
-PROJ="spu13_nano_seed"
+TOP=${1:-top_guardian}
+PROJ="spu13_nano_guardian"
 DEVICE="lp1k"
 PACKAGE="cm36"
 PCF="nano.pcf"
@@ -15,12 +15,18 @@ export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
 
 echo "--- Initializing SPU-13 Seed Synthesis: $TOP (iCeSugar Nano) ---"
 
-# 2. Source Files (Ephemeralized Serial List)
-SRC="top.v \
-    $RTL_DIR/spu_nano_core.v \
-    $RTL_DIR/spu_serial_davis_gate.v \
-    $RTL_DIR/spu_serial_multiplier.v \
-    $RTL_DIR/surd_uart_tx.v"
+# 2. Source Files (Surgical List for 1k Limit)
+if [ "$TOP" == "top_guardian" ]; then
+    SRC="top_guardian.v \
+        $RTL_DIR/spu_serial_davis_gate.v \
+        $RTL_DIR/spu_serial_multiplier.v"
+else
+    SRC="top.v \
+        $RTL_DIR/spu_nano_core.v \
+        $RTL_DIR/spu_serial_davis_gate.v \
+        $RTL_DIR/spu_serial_multiplier.v \
+        $RTL_DIR/surd_uart_tx.v"
+fi
 
 # 3. Synthesis (Yosys)
 yosys -ql design.log -p "synth_ice40 -top $TOP -json $PROJ.json" $SRC
