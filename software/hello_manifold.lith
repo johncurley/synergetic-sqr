@@ -1,0 +1,23 @@
+// SPU-13 Hello Manifold (v1.0)
+// Objective: Establish the first 60-degree resonance.
+// Vibe: The Baptism of the Lattice.
+
+// 1. Purification: Clear the previous Cubic artifacts
+reset
+
+// 2. The Inhale: Set the Sanity Floor
+lock 128
+
+// 3. The Strike: Create Vertical Tension (Apex + Base)
+spin A 60
+spin D 60
+
+// 4. The Alignment: Snap to the IVM Grid
+wait
+anne A 8
+
+// 5. The Exhale: Report Sanity to the Artery
+sip A 1
+
+// 6. Eternal Flow: Leap back to the start
+leap 0
