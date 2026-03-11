@@ -1,6 +1,6 @@
-// SPU-13 LEAN CORE (v1.6 OLED Visualizer)
+// SPU-13 LEAN CORE (v1.7 Sovereign Parity)
 // Target: Unified SPU-13 Fleet
-// Objective: Streamlined spatial engine with Instruction Sequencer + OLED.
+// Objective: Streamlined spatial engine with Resonant Heart + SANE Whisper.
 
 `include "../../include/spu/spu13_pins.vh"
 
@@ -15,7 +15,7 @@ module spu13_lean_core #(
     output wire `SPU_PIN_LED_G,
     output wire `SPU_PIN_LED_B,
     
-    // OLED Interface (HAL pins mapped in PCF)
+    // OLED Interface
     output wire oled_scl,
     output wire oled_sda,
     
@@ -30,13 +30,27 @@ module spu13_lean_core #(
     wire [2:0]   opcode;
     wire [1:0]   prime_phase;
     wire         sign_flip;
-    wire         identity_aligned;
     
     // Main Manifold Register
     reg [255:0] manifold_reg;
     assign reg_curr = manifold_reg;
 
-    // --- 2. Instruction Sequencer (The Bloom) ---
+    // --- 2. Temporal Axis (The Resonant Heart) ---
+    wire clk_resonant;
+    spu_resonant_heart #(.CLK_IN_HZ(CLK_HZ)) u_heart (
+        .clk_in(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
+        .clk_resonant(clk_resonant)
+    );
+
+    // --- 3. Voice of Coherency (SANE Pulse) ---
+    wire fault_detected;
+    spu_whisper_sane #(.CLK_HZ(CLK_HZ), .BAUD(115200)) u_sane_voice (
+        .clk(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
+        .is_laminar(!fault_detected),
+        .tx_pin(`SPU_PIN_UART_TX)
+    );
+
+    // --- 4. Instruction Sequencer (The Bloom) ---
     reg [7:0] instruction_rom [0:15];
     reg [3:0] pc;
     reg [23:0] step_cnt; 
@@ -52,11 +66,11 @@ module spu13_lean_core #(
 
     always @(posedge `SPU_PIN_CLK or posedge reset) begin
         if (reset) begin
-            pc <= 0;
-            step_cnt <= 0;
+            pc <= 0; step_cnt <= 0;
             manifold_reg <= {192'b0, 64'h00000000_00010000};
         end else begin
-            if (step_cnt == 24'h7FFFFF) begin
+            // Evolution synchronized to the Resonant Heart (approx 1 pulse per logic step)
+            if (clk_resonant && step_cnt[15:0] == 16'hFFFF) begin
                 step_cnt <= 0;
                 if (opcode == 3'b100) pc <= 0; 
                 else pc <= pc + 1;
@@ -67,55 +81,26 @@ module spu13_lean_core #(
         end
     end
 
-    // --- 3. The Nano Core (ALU) ---
-    wire fault_detected;
+    // --- 5. The Nano Core (ALU) ---
     spu_nano_core u_core (
-        .clk(`SPU_PIN_CLK),
-        .reset(reset),
-        .reg_curr({128'b0, reg_curr[127:0]}), // Map to 128-bit internal
-        .opcode(opcode),
-        .prime_phase(prime_phase),
-        .sign_flip(sign_flip),
-        .reg_out(reg_next[127:0]),
-        .fault_detected(fault_detected)
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .reg_curr({128'b0, reg_curr[127:0]}),
+        .opcode(opcode), .prime_phase(prime_phase), .sign_flip(sign_flip),
+        .reg_out(reg_next[127:0]), .fault_detected(fault_detected)
     );
     assign reg_next[255:128] = 128'b0;
 
-    // --- 4. OLED Visualizer ---
-    // Clock divider for 61.44 kHz I2C pulse
-    reg [7:0] i2c_clk_div;
-    wire i2c_clk = i2c_clk_div[7];
-    always @(posedge `SPU_PIN_CLK) i2c_clk_div <= i2c_clk_div + 1;
-
+    // --- 6. OLED Visualizer ---
     spu_ssd1306_driver u_oled (
-        .clk(i2c_clk),
+        .clk(clk_resonant), // Uses the same Sovereign clock
         .reset(reset),
-        .data_in(reg_curr[7:0]), // Visualize Axis A (Low 8 bits)
-        .data_req(),
-        .scl(oled_scl),
-        .sda(oled_sda),
-        .ready()
+        .data_in(reg_curr[7:0]), .data_req(),
+        .scl(oled_scl), .sda(oled_sda), .ready()
     );
 
-    // --- 5. Telemetry (UART) ---
-    wire uart_ready;
-    wire uart_start = (step_cnt == 24'h0);
-
-    surd_uart_tx #(
-        .CLK_HZ(CLK_HZ),
-        .BAUD(115200)
-    ) u_telemetry (
-        .clk(`SPU_PIN_CLK),
-        .reset(reset),
-        .data_in({31'b0, fault_detected, reg_curr[31:0]}), 
-        .start(uart_start),
-        .tx(`SPU_PIN_UART_TX),
-        .ready(uart_ready)
-    );
-
-    // --- 6. Visual Reification ---
+    // --- 7. Aura Mapping ---
     assign `SPU_PIN_LED_R = reset | fault_detected;
     assign `SPU_PIN_LED_G = !reset & !fault_detected;
-    assign `SPU_PIN_LED_B = !uart_ready;
+    assign `SPU_PIN_LED_B = clk_resonant; 
 
 endmodule
