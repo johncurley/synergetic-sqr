@@ -1,26 +1,33 @@
-# SPU-13 Unified Constraints: iCeSugar Nano (iCE40UP5K)
-# v1.1 HAL Mapping
+# SPU-13 Lithic Body Constraints: iCeSugar (UP5K)
+# v1.2 HAL + Artery Mapping
 
-# --- 1. Resonant Pulse (Clock) ---
+# --- 1. THE HEART (The Clock / Phi-Pulse) ---
+# Pin 35 is a dedicated GBIN (Global Buffer Input)
 set_io clk_phys 35
 
-# --- 2. Temporal Anchor (Reset) ---
-set_io rst_phys_n 18
+# --- 2. THE ARTERY (The Nano Whisper Inputs) ---
+# Mapping the Ear to a stable, low-latency entry point
+set_io uart_phys_rx 4
 
-# --- 4. Janus Status Display (RGB LED) ---
+# --- 3. THE GASKET (Physical Feedback) ---
+# RGB LED bioluminescence
 set_io led_sat_red 39
 set_io led_sat_grn 40
 set_io led_sat_blu 41
 
-# --- 5. OLED Interface (PMOD C) ---
-set_io oled_scl 43
-set_io oled_sda 38
+# --- 4. THE SHORELINE (60-Degree Branching) ---
+# Logical 60-degree offsets for manifold expansion
+set_io main_flow_out 2
+set_io sub_flow_l     46
+set_io sub_flow_r     47
 
-# --- 6. Command & Control (UART) ---
+# --- 5. THE TUCK (Manual Sanity Override) ---
+# Mapped to the on-board button (Active Low)
+set_io manual_tuck 10
 
-set_io uart_phys_tx 10
-set_io uart_phys_rx 9
+# --- 6. COMMAND & CONTROL (Vocal Cords) ---
+# UART TX remains active for telemetry
+set_io uart_phys_tx 14
 
-# --- 5. Metabolic Sense (Sensing) ---
-set_io adc_phys_in 13
-set_io bias_phys_in 12
+# --- 7. TEMPORAL ANCHOR (Power-On Reset) ---
+set_io rst_phys_n 18
