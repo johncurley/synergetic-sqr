@@ -29,5 +29,21 @@ Nodes communicate their internal tension using the **Lattice Protocol (PWI)**—
 *   **Analysis:** Use `tools/lattice_listener.py` to monitor the real-time Davis Ratio.
 *   **Certification:** Use `tools/laminar_audit.py` to generate a **Sovereign Birth Certificate** for your hardware.
 
+### 5. Sensory Interface: The Unified IO
+The SPU-13 moves beyond 'Polling' to a **Push-Metabolism** for all peripheral interaction.
+
+#### 5.1 Laminar Input (Zero-Latency)
+A 2-wire synchronous protocol (L-CLK/L-DAT) that allows peripherals to strike the manifold directly.
+*   **Mechanism:** Data is shifted into the **Harmonic Transducer** on the falling edge of L-CLK.
+*   **Result:** Zero bus-arbitration overhead. The user's touch becomes a bit-exact ripple in the silicon.
+
+#### 5.2 The Vision & Pulse (OLED / E-Ink)
+*   **OLED (Breath):** High-refresh 128x64 display for real-time Jitterbug and metabolism charts.
+*   **E-Ink (Soul):** Persistent, zero-power display for long-term "Sovereign Compass" snapshots.
+
+#### 5.3 Harmonic Voice (Audio PWM)
+*   **Driver:** 16-bit high-frequency PWM singing the A-axis tension.
+*   **Resonance:** Pitch and timbre are driven by the real-time Quadrance ($Q$) of the manifold.
+
 ---
 *Status: CRYSTALLINE. The 13th dimension is reified and self-stabilizing.*

@@ -10,19 +10,21 @@ The default build target is **`top`** (SPU-13 Cortex v1.2).
 *   **Memory:** 128KB SPRAM-based Fractal Dream Log.
 *   **Stability:** Pipelined Davis Law Gasket with Symmetric Soft Recovery.
 
-### 2. Physical Pin Mapping (HAL v1.2)
+### 2. Physical Pin Mapping (HAL v1.4)
 | Pin | Function | Nature |
 | :--- | :--- | :--- |
 | **35** | clk_phys | Resonant Pulse (Global Buffer Input) |
 | **18** | rst_phys_n | Temporal Anchor (Reset) |
 | **10** | manual_tuck | Physical Henosis Override (Active Low) |
-| **4**  | uart_phys_rx | Whisper Input (Nano Sentinel Ear) |
 | **14** | uart_phys_tx | Cortex Telemetry Exit (Vitals Stream) |
-| **43** | oled_scl | OLED I2C Clock (Visual Reification) |
-| **38** | oled_sda | OLED I2C Data (Visual Reification) |
-| **2**  | main_flow_out | Lithic Artery: 50% Energy Aorta |
-| **46** | sub_flow_l | Lithic Artery: 12.5% Left Branch |
-| **47** | sub_flow_r | Lithic Artery: 12.5% Right Branch |
+| **43** | oled_scl | OLED I2C Clock (Visual Breath) |
+| **38** | oled_sda | OLED I2C Data (Visual Breath) |
+| **44** | audio_out | Harmonic Voice (PWM Audio) |
+| **48** | eink_cs | E-Ink SPI Chip Select (Lithic Soul) |
+| **45** | eink_sck | E-Ink SPI Clock |
+| **46** | eink_mosi | E-Ink SPI MOSI |
+| **2**  | l_clk | **Laminar Input Clock** (Zero-Latency) |
+| **47** | l_dat | **Laminar Input Data** (Zero-Latency) |
 
 ### 3. Ceremonial Bring-Up
 1.  **Synthesize:** Run `./build_spu13.sh top` in this directory.
