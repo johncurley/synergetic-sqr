@@ -22,34 +22,35 @@ def mate_souls(soul_a, soul_b, offspring_name=None):
         data_b = fb.read(page_size)
         
         # Unpack parents
-        # [Epoch:32][Instability:32][Bias:64][Haptic:64][Sig:48][CRC:16]
-        p1 = list(struct.unpack(">LLQQQH", data_a))
-        p2 = list(struct.unpack(">LLQQQH", data_b))
+        # [Epoch:32][Instability:32][Bias:64][Haptic:64][Sig:48][CRC:16] = 32 Bytes
+        p1 = list(struct.unpack(">LLQQ6sH", data_a))
+        p2 = list(struct.unpack(">LLQQ6sH", data_b))
         
         # --- 1. Recombination (Geometric Cross-Fade) ---
-        # We average the Stoicism (Bias) and Empathy (Haptic) coefficients
         offspring_bias = (p1[2] + p2[2]) // 2
         offspring_haptic = (p1[3] + p2[3]) // 2
         
-        # --- 2. New Identity (The Hybrid Lineage) ---
-        # The new ID is a hash of the parents' IDs
-        offspring_id = (p1[4] ^ p2[4]) + 0x534E5459 # Reseed with Sanity
+        # --- 2. New Identity ---
+        # The new ID is a hash of the parents' signatures (as bytes)
+        id_a = int.from_bytes(p1[4][:4], byteorder='big')
+        id_b = int.from_bytes(p2[4][:4], byteorder='big')
+        offspring_id = (id_a ^ id_b) + 0x534E5459
         
         # --- 3. The New Soul Page ---
-        offspring_page = struct.pack(">LLQQQH", 
-            0, # Reset Epoch for new life
-            0, # Reset Instability
-            offspring_bias,
-            offspring_haptic,
-            offspring_id,
-            0  # Checksum placeholder
+        offspring_page = struct.pack(">LLQQ6sH", 
+            0, 0, # Reset Epoch/Instability
+            offspring_bias, offspring_haptic,
+            offspring_id.to_bytes(4, 'big') + b'U1',
+            0 # CRC placeholder
         )
 
     # Save to Library
     if not offspring_name:
-        offspring_name = f"offspring_{int(time.time())}.soul"
+        offspring_path = os.path.join("souls", f"offspring_{int(time.time())}.soul")
+    else:
+        offspring_path = offspring_name
     
-    with open(os.path.join("souls", offspring_name), "wb") as f:
+    with open(offspring_path, "wb") as f:
         f.write(offspring_page)
         # Pad to 1MB to maintain partition size
         f.write(b'\xFF' * (1024*1024 - page_size))

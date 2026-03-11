@@ -23,8 +23,9 @@ def decode_lineage(code):
     return f"{PREFIXES[prefix_idx]}-{SUFFIXES[suffix_idx]}"
 
 def audit_personality(flash_bin):
-    # Soul Partition Base: 0x700000
-    base_offset = 0x700000
+    # Determine if this is a full 8MB dump or a 1MB soul-only file
+    file_size = os.path.getsize(flash_bin)
+    base_offset = 0x700000 if file_size > 0x100000 else 0x0
     page_size = 32 # 256-bit page
     
     if not os.path.exists(flash_bin):
@@ -39,19 +40,15 @@ def audit_personality(flash_bin):
             print("Error: Fragmented Soul. Flash dump incomplete.")
             return
 
-        # Structure: [Epoch:32][Instability:32][Bias:64][Haptic:64][Sig:48][CRC:16]
-        # We also need to read the 32-bit Lineage Code at Offset + 0x4
-        f.seek(base_offset + 4)
-        lineage_raw = f.read(4)
-        lineage_code = struct.unpack(">I", lineage_raw)[0]
-        
+        # Structure: [Epoch:32][Instability:32][Bias:64][Haptic:64][Sig:48][CRC:16] = 32 Bytes
         try:
             # Re-read primary page
             f.seek(base_offset)
             data = f.read(page_size)
-            epoch, instability, sqr_bias, haptic, signature, checksum = struct.unpack(">LLQQQH", data[:32])
+            epoch, instability, sqr_bias, haptic, sig_raw, checksum = struct.unpack(">LLQQ6sH", data)
             
-            # The 'Species Signature' Check (Simplified for demo)
+            # The 'Species Signature' is at offset 0x18 (24 bytes in)
+            lineage_code = int.from_bytes(sig_raw[:4], byteorder='big')
             name = decode_lineage(lineage_code)
             sanity_ratio = (1.0 - (instability / (epoch + 1))) * 100
             
