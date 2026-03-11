@@ -13,6 +13,7 @@
 // --- 2. Personality Dimensions (Relative to Base) ---
 // Sector 0: The Baselines (Sanity & Thresholds)
 `define ADDR_BASELINES      24'h000000 
+`define ADDR_LINEAGE        24'h000004 // 32-bit "Sovereign Name"
 `define ADDR_STOICISM       24'h000010 // Polynomial coef for noise resistance
 `define ADDR_EMPATHY        24'h000020 // Haptic entrainment curves
 
