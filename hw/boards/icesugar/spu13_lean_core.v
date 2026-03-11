@@ -1,6 +1,6 @@
-// SPU-13 LEAN CORE (v1.8 Soul Integrated)
+// SPU-13 LEAN CORE (v1.9 Circadian Parity)
 // Target: Unified SPU-13 Fleet
-// Objective: Streamlined engine with Resonant Heart + Soul Metabolism.
+// Objective: Full feature parity with Resonant Pulse + Purification.
 
 `include "../../include/spu/spu13_pins.vh"
 `include "soul_map.vh"
@@ -14,12 +14,17 @@ module spu13_lean_core #(
     output wire `SPU_PIN_LED_G,
     output wire `SPU_PIN_LED_B,
     output wire `SPU_PIN_UART_TX,
+    input  wire `SPU_PIN_UART_RX,
     
-    // Physical SPI Flash Pins (The Soul)
+    // Physical SPI Flash Pins
     output wire flash_cs_n,
     output wire flash_sck,
     output wire flash_mosi,
-    input  wire flash_miso
+    input  wire flash_miso,
+    
+    // Sensory Outputs
+    output wire bio_pulse_out,
+    output wire audio_out
 );
 
     // --- 1. Manifold Signals ---
@@ -41,7 +46,24 @@ module spu13_lean_core #(
         .clk_resonant(clk_resonant)
     );
 
-    // --- 3. Soul Metabolism (The Personality) ---
+    // --- 3. Purification (Laminar Reset) ---
+    wire flush_active;
+    wire [15:0] seed_vector;
+    wire flush_trigger; // Triggered via UART or Button
+    spu_laminar_reset u_flush (
+        .clk(`SPU_PIN_CLK), .trigger(flush_trigger),
+        .flush_active(flush_active), .seed_vector(seed_vector),
+        .sane_ack()
+    );
+
+    // --- 4. Bio-Resonance ---
+    spu_bio_pulse #(.CLK_HZ(CLK_HZ)) u_bio (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .enable(1'b1), .intensity(8'h7F),
+        .pulse_out(bio_pulse_out)
+    );
+
+    // --- 5. Soul Metabolism ---
     wire flash_we;
     wire [23:0] flash_addr;
     wire [255:0] soul_page;
@@ -51,8 +73,8 @@ module spu13_lean_core #(
         .clk(`SPU_PIN_CLK), .reset(reset),
         .q_state(reg_curr[127:0]),
         .fault_pulse(fault_detected),
-        .is_idle(opcode == 3'b100), // LEAP/Idle trigger
-        .tuck_count(), .cycle_count(),
+        .is_idle(opcode == 3'b100),
+        .adaptive_tau_q(), .tuck_count(), .cycle_count(),
         .flash_we(flash_we), .flash_addr(flash_addr),
         .soul_page(soul_page), .flash_ready(flash_ready)
     );
@@ -65,21 +87,23 @@ module spu13_lean_core #(
         .spi_mosi(flash_mosi), .spi_miso(flash_miso)
     );
 
-    // --- 4. Instruction Sequencer (The Bloom) ---
+    // --- 6. Instruction Sequencer ---
     reg [7:0] instruction_rom [0:15];
     reg [3:0] pc;
     reg [23:0] step_cnt; 
     initial $readmemh("../../software/bloom.hex", instruction_rom);
 
     wire [7:0] current_instr = instruction_rom[pc];
-    assign opcode = current_instr[7:5];
+    assign opcode      = current_instr[7:5];
     assign prime_phase = current_instr[4:3];
-    assign sign_flip = current_instr[2];
+    assign sign_flip   = current_instr[2];
 
     always @(posedge `SPU_PIN_CLK or posedge reset) begin
         if (reset) begin
             pc <= 0; step_cnt <= 0;
             manifold_reg <= {192'b0, 64'h00000000_00010000};
+        end else if (flush_active) begin
+            manifold_reg <= {240'b0, seed_vector}; // Flush with seed
         end else begin
             if (clk_resonant && step_cnt[15:0] == 16'hFFFF) begin
                 step_cnt <= 0;
@@ -89,16 +113,15 @@ module spu13_lean_core #(
         end
     end
 
-    // --- 5. The Nano Core (ALU) ---
+    // --- 7. The Nano Core ---
     spu_nano_core u_core (
         .clk(`SPU_PIN_CLK), .reset(reset),
         .reg_curr({128'b0, reg_curr[127:0]}),
         .opcode(opcode), .prime_phase(prime_phase), .sign_flip(sign_flip),
         .reg_out(reg_next[127:0]), .fault_detected(fault_detected)
     );
-    assign reg_next[255:128] = 128'b0;
 
-    // --- 6. Aura Mapping ---
+    // --- 8. Aura Mapping ---
     assign `SPU_PIN_LED_R = fault_detected;
     assign `SPU_PIN_LED_G = !fault_detected;
     assign `SPU_PIN_LED_B = clk_resonant; 
