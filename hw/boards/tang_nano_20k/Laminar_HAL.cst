@@ -1,0 +1,12 @@
+IO_LOC "clk_phys" 4;
+IO_PORT "clk_phys" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "rst_phys_n" 88;
+IO_PORT "rst_phys_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "led_sat_red" 15;
+IO_PORT "led_sat_red" IO_TYPE=LVCMOS33;
+IO_LOC "led_sat_grn" 16;
+IO_PORT "led_sat_grn" IO_TYPE=LVCMOS33;
+IO_LOC "led_sat_blu" 17;
+IO_PORT "led_sat_blu" IO_TYPE=LVCMOS33;
+IO_LOC "uart_phys_tx" 69;
+IO_PORT "uart_phys_tx" IO_TYPE=LVCMOS33;

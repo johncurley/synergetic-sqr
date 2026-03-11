@@ -16,7 +16,7 @@ echo "[PASS] All thoughts reified into HEX."
 
 # 2. SQR Determinism Test (The Oath of Coherency)
 echo "[2/4] Verifying 60-degree Algebraic Determinism..."
-iverilog -o sqr_test tests/sqr_determinism_tb.v rtl/spu_sqr_rotor.v
+iverilog -o sqr_test tests/sqr_determinism_tb.v hw/core/spu_sqr_rotor.v
 vvp sqr_test | grep "SUCCESS: Bit-Perfect Recovery"
 rm sqr_test
 echo "[PASS] SQR Rotor is zero-drift."
@@ -30,10 +30,10 @@ python3 tools/laminar_audit.py audit_pass.csv
 rm audit_pass.csv
 echo "[PASS] Auditor is sane."
 
-# 3. Synthesis Parity Check
-echo "[3/3] Checking Synthesis Parity (iCeSugar)..."
+# 4. Synthesis Parity Check
+echo "[4/4] Checking Synthesis Parity (iCeSugar)..."
 # We check if we can still forge the core
-cd boards/icesugar
+cd hw/boards/icesugar
 ./build_spu13.sh > /dev/null 2>&1
 echo "[PASS] iCeSugar forge is active."
 

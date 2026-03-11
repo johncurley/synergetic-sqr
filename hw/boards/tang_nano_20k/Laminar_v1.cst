@@ -1,0 +1,22 @@
+# SPU-13 Physical Constraint File: Laminar v1
+# Target: Tang Nano 20k (Gowin GW2A-LV18PG256C8/I7)
+
+# Main Clock (27MHz)
+IO_LOC "clk" 4;
+IO_PORT "clk" PULL_MODE=UP IO_TYPE=LVCMOS33;
+
+# The Quadray Outputs (Header Pins)
+# Mapping ABCD to Pins 71, 72, 73, 74
+IO_LOC "leds[0]" 71; # Axis A
+IO_LOC "leds[1]" 72; # Axis B
+IO_LOC "leds[2]" 73; # Axis C
+IO_LOC "leds[3]" 74; # Axis D
+
+IO_PORT "leds[0]" IO_TYPE=LVCMOS33;
+IO_PORT "leds[1]" IO_TYPE=LVCMOS33;
+IO_PORT "leds[2]" IO_TYPE=LVCMOS33;
+IO_PORT "leds[3]" IO_TYPE=LVCMOS33;
+
+# The Reset Button (S1)
+IO_LOC "reset" 88;
+IO_PORT "reset" PULL_MODE=UP IO_TYPE=LVCMOS33;

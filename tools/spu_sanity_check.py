@@ -1,36 +1,38 @@
-# SPU-13 Repository Sanity Check (v3.4.9)
-# Objective: Confirm structural integrity before physical bring-up.
+#!/usr/bin/env python3
+# SPU-13 ZERO-TOLERANCE Integrity Audit (v1.1)
+# Objective: Guard the manifold against structural leaks.
 
 import os
 import sys
 
-CRITICAL_FILES = [
-    "boards/icesugar/spu13_golden_reification.v",
-    "rtl/spu_thalamus.v",
-    "rtl/spu_metabolic_sense.v",
-    "rtl/spu_bowman_sequencer.v",
-    "rtl/spu_harmonic_transducer.v",
-    "rtl/spu_lattice_13.v",
-    "rtl/spu_core.v",
-    "rtl/spu_ssd1306_driver.v",
-    "rtl/spu_oled_visualizer.v"
+MANIFEST = [
+    "hw/boards/icesugar/spu13_golden_reification.v",
+    "hw/core/spu_thalamus.v",
+    "hw/core/spu_metabolic_sense.v",
+    "hw/core/spu_bowman_sequencer.v",
+    "hw/core/spu_harmonic_transducer.v",
+    "hw/core/spu_lattice_13.v",
+    "hw/core/spu_core.v",
+    "hw/core/spu_ssd1306_driver.v",
+    "hw/core/spu_oled_visualizer.v"
 ]
 
-def check_integrity():
+def audit():
+    print("--- SPU-13 ZERO-TOLERANCE GUARD ---")
     print("--- SPU-13 Integrity Audit: Commencing ---")
-    missing = []
-    for f in CRITICAL_FILES:
-        if not os.path.exists(f):
-            missing.append(f)
-            print(f"[FAIL] Missing: {f}")
+    leaks = 0
+    for file in MANIFEST:
+        if os.path.exists(file):
+            print(f"[PASS] Reified: {file}")
         else:
-            print(f"[PASS] Reified: {f}")
+            print(f"[FAIL] Missing: {file}")
+            leaks += 1
             
-    if missing:
+    if leaks > 0:
         print("\nCRITICAL: Manifold is INCOMPLETE. Reification required.")
         sys.exit(1)
     else:
         print("\n--- Manifold is CRYSTALLINE. Path to First Light is CLEAR. ---")
 
 if __name__ == "__main__":
-    check_integrity()
+    audit()
