@@ -1,143 +1,148 @@
-# SPU-13 Bloom View UI (v3.3.96)
-# Real-time Isotropic Visualization: Harmonic Transduction Edition.
-# Implementation: Synchronized with Golden Emulator standards.
+# SPU-13 Bloom View UI (v4.1.0)
+# Real-time Isotropic Visualization: Sovereign Fleet Edition.
+# Objective: 1:1 Parity with Hardware (Davis Law & Fibonacci Heartbeat).
 
 import math
 import sys
 import time
-from spu13_emulator import GoldenSurd, ResonantMembrane
+import serial
+import pygame
 
-# --- DEPENDENCY AUDIT ---
-MISSING_DEPS = []
-try:
-    import pygame
-except ImportError:
-    MISSING_DEPS.append("pygame")
+# --- SOVEREIGN CONSTANTS ---
+PHI = (1 + math.sqrt(5)) / 2
+GOLDEN_ANGLE = 137.508 * (math.pi / 180.0) 
+LATTICE_STEP = 40
+WIDTH, HEIGHT = 900, 900
 
-try:
-    import serial
-    SERIAL_AVAILABLE = True
-except ImportError:
-    SERIAL_AVAILABLE = False
-    if "--port" in sys.argv:
-        MISSING_DEPS.append("pyserial")
+# --- COLOR PALETTE (Laminar) ---
+CYAN_LAMINAR = (0, 255, 255)
+VIOLET_TENSION = (138, 43, 226)
+RED_RECOVERY = (255, 0, 0)
+GREEN_SANITY = (0, 255, 127)
+DEEP_SPACE = (5, 5, 8)
 
-if MISSING_DEPS:
-    print("--- SPU-13 Dependency Audit ---")
-    print(f"CRITICAL: Missing Python libraries: {', '.join(MISSING_DEPS)}")
-    print(f"FIX: Run 'pip3 install {' '.join(MISSING_DEPS)}' to enable the visualizer.")
-    sys.exit(1)
-
-# --- CONFIGURATION ---
-SERIAL_PORT = None
-for i in range(len(sys.argv)):
-    if sys.argv[i] == "--port" and i + 1 < len(sys.argv):
-        SERIAL_PORT = sys.argv[i+1]
-
-BAUD_RATE = 115200
-PHI = 137.508 * (math.pi / 180.0) 
-CYAN_HARMONIC = (0, 204, 204)
-NEUTRAL_GRAY = (40, 40, 45)
-ZETA_BASE = 0.08
-LATTICE_LOCK = "--lattice-lock" in sys.argv or True
-
-# --- INITIALIZE UI ---
-pygame.init()
-WIDTH, HEIGHT = 800, 800
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("SPU-13 Isotropic Bloom [LOCKED]")
-clock = pygame.time.Clock()
-
-# --- RATIONAL DYNAMICS ---
-def rational_pulse(start_time):
-    elapsed_ms = int((time.time() - start_time) * 1000)
-    t = ((elapsed_ms % 1000) / 1000.0) * 2.0 - 1.0
-    return 1.0 - (t * t)
-
-def draw_ivm_grid(surface):
-    color = (30, 40, 50)
-    for i in range(-20, 20):
-        offset = i * 40
-        pygame.draw.line(surface, color, (0, HEIGHT//2 + offset), (WIDTH, HEIGHT//2 + offset - WIDTH*0.577))
-        pygame.draw.line(surface, color, (0, HEIGHT//2 + offset), (WIDTH, HEIGHT//2 + offset + WIDTH*0.577))
-
-class Node:
-    def __init__(self, index):
-        self.index = index
-        self.target_radius = 15 * math.sqrt(index)
-        self.current_radius = 0.0
-        self.intensity = 0.0
-
-    def update(self, surd_state, zeta):
-        # surd_state is a GoldenSurd object
-        self.current_radius += (self.target_radius - self.current_radius) * zeta
-        # Map surd component to intensity
-        self.intensity = min(1.0, abs(surd_state.a) / 65536.0)
-
-    def render(self, screen, pulse_val, glow_fade):
-        theta = self.index * PHI
-        forward_lean = self.intensity * pow(0.618, self.index % 13)
-        r_sync = self.current_radius * (1.0 + 0.05 * pulse_val)
+class IVM_Grid:
+    def __init__(self, surface):
+        self.surface = surface
         
-        x = (WIDTH // 2) + r_sync * math.cos(theta) * (1.0 + forward_lean)
-        y = (HEIGHT // 2) + r_sync * math.sin(theta) * (1.0 + forward_lean)
-        
-        if LATTICE_LOCK:
-            x = round(x / 20.0) * 20.0
-            y = round(y / 20.0) * 20.0
+    def draw(self):
+        color = (20, 25, 35)
+        # 60-degree Isotropic Lines
+        for i in range(-25, 25):
+            offset = i * LATTICE_STEP
+            # Axis 1 (0 deg)
+            pygame.draw.line(self.surface, color, (0, HEIGHT//2 + offset), (WIDTH, HEIGHT//2 + offset))
+            # Axis 2 (60 deg)
+            pygame.draw.line(self.surface, color, 
+                             (WIDTH//2 + offset, 0), 
+                             (WIDTH//2 + offset - HEIGHT*0.577, HEIGHT))
+            # Axis 3 (-60 deg)
+            pygame.draw.line(self.surface, color, 
+                             (WIDTH//2 + offset, 0), 
+                             (WIDTH//2 + offset + HEIGHT*0.577, HEIGHT))
 
-        c_val = [int(NEUTRAL_GRAY[i] + (CYAN_HARMONIC[i] - NEUTRAL_GRAY[i]) * glow_fade) for i in range(3)]
-        pygame.draw.circle(screen, tuple(c_val), (int(x), int(y)), 3)
+class BloomMandala:
+    def __init__(self):
+        self.nodes = []
+        for i in range(377): # Fibonacci Number of nodes
+            self.nodes.append({
+                'r': 15 * math.sqrt(i),
+                'theta': i * GOLDEN_ANGLE,
+                'pulse': 0.0
+            })
+        self.tension_history = []
+
+    def update(self, q_state, c_ratio, is_recovery):
+        # Update node intensity based on Quadrance (Tension)
+        intensity = min(1.0, 1.0 / (c_ratio + 0.001))
+        for i, node in enumerate(self.nodes):
+            node['pulse'] = math.sin(time.time() * 2 + i*0.1) * intensity
+        
+        self.tension_history.append(c_ratio)
+        if len(self.tension_history) > 100:
+            self.tension_history.pop(0)
+
+    def render(self, screen, heartbeat_alpha):
+        center = (WIDTH//2, HEIGHT//2)
+        
+        # 1. Draw Historical Nesting (The Dream Log)
+        if len(self.tension_history) > 2:
+            for i in range(len(self.tension_history)-1):
+                r1 = 50 + (1.0 / self.tension_history[i]) * 300
+                r2 = 50 + (1.0 / self.tension_history[i+1]) * 300
+                alpha = int((i / 100.0) * 100)
+                color = (alpha, alpha, alpha+50)
+                pygame.draw.circle(screen, color, center, int(r1), 1)
+
+        # 2. Draw Present Bloom (The Heartbeat)
+        for node in self.nodes:
+            # Nesting via Phi
+            r_phi = node['r'] * (1.0 + 0.05 * math.sin(time.time()*PHI))
+            x = center[0] + r_phi * math.cos(node['theta'])
+            y = center[1] + r_phi * math.sin(node['theta'])
+            
+            # Color shifts with Heartbeat and Sanity
+            glow = int(150 + 100 * node['pulse'])
+            color = (0, glow, glow) if heartbeat_alpha > 128 else (glow//2, 0, glow)
+            
+            pygame.draw.circle(screen, color, (int(x), int(y)), 2)
 
 def main():
-    print(f"--- SPU-13 Bloom Active (v3.3.96) [Lattice: {'LOCKED' if LATTICE_LOCK else 'FLUID'}] ---")
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("SPU-13 Isotropic Bloom v4.1 [REIFIED]")
+    clock = pygame.time.Clock()
     
+    grid = IVM_Grid(screen)
+    mandala = BloomMandala()
+    
+    # Serial Setup
     ser = None
-    if SERIAL_PORT:
+    port = sys.argv[sys.argv.index("--port") + 1] if "--port" in sys.argv else None
+    if port:
         try:
-            ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=0.1)
+            ser = serial.Serial(port, 115200, timeout=0.01)
         except Exception as e:
-            print(f"Serial Error: {e}")
-            return
+            print(f"Serial Warning: {e}")
 
-    nodes = [Node(i) for i in range(144)]
-    membrane = ResonantMembrane()
+    # Fibonacci Heartbeat Simulation (Local Sync)
+    phi_cnt = 0
+    phi_heartbeat = False
+
     running = True
-    start_time = time.time()
-
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: running = False
-            if event.type == pygame.KEYDOWN:
-                # Key strike translates to membrane excitation
-                membrane.strike(event.unicode if event.unicode else ' ')
 
-        # 1. Update State
+        # 1. Fibonacci Timing (The Pulse of Sanity)
+        phi_cnt = (phi_cnt + 1) % 34
+        phi_heartbeat = (phi_cnt == 8 or phi_cnt == 13 or phi_cnt == 21)
+        
+        # 2. Fetch Hardware Vitals
+        a_val, c_ratio, recovery = 0.0, 10.0, False
         if ser and ser.in_waiting >= 8:
-            # Full 64-bit frame from hardware
             frame_raw = ser.read(8)
             frame = int.from_bytes(frame_raw, byteorder='little')
-            # Extract state
-            payload = frame & 0xFFFFFFFF
-            # In a true sync, we'd map all 4 lanes
-            current_state = GoldenSurd(payload, 0, 0, 0)
-        else:
-            # Fallback to local membrane simulation
-            membrane.decay()
-            current_state = GoldenSurd(membrane.state[0], membrane.state[1], 
-                                       membrane.state[2], membrane.state[3])
+            recovery = (frame >> 32) & 0x1
+            a_raw = frame & 0xFFFFFFFF
+            a_val = a_raw / 65536.0
+            # Calculate local C-ratio from A-axis tension
+            k_val = abs(a_val)
+            c_ratio = 6.283 / (k_val + 0.001)
 
-        # 2. Render
-        pulse_val = rational_pulse(start_time)
-        screen.fill((5, 5, 5)) 
+        # 3. Update & Render
+        mandala.update(a_val, c_ratio, recovery)
         
-        if LATTICE_LOCK:
-            draw_ivm_grid(screen)
+        screen.fill(DEEP_SPACE)
+        grid.draw()
         
-        for node in nodes:
-            node.update(current_state, ZETA_BASE)
-            node.render(screen, pulse_val, 1.0)
+        alpha = 255 if phi_heartbeat else 100
+        mandala.render(screen, alpha)
         
+        # UI Overlays
+        if recovery:
+            pygame.draw.rect(screen, RED_RECOVERY, (0, 0, WIDTH, 5))
+            
         pygame.display.flip()
         clock.tick(60)
 
