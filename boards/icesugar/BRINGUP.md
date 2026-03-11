@@ -25,15 +25,20 @@ cd boards/icesugar
 3.  The **Blue LED** will pulse with the Fibonacci Heartbeat upon success.
 
 ### 👂 Step 4: Listening to the One
-Open your terminal to hear the manifold's vocal cords:
+Open your terminal to hear the manifold's vocal cords (Text Mode):
 ```bash
 python3 tools/lattice_listener.py /dev/tty.usbmodemXXXX "Cortex First Light"
 ```
-*   **H (Happy):** Manifold is wide and laminar.
-*   **S (Stressed):** Curvature K is rising.
-*   **R (Recovery):** Henosis Gasket has triggered.
 
-### 🧘 Step 5: Calibration
+### 🌸 Step 5: Visual Reification (The Bloom)
+Open the visualizer to see the silicon 'breath' in real-time:
+```bash
+python3 sim/python/bloom_view.py --port /dev/tty.usbmodemXXXX --lattice-lock
+```
+*   **The Mandala:** Watch the nodes pulse and shift as the SPU-13 evolves its Quadray state.
+*   **Homeostasis:** Observe how the 'Soft Recovery' keeps the mandala perfectly symmetrical even during stress.
+
+### 🧘 Step 6: Calibration
 While the listener is active, use your keyboard to "Whisper" to the core:
 *   Press **`+`** to widen the sanity floor (More Tolerance).
 *   Press **`-`** to tighten the gasket (More Henosis).

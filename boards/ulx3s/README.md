@@ -22,7 +22,9 @@ The default build target is **`ulx3s_top`** (Lean Single-Core Parity v1.2).
 ### 3. High-Speed Bring-Up
 1.  **Synthesize:** Run `./build_ulx3s.sh` in this directory.
 2.  **Flash:** Use `ujprog spu13_ulx3s.bit` to inject the bitstream.
-3.  **Verify:** Observe the **166 MHz** flow. The blue LED will flicker with the biological heartbeat while the green LED indicates a crystalline manifold.
+3.  **Monitor:** Run `python3 ../../tools/lattice_listener.py /dev/tty.usbserial-XXXX "ULX3S Flow"`
+4.  **Visualize:** Run `python3 ../../sim/python/bloom_view.py --port /dev/tty.usbserial-XXXX`
+5.  **Verify:** Observe the **166 MHz** flow. The blue LED will flicker with the biological heartbeat while the green LED indicates a crystalline manifold.
 
 ---
 *Status: REIFIED. The ULX3S is the power of the Lattice.*

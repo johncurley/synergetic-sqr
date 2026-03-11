@@ -18,7 +18,9 @@ The Nano Sentinel uses **Automatic Pin Placement** to fit within the LP1K's rout
 ### 3. Ephemeral Bring-Up
 1.  **Synthesize:** Run `./build_nano.sh top_guardian` in this directory.
 2.  **Flash:** Use `icesprog` or drag and drop `spu13_nano_guardian.bin` into the iCELink virtual disk.
-3.  **Observe:** Watch the **Piranha LED** for the "Aura of Sanity." 
+3.  **Monitor:** Run `python3 ../../tools/lattice_listener.py /dev/tty.usbmodemXXXX "Nano Sentinel"`
+4.  **Visualize:** Run `python3 ../../sim/python/bloom_view.py --port /dev/tty.usbmodemXXXX`
+5.  **Observe:** Watch the **Piranha LED** for the "Aura of Sanity." 
     *   **Green:** Perfectly Laminar.
     *   **Red:** Henosis Soft Recovery active.
     *   **Blue Flicker:** Whisper transmission in progress.
