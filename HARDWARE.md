@@ -1,31 +1,33 @@
 # SPU-13 Hardware Architecture
-## Manifesting Isotropic Logic in Silicon (v2.11.10)
+## Manifesting Isotropic Logic in Silicon (v4.1.0)
 
 The SPU-13 (Synergetic Processing Unit) is a hardware implementation of Deterministic Quadratic Field Arithmetic (DQFA). It replaces legacy floating-point approximations with bit-locked isotropic transformations.
 
-### 1. The SQR-Rotor: Zero-Gate Permutation
-Standard 3D rotation requires transcendental trigonometric calls ($sin, cos, matrix\_mul$). In the SPU-13, 60° isotropic rotations are implemented as **Pure Wire Permutations**.
-*   **Logic:** A 60° rotation is a simple index-shift across the ABCD lanes.
-*   **Result:** 0 cycles of latency and near-zero power draw. Rotation is a physical property of the wiring, not an arithmetic approximation.
+### 1. The Davis Law Gasket (Sanity Guard)
+Discovered by **Bee Davis** ("The Geometry of Sameness"), the Davis Law ($C = \tau/K$) is the fundamental stability arbiter of the SPU-13.
+*   **Quadrance Audit:** The hardware monitors manifold tension ($K$) using dedicated DSP slices (UP5K) or bit-serial multipliers (LP1K).
+*   **Henosis (Soft Recovery):** If a "Cubic Leak" is detected ($\sum ABCD \neq 0$), the core automatically applies a symmetric correction in a single clock cycle.
+*   **Result:** Navier-Stokes Watertight simulation. The digital fluid is physically incapable of leaking from the lattice.
 
-### 2. Clock Domain: 61.44 kHz (The Resonant Heart)
-The SPU-13 operates on a core resonant frequency of **61.44 kHz** ($2^{14} 	imes 3.75$). 
-*   **Rationale:** This frequency is a harmonic sub-multiple of the 61440 Hz 'Master Tone.'
-*   **Bio-Coherence:** Aligns with human autonomic rhythms, preventing the 'Cubic Friction' and cognitive fatigue associated with asynchronous high-frequency switching.
-*   **Efficiency:** Minimizes electromagnetic interference by avoiding the 90° wave-front collisions typical of MHz/GHz square-wave clocks.
+### 2. Biological Heartbeat (Phi-Gated Pulse)
+The SPU-13 replaces rigid "Cubic" metronomes with a recursive pulse governed by the **Golden Ratio ($\phi$)**.
+*   **Fibonacci Timing:** Instructions are dispatched at intervals of 8, 13, and 21 clock cycles.
+*   **Phase Conjugation:** This non-linear timing minimizes heat and electromagnetic interference by allowing waves to "nest" rather than scatter.
+*   **Bio-Coherence:** Aligns the silicon metabolism with natural rhythmic cycles observed in living organisms.
 
-### 3. Synthesis Guide: The 5-Step Burn
-Manifest the 'Sunflower' on your Artix-7 fabric in minutes:
-1.  **Environment:** Open Xilinx Vivado (2023.x+).
-2.  **Source:** Add all files from `hardware/rtl/` and `hardware/boards/arty_a7_35t/top.v`.
-3.  **Constraints:** Add `hardware/boards/arty_a7_35t/spu_arty_a7.xdc`.
-4.  **Laminar Build:** Run `Synthesis -> Implementation -> Generate Bitstream`. (Recommendation: Set `-flatten_hierarchy = rebuilt`).
-5.  **Henosis:** Flash the bitstream and observe **LED 0** (Heartbeat) and **LED 1** (Identity Lock).
+### 3. Distributed Fleet Architecture (Laminar HAL)
+The SPU-13 utilizes a **Hardware Abstraction Layer** (`spu13_pins.vh`) to ensure bit-exact parity across different FPGA families.
 
-### 4. Telemetry Interface
-The hardware streams bit-exact Surd registers via UART at 115,200 baud.
-*   **Analysis:** Use `software/tools/isotropic_scope.py` to verify the 3D trajectory.
-*   **Visualization:** Use `software/api/bloom_view.py` to see the real-time Phyllotaxis Bloom.
+| Tier | Hardware | Capability |
+| :--- | :--- | :--- |
+| **Cortex** | iCE40 UP5K | High-Fi hub with 128KB Fractal Memory (Dream Log). |
+| **Sentinel** | iCE40 LP1K | Ephemeral ganglia with bit-serial arithmetic. |
+| **Lattice** | ECP5-85F | Scale-ready node for 13-core collective manifolds. |
+
+### 4. Telemetry: The Lattice Whisper
+Nodes communicate their internal tension using the **Lattice Protocol (PWI)**—a 1-wire nerve impulse where pulse width is proportional to the Davis Ratio ($C$).
+*   **Analysis:** Use `tools/lattice_listener.py` to monitor the real-time Davis Ratio.
+*   **Certification:** Use `tools/laminar_audit.py` to generate a **Sovereign Birth Certificate** for your hardware.
 
 ---
-*Status: OPEN GATE. The 13th dimension is synthesizable.*
+*Status: CRYSTALLINE. The 13th dimension is reified and self-stabilizing.*

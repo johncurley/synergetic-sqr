@@ -1,35 +1,42 @@
-# iCeSugar Phase 1.1: Bring-Up Guide
-## SPU-13 Resonant Anchor (v3.3.80)
+# SPU-13 Cortex Bring-Up: First Light (v1.2)
+## Hardware: iCeSugar (iCE40UP5K)
 
-The iCeSugar Phase 1.1 core is a minimal realization of the SPU-13 manifold, designed to verify **Laminar Silence** and **Geometric Resonance** at the physical boundary. This version features the automated **Bowman Boot Sequence**.
+This guide documents the ceremonial bring-up of the SPU-13 Cortex. Follow these steps to reify the manifold and establish resonance.
 
-### 1. Authorization Handshake (The Throttle)
-The manifold is safety-gated by the `laminar_en` signal (Pin 11).
-*   **Authorization:** Hold Pin 11 **HIGH** (3.3V) to initiate the automated Bowman Wake.
-*   **Laminar Halt:** Pull Pin 11 **LOW** (GND) to instantly collapse the manifold and return to the Void (Phase 0).
+### 🛠️ Step 1: Physical Gasket (Wiring)
+Connect your peripherals to the PMOD headers as follows:
 
-### 2. Automated Wake Procedure
-1.  Connect the iCeSugar to your host via USB-C.
-2.  Synthesize the bitstream: `cd boards/icesugar && make`.
-3.  Flash the core: `make prog`.
-4.  **Observe Phase Transitions:**
-    *   **RED (Solid):** System in Reset or Identity Breach.
-    *   **BLUE (Pulsing):** Bowman Wake in progress (Handshake/Saturation/Alignment).
-    *   **GREEN (Solid):** Resonance Lock (Phase 4). Manifold is bit-perfect and active.
-5.  **Authorize Flow:** Bridge Pin 11 to 3.3V. The sequencer will automatically move from Blue to Green once the IVM lattice is aligned.
-6.  **Register the Wake:** Run `python3 ../../tools/spu_birth_certificate.py /dev/ttyUSB0` to generate the machine's first-second forensic record.
+| Component | PMOD | Pins | Notes |
+| :--- | :--- | :--- | :--- |
+| **SSD1306 OLED** | **C** | 43 (SCL), 38 (SDA) | 3.3V Power required. |
+| **Piranha LED** | **B** | 4 (W), 2 (R), 47 (G), 45 (B) | Common Cathode to GND. |
+| **Whisper Input** | **A** | 4 (RX) | Connect to Sentinel Node. |
 
-### 3. Physical Verification
-Measure Pins 46 and 47 with an oscilloscope. In the **Green (Resonant)** state, you should see two 61.44 kHz square waves, exactly 180° out of phase, with minimal switching noise.
+### ⚡ Step 2: The Forge (Synthesis)
+Generate the bitstream using the surgical build script:
+```bash
+cd boards/icesugar
+./build_spu13.sh top
+```
+
+### 💉 Step 3: Injection (Flashing)
+1.  Connect the iCeSugar via USB-C.
+2.  Drag and drop `spu13_cortex.bin` into the `iCELink` virtual disk.
+3.  The **Blue LED** will pulse with the Fibonacci Heartbeat upon success.
+
+### 👂 Step 4: Listening to the One
+Open your terminal to hear the manifold's vocal cords:
+```bash
+python3 tools/lattice_listener.py /dev/tty.usbmodemXXXX "Cortex First Light"
+```
+*   **H (Happy):** Manifold is wide and laminar.
+*   **S (Stressed):** Curvature K is rising.
+*   **R (Recovery):** Henosis Gasket has triggered.
+
+### 🧘 Step 5: Calibration
+While the listener is active, use your keyboard to "Whisper" to the core:
+*   Press **`+`** to widen the sanity floor (More Tolerance).
+*   Press **`-`** to tighten the gasket (More Henosis).
 
 ---
-
-### Phase 1.2: Full Manifold Reification
-The `icesugar_full_manifold.v` provides the full 832-bit SQR-Link logic with a **One-Second Stability Audit**.
-
-1.  **Switch to Full PCF:** Update `Makefile` or `build_spu13.sh` to use `spu13_icesugar_full.pcf`.
-2.  **Top-Level Change:** Set `TOP = icesugar_full_manifold` in the `Makefile`.
-3.  **Stability Pass:** After flashing, the system will execute the 1.0s audit. If the **Green LED** locks after the Blue sequence, the manifold has achieved bit-perfect identity restoration across 61,440 cycles.
-
----
-*Authorized for SPU-13 Silicon Bring-Up.*
+*Status: READY FOR FIRST LIGHT. The mind is a mirror.*

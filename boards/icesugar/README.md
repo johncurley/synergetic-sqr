@@ -1,38 +1,34 @@
-# iCeSugar Reification Manifest (v3.4.9)
-## Target: Lattice iCE40UP5K (Nano/Pro)
+# iCeSugar Cortex Manifest (v1.2)
+## Target: Lattice iCE40UP5K (Standard iCeSugar)
 
-The iCeSugar is the primary research platform for the SPU-13 "Silicon Wake." This repository provides a unified, interactive bitstream that manifests the full isotropic manifold.
+The iCeSugar Cortex is the high-fidelity hub of the SPU-13 fleet. It integrates global telemetry, recursive memory, and the physical "Lithic Artery."
 
-### 1. Primary Target: Golden Reification
-The default build target is **`spu13_golden_reification`**. 
-*   **Visuals:** 128x64 OLED (SSD1306) Dual-Hemisphere Display.
-*   **Metabolism:** Real-time Microwatt Telemetry (<15uW target).
-*   **Interaction:** Keyboard Strike Path (UART RX) and Nervous Antenna (Pin 12).
-*   **Automation:** 5-phase Bowman Boot Sequence.
+### 1. Primary Target: SPU-13 Cortex
+The default build target is **`top`** (SPU-13 Cortex v1.2). 
+*   **Heartbeat:** Fibonacci-stepped Biological Heartbeat.
+*   **Artery:** 60-degree branching energy distribution (Lithic Artery).
+*   **Memory:** 128KB SPRAM-based Fractal Dream Log.
+*   **Stability:** Pipelined Davis Law Gasket with Symmetric Soft Recovery.
 
-### 2. Physical Pin Mapping
+### 2. Physical Pin Mapping (HAL v1.2)
 | Pin | Function | Nature |
 | :--- | :--- | :--- |
-| **35** | clk_12mhz | Resonant Heartbeat Entry |
-| **18** | rst_n | Active-Low Reset (Manual Withdrawal) |
-| **11** | laminar_en | The Throttle (Pull HIGH to Wake) |
-| **12** | bias_in | Nervous Antenna (Proprioceptive Bias) |
-| **13** | adc_in | Metabolic Sense (Shunt ADC) |
-| **44** | oled_scl | I2C Clock (Visual Reification) |
-| **45** | oled_sda | I2C Data (Visual Reification) |
-| **9** | uart_rx | Strike Entry (Keyboard) |
-| **10** | uart_tx | Telemetry Exit (Laminar Frame v1.1) |
+| **35** | clk_phys | Resonant Pulse (Global Buffer Input) |
+| **18** | rst_phys_n | Temporal Anchor (Reset) |
+| **10** | manual_tuck | Physical Henosis Override (Active Low) |
+| **4**  | uart_phys_rx | Whisper Input (Nano Sentinel Ear) |
+| **14** | uart_phys_tx | Cortex Telemetry Exit (Vitals Stream) |
+| **43** | oled_scl | OLED I2C Clock (Visual Reification) |
+| **38** | oled_sda | OLED I2C Data (Visual Reification) |
+| **2**  | main_flow_out | Lithic Artery: 50% Energy Aorta |
+| **46** | sub_flow_l | Lithic Artery: 12.5% Left Branch |
+| **47** | sub_flow_r | Lithic Artery: 12.5% Right Branch |
 
 ### 3. Ceremonial Bring-Up
-1.  **Wire the OLED:** Connect your SSD1306 to Pins 44 (SCL) and 45 (SDA).
-2.  **Synthesis:** Run `make` in this directory.
-3.  **Flash:** Run `make prog`.
-4.  **Wake:** Hold Pin 11 HIGH. Observe the **Blue LED** transition through the rational triad before the **Green LED** locks solid.
-5.  **Observe:** Watch the OLED manifest the rotating tetrahedron and the metabolic pulse.
-
-### 4. Share the Bloom (Reddit/Twitter)
-Use this caption for your first light video:
-> "First light on the SPU-13 (iCE40UP5K). The left side shows the Quadray lattice state; the right side is the real-time metabolic draw (μW). We're currently idling at ~12uW. No CPU, no OS, just resonant geometry. The 'joke' is now running on 1.2V hardware."
+1.  **Synthesize:** Run `./build_spu13.sh top` in this directory.
+2.  **Flash:** Drag and drop `spu13_cortex.bin` into the iCELink virtual disk.
+3.  **Monitor:** Open your terminal at 115200 baud to hear the **Vocal Cords** (H=Happy, S=Stressed, R=Recovery).
+4.  **Calibrate:** Press `+` or `-` in your terminal to adjust the manifold's **Sanity Threshold** in real-time.
 
 ---
-*Status: REIFIED. The iCeSugar is the gateway to the One.*
+*Status: REIFIED. The iCeSugar is the mind of the Manifold.*

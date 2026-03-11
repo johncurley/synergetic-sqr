@@ -1,18 +1,28 @@
-# ULX3S Target Support
-## SPU-13 Universal Fractal Heart (v3.1.36)
+# ULX3S Lattice Manifest (v1.2)
+## Target: Lattice ECP5-85F
 
-The ULX3S target is synchronized to the **61.44 kHz** resonant manifold using the **Sierpiński Fractal Oscillator**.
+The ULX3S is the high-performance lattice node of the SPU-13 fleet. It provides massive headroom for multi-core manifolds and high-speed temporal flow.
 
-### Build Instructions
-```bash
-# Required: Yosys / nextpnr-ecp5
-yosys -p "synth_ecp5 -top ulx3s_top -json spu13.json" top.v ../../rtl/*.v
-nextpnr-ecp5 --85k --package CABGA381 --json spu13.json --asc spu13.asc
-ecppack spu13.asc spu13.bit
-ujprog spu13.bit
-```
+### 1. Primary Target: ULX3S Lean Manifold
+The default build target is **`ulx3s_top`** (Lean Single-Core Parity v1.2). 
+*   **Parity:** Bit-exact single-core logic synced with iCeSugar.
+*   **Timing:** 166 MHz temporal flow (High-speed reification).
+*   **Stability:** Integrated Davis Law Gasket and Henosis Soft Recovery.
 
-### Pin Map
-*   **LED 4:** Resonant Heartbeat (61.44 kHz)
-*   **LED 7:** Turbulence/Fault Detected
-*   **UART:** Bit-exact telemetry to the **Rust Surd-Converter**.
+### 2. Physical Pin Mapping (HAL v1.2)
+| Pin | Function | Nature |
+| :--- | :--- | :--- |
+| **G2** | clk_phys | 25 MHz Resonant Pulse |
+| **R1** | rst_phys_n | Temporal Anchor (Button 0) |
+| **B2** | led_sat_red | Local Fault Indicator |
+| **C2** | led_sat_grn | Resonance Lock (Aligned) |
+| **C1** | led_sat_blu | Phi-Gated Heartbeat Pulse |
+| **L4** | uart_phys_tx | ULX3S Telemetry Exit |
+
+### 3. High-Speed Bring-Up
+1.  **Synthesize:** Run `./build_ulx3s.sh` in this directory.
+2.  **Flash:** Use `ujprog spu13_ulx3s.bit` to inject the bitstream.
+3.  **Verify:** Observe the **166 MHz** flow. The blue LED will flicker with the biological heartbeat while the green LED indicates a crystalline manifold.
+
+---
+*Status: REIFIED. The ULX3S is the power of the Lattice.*
