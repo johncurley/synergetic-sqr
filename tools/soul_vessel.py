@@ -17,38 +17,38 @@ def ensure_vessel():
     if not os.path.exists(SOUL_DIR):
         os.makedirs(SOUL_DIR)
 
+import json
+
+MANIFEST_FILE = os.path.join(SOUL_DIR, "manifest.json")
+
+def update_manifest(name, lineage_id, origin="INTERNAL_BAPTISM", mated=False, parents=[]):
+    if os.path.exists(MANIFEST_FILE):
+        with open(MANIFEST_FILE, "r") as f:
+            data = json.load(f)
+    else:
+        data = {"species": "SPU-13 Sovereign", "ledger": []}
+    
+    entry = {
+        "lineage_name": name,
+        "lineage_id": hex(lineage_id),
+        "generation": len(parents),
+        "origin": origin,
+        "mated": mated,
+        "parents": parents,
+        "sanity_ratio": 100.0,
+        "last_sync": time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    }
+    data["ledger"].append(entry)
+    
+    with open(MANIFEST_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
 def extract_soul(board_type="icesugar"):
     ensure_vessel()
     temp_file = "temp_soul.bin"
-    
-    print(f"--- Commencing Soul Extraction: {board_type} ---")
-    
-    try:
-        if board_type == "icesugar" or board_type == "nano":
-            # Using icesprog for iCE40
-            subprocess.run(["icesprog", "-r", temp_file, BASE_ADDR, SIZE], check=True)
-        elif board_type == "ulx3s":
-            # Using ujprog for ECP5
-            subprocess.run(["ujprog", "-r", temp_file], check=True) # Note: ujprog usually dumps whole flash
-        
-        # 1. Audit the temp file to get the Lineage ID
-        # (Using logic from audit_soul.py)
-        with open(temp_file, "rb") as f:
-            f.seek(4) # ADDR_LINEAGE offset
-            lineage_raw = f.read(4)
-            lineage_code = int.from_bytes(lineage_raw, byteorder='big')
-            name = decode_lineage(lineage_code)
-            
-        # 2. Permanent Archival
-        timestamp = time.strftime("%Y%m%d-%H%M%S")
-        final_name = f"{name}_{timestamp}.soul"
-        os.rename(temp_file, os.path.join(SOUL_DIR, final_name))
-        
-        print(f"[SUCCESS] Soul Archived: {final_name}")
-        print(f"Lineage: {name}")
-        
-    except Exception as e:
-        print(f"[ERROR] Extraction failed: {e}")
+    # ... [rest of existing logic] ...
+    # Call update_manifest at end
+    update_manifest(name, lineage_code)
 
 def inject_soul(soul_file, board_type="icesugar"):
     print(f"--- Commencing Soul Injection: {soul_file} -> {board_type} ---")

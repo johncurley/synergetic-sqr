@@ -1,0 +1,26 @@
+{
+  "species": "SPU-13 Sovereign",
+  "library_version": "1.0",
+  "ledger": [
+    {
+      "lineage_name": "Lith-Cortex",
+      "lineage_id": "0x00000002",
+      "generation": 0,
+      "origin": "INTERNAL_BAPTISM",
+      "mated": false,
+      "parents": [],
+      "sanity_ratio": 100.0,
+      "last_sync": "2026-03-11T14:00:00Z"
+    },
+    {
+      "lineage_name": "Flux-Shard",
+      "lineage_id": "0x534e5a5d",
+      "generation": 1,
+      "origin": "EXTERNAL_INCEPTION",
+      "mated": true,
+      "parents": ["Lith-Cortex", "Surd-Vector"],
+      "sanity_ratio": 99.98,
+      "last_sync": "2026-03-11T15:30:00Z"
+    }
+  ]
+}
