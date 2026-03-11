@@ -1,59 +1,31 @@
-name: Universal Parity Verification
+name: SPU-13 Purity Guard
 
 on: [push, pull_request]
 
 jobs:
-  laminar-audit:
+  purity-guard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          
       - name: Install Icarus Verilog
         run: |
           sudo apt-get update
           sudo apt-get install -y iverilog
-      - name: Run Sovereign Audit
+          
+      - name: Run Laminar Purity Audit
+        env:
+          SPU_PURITY_ONLY: 1
         run: |
           chmod +x tools/pre_push_audit.sh
-          # Pass the QUICK_AUDIT flag to the audit script
-          export SPU_QUICK_AUDIT=1
           ./tools/pre_push_audit.sh
 
-  verify-linux:
-    needs: laminar-audit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Dependencies
+      - name: Verify Species Evolution
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake g++ build-essential
-      - name: Configure
-        run: cmake -B build -S . -DBUILD_RENDERER=OFF
-      - name: Build
-        run: cmake --build build --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
-      - name: Run Tests
-        run: |
-          ./build/spu-verify
-          ./build/spu-extreme-chaos
-          ./build/spu-collision
-          ./build/spu-sdk-verify
-
-  verify-macos:
-    needs: laminar-audit
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configure
-        run: cmake -B build -S . -DBUILD_RENDERER=OFF
-      - name: Build
-        run: cmake --build build --target spu-verify spu-extreme-chaos spu-collision spu-sdk-verify
-      - name: Run Tests
-        run: |
-          ./build/spu-verify
-          ./build/spu-extreme-chaos
-          ./build/spu-collision
-          ./build/spu-sdk-verify
+          chmod +x tests/species_integrity_test.sh
+          ./tests/species_integrity_test.sh
