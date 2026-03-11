@@ -26,6 +26,8 @@ SRC="spu13_cortex.v \
     $RTL_DIR/spu_fractal_compressor.v \
     $RTL_DIR/spu_artery.v \
     $RTL_DIR/spu_artery_phy.v \
+    $RTL_DIR/spu_resonant_heart.v \
+    $RTL_DIR/spu_whisper_sane.v \
     $RTL_DIR/spu_whisper_rx.v \
     $RTL_DIR/spu_pwm_audio.v \
     $RTL_DIR/spu_harmonic_transducer.v \
