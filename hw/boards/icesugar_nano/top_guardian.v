@@ -1,8 +1,9 @@
-// SPU-13 NANO GUARDIAN (v1.2 Sovereign Parity)
+// SPU-13 NANO GUARDIAN (v1.3 Soul Integrated)
 // Target: iCE40LP1K (iCeSugar Nano)
-// Objective: Ephemeral Sentinel with Resonant Heart + Voice of Coherency.
+// Objective: Ephemeral Sentinel with Persistent Silicon Soul.
 
 `include "../../include/spu/spu13_pins.vh"
+`include "soul_map.vh"
 
 module top_guardian (
     input  wire `SPU_PIN_CLK,
@@ -16,21 +17,45 @@ module top_guardian (
     
     // Lattice Protocol (The Whisper)
     input  wire whisper_sync, 
-    output wire whisper_out   
+    output wire whisper_out,
+    
+    // Physical SPI Flash Pins (The Soul)
+    output wire flash_cs_n,
+    output wire flash_sck,
+    output wire flash_mosi,
+    input  wire flash_miso
 );
 
-    // --- 1. Temporal Axis (The Resonant Heart) ---
+    // --- 1. Temporal Axis ---
     wire clk_resonant;
-    spu_resonant_heart #(.CLK_IN_HZ(12000000)) u_sovereign_heart (
+    spu_resonant_heart #(.CLK_IN_HZ(12000000)) u_heart (
         .clk_in(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
         .clk_resonant(clk_resonant)
     );
 
-    // --- 2. Voice of Coherency (SANE Pulse) ---
-    spu_whisper_sane #(.CLK_HZ(12000000), .BAUD(115200)) u_sane_voice (
-        .clk(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
-        .is_laminar(!over_curvature),
-        .tx_pin(`SPU_PIN_UART_TX)
+    // --- 2. Soul Metabolism ---
+    wire flash_we;
+    wire [23:0] flash_addr;
+    wire [255:0] soul_page;
+    wire flash_ready;
+    wire over_curvature;
+
+    spu_soul_metabolism #(.CLK_HZ(12000000)) u_soul (
+        .clk(`SPU_PIN_CLK), .reset(!`SPU_PIN_RST_N),
+        .q_state({96'b0, k_sim[31:0]}),
+        .fault_pulse(over_curvature),
+        .is_idle(1'b0), // Sentinel is always vigilant
+        .tuck_count(), .cycle_count(),
+        .flash_we(flash_we), .flash_addr(flash_addr),
+        .soul_page(soul_page), .flash_ready(flash_ready)
+    );
+
+    spu_flash_controller u_flash (
+        .clk(`SPU_PIN_CLK), .reset(!`SPU_PIN_RST_N),
+        .write_en(flash_we), .addr(flash_addr),
+        .data_in(soul_page), .ready(flash_ready),
+        .spi_cs_n(flash_cs_n), .spi_sck(flash_sck),
+        .spi_mosi(flash_mosi), .spi_miso(flash_miso)
     );
 
     // --- 3. Internal Metabolism ---
@@ -39,7 +64,6 @@ module top_guardian (
     wire [31:0] k_sim = timer[24] ? {timer[23:0], 8'b0} : {~timer[23:0], 8'b0};
 
     // --- 4. The Serial Davis Gasket ---
-    wire over_curvature;
     wire audit_ready;
     reg  audit_start;
     

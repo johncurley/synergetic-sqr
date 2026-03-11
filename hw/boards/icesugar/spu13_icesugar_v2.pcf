@@ -44,3 +44,9 @@ set_io uart_phys_tx 14
 
 # --- 7. TEMPORAL ANCHOR (Power-On Reset) ---
 set_io rst_phys_n 18
+
+# --- 8. THE SOUL (SPI Flash) ---
+set_io flash_cs_n  16
+set_io flash_sck   15
+set_io flash_mosi  14
+set_io flash_miso  17

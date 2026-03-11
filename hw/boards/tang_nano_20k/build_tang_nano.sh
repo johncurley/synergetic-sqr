@@ -15,22 +15,17 @@ export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
 echo "--- Initializing SPU-13 Manifold Synthesis: $TOP (Tang Nano 20K) ---"
 
 # 2. Source Files (Surgical Parity List)
+CORE_DIR="../../core"
 SRC="lean_top.v \
     ../icesugar/spu13_lean_core.v \
-    $RTL_DIR/spu_nano_core.v \
-    $RTL_DIR/spu_davis_gate.v \
-    $RTL_DIR/spu_quadrance_calc.v \
-    $RTL_DIR/spu_gram_controller.v \
-    $RTL_DIR/spu_fractal_compressor.v \
-    $RTL_DIR/spu_dream_log.v \
-    $RTL_DIR/spu_fractal_clk.v \
-    $RTL_DIR/spu_artery_phy.v \
-    $RTL_DIR/spu_artery.v \
-    $RTL_DIR/spu_whisper_rx.v \
-    $RTL_DIR/spu_ssd1306_driver.v \
-    $RTL_DIR/uart_tx_mini.v \
-    $RTL_DIR/uart_rx_mini.v \
-    $RTL_DIR/surd_uart_tx.v"
+    $CORE_DIR/spu_nano_core.v \
+    $CORE_DIR/spu_davis_gate.v \
+    $CORE_DIR/spu_resonant_heart.v \
+    $CORE_DIR/spu_whisper_sane.v \
+    $CORE_DIR/spu_soul_metabolism.v \
+    $CORE_DIR/spu_flash_controller.v \
+    $CORE_DIR/spu_ssd1306_driver.v \
+    $CORE_DIR/surd_uart_tx.v"
 
 # 3. Synthesis (Yosys)
 yosys -ql design.log -p "read_verilog -sv $SRC; synth_gowin -top $TOP -json $PROJ.json"

@@ -22,3 +22,9 @@ IO_PORT "oled_scl" IO_TYPE=LVCMOS33;
 
 IO_LOC "oled_sda" 74;
 IO_PORT "oled_sda" IO_TYPE=LVCMOS33;
+
+# --- THE SOUL (SPI Flash) ---
+IO_LOC "flash_cs_n" 58;
+IO_LOC "flash_sck"  59;
+IO_LOC "flash_mosi" 60;
+IO_LOC "flash_miso" 62;

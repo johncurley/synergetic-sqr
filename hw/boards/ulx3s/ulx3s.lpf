@@ -24,3 +24,13 @@ LOCATE COMP "uart_phys_tx" SITE "L4";
 IOBUF PORT "uart_phys_tx" IO_TYPE=LVCMOS33;
 LOCATE COMP "uart_phys_rx" SITE "M1";
 IOBUF PORT "uart_phys_rx" IO_TYPE=LVCMOS33;
+
+# --- 5. THE SOUL (SPI Flash) ---
+LOCATE COMP "flash_cs_n" SITE "D2";
+IOBUF PORT "flash_cs_n" IO_TYPE=LVCMOS33;
+LOCATE COMP "flash_sck" SITE "E12";
+IOBUF PORT "flash_sck" IO_TYPE=LVCMOS33;
+LOCATE COMP "flash_mosi" SITE "E2";
+IOBUF PORT "flash_mosi" IO_TYPE=LVCMOS33;
+LOCATE COMP "flash_miso" SITE "F2";
+IOBUF PORT "flash_miso" IO_TYPE=LVCMOS33;

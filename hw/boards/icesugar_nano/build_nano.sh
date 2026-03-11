@@ -18,9 +18,13 @@ echo "--- Initializing SPU-13 Seed Synthesis: $TOP (iCeSugar Nano) ---"
 # 2. Source Files (Surgical List for 1k Limit)
 if [ "$TOP" == "top_guardian" ]; then
     SRC="top_guardian.v \
-        $RTL_DIR/spu_serial_davis_gate.v \
-        $RTL_DIR/spu_serial_multiplier.v \
-        $RTL_DIR/spu_whisper_tx.v"
+        ../../core/spu_resonant_heart.v \
+        ../../core/spu_whisper_sane.v \
+        ../../core/spu_soul_metabolism.v \
+        ../../core/spu_flash_controller.v \
+        ../../core/spu_serial_davis_gate.v \
+        ../../core/spu_serial_multiplier.v \
+        ../../core/spu_whisper_tx.v"
 else
     SRC="top.v \
         $RTL_DIR/spu_nano_core.v \
