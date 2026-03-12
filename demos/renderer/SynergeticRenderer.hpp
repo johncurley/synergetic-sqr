@@ -28,6 +28,7 @@ public:
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
     virtual void toggleTension() = 0; // NEW: Toggle between Cubic (90) and IVM (60)
+    virtual void cycleBioSecurity() = 0; // NEW: 0=Std, 1=Meditation, 2=Autophagy
     virtual void strike(uint16_t vector) = 0;
     virtual void spawnNode(uint32_t type) = 0;
     virtual void ground() = 0; 
@@ -50,6 +51,7 @@ public:
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
+    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 3; }
     void strike(uint16_t vector) override {
         if (vector & 0x000F) _primePhase = 0;
         else if (vector & 0x00F0) _primePhase = 1;
@@ -77,6 +79,7 @@ private:
         uint32_t harmonic_mode; 
         uint32_t lattice_lock;  
         uint32_t cubic_bias; // 0=IVM, 1=Cubic
+        uint32_t bio_security; // 0=Std, 1=Meditation, 2=Autophagy
     };
 
     MTL::Device* _device;
@@ -91,6 +94,7 @@ private:
     bool _harmonic = false;
     bool _latticeLock = false;
     bool _tensionToggle = false;
+    uint32_t _bioSecurity = 0;
     CoherenceMonitor _coherence;
 };
 

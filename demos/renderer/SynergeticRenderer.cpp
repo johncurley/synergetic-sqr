@@ -111,7 +111,8 @@ void MetalRenderer::draw(void* layerPtr) {
         isLocked ? 1u : 0u,
         _harmonic ? 1u : 0u,
         _latticeLock ? 1u : 0u,
-        _tensionToggle ? 1u : 0u
+        _tensionToggle ? 1u : 0u,
+        _bioSecurity
     };
     encoder->setBytes(&control, sizeof(control), 0);
     
