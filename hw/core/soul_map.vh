@@ -1,16 +1,24 @@
-// soul_map.vh - Standardized Personality Offsets (v1.0)
-// Target: SPU-13 Sovereign Fleet (8MB SPI Flash footprint)
-// Objective: Define the "Lithic Struct" for Epigenetic Memory.
+// soul_map.vh - Standardized Personality Offsets (v1.1)
+// Target: SPU-13 Sovereign Fleet
+// Objective: Define the "Lithic Struct" and LHS for Scaling Intelligence.
 
 `ifndef SOUL_MAP_VH
 `define SOUL_MAP_VH
 
 // --- 1. Global Partitions ---
-`define SOUL_BASE_ADDR      24'h700000 // 7MB Offset (Final 1MB reserved for Soul)
-`define SOUL_SECTOR_SIZE    24'h001000 // 4KB Sectors
-`define SOUL_PAGE_SIZE      24'h000100 // 256-byte Pages
+`define SOUL_BASE_ADDR      24'h700000 
+`define SOUL_SECTOR_SIZE    24'h001000 
+`define SOUL_PAGE_SIZE      24'h000100 
+`define SOUL_HEADER_ADDR    24'h000000 // LHS v1.0 Location (First Page)
 
-// --- 2. Personality Dimensions (Relative to Base) ---
+// --- 2. LHS Structure (The DNA) ---
+// [255:224] : Magic Signature 32'h53515213 ("SQR13")
+// [223:216] : Soul Class (1:Seed, 2:Aura, 3:Manifold)
+// [215:208] : Resolution (Fixed-point bit-depth)
+// [207:192] : Heartbeat Sync (61440 Hz)
+// [191:0]   : Manifest Data
+
+// --- 3. Personality Dimensions (Relative to Base) ---
 // Sector 0: The Baselines (Sanity & Thresholds)
 `define ADDR_BASELINES      24'h000000 
 `define ADDR_LINEAGE        24'h000004 // 32-bit "Sovereign Name"
@@ -25,16 +33,7 @@
 `define ADDR_DREAM_START    24'h002000
 `define ADDR_DREAM_END      24'h0FFFFF
 
-// --- 3. The Lithic Struct (256-bit Page Packing) ---
-// [255:224] : Epoch (Heartbeat counter)
-// [223:192] : Instability Vector (Tuck magnitude)
-// [191:128] : SQR Bias (Average Q0-Q3 orientation)
-// [127:64]  : Haptic Coefficients
-// [63:16]   : Species Signature (32'h53505531 - "SPU1")
-// [15:0]    : CRC-16 Checksum
-
 // --- 4. Logic Functions ---
-// calculate_laminar_grade: Higher grade = More coherent history
 function [15:0] calculate_laminar_grade;
     input [31:0] tucks;
     input [31:0] total_cycles;
