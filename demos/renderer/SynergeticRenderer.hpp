@@ -10,6 +10,7 @@
 #endif
 
 #include "spu/SynergeticsMath.hpp"
+#include "LithicForge.hpp"
 
 namespace Synergetics {
 
@@ -68,7 +69,10 @@ public:
 private:
     void buildComputePipeline();
 
-    LithicForge _forge;
+    struct SurdRotorFixed {
+        SurdFixed64 w, x;
+        int janus;
+    };
 
     struct SPUControl {
         uint32_t tick;
@@ -86,6 +90,7 @@ private:
     MTL::CommandQueue* _commandQueue;
     MTL::ComputePipelineState* _computePipeline;
     
+    LithicForge _forge;
     int _janus = 1;
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
