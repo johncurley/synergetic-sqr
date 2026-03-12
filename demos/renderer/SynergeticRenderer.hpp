@@ -28,6 +28,7 @@ public:
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
     virtual void strike(uint16_t vector) = 0;
+    virtual void spawnNode(uint32_t type) = 0;
     virtual void ground() = 0; 
 };
 
@@ -48,13 +49,13 @@ public:
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
     void strike(uint16_t vector) override {
-        // Map 16-bit vector to prime phase for visual feedback
         if (vector & 0x000F) _primePhase = 0;
         else if (vector & 0x00F0) _primePhase = 1;
         else if (vector & 0x0F00) _primePhase = 2;
         else if (vector & 0xF000) _primePhase = 3;
         _tickCount++; 
     }
+    void spawnNode(uint32_t type) override { _forge.spawnNode(type); }
     void ground() override { 
         _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
         std::cout << "WATCHDOG: Somatic Reset Triggered. Manifold Grounded." << std::endl;
@@ -62,6 +63,8 @@ public:
 
 private:
     void buildComputePipeline();
+
+    LithicForge _forge;
 
     struct SPUControl {
         uint32_t tick;

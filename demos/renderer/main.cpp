@@ -129,6 +129,10 @@ int main(int argc, char* argv[]) {
                     case SDLK_A: renderer->strike(0x00F0); break; // B+
                     case SDLK_D: renderer->strike(0x0F00); break; // C+
                     case SDLK_S: renderer->strike(0xF000); break; // D+
+                    case SDLK_N: 
+                        std::cout << "[FORGE] Spawning Allied Node..." << std::endl;
+                        renderer->spawnNode(1 + (rand() % 3)); 
+                        break;
                     case SDLK_L: 
                         renderer->toggleLatticeLock(); 
                         if (renderer->isLatticeLocked()) renderer->setLayer(-1);
