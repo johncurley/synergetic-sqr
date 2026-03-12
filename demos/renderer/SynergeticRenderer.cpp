@@ -40,14 +40,11 @@ void MetalRenderer::buildComputePipeline() {
     
     // Path list for high-fidelity discovery
     const char* paths[] = {
-        "SynergeticKernelFinal.metal",
-        "./SynergeticKernelFinal.metal",
-        "../src/kernels/SynergeticKernelFinal.metal",
-        "src/kernels/SynergeticKernelFinal.metal",
-        "../demos/renderer/SynergeticKernelFinal.metal",
-        "demos/renderer/SynergeticKernelFinal.metal",
-        "src/SynergeticKernelFinal.metal",
-        "../src/SynergeticKernelFinal.metal"
+        "DQFA.metal",
+        "./DQFA.metal",
+        "../demos/renderer/DQFA.metal",
+        "demos/renderer/DQFA.metal",
+        "src/DQFA.metal"
     };
 
     std::ifstream file;
@@ -62,9 +59,9 @@ void MetalRenderer::buildComputePipeline() {
     }
 
     if (!finalPath.empty()) {
-        std::cout << "SUCCESS: SPU-13 Kernel Manifested at: " << finalPath << std::endl;
+        std::cout << "SUCCESS: SPU-13 Kernel (DQFA) Manifested at: " << finalPath << std::endl;
     } else {
-        std::cerr << "CRITICAL ERROR: SPU-13 Kernel not found in any search path." << std::endl;
+        std::cerr << "CRITICAL ERROR: DQFA.metal not found in any search path." << std::endl;
         return;
     }
     std::stringstream buffer;
@@ -76,9 +73,9 @@ void MetalRenderer::buildComputePipeline() {
         std::cerr << "Failed to load library: " << (error ? error->localizedDescription()->utf8String() : "Unknown Error") << std::endl;
         return;
     }
-    MTL::Function* function = library->newFunction(NS::String::string("renderSynergeticV9_Master", NS::UTF8StringEncoding));
+    MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_5", NS::UTF8StringEncoding));
     if (!function) {
-        std::cerr << "CRITICAL ERROR: Function 'renderSynergeticV9_Master' not found." << std::endl;
+        std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_5' not found." << std::endl;
         return;
     }
     _computePipeline = _device->newComputePipelineState(function, &error);
