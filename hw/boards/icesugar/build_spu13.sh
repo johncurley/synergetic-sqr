@@ -8,7 +8,7 @@ PROJ="spu13_cortex"
 DEVICE="up5k"
 PACKAGE="sg48"
 PCF="spu13_icesugar_v2.pcf"
-RTL_DIR="../../rtl"
+RTL_DIR="../../core"
 
 # Source Toolchain Path
 export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
@@ -37,6 +37,13 @@ SRC="spu13_cortex.v \
     $RTL_DIR/spu_eink_waveshare_driver.v \
     $RTL_DIR/spu_sierpinski_nav.v \
     $RTL_DIR/spu_sqr_rotor.v \
+    $RTL_DIR/spu_folded_alu.v \
+    $RTL_DIR/spu_rational_lut.v \
+    $RTL_DIR/spu_discovery_receptionist.v \
+    $RTL_DIR/spu_bio_pulse.v \
+    $RTL_DIR/spu_bio_filter.v \
+    $RTL_DIR/spu_artery_alarm.v \
+    $RTL_DIR/spu_mesh_phy.v \
     $RTL_DIR/spu_ssd1306_driver.v \
     $RTL_DIR/uart_tx_mini.v \
     $RTL_DIR/uart_rx_mini.v \

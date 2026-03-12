@@ -8,7 +8,7 @@ PROJ="spu13_ulx3s"
 DEVICE="LFE5U-85F"
 PACKAGE="CABGA381"
 LPF="ulx3s.lpf"
-RTL_DIR="../../rtl"
+RTL_DIR="../../core"
 
 # Source Toolchain Path
 export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
@@ -27,7 +27,14 @@ SRC="lean_top.v \
     $CORE_DIR/spu_flash_controller.v \
     $CORE_DIR/spu_fractal_clk.v \
     $CORE_DIR/spu_ssd1306_driver.v \
-    $CORE_DIR/surd_uart_tx.v"
+    $CORE_DIR/surd_uart_tx.v \
+    $CORE_DIR/spu_bio_pulse.v \
+    $CORE_DIR/spu_bio_filter.v \
+    $CORE_DIR/spu_artery_alarm.v \
+    $CORE_DIR/spu_mesh_phy.v \
+    $CORE_DIR/spu_folded_alu.v \
+    $CORE_DIR/spu_rational_lut.v \
+    $CORE_DIR/spu_discovery_receptionist.v"
 
 # 3. Synthesis (Yosys)
 yosys -p "synth_ecp5 -top $TOP -json $PROJ.json" $SRC

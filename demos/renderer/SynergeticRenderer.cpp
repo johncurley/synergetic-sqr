@@ -127,15 +127,17 @@ void MetalRenderer::draw(void* layerPtr) {
     control.layer = forgeControl.layer;
     control.prime_phase = forgeControl.prime_phase;
     control.coherence = forgeControl.coherence;
-    
+
+    // Inject dynamic UI overrides
     control.dss_enabled = _dssEnabled ? 1u : 0u;
     control.harmonic_mode = _harmonic ? 1u : 0u;
     control.lattice_lock = _latticeLock ? 1u : 0u;
-    control.cubic_bias = _tensionToggle ? 1u : 0u;
     control.bio_security = _bioSecurity;
+    control.tau_threshold = forgeControl.tau_threshold;
+    for(int i=0; i<4; i++) control.rotor_bias[i] = forgeControl.rotor_bias[i];
 
     encoder->setBytes(&control, sizeof(control), 0);
-    
+
     SurdRotorFixed gpuRotor = {
         { SurdFixed64::One, 0 }, 
         { 0, 0 },                

@@ -1,15 +1,24 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// --- 1. SOVEREIGN ALGEBRAIC CONSTANTS ---
-#define SURD_SHIFT 16
-#define SURD_ONE   (1 << 16)
-
-// --- 2. SOVEREIGN ALGEBRAIC CORE ---
+// --- 1. SOVEREIGN ALGEBRAIC CORE ---
 
 struct SurdFixed64 {
     int a; 
     int b; 
+    static constexpr constant int Shift = 16;
+    static constexpr constant int One = 1 << 16;
+
+    SurdFixed64 add(SurdFixed64 other) const { return { a + other.a, b + other.b }; }
+    SurdFixed64 subtract(SurdFixed64 other) const { return { a - other.a, b - other.b }; }
+    SurdFixed64 negate() const { return { -a, -b }; }
+    SurdFixed64 multiply(SurdFixed64 other) const {
+        long prod_bb = (long)b * other.b;
+        long surd_term = (prod_bb << 1) + prod_bb; 
+        long res_a = ((long)a * other.a + surd_term) >> Shift;
+        long res_b = ((long)a * other.b + (long)b * other.a) >> Shift;
+        return { (int)res_a, (int)res_b };
+    }
 };
 
 struct SurdVector3 {
@@ -18,6 +27,14 @@ struct SurdVector3 {
 
 struct Quadray4 {
     SurdFixed64 q[4];
+    static Quadray4 rotate60(Quadray4 in) { return { in.q[1], in.q[2], in.q[0], in.q[3] }; }
+    SurdVector3 toCartesian() const {
+        return {
+            q[0].subtract(q[1]).subtract(q[2]).add(q[3]), 
+            q[0].negate().add(q[1]).subtract(q[2]).add(q[3]),
+            q[0].negate().subtract(q[1]).add(q[2]).add(q[3])
+        };
+    }
 };
 
 struct SPUControl {
@@ -28,43 +45,18 @@ struct SPUControl {
     uint32_t coherence;     
     uint32_t harmonic_mode; 
     uint32_t lattice_lock;  
-    uint32_t bio_security; 
+    uint32_t bio_security;  // 0=Std, 1=Med, 2=Auto, 3=Prob, 4=Heatmap, 5=Stress
     float    tau_threshold; 
     float    rotor_bias[4]; 
 };
 
-// --- 3. ALGEBRAIC PRIMITIVES (C-Style for Compatibility) ---
+// --- 2. OPTICAL INTERFACE ---
 
-inline SurdFixed64 surd_add(SurdFixed64 v1, SurdFixed64 v2) {
-    return (SurdFixed64){ v1.a + v2.a, v1.b + v2.b };
-}
+struct DisplayCorner {
+    static float toFloat(SurdFixed64 s) {
+        return (float(s.a) + float(s.b) * 1.73205081f) / 65536.0f;
+    }
 
-inline SurdFixed64 surd_sub(SurdFixed64 v1, SurdFixed64 v2) {
-    return (SurdFixed64){ v1.a - v2.a, v1.b - v2.b };
-}
-
-inline SurdFixed64 surd_neg(SurdFixed64 v) {
-    return (SurdFixed64){ -v.a, -v.b };
-}
-
-inline SurdVector3 q_to_cartesian(Quadray4 qv) {
-    SurdVector3 res;
-    // x = a - b - c + d
-    res.x = surd_add(surd_sub(surd_sub(qv.q[0], qv.q[1]), qv.q[2]), qv.q[3]);
-    // y = -a + b - c + d
-    res.y = surd_add(surd_sub(surd_add(surd_neg(qv.q[0]), qv.q[1]), qv.q[2]), qv.q[3]);
-    // z = -a - b + c + d
-    res.z = surd_add(surd_add(surd_add(surd_neg(qv.q[0]), surd_neg(qv.q[1])), qv.q[2]), qv.q[3]);
-    return res;
-}
-
-inline float surd_to_float(SurdFixed64 s) {
-    return (float(s.a) + float(s.b) * 1.73205081f) / 65536.0f;
-}
-
-// --- 4. OPTICAL INTERFACE ---
-
-namespace Display {
     static float drawIVM(float2 uv, float tick, float scale) {
         float2 g = uv * scale;
         float2 p1 = float2(1.0, 0.0);
@@ -88,9 +80,9 @@ namespace Display {
         float d = length(uv - pos);
         return exp(-d * d * (1.0 / (0.01 + precision * 0.1)));
     }
-}
+};
 
-// --- 5. THE MASTER KERNEL ---
+// --- 3. THE MASTER KERNEL ---
 
 kernel void renderDQFA_v1_5(
     texture2d<float, access::write> outTexture [[texture(0)]],
@@ -109,26 +101,38 @@ kernel void renderDQFA_v1_5(
 
     float3 final_color = float3(0.05, 0.05, 0.08);
 
+    // --- MODE 4: LUT HEATMAP ---
+    if (control.bio_security == 4) {
+        float2 silicon = floor(uv * 64.0);
+        float activity = fract(sin(dot(silicon, float2(12.9898, 78.233))) * 43758.5453 + float(control.tick) * 0.01);
+        final_color = (activity > 0.7) ? float3(1.0, 0.2, 0.1) : float3(0.1, 0.8, 0.4) * activity;
+    }
+
+    // --- MODE 5: LATTICE STRESS MAP ---
+    else if (control.bio_security == 5) {
+        float cubic = abs(sin(uv.x * 50.0)) * abs(sin(uv.y * 50.0));
+        float laminar = abs(sin(uv.x * 50.0 + uv.y * 28.8));
+        float dissonance = abs(cubic - laminar);
+        final_color = mix(float3(0.0, 0.5, 0.8), float3(1.0, 0.2, 0.1), dissonance);
+    }
+
     // --- MODE 3: PROBABILITY MANIFOLD ---
-    if (control.bio_security == 3) {
+    else if (control.bio_security == 3) {
         float cloud = 0.0;
         float precision = 1.0 - control.tau_threshold;
-        
-        struct SurdFixed64 one = { SURD_ONE, 0 };
+        struct SurdFixed64 one = { SurdFixed64::One, 0 };
         struct SurdFixed64 zero = { 0, 0 };
-        
         struct Quadray4 v_base[4];
         v_base[0] = (struct Quadray4){{ one, zero, zero, zero }};
         v_base[1] = (struct Quadray4){{ zero, one, zero, zero }};
         v_base[2] = (struct Quadray4){{ zero, zero, one, zero }};
         v_base[3] = (struct Quadray4){{ zero, zero, zero, one }};
-
         for(int i=0; i<4; i++) {
             struct Quadray4 qv = v_base[i];
             for(int j=0; j<4; j++) qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
-            SurdVector3 sv = q_to_cartesian(qv);
-            float2 pos = float2(surd_to_float(sv.x), surd_to_float(sv.y)) * 2.0;
-            cloud += Display::drawCloud(uv, pos, precision);
+            SurdVector3 sv = qv.toCartesian();
+            float2 pos = float2(DisplayCorner::toFloat(sv.x), DisplayCorner::toFloat(sv.y)) * 2.0;
+            cloud += DisplayCorner::drawCloud(uv, pos, precision);
         }
         final_color = mix(final_color, float3(0.8, 0.6, 0.2), cloud);
     }
@@ -136,7 +140,7 @@ kernel void renderDQFA_v1_5(
     // --- MODE 1: LAMINAR MEDITATION ---
     else if (control.bio_security == 1) {
         float pulse = (sin(float(control.tick) * 0.02) + 1.0) * 0.5;
-        float lattice = Display::drawIVM(uv, float(control.tick), 10.0);
+        float lattice = DisplayCorner::drawIVM(uv, float(control.tick), 10.0);
         final_color = mix(final_color, float3(0.2, 0.6, 0.4), lattice * pulse * 0.3);
     }
 
@@ -145,21 +149,17 @@ kernel void renderDQFA_v1_5(
         float noise = fract(sin(dot(uv + float(control.tick)*0.001, float2(12.9898, 78.233))) * 43758.5453);
         if (noise > 0.98) {
             float2 grid_pos = floor(uv * 20.0);
-            if (fmod(grid_pos.x + grid_pos.y, 2.0) == 0.0) {
-                final_color += float3(0.8, 0.2, 0.1) * noise;
-            }
+            if (fmod(grid_pos.x + grid_pos.y, 2.0) == 0.0) final_color += float3(0.8, 0.2, 0.1) * noise;
         }
     }
 
     // --- MODE 0: STANDARD GEOMETRY ---
     else {
-        float lattice = Display::drawIVM(uv, float(control.tick), 15.0);
+        float lattice = DisplayCorner::drawIVM(uv, float(control.tick), 15.0);
         final_color += float3(0.1, 0.15, 0.2) * lattice;
-
-        struct SurdFixed64 one = { SURD_ONE, 0 };
+        struct SurdFixed64 one = { SurdFixed64::One, 0 };
         struct SurdFixed64 zero = { 0, 0 };
-        struct SurdFixed64 neg_one = { -SURD_ONE, 0 };
-
+        struct SurdFixed64 neg_one = { -SurdFixed64::One, 0 };
         struct Quadray4 v_base[12];
         v_base[0] = (struct Quadray4){{ one, one, zero, zero }};
         v_base[1] = (struct Quadray4){{ one, zero, one, zero }};
@@ -173,27 +173,20 @@ kernel void renderDQFA_v1_5(
         v_base[9] = (struct Quadray4){{ zero, neg_one, neg_one, zero }};
         v_base[10] = (struct Quadray4){{ zero, neg_one, zero, neg_one }};
         v_base[11] = (struct Quadray4){{ zero, zero, neg_one, neg_one }};
-        
         float tension = 0.0;
         for(int i=0; i<4; i++) tension += abs(control.rotor_bias[i]);
-
         float2 proj[12];
         for(int i=0; i<12; i++) {
             struct Quadray4 qv = v_base[i];
             for(int j=0; j<4; j++) qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
-            SurdVector3 sv = q_to_cartesian(qv);
-            float3 pf = float3(surd_to_float(sv.x), surd_to_float(sv.y), surd_to_float(sv.z)) * 3.0f;
+            SurdVector3 sv = qv.toCartesian();
+            float3 pf = float3(DisplayCorner::toFloat(sv.x), DisplayCorner::toFloat(sv.y), DisplayCorner::toFloat(sv.z)) * 3.0f;
             proj[i] = pf.xy / (20.0f - pf.z) * 6.0f;
         }
-
         int edges[48] = { 0,1, 0,2, 0,3, 0,4, 1,2, 1,3, 1,5, 2,4, 2,5, 3,4, 3,5, 4,5, 
                           6,7, 6,8, 6,9, 6,10, 7,8, 7,9, 7,11, 8,10, 8,11, 9,10, 9,11, 10,11 };
-
         float wire = 0.0;
-        for(int i=0; i<24; i++) {
-            wire = max(wire, Display::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]], tension - 1.0f));
-        }
-
+        for(int i=0; i<24; i++) wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]], tension - 1.0f));
         float3 wire_color = (control.coherence == 0) ? float3(0.8, 0.7, 0.2) : float3(1.0, 0.2, 0.1);
         final_color += wire_color * wire;
     }

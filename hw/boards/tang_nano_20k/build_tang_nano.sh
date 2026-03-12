@@ -7,7 +7,7 @@ TOP=${1:-tang_nano_20k_top}
 PROJ="spu13_tang_nano"
 DEVICE="GW2AR-LV18QN88C8/I7"
 CST="Laminar_Gowin.cst"
-RTL_DIR="../../rtl"
+RTL_DIR="../../core"
 
 # Source Toolchain Path
 export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
@@ -25,7 +25,14 @@ SRC="lean_top.v \
     $CORE_DIR/spu_soul_metabolism.v \
     $CORE_DIR/spu_flash_controller.v \
     $CORE_DIR/spu_ssd1306_driver.v \
-    $CORE_DIR/surd_uart_tx.v"
+    $CORE_DIR/surd_uart_tx.v \
+    $CORE_DIR/spu_bio_pulse.v \
+    $CORE_DIR/spu_bio_filter.v \
+    $CORE_DIR/spu_artery_alarm.v \
+    $CORE_DIR/spu_mesh_phy.v \
+    $CORE_DIR/spu_folded_alu.v \
+    $CORE_DIR/spu_rational_lut.v \
+    $CORE_DIR/spu_discovery_receptionist.v"
 
 # 3. Synthesis (Yosys)
 yosys -ql design.log -p "read_verilog -sv $SRC; synth_gowin -top $TOP -json $PROJ.json"

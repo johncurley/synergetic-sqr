@@ -54,7 +54,7 @@ public:
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
-    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 4; }
+    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 6; }
     void strike(uint16_t vector) override { 
         if (vector & 0x000F) _forge.processGeometric(0, 0, 10);
         else if (vector & 0x00F0) _forge.processGeometric(0, 1, 10);
@@ -85,8 +85,9 @@ private:
         uint32_t coherence;     
         uint32_t harmonic_mode; 
         uint32_t lattice_lock;  
-        uint32_t cubic_bias; // 0=IVM, 1=Cubic
-        uint32_t bio_security; // 0=Std, 1=Meditation, 2=Autophagy
+        uint32_t bio_security; // 0=Std, 1=Med, 2=Auto, 3=Prob
+        float    tau_threshold; 
+        float    rotor_bias[4]; 
     };
 
     MTL::Device* _device;

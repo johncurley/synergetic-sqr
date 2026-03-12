@@ -8,7 +8,7 @@ PROJ="spu13_nano_guardian"
 DEVICE="lp1k"
 PACKAGE="cm36"
 PCF="nano.pcf"
-RTL_DIR="../../rtl"
+RTL_DIR="../../core"
 
 # Source Toolchain Path
 export PATH="/Users/johncurley/.apio/packages/oss-cad-suite/bin:$PATH"
@@ -18,13 +18,20 @@ echo "--- Initializing SPU-13 Seed Synthesis: $TOP (iCeSugar Nano) ---"
 # 2. Source Files (Surgical List for 1k Limit)
 if [ "$TOP" == "top_guardian" ]; then
     SRC="top_guardian.v \
-        ../../core/spu_resonant_heart.v \
-        ../../core/spu_whisper_sane.v \
-        ../../core/spu_soul_metabolism.v \
-        ../../core/spu_flash_controller.v \
-        ../../core/spu_serial_davis_gate.v \
-        ../../core/spu_serial_multiplier.v \
-        ../../core/spu_whisper_tx.v"
+        $RTL_DIR/spu_resonant_heart.v \
+        $RTL_DIR/spu_whisper_sane.v \
+        $RTL_DIR/spu_soul_metabolism.v \
+        $RTL_DIR/spu_flash_controller.v \
+        $RTL_DIR/spu_serial_davis_gate.v \
+        $RTL_DIR/spu_serial_multiplier.v \
+        $RTL_DIR/spu_whisper_tx.v \
+        $RTL_DIR/spu_bio_pulse.v \
+        $RTL_DIR/spu_bio_filter.v \
+        $RTL_DIR/spu_artery_alarm.v \
+        $RTL_DIR/spu_mesh_phy.v \
+        $RTL_DIR/spu_folded_alu.v \
+        $RTL_DIR/spu_rational_lut.v \
+        $RTL_DIR/spu_laminar_phy.v"
 else
     SRC="top.v \
         $RTL_DIR/spu_nano_core.v \
