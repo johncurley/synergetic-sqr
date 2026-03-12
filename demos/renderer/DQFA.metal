@@ -39,9 +39,14 @@ struct Quadray4 {
 
 struct SPUControl {
     uint tick;
-    int rot_count;
-    uint prime_phase; // REG_P
-    uint dss_enabled; // REG_DSS
+    int32_t layer;
+    uint32_t prime_phase;
+    uint32_t dss_enabled;   
+    uint32_t coherence;     // 0=Sanity, 1=Tuck
+    uint32_t harmonic_mode; 
+    uint32_t lattice_lock;  
+    float    tau_threshold; // Physical Sanity Floor
+    float    rotor_bias[4]; // 4D Quadray Bias (A,B,C,D)
 };
 
 // --- CARTESIAN CORNER (Optical Interface) ---
@@ -51,16 +56,16 @@ struct DisplayCorner {
         return (float(s.a) + float(s.b) * 1.73205081f) / 65536.0f;
     }
 
-    static float getScale(uint tick) {
-        uint period = 200; 
-        uint t_cycle = tick % period;
-        float mix_factor = (t_cycle < period / 2) ? (float(t_cycle) / (period / 2.0f)) : (2.0f - float(t_cycle) / (period / 2.0f));
-        return 2.0f + 2.0f * mix_factor; 
+    static float projectWave(float2 uv, float tick, float phase_offset, bool is_laminar) {
+        float d = length(uv);
+        float wave = sin(d * 20.0 - tick * 0.1 + phase_offset);
+        float intensity = smoothstep(0.5, 0.45, abs(wave)) * exp(-d * 2.0);
+        return intensity;
     }
 
-    static float2 project(SurdVector3 sv, float scale) {
+    static float project(SurdVector3 sv, float scale) {
         float3 pf = float3(toFloat(sv.x), toFloat(sv.y), toFloat(sv.z)) * scale;
-        return pf.xy / (20.0f - pf.z) * 6.0f;
+        return 20.0f - pf.z; // Depth buffer helper
     }
 
     static float drawEdge(float2 uv, float2 a, float2 b) {
@@ -86,7 +91,14 @@ kernel void renderDQFA_v1_5(
     float aspect = float(width) / float(height);
     uv.x *= aspect;
 
-    // 1. JITTERBUG GEOMETRY (ALGEBRAIC CORE)
+    // 1. RESONANT RIPPLES (The Artery Pulse)
+    float ripple = 0.0;
+    if (control.tick % 34 < 5) { // Fibonacci Heartbeat visual
+        float phase = float(control.prime_phase) * (M_PI_F / 3.0);
+        ripple = DisplayCorner::projectWave(uv, float(control.tick), phase, control.coherence == 0);
+    }
+
+    // 2. JITTERBUG GEOMETRY (ALGEBRAIC CORE)
     SurdFixed64 one = { SurdFixed64::One, 0 };
     SurdFixed64 zero = { 0, 0 };
     SurdFixed64 neg_one = { -SurdFixed64::One, 0 };
@@ -98,43 +110,38 @@ kernel void renderDQFA_v1_5(
         {{ zero, neg_one, neg_one, zero }}, {{ zero, neg_one, zero, neg_one }}, {{ zero, zero, neg_one, neg_one }}
     };
     
-    // 2. OPTICAL SCALE
-    float scale = DisplayCorner::getScale(control.tick);
+    float scale = 3.0f + sin(float(control.tick) * 0.05f) * 0.5f;
 
     // 3. OPTICAL PROJECTION
     float2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
-        for(int r=0; r<control.rot_count; r++) { qv = Quadray4::rotate60(qv); }
-        
-        switch(control.prime_phase) {
-            case 1: qv = { qv.q[0], qv.q[3], qv.q[1], qv.q[2] }; break; // P3
-            case 2: qv = { qv.q[0], qv.q[2], qv.q[3], qv.q[1] }; break; // P5
-            case 3: qv = { qv.q[3], qv.q[1], qv.q[2], qv.q[0] }; break; // P7
+        // Apply 4D Rotor Bias from Ghost Kernel
+        for(int j=0; j<4; j++) {
+            qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
         }
-        proj[i] = DisplayCorner::project(qv.toCartesian(), scale);
+        
+        SurdVector3 sv = qv.toCartesian();
+        float3 pf = float3(DisplayCorner::toFloat(sv.x), DisplayCorner::toFloat(sv.y), DisplayCorner::toFloat(sv.z)) * scale;
+        proj[i] = pf.xy / (20.0f - pf.z) * 6.0f;
     }
 
-    // 4. DETERMINISTIC RENDERING (HARD-EDGE OR OPTICAL DAMPER)
+    // 4. DETERMINISTIC RENDERING
     int edges[48] = { 0,1, 0,2, 0,3, 0,4, 1,2, 1,3, 1,5, 2,4, 2,5, 3,4, 3,5, 4,5, 
                       6,7, 6,8, 6,9, 6,10, 7,8, 7,9, 7,11, 8,10, 8,11, 9,10, 9,11, 10,11 };
 
     float wire = 0.0;
-    if (control.dss_enabled == 1) {
-        float2 offsets[4] = { float2(0.25, 0.25), float2(0.75, 0.25), float2(0.25, 0.75), float2(0.75, 0.75) };
-        for(int s=0; s<4; s++) {
-            float2 sub_uv = uv + (offsets[s] / float2(width, height));
-            float sub_wire = 0.0;
-            for(int i=0; i<24; i++) {
-                sub_wire = max(sub_wire, DisplayCorner::drawEdge(sub_uv, proj[edges[i*2]], proj[edges[i*2+1]]));
-            }
-            wire += sub_wire * 0.25;
-        }
-    } else {
-        for(int i=0; i<24; i++) {
-            wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
-        }
+    for(int i=0; i<24; i++) {
+        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
     }
 
-    outTexture.write(float4(float3(wire), 1.0f), gid);
+    // 5. COLOR MAPPING (Identity & State)
+    float3 color = float3(wire);
+    if (control.coherence == 1) {
+        color = mix(color, float3(1.0, 0.2, 0.2), 0.5); // Red-Shift (Tuck)
+    } else {
+        color += float3(0.8, 0.7, 0.3) * ripple; // Golden Ripple (Laminar)
+    }
+
+    outTexture.write(float4(color, 1.0f), gid);
 }
