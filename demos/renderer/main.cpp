@@ -121,6 +121,14 @@ int main(int argc, char* argv[]) {
                     case SDLK_J: renderer->toggleJanus(); break;
                     case SDLK_D: renderer->toggleDSS(); break;
                     case SDLK_H: renderer->toggleHarmonic(); break;
+                    case SDLK_SPACE: 
+                        std::cout << "[STRIKE] Laminar Flush" << std::endl;
+                        renderer->ground(); 
+                        break;
+                    case SDLK_W: renderer->strike(0x000F); break; // A+
+                    case SDLK_A: renderer->strike(0x00F0); break; // B+
+                    case SDLK_D: renderer->strike(0x0F00); break; // C+
+                    case SDLK_S: renderer->strike(0xF000); break; // D+
                     case SDLK_L: 
                         renderer->toggleLatticeLock(); 
                         if (renderer->isLatticeLocked()) renderer->setLayer(-1);

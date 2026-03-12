@@ -27,7 +27,8 @@ public:
     virtual bool isHarmonic() const = 0;
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
-    virtual void ground() = 0; // Somatic Reset: Return to 'Known Good State'
+    virtual void strike(uint16_t vector) = 0;
+    virtual void ground() = 0; 
 };
 
 class MetalRenderer : public IRenderer {
@@ -46,6 +47,14 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void strike(uint16_t vector) override {
+        // Map 16-bit vector to prime phase for visual feedback
+        if (vector & 0x000F) _primePhase = 0;
+        else if (vector & 0x00F0) _primePhase = 1;
+        else if (vector & 0x0F00) _primePhase = 2;
+        else if (vector & 0xF000) _primePhase = 3;
+        _tickCount++; 
+    }
     void ground() override { 
         _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
         std::cout << "WATCHDOG: Somatic Reset Triggered. Manifold Grounded." << std::endl;
@@ -54,19 +63,14 @@ public:
 private:
     void buildComputePipeline();
 
-    struct SurdRotorFixed {
-        SurdFixed64 w, x;
-        int janus;
-    };
-
     struct SPUControl {
         uint32_t tick;
         int32_t layer;
         uint32_t prime_phase;
-        uint32_t dss_enabled;   // REG_DSS: 0=OFF, 1=ON
-        uint32_t coherence;     // 0=Absence, 1=Presence
-        uint32_t harmonic_mode; // 0=Off, 1=On
-        uint32_t lattice_lock;  // 0=Fluid, 1=Locked
+        uint32_t dss_enabled;   
+        uint32_t coherence;     
+        uint32_t harmonic_mode; 
+        uint32_t lattice_lock;  
     };
 
     MTL::Device* _device;
@@ -77,6 +81,7 @@ private:
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
     int _layer = 0;
+    uint32_t _primePhase = 0;
     bool _harmonic = false;
     bool _latticeLock = false;
     CoherenceMonitor _coherence;
@@ -98,9 +103,9 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void strike(uint16_t vector) override { _tickCount++; }
     void ground() override { 
         _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
-        std::cout << "WATCHDOG: Somatic Reset Triggered (Vulkan). Manifold Grounded." << std::endl;
     }
 
 private:
