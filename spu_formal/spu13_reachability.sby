@@ -7,9 +7,9 @@ smtbmc z3
 
 [script]
 read -formal spu13_formal.sv
-read -formal ../hw/core/spu_nano_core.v
-read -formal ../hw/core/spu_davis_gate.v
-read -formal ../hw/core/spu_quadray_vec.v
+read -formal spu_nano_core.v
+read -formal spu_davis_gate.v
+read -formal spu_quadray_vec.v
 prep -top spu13_formal
 
 [files]

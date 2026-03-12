@@ -40,10 +40,25 @@ echo "[PASS] Auditor is sane."
 if [ "$SPU_PURITY_ONLY" == "1" ]; then
     echo "[SKIP] SPU_PURITY_ONLY active. Skipping hardware synthesis."
 else
-    echo "[4/4] Checking Synthesis Parity (iCeSugar)..."
+    echo "[4/5] Checking Synthesis Parity (iCeSugar)..."
     cd hw/boards/icesugar
     ./build_spu13.sh top > /dev/null 2>&1
     echo "[PASS] iCeSugar forge is active."
+    
+    echo "[5/7] Checking Synthesis Parity (iCeSugar Nano)..."
+    cd ../icesugar_nano
+    ./build_nano.sh top_guardian > /dev/null 2>&1
+    echo "[PASS] Nano Sentinel is reified."
+
+    echo "[6/7] Checking Synthesis Parity (ULX3S)..."
+    cd ../ulx3s
+    ./build_ulx3s.sh ulx3s_top > /dev/null 2>&1
+    echo "[PASS] ECP5 Manifold is reified."
+
+    echo "[7/7] Checking Synthesis Parity (Tang Nano 20K)..."
+    cd ../tang_nano_20k
+    ./build_tang_nano.sh tang_nano_20k_top > /dev/null 2>&1
+    echo "[PASS] Gowin Expansion is reified."
 fi
 
 echo "--- AUDIT COMPLETE: Manifold is CRYSTALLINE. AUTHORIZED TO PUSH. ---"

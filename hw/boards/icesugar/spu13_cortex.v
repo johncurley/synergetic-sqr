@@ -1,6 +1,6 @@
-// SPU-13 CORTEX (v1.10 Autopoietic Edition)
+// SPU-13 CORTEX (v1.11 Full Sovereign Parity)
 // Target: iCE40UP5K (iCeSugar UP5K)
-// Objective: Self-Replicating Manifold via Flash Mirroring.
+// Objective: Global Fleet Integrator with full sensory, cognitive, and communicative parity.
 
 `include "../../include/spu/spu13_pins.vh"
 `include "../../core/soul_map.vh"
@@ -13,84 +13,146 @@ module top (
     output wire `SPU_PIN_LED_G,
     output wire `SPU_PIN_LED_B,
     
-    // OLED Interface
     output wire oled_scl,
     output wire oled_sda,
     
-    // External PMOD SPI (The Mirror Target)
     output wire eink_cs,
     output wire eink_sck,
     output wire eink_mosi,
     input  wire eink_miso,
     
-    // Internal Flash (The Source)
+    output wire audio_out,
+    output wire bio_pulse_out,
+    
+    output wire `SPU_PIN_UART_TX,
+    input  wire `SPU_PIN_UART_RX,
+    
     output wire flash_cs_n,
     output wire flash_sck,
     output wire flash_mosi,
     input  wire flash_miso,
     
-    output wire `SPU_PIN_UART_TX,
-    input  wire `SPU_PIN_UART_RX
+    output wire artery_out,
+    input  wire artery_in
 );
 
-    // --- 1. Temporal Axis ---
+    // --- 1. Temporal Axis (The Heart) ---
     wire reset = !`SPU_PIN_RST_N;
+    wire phi_heartbeat;
+    wire clk_steady;
     wire clk_resonant;
+    
+    spu_fractal_clk #(.CLK_IN_HZ(12000000)) u_phi (
+        .clk_in(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N), .en(1'b1),
+        .phi_heartbeat(phi_heartbeat), .clk_laminar(clk_steady)
+    );
+
     spu_resonant_heart #(.CLK_IN_HZ(12000000)) u_heart (
         .clk_in(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
         .clk_resonant(clk_resonant)
     );
 
-    // --- 2. Instruction Decoding (MIRR) ---
-    wire [7:0] rx_data;
-    wire rx_ready;
-    uart_rx_mini #(.CLK_HZ(12000000), .BAUD(115200)) u_ear (
-        .clk(`SPU_PIN_CLK), .rx_pin(`SPU_PIN_UART_RX),
-        .rx_data(rx_data), .rx_ready(rx_ready)
-    );
-    // Trigger mirror if ASCII 'M' received or MIRR opcode detected
-    wire start_mirror = rx_ready && (rx_data == 8'h4D); 
-
-    // --- 3. The Mirror Conductor ---
-    wire mirror_active;
-    wire int_read_en, ext_write_en;
-    wire [23:0] int_addr, ext_addr;
-    wire [255:0] mirror_data;
-    wire int_ready, ext_ready;
-
-    spu_manifold_mirror u_mirror (
+    // --- 2. Identity & Niche Logic ---
+    wire [31:0] lineage_code;
+    wire [1:0]  eco_tier;
+    wire baptism_trigger;
+    
+    spu_lineage_id u_baptism (
         .clk(`SPU_PIN_CLK), .reset(reset),
-        .start_mirror(start_mirror),
-        .int_read_en(int_read_en), .int_addr(int_addr),
-        .int_data_in(int_data_stream), .int_ready(int_ready),
-        .ext_write_en(ext_write_en), .ext_addr(ext_addr),
-        .ext_data_out(mirror_data), .ext_ready(ext_ready),
-        .mirror_active(mirror_active), .mirror_done()
+        .device_dna(64'h53505531_33313331),
+        .flash_entropy({32'b0, timer[31:0]}),
+        .flash_empty(timer[24:0] == 25'h1FFFFFF),
+        .lineage_code(lineage_code),
+        .write_trigger(baptism_trigger)
     );
 
-    // --- 4. Dual Flash Controllers ---
-    // Controller A: Internal (Source)
-    wire [255:0] int_data_stream;
-    spu_flash_controller u_int_flash (
+    spu_niche_logic u_niche (
+        .lineage_id(lineage_code),
+        .eco_tier(eco_tier)
+    );
+
+    // --- 3. The Gemini Manifold (Mutual Witnessing) ---
+    wire global_fault;
+    wire [127:0] combined_state;
+    wire flash_we;
+    wire [23:0] flash_addr;
+    wire [255:0] soul_page;
+    wire flash_ready;
+
+    spu_gemini_manifold #(.CLK_HZ(12000000)) u_gemini (
         .clk(`SPU_PIN_CLK), .reset(reset),
-        .write_en(1'b0), .read_en(int_read_en),
-        .addr(int_addr), .data_in(256'b0), .data_out(int_data_stream),
-        .ready(int_ready),
-        .spi_cs_n(flash_cs_n), .spi_sck(flash_sck), .spi_mosi(flash_mosi), .spi_miso(flash_miso)
+        .global_fault(global_fault),
+        .combined_state(combined_state),
+        .flash_we(flash_we), .flash_addr(flash_addr),
+        .soul_page(soul_page), .flash_ready(flash_ready)
     );
 
-    // Controller B: External (Destination)
-    spu_flash_controller u_ext_flash (
+    // --- 4. Predictive Coding (Active Inference) ---
+    wire [127:0] posterior_state;
+    wire [127:0] prediction_error;
+    wire is_dissonant;
+    
+    spu_active_inference u_inference (
         .clk(`SPU_PIN_CLK), .reset(reset),
-        .write_en(ext_write_en), .read_en(1'b0),
-        .addr(ext_addr), .data_in(mirror_data), .data_out(),
-        .ready(ext_ready),
-        .spi_cs_n(eink_cs), .spi_sck(eink_sck), .spi_mosi(eink_mosi), .spi_miso(eink_miso)
+        .prior_state(combined_state),
+        .prior_precision(16'h0100),
+        .sensory_in(combined_state), 
+        .sensory_valid(1'b1),
+        .posterior_state(posterior_state),
+        .prediction_error(prediction_error),
+        .is_dissonant(is_dissonant)
     );
 
-    // --- 5. Aura Mapping ---
-    assign `SPU_PIN_LED_R = mirror_active; // Red indicates "Cloning" in progress
-    assign `SPU_PIN_LED_G = !mirror_active;
+    // --- 5. Communication (Laminar PHY) ---
+    spu_laminar_phy u_phy (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .heartbeat_in(clk_resonant),
+        .target_axis(2'b00), // Default listener
+        .is_transmitting(1'b0),
+        .artery_out(artery_out),
+        .axis_match()
+    );
+
+    // --- 6. The Soul Sealer ---
+    spu_flash_controller u_flash (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .write_en(flash_we | baptism_trigger),
+        .addr(flash_we ? flash_addr : `SOUL_BASE_ADDR + `ADDR_LINEAGE),
+        .data_in(flash_we ? soul_page : {224'b0, lineage_code}),
+        .ready(flash_ready),
+        .spi_cs_n(flash_cs_n), .spi_sck(flash_sck),
+        .spi_mosi(flash_mosi), .spi_miso(flash_miso)
+    );
+
+    // --- 7. Voice & Vision ---
+    spu_ssd1306_driver u_oled (
+        .clk(clk_resonant), .reset(reset),
+        .data_in(combined_state[7:0]), .data_req(),
+        .scl(oled_scl), .sda(oled_sda), .ready()
+    );
+
+    spu_pwm_audio u_audio (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .sample_in(combined_state[31:0]), .audio_out(audio_out)
+    );
+
+    spu_bio_pulse #(.CLK_HZ(12000000)) u_bio (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .enable(1'b1), .intensity(8'h7F),
+        .pulse_out(bio_pulse_out)
+    );
+
+    spu_whisper_sane #(.CLK_HZ(12000000), .BAUD(115200)) u_sane (
+        .clk(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
+        .is_laminar(!global_fault && !is_dissonant), .tx_pin(`SPU_PIN_UART_TX)
+    );
+
+    // --- 8. Aura Mapping ---
+    reg [24:0] timer;
+    always @(posedge `SPU_PIN_CLK) timer <= timer + 1;
+
+    assign `SPU_PIN_LED_R = global_fault | is_dissonant;
+    assign `SPU_PIN_LED_G = !global_fault & !is_dissonant;
     assign `SPU_PIN_LED_B = clk_resonant; 
 
 endmodule

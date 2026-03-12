@@ -1,4 +1,4 @@
-// SPU-13 Formal Contract (v1.0)
+// SPU-13 Formal Contract (v1.1)
 // Objective: Prove reachability and boundary sanity of the 60-degree manifold.
 // Vibe: Correct by Construction.
 
@@ -16,8 +16,11 @@ module spu13_formal (
     input  wire        instr_complete
 );
 
+    // --- 1. Internal State for Covers ---
+    reg [1:0] seq_state = 0;
+
 `ifdef FORMAL
-    // --- 1. Boundary Proofs ---
+    // --- 2. Boundary Proofs ---
     always @(*) begin
         // Prove that the zero-sum invariant is always maintained unless a fault is flagged
         if (!reset && !fault_detected) begin
@@ -25,29 +28,26 @@ module spu13_formal (
         end
         
         // Prove that division-by-zero is physically impossible in the Rational LUT
-        // (Assuming addr 0x00 maps to 1.0, not 0.0)
         assert(reg_curr != 128'h0); 
     end
 
-    // --- 2. The "Demo" Traces (Reachability) ---
-    // Generate waveforms for every major instruction
+    // --- 3. The "Demo" Traces (Reachability) ---
     always @(posedge clk) begin
         cover(instr_complete && opcode == 3'b000); // ROTR (spin)
         cover(instr_complete && opcode == 3'b001); // TUCK (lock)
         cover(instr_complete && opcode == 3'b110); // ANNE (anneal)
         
         // Complex Sequence: Reset followed by high-tension spin
-        static logic [1:0] seq_state = 0;
-        case (seq_state)
-            0: if (opcode == 3'b111) seq_state <= 1; // RESET
-            1: if (opcode == 3'b000) seq_state <= 2; // SPIN
-            2: cover(1'b1); // Sequence Complete
-        endcase
+        if (reset) begin
+            seq_state <= 0;
+        end else begin
+            case (seq_state)
+                0: if (opcode == 3'b111) seq_state <= 1; // RESET
+                1: if (opcode == 3'b000) seq_state <= 2; // SPIN
+                2: cover(1'b1); // Sequence Complete
+            endcase
+        end
     end
-
-    // --- 3. Resonance Audit ---
-    // Prove that the manifold returns to identity within a finite window
-    // (Liveness check for the Jitterbug)
 `endif
 
 endmodule

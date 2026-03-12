@@ -1,6 +1,6 @@
-// Tang Nano 20k Gemini Manifold (v1.3 Sovereign Parity)
+// Tang Nano 20k Gemini Manifold (v1.4 Sovereign Parity)
 // Target: Gowin GW2AR-18C
-// Objective: Dual-Core Mutual Witnessing on the Expansion node.
+// Objective: Dual-Core Mutual Witnessing with cognitive and communicative parity.
 
 `include "../../include/spu/spu13_pins.vh"
 `include "../../core/soul_map.vh"
@@ -18,6 +18,10 @@ module tang_nano_20k_top (
     output wire flash_sck,
     output wire flash_mosi,
     input  wire flash_miso,
+    
+    // Artery Bus
+    output wire artery_out,
+    input  wire artery_in,
     
     // OLED Interface
     output wire oled_scl,
@@ -49,7 +53,29 @@ module tang_nano_20k_top (
         .soul_page(soul_page), .flash_ready(flash_ready)
     );
 
-    // --- 3. The Flash Sealer ---
+    // --- 3. Predictive Coding ---
+    wire is_dissonant;
+    spu_active_inference u_inference (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .prior_state(combined_state),
+        .prior_precision(16'h0100),
+        .sensory_in(combined_state), 
+        .sensory_valid(1'b1),
+        .posterior_state(), .prediction_error(),
+        .is_dissonant(is_dissonant)
+    );
+
+    // --- 4. Communication (Laminar PHY) ---
+    spu_laminar_phy u_phy (
+        .clk(`SPU_PIN_CLK), .reset(reset),
+        .heartbeat_in(clk_resonant),
+        .target_axis(2'b00),
+        .is_transmitting(1'b0),
+        .artery_out(artery_out),
+        .axis_match()
+    );
+
+    // --- 5. The Flash Sealer ---
     spu_flash_controller u_flash (
         .clk(`SPU_PIN_CLK), .reset(reset),
         .write_en(flash_we), .addr(flash_addr),
@@ -58,15 +84,15 @@ module tang_nano_20k_top (
         .spi_mosi(flash_mosi), .spi_miso(flash_miso)
     );
 
-    // --- 4. Voice of Coherency ---
-    spu_whisper_sane #(.CLK_HZ(27000000)) u_sane (
+    // --- 6. Voice of Coherency ---
+    spu_whisper_sane #(.CLK_HZ(27000000), .BAUD(115200)) u_sane (
         .clk(`SPU_PIN_CLK), .rst_n(`SPU_PIN_RST_N),
-        .is_laminar(!global_fault), .tx_pin(`SPU_PIN_UART_TX)
+        .is_laminar(!global_fault && !is_dissonant), .tx_pin(`SPU_PIN_UART_TX)
     );
 
-    // --- 5. Aura Mapping ---
-    assign `SPU_PIN_LED_R = global_fault;
-    assign `SPU_PIN_LED_G = !global_fault;
+    // --- 7. Aura Mapping ---
+    assign `SPU_PIN_LED_R = global_fault | is_dissonant;
+    assign `SPU_PIN_LED_G = !global_fault & !is_dissonant;
     assign `SPU_PIN_LED_B = clk_resonant; 
 
 endmodule
