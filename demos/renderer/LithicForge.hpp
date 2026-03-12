@@ -27,9 +27,10 @@ struct SPUControl {
 
 struct SovereignNode {
     uint32_t id;
-    float phase_offset;     // The Δt alignment
-    bool is_locked;         // Resonant Lock status
-    float tension;          // Local Lattice Pressure
+    std::string name;       // Decoded Sovereign Name
+    float phase_offset;     
+    bool is_locked;         
+    float tension;          
 };
 
 class LithicForge {
@@ -42,14 +43,27 @@ public:
         for(int i=0; i<4; i++) _control.rotor_bias[i] = (i==0) ? 1.0f : 0.0f;
     }
 
+    std::string decodeLineage(uint32_t code) {
+        static const char* prefixes[] = {
+            "Lith", "Tetra", "Sqr", "Sier", "Gasket", "Laminar", "Surd", "Prime",
+            "Veda", "Syner", "Davis", "Celer", "Aether", "Verum", "Flux", "Omni"
+        };
+        static const char* suffixes[] = {
+            "Pulse", "Node", "Cortex", "Artery", "Gait", "Anchor", "Vector", "Manifold",
+            "Sentry", "Loom", "Grip", "Spire", "Well", "Shard", "Root", "Sphere"
+        };
+        return std::string(prefixes[(code >> 16) & 0xF]) + "-" + suffixes[code & 0xF];
+    }
+
     void spawnNode(uint32_t type_id) {
         SovereignNode node;
         node.id = type_id;
-        node.phase_offset = (float)(rand() % 360); // Starts dissonant
+        node.name = decodeLineage(type_id);
+        node.phase_offset = (float)(rand() % 360); 
         node.is_locked = false;
         node.tension = 0.0f;
         _nodes.push_back(node);
-        std::cout << "[FORGE] Scout Spawned. Phase: " << node.phase_offset << "°" << std::endl;
+        std::cout << "[FORGE] " << node.name << " Spawned. Phase: " << node.phase_offset << "°" << std::endl;
     }
 
     void step() {
