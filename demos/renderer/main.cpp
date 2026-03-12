@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--forensic") == 0) {
             forensic_mode = true;
+        } else if (strcmp(argv[i], "--lithic") == 0 && i + 1 < argc) {
+            // Placeholder for renderer-based hex loading (applied after init)
         } else if (strcmp(argv[i], "--deep-sea") == 0) {
             deep_sea_mode = true;
         } else if (strcmp(argv[i], "--skeletal") == 0) {
@@ -82,6 +84,13 @@ int main(int argc, char* argv[]) {
     renderer->setLayer(initial_layer);
     if (renderer->isLatticeLocked() != lattice_lock_mode) renderer->toggleLatticeLock();
     if (harmonic_mode) renderer->toggleHarmonic();
+
+    // Re-parse for hex loading
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--lithic") == 0 && i + 1 < argc) {
+            renderer->loadHex(argv[i+1]);
+        }
+    }
 
     if (deep_sea_mode) {
         if (!renderer->getDSS()) renderer->toggleDSS(); 

@@ -31,6 +31,8 @@ public:
     virtual void toggleTension() = 0; // NEW: Toggle between Cubic (90) and IVM (60)
     virtual void cycleBioSecurity() = 0; // NEW: 0=Std, 1=Meditation, 2=Autophagy
     virtual void strike(uint16_t vector) = 0;
+    virtual void processGeometric(uint8_t op, uint8_t axis, uint8_t val) = 0;
+    virtual bool loadHex(const std::string& path) = 0;
     virtual void spawnNode(uint32_t type) = 0;
     virtual void ground() = 0; 
 };
@@ -53,13 +55,14 @@ public:
     bool isLatticeLocked() const override { return _latticeLock; }
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
     void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 3; }
-    void strike(uint16_t vector) override {
-        if (vector & 0x000F) _primePhase = 0;
-        else if (vector & 0x00F0) _primePhase = 1;
-        else if (vector & 0x0F00) _primePhase = 2;
-        else if (vector & 0xF000) _primePhase = 3;
-        _tickCount++; 
+    void strike(uint16_t vector) override { 
+        if (vector & 0x000F) _forge.processGeometric(0, 0, 10);
+        else if (vector & 0x00F0) _forge.processGeometric(0, 1, 10);
+        else if (vector & 0x0F00) _forge.processGeometric(0, 2, 10);
+        else if (vector & 0xF000) _forge.processGeometric(0, 3, 10);
     }
+    void processGeometric(uint8_t op, uint8_t axis, uint8_t val) override { _forge.processGeometric(op, axis, val); }
+    bool loadHex(const std::string& path) override { return _forge.loadHex(path); }
     void spawnNode(uint32_t type) override { _forge.spawnNode(type); }
     void ground() override { 
         _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;

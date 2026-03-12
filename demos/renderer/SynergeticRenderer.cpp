@@ -87,7 +87,9 @@ void MetalRenderer::draw(void* layerPtr) {
     if (!_computePipeline) return;
     CA::MetalLayer* layer = (CA::MetalLayer*)layerPtr;
 
-    _tickCount++;
+    // Step the Digital Twin (Simulates one pulse of the SPU-13)
+    _forge.step();
+
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
     CA::MetalDrawable* drawable = layer->nextDrawable();
     if (!drawable) { pool->release(); return; }
@@ -97,20 +99,22 @@ void MetalRenderer::draw(void* layerPtr) {
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
-    uint32_t currentPhase = (_tickCount / 1200) % 4;
-    bool isLocked = _coherence.update(_janus > 0);
+    // Pull bit-exact control state from the forge
+    Synergetics::SPUControl forgeControl = _forge.getControl();
+    
+    SPUControl control;
+    control.tick = forgeControl.tick;
+    control.layer = forgeControl.layer;
+    control.prime_phase = forgeControl.prime_phase;
+    control.coherence = forgeControl.coherence;
+    
+    // Inject dynamic UI overrides
+    control.dss_enabled = _dssEnabled ? 1u : 0u;
+    control.harmonic_mode = _harmonic ? 1u : 0u;
+    control.lattice_lock = _latticeLock ? 1u : 0u;
+    control.cubic_bias = _tensionToggle ? 1u : 0u;
+    control.bio_security = _bioSecurity;
 
-    SPUControl control = {
-        static_cast<uint32_t>(_tickCount),
-        static_cast<int32_t>(_layer),
-        currentPhase,
-        _dssEnabled ? 1u : 0u,
-        isLocked ? 1u : 0u,
-        _harmonic ? 1u : 0u,
-        _latticeLock ? 1u : 0u,
-        _tensionToggle ? 1u : 0u,
-        _bioSecurity
-    };
     encoder->setBytes(&control, sizeof(control), 0);
     
     SurdRotorFixed gpuRotor = {
@@ -129,6 +133,7 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->commit();
     
     if (_tickCount % 600 == 0) {
+        uint32_t currentPhase = control.prime_phase;
         const char* phaseLabels[4] = { "P1: Unity", "P3: Chirality", "P5: Equilibrium", "P7: Hyper-Flip" };
         std::cout << "[Identity Closure Verification] Tick: " << _tickCount << std::endl;
         std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
