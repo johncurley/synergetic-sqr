@@ -59,6 +59,26 @@ cd spu_formal && sby -f vd_determinant.sby
 
 ---
 
+### 🎨 The Laminar Forge IDE (Visual Observation)
+The SPU-13 renderer functions as a **High-Fidelity Digital Twin**. It executes Lithic-L bytecode in 3D and mirrors the physical tension of the silicon.
+
+#### 1. Launching the Forge
+```bash
+./build/spu-renderer --lithic software/hello_manifold.hex
+```
+
+#### 2. Observer Commands
+| Key | Logic | Biological Sensation |
+| :--- | :--- | :--- |
+| **W/A/S/D** | **Laminar Strike** | Real-time 4D Quadray manipulation. |
+| **SPACE** | **Laminar Flush** | Instant purification of the manifold. |
+| **B** | **Bio-Security** | Toggles **MEDITATION**, **AUTOPHAGY**, and **PROBABILITY** modes. |
+| **T** | **Tension Toggle** | Visualizes the **Cubic Tax** vs. **IVM Flow**. |
+| **N** | **Discovery** | Spawns an Allied node via resonant handshake. |
+| **L** | **Lattice Lock** | Snaps the observer to the 60° IVM metric. |
+
+---
+
 ### 🚀 2026 Fleet Status: Universal Parity
 
 The SPU-13 utilizes a **Laminar HAL** (`include/spu/spu13_pins.vh`) to maintain 100% bit-exact parity across different silicon fabrics.

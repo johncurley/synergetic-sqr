@@ -54,7 +54,7 @@ public:
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
-    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 3; }
+    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 4; }
     void strike(uint16_t vector) override { 
         if (vector & 0x000F) _forge.processGeometric(0, 0, 10);
         else if (vector & 0x00F0) _forge.processGeometric(0, 1, 10);
