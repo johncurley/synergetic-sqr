@@ -170,7 +170,11 @@ int main(int argc, char* argv[]) {
 
         Uint32 flags = SDL_GetWindowFlags(window);
         if (!(flags & SDL_WINDOW_HIDDEN) && !(flags & SDL_WINDOW_MINIMIZED)) {
-            renderer->draw(layer);
+#ifdef __APPLE__
+            if (layer) renderer->draw(layer);
+#else
+            renderer->draw(nullptr);
+#endif
         }
         SDL_Delay(16);
     }

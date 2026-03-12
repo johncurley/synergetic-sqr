@@ -84,31 +84,50 @@ void MetalRenderer::buildComputePipeline() {
 }
 
 void MetalRenderer::draw(void* layerPtr) {
-    if (!_computePipeline) return;
-    CA::MetalLayer* layer = (CA::MetalLayer*)layerPtr;
-
-    // Step the Digital Twin (Simulates one pulse of the SPU-13)
-    _forge.step();
-
+    if (!_computePipeline || !layerPtr) return;
+    
+    // 1. Establish the Sovereign Memory Pool
     NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
+    
+    CA::MetalLayer* layer = (CA::MetalLayer*)layerPtr;
     CA::MetalDrawable* drawable = layer->nextDrawable();
-    if (!drawable) { pool->release(); return; }
+    
+    // 2. The Gasket Guard: Ensure the vessel is ready for light
+    if (!drawable || !drawable->texture()) {
+        pool->release();
+        return;
+    }
+
+    // 3. Step the Digital Twin (Laminar Evolution)
+    try {
+        _forge.step();
+    } catch (...) {
+        std::cerr << "[FORGE] Dissonance detected during step. Skipping cycle." << std::endl;
+    }
 
     MTL::CommandBuffer* cmdBuf = _commandQueue->commandBuffer();
+    if (!cmdBuf) {
+        pool->release();
+        return;
+    }
+
     MTL::ComputeCommandEncoder* encoder = cmdBuf->computeCommandEncoder();
+    if (!encoder) {
+        pool->release();
+        return;
+    }
+
     encoder->setComputePipelineState(_computePipeline);
     encoder->setTexture(drawable->texture(), 0);
     
-    // Pull bit-exact control state from the forge
+    // 4. State Sync (Crystalline Alignment)
     Synergetics::SPUControl forgeControl = _forge.getControl();
-    
     SPUControl control;
     control.tick = forgeControl.tick;
     control.layer = forgeControl.layer;
     control.prime_phase = forgeControl.prime_phase;
     control.coherence = forgeControl.coherence;
     
-    // Inject dynamic UI overrides
     control.dss_enabled = _dssEnabled ? 1u : 0u;
     control.harmonic_mode = _harmonic ? 1u : 0u;
     control.lattice_lock = _latticeLock ? 1u : 0u;
@@ -129,18 +148,11 @@ void MetalRenderer::draw(void* layerPtr) {
     MTL::Size threadGroupSizeVec = MTL::Size(8, 8, 1);
     encoder->dispatchThreads(gridSize, threadGroupSizeVec);
     encoder->endEncoding();
+    
     cmdBuf->presentDrawable(drawable);
     cmdBuf->commit();
     
-    if (_tickCount % 600 == 0) {
-        uint32_t currentPhase = control.prime_phase;
-        const char* phaseLabels[4] = { "P1: Unity", "P3: Chirality", "P5: Equilibrium", "P7: Hyper-Flip" };
-        std::cout << "[Identity Closure Verification] Tick: " << _tickCount << std::endl;
-        std::cout << "  Rotor State: w.a=" << gpuRotor.w.a << " (0x10000), w.b=" << gpuRotor.w.b << std::endl;
-        std::cout << "  Thomson Phase: " << phaseLabels[currentPhase] << " (REG_P=0x0" << (currentPhase*2+1) << ")" << std::endl;
-        std::cout << "  Optical Damper: " << (_dssEnabled ? "ON" : "OFF") << std::endl;
-    }
-
+    // 5. Release the Pool
     pool->release();
 }
 
