@@ -27,6 +27,7 @@ public:
     virtual bool isHarmonic() const = 0;
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
+    virtual void toggleTension() = 0; // NEW: Toggle between Cubic (90) and IVM (60)
     virtual void strike(uint16_t vector) = 0;
     virtual void spawnNode(uint32_t type) = 0;
     virtual void ground() = 0; 
@@ -48,6 +49,7 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void toggleTension() override { _tensionToggle = !_tensionToggle; }
     void strike(uint16_t vector) override {
         if (vector & 0x000F) _primePhase = 0;
         else if (vector & 0x00F0) _primePhase = 1;
@@ -74,6 +76,7 @@ private:
         uint32_t coherence;     
         uint32_t harmonic_mode; 
         uint32_t lattice_lock;  
+        uint32_t cubic_bias; // 0=IVM, 1=Cubic
     };
 
     MTL::Device* _device;
@@ -87,6 +90,7 @@ private:
     uint32_t _primePhase = 0;
     bool _harmonic = false;
     bool _latticeLock = false;
+    bool _tensionToggle = false;
     CoherenceMonitor _coherence;
 };
 

@@ -121,6 +121,10 @@ int main(int argc, char* argv[]) {
                     case SDLK_J: renderer->toggleJanus(); break;
                     case SDLK_D: renderer->toggleDSS(); break;
                     case SDLK_H: renderer->toggleHarmonic(); break;
+                    case SDLK_T: 
+                        renderer->toggleTension(); 
+                        std::cout << "[FORGE] Manifold Tension: " << (renderer->getJanus() > 0 ? "IVM (60)" : "Cubic (90)") << std::endl; // Note: Janus check is placeholder
+                        break;
                     case SDLK_SPACE: 
                         std::cout << "[STRIKE] Laminar Flush" << std::endl;
                         renderer->ground(); 
