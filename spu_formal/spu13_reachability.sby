@@ -1,0 +1,19 @@
+[options]
+mode cover
+depth 32
+
+[engines]
+smtbmc z3
+
+[script]
+read -formal spu13_formal.sv
+read -formal ../hw/core/spu_nano_core.v
+read -formal ../hw/core/spu_davis_gate.v
+read -formal ../hw/core/spu_quadray_vec.v
+prep -top spu13_formal
+
+[files]
+spu13_formal.sv
+../hw/core/spu_nano_core.v
+../hw/core/spu_davis_gate.v
+../hw/core/spu_quadray_vec.v
