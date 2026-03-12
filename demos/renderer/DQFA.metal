@@ -56,23 +56,32 @@ struct DisplayCorner {
         return (float(s.a) + float(s.b) * 1.73205081f) / 65536.0f;
     }
 
-    static float projectWave(float2 uv, float tick, float phase_offset, bool is_laminar) {
+    // Registry-Aware Ripple Generation
+    static float3 getResonantColor(uint phase) {
+        switch(phase % 6) {
+            case 0: return float3(0.8, 0.7, 0.3); // 0 deg: Gold (Monolith)
+            case 1: return float3(0.2, 0.8, 0.8); // 60 deg: Cyan (Visual)
+            case 2: return float3(0.6, 0.3, 0.9); // 120 deg: Violet (Haptic)
+            case 3: return float3(0.9, 0.4, 0.2); // 180 deg: Orange (Motor)
+            default: return float3(0.5, 0.5, 0.5);
+        }
+    }
+
+    static float projectWave(float2 uv, float tick, float phase_offset) {
         float d = length(uv);
         float wave = sin(d * 20.0 - tick * 0.1 + phase_offset);
-        float intensity = smoothstep(0.5, 0.45, abs(wave)) * exp(-d * 2.0);
-        return intensity;
+        return smoothstep(0.5, 0.45, abs(wave)) * exp(-d * 2.0);
     }
 
-    static float project(SurdVector3 sv, float scale) {
-        float3 pf = float3(toFloat(sv.x), toFloat(sv.y), toFloat(sv.z)) * scale;
-        return 20.0f - pf.z; // Depth buffer helper
-    }
-
-    static float drawEdge(float2 uv, float2 a, float2 b) {
+    static float drawEdge(float2 uv, float2 a, float2 b, float tension) {
         float2 pa = uv - a, ba = b - a;
         float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-        float d = length(pa - ba * h);
-        return smoothstep(0.01, 0.005, d);
+        
+        // Lattice Tension: Vibrate wires based on real-time pressure
+        float2 vibration = float2(sin(uv.y * 50.0 + tension) * 0.002, 0.0);
+        float d = length(pa - ba * h + vibration);
+        
+        return smoothstep(0.01 + tension * 0.01, 0.005, d);
     }
 };
 
@@ -91,11 +100,13 @@ kernel void renderDQFA_v1_5(
     float aspect = float(width) / float(height);
     uv.x *= aspect;
 
-    // 1. RESONANT RIPPLES (The Artery Pulse)
-    float ripple = 0.0;
-    if (control.tick % 34 < 5) { // Fibonacci Heartbeat visual
-        float phase = float(control.prime_phase) * (M_PI_F / 3.0);
-        ripple = DisplayCorner::projectWave(uv, float(control.tick), phase, control.coherence == 0);
+    // 1. RESONANT RIPPLES (Registry Mapping)
+    float ripple_int = 0.0;
+    float3 ripple_color = DisplayCorner::getResonantColor(control.prime_phase);
+    
+    if (control.tick % 34 < 10) { 
+        float phase_offset = float(control.prime_phase) * (M_PI_F / 3.0);
+        ripple_int = DisplayCorner::projectWave(uv, float(control.tick), phase_offset);
     }
 
     // 2. JITTERBUG GEOMETRY (ALGEBRAIC CORE)
@@ -111,15 +122,14 @@ kernel void renderDQFA_v1_5(
     };
     
     float scale = 3.0f + sin(float(control.tick) * 0.05f) * 0.5f;
+    float tension = 0.0;
+    for(int i=0; i<4; i++) tension += abs(control.rotor_bias[i]);
 
     // 3. OPTICAL PROJECTION
     float2 proj[12];
     for(int i=0; i<12; i++) {
         Quadray4 qv = v_base[i];
-        // Apply 4D Rotor Bias from Ghost Kernel
-        for(int j=0; j<4; j++) {
-            qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
-        }
+        for(int j=0; j<4; j++) qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
         
         SurdVector3 sv = qv.toCartesian();
         float3 pf = float3(DisplayCorner::toFloat(sv.x), DisplayCorner::toFloat(sv.y), DisplayCorner::toFloat(sv.z)) * scale;
@@ -132,15 +142,15 @@ kernel void renderDQFA_v1_5(
 
     float wire = 0.0;
     for(int i=0; i<24; i++) {
-        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]]));
+        wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]], tension - 1.0f));
     }
 
-    // 5. COLOR MAPPING (Identity & State)
+    // 5. COLOR MAPPING
     float3 color = float3(wire);
     if (control.coherence == 1) {
-        color = mix(color, float3(1.0, 0.2, 0.2), 0.5); // Red-Shift (Tuck)
+        color = mix(color, float3(1.0, 0.2, 0.2), 0.5); // Tuck (Red)
     } else {
-        color += float3(0.8, 0.7, 0.3) * ripple; // Golden Ripple (Laminar)
+        color += ripple_color * ripple_int; // Resonant Ripple
     }
 
     outTexture.write(float4(color, 1.0f), gid);
