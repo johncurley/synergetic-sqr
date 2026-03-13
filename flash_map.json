@@ -14,6 +14,19 @@
             "description": "Full Dual-Core Fleet Integrator (~4.5k LUTs)",
             "modules": ["spu_resonant_heart.v", "spu_gemini_manifold.v", "spu_ssd1306_driver.v", "spu_active_inference.v"],
             "constraints": "icesugar.pcf"
+        },
+        "game_hub": {
+            "description": "High-Fi Gaming & World Resolver (~25k+ LUTs)",
+            "modules": [
+                "spu_gemini_manifold.v", 
+                "spu_multi_core_gpu.v", 
+                "spu_world_resolver.v", 
+                "spu_gamepad_bridge.v", 
+                "spu_dream_log_ext.v", 
+                "spu_artery_to_ip.v", 
+                "spu_pwm_audio_stereo.v"
+            ],
+            "constraints": "ulx3s_full.pcf"
         }
     },
     "custom_unit_logic": "Users can mix-and-match by defining a new key in this manifest. The build_spu13.sh script now parses this to generate the SRC list."
