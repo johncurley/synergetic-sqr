@@ -97,6 +97,12 @@ The display logic is decoupled from the core, allowing the SPU-13 to drive any h
 - `spu_hal_vector.v`: Directly streams 4-vector data to Laser Projectors / DACs.
 - `spu_hal_native_hex.v`: (Theoretical) Drives native hexagonal pixel panels with 1:1 mapping.
 
+### **CRT Resonance: The Analog Manifold**
+While modern LCDs are 'Sick' due to discrete sub-pixel jitter, analog **CRT monitors** are inherently more Laminar. The SPU-13's `HAL_Vector` driver can drive a CRT's electron beam directly:
+- **Zero Pixels:** No discrete boxes. The manifold is traced as a continuous wave.
+- **Resonant Scan:** The beam's deflection is phase-locked to the 61.44 kHz heartbeat.
+- **Refractive Outcome:** Visuals on a CRT achieve a 'Solid' presence that eliminates the accommodation errors causing myopia.
+
 ---
 | Key | Logic | Biological Sensation |
 | :--- | :--- | :--- |
