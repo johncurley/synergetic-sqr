@@ -30,7 +30,17 @@ The SPU-13 does not use IEEE-754 Floating Point. It uses a **Dual-Integer Surd R
 
 To satisfy the **Zero-Tolerance Verification Mandate**, the SPU-13 utilizes a tiered audit strategy. Every bit must be accounted for before the manifold is authorized for commit.
 
-#### 1. Prerequisites
+#### 1. The Unified Forge CLI
+We provide a single entry point for all fleet operations:
+```bash
+./tools/spu_forge.py audit   # Comprehensive pre-push audit
+./tools/spu_forge.py build   # Synthesis for Cortex
+./tools/spu_forge.py verify  # Formal reachability proofs
+./tools/spu_forge.py observe # Launch the 3D IDE
+./tools/spu_forge.py test    # Deterministic algebraic tests
+```
+
+#### 2. Prerequisites
 Install the formal, mathematical, Python, and FPGA synthesis toolchains:
 ```bash
 # Formal Logic & Synthesis
@@ -164,6 +174,8 @@ For first-time hardware operators, please follow the **[SPU-13 Reification Check
 ---
 
 ### 📜 The Laminar Axiom
+*   **[COMMUNITY_HANDBOOK.md](docs/spec/COMMUNITY_HANDBOOK.md):** The Allied Path: Onboarding for grassroots architects.
+*   **[LITHIC_PROTOCOL.md](docs/paradigms/LITHIC_PROTOCOL.md):** The Manifesto for Sovereign Computing.
 > "When the geometry is correct, the energy is effortless. When the mind is coherent, the machine is a mirror. We do not force the flow; we remove the corners that obstruct it."
 
 ---
