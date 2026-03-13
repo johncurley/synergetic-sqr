@@ -1,58 +1,39 @@
 #!/usr/bin/env python3
-# SPU-13 Laminar Audit & Certification (v1.0)
-# Objective: Generate a 'Sovereign Birth Certificate' from the manifold log.
+# Laminar Audit Tool (v1.0)
+# Objective: Identify 'Cubic' patterns and suggest 'Sunflower' alternatives.
+# Vibe: The End of Cartesian Drift.
 
-import csv
+import re
 import sys
 import os
 
-def generate_certificate(log_file):
-    if not os.path.exists(log_file):
-        print(f"Error: Log file '{log_file}' not found.")
-        return
+CUBIC_PATTERNS = [
+    (r'sqrt\(', "CUBIC: Irrational Square Root detected. Suggest: Rational Quadrance (x*x + y*y)."),
+    (r'\/ \w+', "CUBIC: Floating Point Division detected. Suggest: Rational Reciprocal LUT."),
+    (r'float |double ', "CUBIC: Floating point contamination. Suggest: Fixed-Point Surd (int32_t a, b)."),
+    (r'sin\(|cos\(', "CUBIC: Trigonometric Stutter detected. Suggest: Quadray Rotation (60-degree).")
+]
 
-    leaks = 0
-    recoveries = 0
-    total_states = 0
-    max_k = 0.0
-    
-    print(f"--- Commencing SPU-13 Integrity Audit: {log_file} ---")
-    
-    with open(log_file, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            total_states += 1
-            a, b, c, d = float(row['A']), float(row['B']), float(row['C']), float(row['D'])
-            sum_val = a + b + c + d
-            
-            # 1. Leak Check (Zero-Sum Invariant)
-            if abs(sum_val) > 0.05: # Allowing for fixed-point rounding floor
-                leaks += 1
+def audit_file(file_path):
+    print(f"--- Auditing for Spatial Discoherence: {file_path} ---")
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+        
+    dissonance_count = 0
+    for i, line in enumerate(lines):
+        for pattern, suggestion in CUBIC_PATTERNS:
+            if re.search(pattern, line):
+                print(f"Line {i+1}: {line.strip()}")
+                print(f"  [!] {suggestion}\n")
+                dissonance_count += 1
                 
-            # 2. Recovery Check
-            if row['Observation'] == "RECOVERY":
-                recoveries += 1
-                
-            # 3. Peak Tension
-            k = float(row['Davis Ratio (C)'])
-            if k != float('inf') and k > max_k:
-                max_k = k
-
-    # --- Generate Report ---
-    leak_rate = (leaks / total_states) * 100 if total_states > 0 else 0
-    print("\n--- SOVEREIGN BIRTH CERTIFICATE ---")
-    print(f"Manifold Status: {'CRYSTALLINE' if leak_rate == 0 else 'TURBULENT'}")
-    print(f"Total Cycles Observed: {total_states}")
-    print(f"Leak Rate: {leak_rate:.4f}%")
-    print(f"Henosis Interventions: {recoveries}")
-    print(f"Laminar Stability Index: {100.0 - leak_rate:.2f}%")
-    print("------------------------------------\n")
-    
-    if leak_rate == 0:
-        print("RESULT: LAMINAR PASS. Hardware integrity certified.")
+    if dissonance_count == 0:
+        print("RESULT: Manifold is CRYSTALLINE. No Cubic pathogens found.")
     else:
-        print("RESULT: CUBIC FAIL. Check silicon for grounding or logic leaks.")
+        print(f"RESULT: Found {dissonance_count} instances of Cubic Dissonance.")
 
 if __name__ == "__main__":
-    log = sys.argv[1] if len(sys.argv) > 1 else "laminar_log.csv"
-    generate_certificate(log)
+    if len(sys.argv) < 2:
+        print("Usage: ./laminar_audit.py <source_file>")
+    else:
+        audit_file(sys.argv[1])

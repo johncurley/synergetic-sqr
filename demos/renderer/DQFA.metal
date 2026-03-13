@@ -55,7 +55,7 @@ struct SPUControl {
     uint32_t coherence;     
     uint32_t harmonic_mode; 
     uint32_t lattice_lock;  
-    uint32_t bio_security;  // 0=Std, 1=Med, 2=Auto, 3=Prob, 4=Heatmap, 5=Stress, 6=IVMDirect, 7=LatticeLock
+    uint32_t bio_security;  // 0=Std, 1=Med, 2=Auto, 3=Prob, 4=Heatmap, 5=Stress, 6=IVMDirect, 7=LatticeLock, 8=Sunflower
     float    tau_threshold; 
     float    rotor_bias[4]; 
 };
@@ -117,8 +117,24 @@ kernel void renderDQFA_v1_5(
 
     float3 final_color = float3(0.05, 0.05, 0.08);
 
-    // --- MODE 7: LATTICE LOCK (Macro-Pixel View) ---
-    if (control.bio_security == 7) {
+    // --- MODE 8: SUNFLOWER (Phyllotaxis Resonance) ---
+    if (control.bio_security == 8) {
+        float phi = (1.0 + sqrt(5.0)) / 2.0;
+        float golden_angle = 2.0 * 3.14159265 * (1.0 - 1.0/phi);
+        float count = 400.0;
+        float dots = 0.0;
+        
+        for(float i=0.0; i<count; i++) {
+            float r = sqrt(i / count) * 0.8;
+            float theta = i * golden_angle + float(control.tick) * 0.001;
+            float2 pos = float2(r * cos(theta), r * sin(theta));
+            dots = max(dots, smoothstep(0.01, 0.0, length(uv - pos)));
+        }
+        final_color = mix(float3(0.05, 0.05, 0.1), float3(0.8, 0.7, 0.2), dots);
+    }
+
+    // --- MODE 7: LATTICE LOCK ---
+    else if (control.bio_security == 7) {
         float2 macro_uv = floor(uv * 40.0) / 40.0;
         float2 hex_uv = macro_uv;
         hex_uv.x *= 1.1547;
