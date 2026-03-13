@@ -56,6 +56,7 @@ add_spu_test(spu-hull-verify hull_verification.cpp)
 add_spu_test(spu-phi-verify phi_scaling_verification.cpp)
 add_spu_test(spu-fluid-verify fluid_parabolic_verify.cpp)
 add_spu_test(spu-trojan-verify trojan_verification.cpp)
+add_spu_test(quadray-graphics-verify quadray_graphics_verification.cpp)
 
 # --- VISUAL DEMONSTRATOR (OPTIONAL) ---
 if(BUILD_RENDERER)

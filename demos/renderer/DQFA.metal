@@ -35,6 +35,16 @@ struct Quadray4 {
             q[0].negate().subtract(q[1]).add(q[2]).add(q[3])
         };
     }
+
+    // toIVM : Directly maps 4D Quadray to 2D 60-degree screen point
+    float2 toIVM() const {
+        float a = (float(q[0].a) + float(q[0].b) * 1.73205081f) / 65536.0f;
+        float b = (float(q[1].a) + float(q[1].b) * 1.73205081f) / 65536.0f;
+        float c = (float(q[2].a) + float(q[2].b) * 1.73205081f) / 65536.0f;
+        float d = (float(q[3].a) + float(q[3].b) * 1.73205081f) / 65536.0f;
+        // Project onto IVM grid (A=Up, B=120deg, C=240deg, D=Origin)
+        return float2((b - c) * 0.8660254f, a - (b + c) * 0.5f);
+    }
 };
 
 struct SPUControl {
@@ -45,7 +55,7 @@ struct SPUControl {
     uint32_t coherence;     
     uint32_t harmonic_mode; 
     uint32_t lattice_lock;  
-    uint32_t bio_security;  // 0=Std, 1=Med, 2=Auto, 3=Prob, 4=Heatmap, 5=Stress
+    uint32_t bio_security;  // 0=Std, 1=Med, 2=Auto, 3=Prob, 4=Heatmap, 5=Stress, 6=IVMDirect, 7=LatticeLock
     float    tau_threshold; 
     float    rotor_bias[4]; 
 };
@@ -101,8 +111,54 @@ kernel void renderDQFA_v1_5(
 
     float3 final_color = float3(0.05, 0.05, 0.08);
 
+    // --- MODE 7: LATTICE LOCK (Macro-Pixel View) ---
+    if (control.bio_security == 7) {
+        float2 macro_uv = floor(uv * 40.0) / 40.0;
+        float2 hex_uv = macro_uv;
+        hex_uv.x *= 1.1547;
+        hex_uv.y += (fmod(floor(uv.x * 40.0), 2.0) == 0.0 ? 0.0 : 0.5) / 40.0;
+        
+        float lattice = DisplayCorner::drawIVM(uv, 0.0, 40.0);
+        float2 target = float2(0.0); // Identity focus
+        float dist = length(macro_uv - target);
+        
+        final_color = mix(float3(0.1, 0.1, 0.15), float3(0.0, 0.8, 0.4), lattice);
+        if (dist < 0.05) final_color += float3(0.8, 0.6, 0.0); // Highlight Lock
+    }
+
+    // --- MODE 6: DIRECT IVM PROJECTION ---
+    else if (control.bio_security == 6) {
+        float lattice = DisplayCorner::drawIVM(uv, float(control.tick), 20.0);
+        final_color += float3(0.1, 0.2, 0.3) * lattice;
+
+        struct SurdFixed64 one = { SurdFixed64::One, 0 };
+        struct SurdFixed64 zero = { 0, 0 };
+        struct Quadray4 v_base[12];
+        v_base[0] = (struct Quadray4){{ one, one, zero, zero }};
+        v_base[1] = (struct Quadray4){{ one, zero, one, zero }};
+        v_base[2] = (struct Quadray4){{ one, zero, zero, one }};
+        v_base[3] = (struct Quadray4){{ zero, one, one, zero }};
+        v_base[4] = (struct Quadray4){{ zero, one, zero, one }};
+        v_base[5] = (struct Quadray4){{ zero, zero, one, one }};
+        v_base[6] = (struct Quadray4){{ zero, zero, zero, zero }}; // Identity check
+        
+        float2 proj[7];
+        for(int i=0; i<7; i++) {
+            struct Quadray4 qv = v_base[i];
+            for(int j=0; j<4; j++) qv.q[j].a += int(control.rotor_bias[j] * 65536.0f);
+            proj[i] = qv.toIVM() * 0.5f; // Direct mapping to 2D 60-degree grid
+        }
+
+        float wire = 0.0;
+        int edges[12] = { 0,1, 1,3, 3,4, 4,0, 0,2, 2,5 };
+        for(int i=0; i<6; i++) {
+            wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]], 0.0));
+        }
+        final_color += float3(0.0, 1.0, 0.6) * wire;
+    }
+
     // --- MODE 4: LUT HEATMAP ---
-    if (control.bio_security == 4) {
+    else if (control.bio_security == 4) {
         float2 silicon = floor(uv * 64.0);
         float activity = fract(sin(dot(silicon, float2(12.9898, 78.233))) * 43758.5453 + float(control.tick) * 0.01);
         final_color = (activity > 0.7) ? float3(1.0, 0.2, 0.1) : float3(0.1, 0.8, 0.4) * activity;

@@ -67,12 +67,27 @@ The SPU-13 renderer functions as a **High-Fidelity Digital Twin**. It executes L
 ./build/spu-renderer --lithic software/hello_manifold.hex
 ```
 
-#### 2. Observer Commands
+### **Symmetry Engine: The 60° Rasterizer**
+The SPU-13 moves away from the 'Cartesian Prison' of 90-degree pixels. Instead, it uses a dedicated **Symmetry Engine** to align visual energy with the 60° Isotropic Vector Matrix (IVM).
+
+#### **1. Rasterization Pipeline**
+Standard GPUs use Barycentric coordinates and Scanline algorithms. The SPU-13 uses **Resonant Interpolation**:
+- **Manifold Lock:** Pixels are snapped to the nearest 60° lattice point on every 61.44 kHz pulse.
+- **Bresenham-Killer:** Rational Lattice Traversal module (`spu_bresenham_killer.v`) draws jitter-free lines through the Quadray manifold.
+- **Temporal Dithering:** Minimizes 'Cubic Poison' on 90-degree displays by alternating energy between neighboring pixels.
+
+#### **2. Modular HAL (Hardware Abstraction Layer)**
+The display logic is decoupled from the core, allowing the SPU-13 to drive any hardware:
+- `spu_hal_cartesian.v`: Translates IVM to 90° Grid for LCD/OLED screens.
+- `spu_hal_vector.v`: Directly streams 4-vector data to Laser Projectors / DACs.
+- `spu_hal_native_hex.v`: (Theoretical) Drives native hexagonal pixel panels with 1:1 mapping.
+
+---
 | Key | Logic | Biological Sensation |
 | :--- | :--- | :--- |
 | **W/A/S/D** | **Laminar Strike** | Real-time 4D Quadray manipulation. |
 | **SPACE** | **Laminar Flush** | Instant purification of the manifold. |
-| **B** | **Bio-Security** | Toggles **MEDITATION**, **AUTOPHAGY**, and **PROBABILITY** modes. |
+| **B** | **Bio-Security** | Toggles 8 modes including **MEDITATION**, **PROBABILITY**, **HEATMAP**, and **LATTICE LOCK**. |
 | **T** | **Tension Toggle** | Visualizes the **Cubic Tax** vs. **IVM Flow**. |
 | **N** | **Discovery** | Spawns an Allied node via resonant handshake. |
 | **L** | **Lattice Lock** | Snaps the observer to the 60° IVM metric. |
