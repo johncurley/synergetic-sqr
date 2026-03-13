@@ -21,6 +21,8 @@ struct SPUControl {
     uint32_t coherence;     // 0=Sanity, 1=Tuck
     uint32_t harmonic_mode; 
     uint32_t lattice_lock;  
+    uint32_t cubic_bias;    // 0=IVM, 1=Cubic
+    uint32_t bio_security;  // 0=Std, 1=Meditation, 2=Autophagy
     float    tau_threshold; 
     float    rotor_bias[4]; 
 };
@@ -28,9 +30,9 @@ struct SPUControl {
 struct SovereignNode {
     uint32_t id;
     std::string name;       // Decoded Sovereign Name
-    float phase_offset;     
-    bool is_locked;         
-    float tension;          
+    float phase_offset;     // The Δt alignment
+    bool is_locked;         // Resonant Lock status
+    float tension;          // Local Lattice Pressure
 };
 
 class LithicForge {
@@ -68,16 +70,11 @@ public:
 
     void step() {
         _control.tick++;
-        
-        // --- 1. Simulation of Phase-Locking (Discovery Handshake) ---
         for (auto& node : _nodes) {
             if (!node.is_locked) {
-                // Target phase based on Registry (e.g. 60 deg for type 1)
                 float target = (float)(node.id % 6) * 60.0f;
-                // Approach target phase (Temporal Alignment)
                 float diff = target - node.phase_offset;
-                node.phase_offset += diff * 0.05f; // Laminar Snap speed
-                
+                node.phase_offset += diff * 0.05f; 
                 if (std::abs(diff) < 0.1f) {
                     node.is_locked = true;
                     node.phase_offset = target;
@@ -86,7 +83,6 @@ public:
             }
         }
 
-        // --- 2. Execute Program bytecode (if loaded) ---
         if (!_program.empty()) {
             uint16_t instr = _program[_pc];
             processGeometric((instr >> 13) & 0x07, (instr >> 11) & 0x03, instr & 0xFF);
@@ -97,6 +93,13 @@ public:
 
     const SPUControl& getControl() const { return _control; }
     const std::vector<SovereignNode>& getNodes() const { return _nodes; }
+
+    // Thin-Client Mirroring: Receive state from physical node
+    void injectTelemetry(const SPUControl& remoteState) {
+        _control.tick = remoteState.tick;
+        for(int i=0; i<4; i++) _control.rotor_bias[i] = remoteState.rotor_bias[i];
+        _control.coherence = remoteState.coherence;
+    }
 
     bool loadHex(const std::string& path) {
         std::ifstream file(path);
@@ -110,7 +113,6 @@ public:
         return !_program.empty();
     }
 
-private:
     void processGeometric(uint8_t op, uint8_t axis, uint8_t val) {
         float delta = (float)val / 255.0f;
         switch (op) {
@@ -128,6 +130,7 @@ private:
         } else _control.coherence = 0;
     }
 
+private:
     std::vector<uint16_t> _program;
     uint32_t _pc;
     SPUControl _control;

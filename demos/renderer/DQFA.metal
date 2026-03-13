@@ -90,6 +90,12 @@ struct DisplayCorner {
         float d = length(uv - pos);
         return exp(-d * d * (1.0 / (0.01 + precision * 0.1)));
     }
+
+    static float drawPearl(float2 uv, float2 pos, float tick) {
+        float d = length(uv - pos);
+        float pulse = (sin(tick * 0.1) + 1.0) * 0.5;
+        return smoothstep(0.02 + pulse * 0.01, 0.0, d) * pulse;
+    }
 };
 
 // --- 3. THE MASTER KERNEL ---
@@ -245,6 +251,12 @@ kernel void renderDQFA_v1_5(
         for(int i=0; i<24; i++) wire = max(wire, DisplayCorner::drawEdge(uv, proj[edges[i*2]], proj[edges[i*2+1]], tension - 1.0f));
         float3 wire_color = (control.coherence == 0) ? float3(0.8, 0.7, 0.2) : float3(1.0, 0.2, 0.1);
         final_color += wire_color * wire;
+
+        // Render Navigation Pearls at the active prime phase vertex
+        if (control.prime_phase < 4) {
+            float pearl = DisplayCorner::drawPearl(uv, proj[control.prime_phase], float(control.tick));
+            final_color = mix(final_color, float3(1.0, 1.0, 1.0), pearl);
+        }
     }
 
     outTexture.write(float4(final_color, 1.0f), gid);
