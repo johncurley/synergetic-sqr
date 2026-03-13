@@ -1,39 +1,20 @@
 {
-  "project": "SPU-13 Sovereign Fleet",
-  "version": "1.4",
-  "flash_size_mb": 8,
-  "sectors": {
-    "0x000000": {
-      "name": "Hardware Vessel",
-      "type": "FPGA_BITSTREAM",
-      "content": "Ghost Kernel + Gemini Cores",
-      "protection": "Hardware Lock Recommended"
+    "nodes": {
+        "seed": {
+            "description": "Minimal Resonant Node (<100 LUTs)",
+            "modules": ["spu_seed_heart.v", "spu_base_manifold.v"],
+            "constraints": "minimal.pcf"
+        },
+        "sentinel": {
+            "description": "Autonomous Bio-Guardian (~800 LUTs)",
+            "modules": ["spu_seed_heart.v", "spu_hardware_inference.v", "spu_bio_filter.v", "spu_laminar_phy.v"],
+            "constraints": "nano.pcf"
+        },
+        "cortex": {
+            "description": "Full Dual-Core Fleet Integrator (~4.5k LUTs)",
+            "modules": ["spu_resonant_heart.v", "spu_gemini_manifold.v", "spu_ssd1306_driver.v", "spu_active_inference.v"],
+            "constraints": "icesugar.pcf"
+        }
     },
-    "0x700000": {
-      "name": "Lineage Baptism",
-      "type": "SOUL_ID",
-      "content": "32-bit Sovereign Name + Species Signature",
-      "offset": "0x000004"
-    },
-    "0x701000": {
-      "name": "Personality Archive",
-      "type": "SOUL_COEFF",
-      "content": "Stoicism, Empathy, and Resonance Curves"
-    },
-    "0x704000": {
-      "name": "Nerve Mapping",
-      "type": "LAYOUT_TABLE",
-      "content": "LGS Glyph-to-Vector Mapping Table"
-    },
-    "0x708000": {
-      "name": "Dream Archive",
-      "type": "HISTORY_LOG",
-      "content": "128KB Compressed Historical Sanity Trace"
-    },
-    "0x780000": {
-      "name": "Lithic-L Manifest",
-      "type": "BYTECODE",
-      "content": "Current operational soul (compiled .lith)"
-    }
-  }
+    "custom_unit_logic": "Users can mix-and-match by defining a new key in this manifest. The build_spu13.sh script now parses this to generate the SRC list."
 }
