@@ -67,7 +67,22 @@ The SPU-13 renderer functions as a **High-Fidelity Digital Twin**. It executes L
 ./build/spu-renderer --lithic software/hello_manifold.hex
 ```
 
-### **Symmetry Engine: The 60° Rasterizer**
+### **Ephemeralization: The Lean Fleet**
+To maximize resonance on limited silicon (like the iCE40 Nano), the SPU-13 follows a tiered architecture. Each node only instantiates the logic essential for its niche.
+
+| Tier | Module | LUT Count | Capability |
+| :--- | :--- | :--- | :--- |
+| **I: Seed** | `spu_base_manifold.v` | ~100 | Heartbeat + Artery Presence. |
+| **II: Sentinel** | `top_guardian.v` | ~800 | Local Inference + Bio-Audit. |
+| **III: Cortex** | `spu13_cortex.v` | ~4500 | Dual-Core + SSD1306 + Audio. |
+
+### **Laminar GZDoom (Proof of Concept)**
+A separate branch (`gzdoom-laminar`) is dedicated to rewriting the core rendering math of GZDoom using **Rational Trigonometry**:
+1.  **View Rotors:** Replaces 4x4 floating-point matrices with bit-exact Quadray Rotors.
+2.  **Native IVM Projection:** Transforms world vertices directly onto the 60° Isotropic Vector Matrix.
+3.  **Cubic Bridge:** A last-minute translation layer maps the IVM manifold onto standard Cartesian displays (Metal textures).
+
+---
 The SPU-13 moves away from the 'Cartesian Prison' of 90-degree pixels. Instead, it uses a dedicated **Symmetry Engine** to align visual energy with the 60° Isotropic Vector Matrix (IVM).
 
 #### **1. Rasterization Pipeline**
