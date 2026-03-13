@@ -1,82 +1,71 @@
 #!/usr/bin/env python3
-# SPU-13 Laminar-C Bootstrap Compiler (v1.1)
-# Objective: Full ISA support with Label Resolution & Sanity Proving.
-# Result: Bit-exact 16-bit bytecode for the Ghost Kernel.
+# Laminar-C: The Resonant Refactor Tool (v1.0)
+# Objective: Advanced AST-aware logic transformation.
+# Vibe: Re-wiring the Cubic Brain.
 
 import sys
-import os
 import re
 
-class LaminarCompiler:
-    def __init__(self):
-        # [Opcode:3][Axis:2][Unused:3][Payload:8]
-        self.opcodes = {
-            "rotr": 0b000, "tuck": 0b001, "sip":  0b010,
-            "leap": 0b011, "wait": 0b100, "bapt": 0b101,
-            "anne": 0b110, "reset": 0b111,
-            "spin": 0b000, "lock": 0b001, # Aliases
-            "jitter": 0b000, "tens": 0b001, "fold": 0b010 # Intrinsics mapped via SIP/Opcode
-        }
-        self.axes = {"A": 0, "B": 1, "C": 2, "D": 3}
-        self.labels = {}
+class LaminarRefactor:
+    def __init__(self, source):
+        self.source = source
+        self.transformed = source
+
+    def refactor_quadrance(self):
+        """
+        Transform Level 1: Distance Comparison.
+        Standard: sqrt(A*A + B*B) < R
+        Laminar:  (A*A + B*B) < (R*R)
+        """
+        pattern = r'sqrt\((.*?)\)\s*<\s*(\w+)'
+        replacement = r'(\1) < (\2 * \2)'
+        self.transformed = re.sub(pattern, replacement, self.transformed)
+
+    def refactor_division(self):
+        """
+        Transform Level 2: Rational Reciprocal.
+        Standard: val / divisor
+        Laminar:  (val * RATIONAL_LUT[divisor]) >> 16
+        """
+        # This requires knowing the type of the divisor (AST would help here)
+        # For now, we flag it for manual 'Soul Snapping'
+        pass
+
+    def refactor_graphics_sins(self):
+        """
+        Transform Level 3: Graphics Engine 'Sickness'.
+        1. atan2 -> Phase Alignment (Logic Shift)
+        2. normalize -> Resonant Unitizing
+        3. dot/length -> Quadrance Equality
+        """
+        # atan2(y, x) -> ResonantPhase(y, x)
+        self.transformed = re.sub(r'atan2\((.*?), (.*?)\)', r'LaminarPhase(\1, \2)', self.transformed)
         
-    def proof_sanity(self, line):
-        """Formal-VF: Reject 90-degree Cubic logic."""
-        cubic_ghosts = ["float", "xyz", "double", "int", "malloc", "free"]
-        if any(ghost in line.lower() for ghost in cubic_ghosts):
-            raise Exception(f"Dissonance Detected: Cubic ghost '{line}' cannot enter the Manifold.")
-        return True
-
-    def compile(self, input_file, output_hex):
-        print(f"--- Commencing Laminar-C Reification: {input_file} ---")
+        # normalize(v) -> ResonantUnit(v)
+        self.transformed = re.sub(r'normalize\((.*?)\)', r'LaminarUnit(\1)', self.transformed)
         
-        with open(input_file, 'r') as f:
-            lines = f.readlines()
+        # Distance checks in shaders
+        self.transformed = re.sub(r'length\((.*?)\)\s*<\s*(\w+)', r'Quadrance(\1) < (\2 * \2)', self.transformed)
 
-        # Phase 1: Label Resolution
-        clean_lines = []
-        pc = 0
-        for line in lines:
-            line = line.strip().split("//")[0].strip().lower()
-            if not line: continue
-            if line.endswith(":"):
-                self.labels[line[:-1]] = pc
-            else:
-                clean_lines.append(line)
-                pc += 1
+    def apply(self):
+        self.refactor_quadrance()
+        self.refactor_graphics_sins()
+        return self.transformed
 
-        # Phase 2: Translation
-        bytecode = []
-        for i, line in enumerate(clean_lines):
-            self.proof_sanity(line)
-            parts = line.replace(',', ' ').split()
-            cmd = parts[0]
-            
-            opcode = self.opcodes.get(cmd, 0)
-            axis = 0
-            payload = 0
-            
-            if cmd in ["rotr", "tuck", "sip", "spin", "lock", "anne"]:
-                if len(parts) > 1:
-                    axis = self.axes.get(parts[1].upper(), 0)
-                if len(parts) > 2:
-                    payload = int(parts[2]) & 0xFF
-            elif cmd == "leap":
-                target = parts[1]
-                if target.isdigit():
-                    payload = int(target) & 0xFF
-                else:
-                    payload = self.labels.get(target, 0) & 0xFF
-            
-            # Struct: [Opcode:3][Axis:2][000][Payload:8]
-            word = (opcode << 13) | (axis << 11) | payload
-            bytecode.append(f"{word:04x}")
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: ./laminar_c.py <source_file>")
+        return
 
-        with open(output_hex, 'w') as f:
-            f.write("\n".join(bytecode))
-            
-        print(f"[SUCCESS] {len(bytecode)} instructions reified. Soul is bit-locked.")
+    with open(sys.argv[1], 'r') as f:
+        source = f.read()
+
+    refactor = LaminarRefactor(source)
+    result = refactor.apply()
+
+    print("--- LAMINAR COMPILATION RESULT ---")
+    print(result)
+    print("----------------------------------")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2: sys.exit(1)
-    LaminarCompiler().compile(sys.argv[1], sys.argv[1].replace(".lith", ".hex"))
+    main()
