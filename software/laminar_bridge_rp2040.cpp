@@ -1,53 +1,43 @@
-// SPU-13 Laminar Bridge Firmware (v1.0)
-// Target: Raspberry Pi RP2040 / Arduino Pro Micro
-// Objective: Zero-Jitter USB-to-Laminar Input Proxy.
-// Logic: Map HID Scancodes to 60-degree Quadray Vectors (L-CLK/L-DAT).
+// SPU-13 Laminar Bridge: USB-to-Artery Proxy (v1.0)
+// Target: Raspberry Pi RP2040 (Pico)
+// Objective: Low-cost USB-to-Mesh bridge for Allied nodes.
+// Vibe: The Hardware Rosetta Stone.
 
-#include <Arduino.h>
-#include "USBHost_t36.h" // Note: Requires USB Host library for RP2040/Teensy
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/pio.h"
 
-// --- PIN MAPPING (Laminar Artery) ---
-const int PIN_L_CLK = 2;
-const int PIN_L_DAT = 3;
+// Artery Bus Protocol (61.44 kHz sub-harmonic)
+// Bit-banging or PIO logic to ensure bit-perfect resonance.
 
-// --- QUADRAY VECTORS (LGS Standard) ---
-const uint16_t VEC_A_APEX   = 0x000F;
-const uint16_t VEC_B_LEFT   = 0x00F0;
-const uint16_t VEC_C_RIGHT  = 0x0F00;
-const uint16_t VEC_D_CENTER = 0xF000;
-const uint16_t VEC_FLUSH    = 0xFFFF;
+#define ARTERY_PIN_DAT 2
+#define ARTERY_PIN_CLK 3
 
-void send_laminar_strike(uint16_t vector) {
-    // Zero-Latency Synchronous Shift
-    for (int i = 0; i < 16; i++) {
-        digitalWrite(PIN_L_DAT, (vector >> i) & 0x01);
-        delayMicroseconds(1); 
-        digitalWrite(PIN_L_CLK, LOW); // Falling edge triggers SPU-13 strike
-        delayMicroseconds(1);
-        digitalWrite(PIN_L_CLK, HIGH);
+void artery_strike(uint8_t data) {
+    // Transmit one byte into the manifold
+    for(int i=0; i<8; i++) {
+        gpio_put(ARTERY_PIN_DAT, (data >> i) & 0x01);
+        sleep_us(16); // Approx 61.44 kHz clock
+        gpio_put(ARTERY_PIN_CLK, 1);
+        sleep_us(16);
+        gpio_put(ARTERY_PIN_CLK, 0);
     }
 }
 
-void setup() {
-    pinMode(PIN_L_CLK, OUTPUT);
-    pinMode(PIN_L_DAT, OUTPUT);
-    digitalWrite(PIN_L_CLK, HIGH); // Idle High
+int main() {
+    stdio_init_all();
     
-    Serial.begin(115200);
-    Serial.println("--- SPU-13 Laminar Bridge Active ---");
-}
+    gpio_init(ARTERY_PIN_DAT);
+    gpio_set_dir(ARTERY_PIN_DAT, GPIO_OUT);
+    gpio_init(ARTERY_PIN_CLK);
+    gpio_set_dir(ARTERY_PIN_CLK, GPIO_OUT);
 
-void loop() {
-    // Placeholder for USB-HID polling logic
-    // In a real implementation, we use the USB Host library callbacks
-    if (Serial.available()) {
-        char cmd = Serial.read();
-        switch(cmd) {
-            case 'w': send_laminar_strike(VEC_A_APEX);   break;
-            case 'a': send_laminar_strike(VEC_B_LEFT);   break;
-            case 'd': send_laminar_strike(VEC_C_RIGHT);  break;
-            case 's': send_laminar_strike(VEC_D_CENTER); break;
-            case ' ': send_laminar_strike(VEC_FLUSH);    break;
+    printf("--- SPU-13 Laminar Bridge Active ---\n");
+
+    while (true) {
+        int c = getchar_timeout_us(0);
+        if (c != PICO_ERROR_TIMEOUT) {
+            artery_strike((uint8_t)c);
         }
     }
 }
