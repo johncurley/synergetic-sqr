@@ -46,19 +46,18 @@ module top_guardian (
     );
 
     // --- 3. Local Inference (Autonomous Sentinel) ---
-    wire [7:0] free_energy;
-    wire is_surprised;
-    wire [31:0] correction_v;
-    
-    spu_hardware_inference u_inference (
+    // Plug-and-Play Bio-Module using Artery Interface
+    wire bio_ready;
+    spu_hardware_inference u_bio_logic (
         .clk(`SPU_PIN_CLK), .reset(!`SPU_PIN_RST_N),
         .sensor_k(k_sim),
         .sensor_valid(1'b1),
-        .prior_k(32'h00010000), // Hard-coded identity prior
+        .prior_k(32'h00010000),
         .free_energy(free_energy),
         .is_surprised(is_surprised),
         .correction_v(correction_v)
     );
+    assign bio_ready = 1'b1; // Bio-module is always ready
 
     // --- 4. Communication (Laminar PHY) ---
     spu_laminar_phy u_phy (
