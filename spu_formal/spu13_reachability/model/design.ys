@@ -1,0 +1,11 @@
+# running in spu13_reachability/src/
+read -formal spu13_formal.sv
+read -formal spu_nano_core.v
+read -formal spu_davis_gate.v
+read -formal spu_quadray_vec.v
+prep -top spu13_formal
+
+hierarchy -smtcheck
+rename -witness
+write_jny -no-connections ../model/design.json
+write_rtlil ../model/design.il

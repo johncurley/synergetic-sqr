@@ -1,0 +1,25 @@
+SBY 13:23:45 [vd_determinant] Removing directory '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant'.
+SBY 13:23:45 [vd_determinant] Copy '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant.sv' to '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant/src/vd_determinant.sv'.
+SBY 13:23:45 [vd_determinant] Copy '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/../rtl/spu_smul.v' to '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant/src/spu_smul.v'.
+SBY 13:23:45 [vd_determinant] Copy '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/../rtl/surd_multiplier.v' to '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant/src/surd_multiplier.v'.
+SBY 13:23:45 [vd_determinant] Copy '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/../rtl/spu13_rotor_core.v' to '/Users/johncurley/Projects/desktop/synergeticrenderer/spu_formal/vd_determinant/src/spu13_rotor_core.v'.
+SBY 13:23:45 [vd_determinant] engine_0: smtbmc z3
+SBY 13:23:45 [vd_determinant] base: starting process "cd vd_determinant/src; yosys -ql ../model/design.log ../model/design.ys"
+SBY 13:23:47 [vd_determinant] base: finished (returncode=0)
+SBY 13:23:47 [vd_determinant] prep: starting process "cd vd_determinant/model; yosys -ql design_prep.log design_prep.ys"
+SBY 13:23:48 [vd_determinant] prep: finished (returncode=0)
+SBY 13:23:48 [vd_determinant] smt2: starting process "cd vd_determinant/model; yosys -ql design_smt2.log design_smt2.ys"
+SBY 13:23:48 [vd_determinant] smt2: finished (returncode=0)
+SBY 13:23:48 [vd_determinant] engine_0.basecase: starting process "cd vd_determinant; yosys-smtbmc -s z3 --presat --noprogress -t 5  --append 0 --dump-vcd engine_0/trace.vcd --dump-yw engine_0/trace.yw --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2"
+SBY 13:23:48 [vd_determinant] engine_0.induction: starting process "cd vd_determinant; yosys-smtbmc -s z3 --presat -i --noprogress -t 5  --append 0 --dump-vcd engine_0/trace_induct.vcd --dump-yw engine_0/trace_induct.yw --dump-vlogtb engine_0/trace_induct_tb.v --dump-smtc engine_0/trace_induct.smtc model/design_smt2.smt2"
+SBY 13:23:48 [vd_determinant] engine_0.basecase: ##   0:00:00  Solver: z3
+SBY 13:23:48 [vd_determinant] engine_0.induction: ##   0:00:00  Solver: z3
+SBY 13:23:48 [vd_determinant] engine_0.basecase: ##   0:00:00  Checking assumptions in step 0..
+SBY 13:23:48 [vd_determinant] engine_0.induction: ##   0:00:00  Trying induction in step 5..
+SBY 13:24:48 [vd_determinant] engine_0.basecase: ##   0:01:00  waiting for solver (1 minute)
+SBY 13:24:48 [vd_determinant] engine_0.induction: ##   0:01:00  waiting for solver (1 minute)
+SBY 13:28:48 [vd_determinant] engine_0.basecase: ##   0:05:00  waiting for solver (5 minutes)
+SBY 13:28:48 [vd_determinant] engine_0.induction: ##   0:05:00  waiting for solver (5 minutes)
+SBY 13:33:48 [vd_determinant] engine_0.basecase: ##   0:10:00  waiting for solver (10 minutes)
+SBY 13:33:48 [vd_determinant] engine_0.induction: ##   0:10:00  waiting for solver (10 minutes)
+SBY 13:33:48 [vd_determinant] engine_0.basecase: terminating process

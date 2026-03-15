@@ -1,0 +1,32 @@
+# SPU-13 Sovereign Constraints: iCeSugar (UP5K)
+# v1.5 "End-to-End Laminar Path"
+
+# --- 1. Heart & Reset ---
+set_io clk_12mhz 35
+set_io rst_n     18
+
+# --- 2. Command Artery (UART) ---
+set_io uart_rx   9
+
+# --- 3. Parallel Vision (PMOD C - RGB444) ---
+# R[3:0]
+set_io r[3] 44
+set_io r[2] 43
+set_io r[1] 38
+set_io r[0] 37
+# G[3:0]
+set_io g[3] 36
+set_io g[2] 34
+set_io g[1] 32
+set_io g[0] 31
+# B[3:0]
+set_io b[3] 28
+set_io b[2] 27
+set_io b[1] 26
+set_io b[0] 25
+
+# --- 4. Parallel Control (PMOD A) ---
+set_io pclk  4
+set_io hsync 2
+set_io vsync 47
+set_io de    46

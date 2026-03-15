@@ -1,0 +1,255 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
+
+-- Executing script file `../model/design.ys' --
+
+1. Executing Verilog-2005 frontend: spu13_formal.sv
+Parsing formal SystemVerilog input from `spu13_formal.sv' to AST representation.
+Storing AST representation for module `$abstract\spu13_formal'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: spu_nano_core.v
+Parsing formal SystemVerilog input from `spu_nano_core.v' to AST representation.
+Storing AST representation for module `$abstract\spu_nano_core'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: spu_davis_gate.v
+Parsing formal SystemVerilog input from `spu_davis_gate.v' to AST representation.
+Storing AST representation for module `$abstract\spu_davis_gate'.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: spu_quadray_vec.v
+Parsing formal SystemVerilog input from `spu_quadray_vec.v' to AST representation.
+Storing AST representation for module `$abstract\spu_quadray_vec'.
+Successfully finished Verilog frontend.
+
+5. Executing PREP pass.
+
+5.1. Executing HIERARCHY pass (managing design hierarchy).
+
+5.2. Executing AST frontend in derive mode using pre-parsed AST for module `\spu13_formal'.
+Generating RTLIL representation for module `\spu13_formal'.
+
+5.2.1. Analyzing design hierarchy..
+Top module:  \spu13_formal
+
+5.2.2. Analyzing design hierarchy..
+Top module:  \spu13_formal
+Removing unused module `$abstract\spu_quadray_vec'.
+Removing unused module `$abstract\spu_davis_gate'.
+Removing unused module `$abstract\spu_nano_core'.
+Removing unused module `$abstract\spu13_formal'.
+Removed 4 unused modules.
+Module spu13_formal directly or indirectly contains formal properties -> setting "keep" attribute.
+
+5.3. Executing PROC pass (convert processes to netlists).
+
+5.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+5.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$spu13_formal.sv:35$12 in module spu13_formal.
+Removed a total of 0 dead cases.
+
+5.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 4 redundant assignments.
+Promoted 5 assignments to connections.
+
+5.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\spu13_formal.$proc$spu13_formal.sv:20$25'.
+  Set init value: \seq_state = 2'00
+
+5.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+5.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~5 debug messages>
+
+5.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\spu13_formal.$proc$spu13_formal.sv:20$25'.
+Creating decoders for process `\spu13_formal.$proc$spu13_formal.sv:35$12'.
+     1/2: $cover$spu13_formal.sv:47$24_EN
+     2/2: $0\seq_state[1:0]
+Creating decoders for process `\spu13_formal.$proc$spu13_formal.sv:24$1'.
+     1/1: $assert$spu13_formal.sv:27$5_EN
+
+5.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+5.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\spu13_formal.\seq_state' using process `\spu13_formal.$proc$spu13_formal.sv:35$12'.
+  created $dff cell `$procdff$44' with positive edge clock.
+
+5.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+5.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `spu13_formal.$proc$spu13_formal.sv:20$25'.
+Found and cleaned up 4 empty switches in `\spu13_formal.$proc$spu13_formal.sv:35$12'.
+Removing empty process `spu13_formal.$proc$spu13_formal.sv:35$12'.
+Found and cleaned up 1 empty switch in `\spu13_formal.$proc$spu13_formal.sv:24$1'.
+Removing empty process `spu13_formal.$proc$spu13_formal.sv:24$1'.
+Cleaned up 5 empty switches.
+
+5.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+<suppressed ~5 debug messages>
+
+5.4. Executing FUTURE pass.
+
+5.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+
+5.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \spu13_formal..
+Removed 0 unused cells and 13 unused wires.
+<suppressed ~1 debug messages>
+
+5.7. Executing CHECK pass (checking for obvious problems).
+Checking module spu13_formal...
+Found and reported 0 problems.
+
+5.8. Executing OPT pass (performing simple optimizations).
+
+5.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+
+5.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\spu13_formal'.
+Computing hashes of 33 cells of `\spu13_formal'.
+Finding duplicate cells in `\spu13_formal'.
+Computing hashes of 32 cells of `\spu13_formal'.
+Finding duplicate cells in `\spu13_formal'.
+<suppressed ~3 debug messages>
+Removed a total of 1 cells.
+
+5.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \spu13_formal..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~10 debug messages>
+
+5.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \spu13_formal.
+Performed a total of 0 changes.
+
+5.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\spu13_formal'.
+Computing hashes of 32 cells of `\spu13_formal'.
+Finding duplicate cells in `\spu13_formal'.
+Removed a total of 0 cells.
+
+5.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \spu13_formal..
+Removed 0 unused cells and 1 unused wires.
+<suppressed ~1 debug messages>
+
+5.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+
+5.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+5.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \spu13_formal..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~10 debug messages>
+
+5.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \spu13_formal.
+Performed a total of 0 changes.
+
+5.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\spu13_formal'.
+Computing hashes of 32 cells of `\spu13_formal'.
+Finding duplicate cells in `\spu13_formal'.
+Removed a total of 0 cells.
+
+5.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \spu13_formal..
+
+5.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+
+5.8.14. Finished fast OPT passes. (There is nothing left to do.)
+
+5.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 2 bits (of 3) from port B of cell spu13_formal.$eq$spu13_formal.sv:37$17 ($eq).
+Removed top 1 bits (of 2) from port B of cell spu13_formal.$procmux$35_CMP0 ($eq).
+
+5.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \spu13_formal..
+
+5.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+5.12. Executing OPT pass (performing simple optimizations).
+
+5.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module spu13_formal.
+
+5.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\spu13_formal'.
+Computing hashes of 32 cells of `\spu13_formal'.
+Finding duplicate cells in `\spu13_formal'.
+Removed a total of 0 cells.
+
+5.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \spu13_formal..
+
+5.12.4. Finished fast OPT passes.
+
+5.13. Executing SORT pass.
+
+5.14. Printing statistics.
+
+=== spu13_formal ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       33 wires
+      387 wire bits
+        8 public wires
+      265 public wire bits
+        7 ports
+      263 port bits
+       32 cells
+        3   $add
+        6   $check
+        1   $dff
+        5   $eq
+        4   $logic_and
+        5   $logic_not
+        6   $mux
+        1   $pmux
+        1   $reduce_bool
+
+5.15. Executing CHECK pass (checking for obvious problems).
+Checking module spu13_formal...
+Found and reported 0 problems.
+
+6. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `spu13_formal'. Setting top module to spu13_formal.
+
+6.1. Analyzing design hierarchy..
+Top module:  \spu13_formal
+
+6.2. Analyzing design hierarchy..
+Top module:  \spu13_formal
+Removed 0 unused modules.
+Module spu13_formal directly or indirectly contains formal properties -> setting "keep" attribute.
+
+7. Executing jny backend.
+
+8. Executing RTLIL backend.
+Output filename: ../model/design.il
+
+End of script. Logfile hash: d3bdb81d9c, CPU: user 0.05s system 0.03s, MEM: 7.88 MB peak
+Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
+Time spent: 22% 5x opt_clean (0 sec), 21% 6x opt_expr (0 sec), ...

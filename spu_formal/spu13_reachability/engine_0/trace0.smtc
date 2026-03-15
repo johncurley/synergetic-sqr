@@ -1,0 +1,25 @@
+initial
+assume (= [$auto$async2sync.cc:107:execute$51] false)
+assume (= [$auto$async2sync.cc:107:execute$63] false)
+assume (= [$auto$async2sync.cc:116:execute$49] true)
+assume (= [$auto$async2sync.cc:116:execute$55] true)
+assume (= [$auto$async2sync.cc:116:execute$61] true)
+assume (= [seq_state] #b00)
+
+state 0
+assume (= [clk] false)
+assume (= [fault_detected] false)
+assume (= [instr_complete] true)
+assume (= [opcode] #b000)
+assume (= [reg_curr] #x00000000000000000000000000000000)
+assume (= [reg_next] #x00000000000000000000000000000000)
+assume (= [reset] false)
+
+state 1
+assume (= [clk] false)
+assume (= [fault_detected] false)
+assume (= [instr_complete] true)
+assume (= [opcode] #b000)
+assume (= [reg_curr] #x00000000000000000000000000000000)
+assume (= [reg_next] #x00000000000000000000000000000000)
+assume (= [reset] false)

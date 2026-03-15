@@ -1,0 +1,13 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.61+112 (git sha1 ac427a79b-dirty, x86_64-apple-darwin23.5-clang++ 18.1.8 -fPIC -O3)
+
+-- Parsing `top_guardian.v' using frontend ` -vlog2k' --
+
+1. Executing Verilog-2005 frontend: top_guardian.v
+Parsing Verilog input from `top_guardian.v' to AST representation.
+ERROR: Can't open include file `../../include/spu/spu13_pins.vh'!

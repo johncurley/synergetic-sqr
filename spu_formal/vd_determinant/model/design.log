@@ -1,0 +1,722 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
+
+-- Executing script file `../model/design.ys' --
+
+1. Executing Verilog-2005 frontend: vd_determinant.sv
+Parsing formal SystemVerilog input from `vd_determinant.sv' to AST representation.
+Generating RTLIL representation for module `\vd_determinant_formal'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: spu_smul.v
+Parsing formal SystemVerilog input from `spu_smul.v' to AST representation.
+Generating RTLIL representation for module `\spu_smul'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: surd_multiplier.v
+Parsing formal SystemVerilog input from `surd_multiplier.v' to AST representation.
+Generating RTLIL representation for module `\surd_multiplier'.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: spu13_rotor_core.v
+Parsing formal SystemVerilog input from `spu13_rotor_core.v' to AST representation.
+Generating RTLIL representation for module `\spu13_rotor_core'.
+Successfully finished Verilog frontend.
+
+5. Executing PREP pass.
+
+5.1. Executing HIERARCHY pass (managing design hierarchy).
+
+5.1.1. Analyzing design hierarchy..
+Top module:  \vd_determinant_formal
+
+5.1.2. Analyzing design hierarchy..
+Top module:  \vd_determinant_formal
+Removing unused module `\spu13_rotor_core'.
+Removing unused module `\surd_multiplier'.
+Removing unused module `\spu_smul'.
+Removed 3 unused modules.
+Module vd_determinant_formal directly or indirectly contains formal properties -> setting "keep" attribute.
+
+5.2. Executing PROC pass (convert processes to netlists).
+
+5.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+5.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+5.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 5 redundant assignments.
+Promoted 145 assignments to connections.
+
+5.2.4. Executing PROC_INIT pass (extract init attributes).
+
+5.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+5.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+
+5.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:85$52'.
+Creating decoders for process `\vd_determinant_formal.$proc$vd_determinant.sv:71$43'.
+
+5.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:69$20.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:69$40.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:69$40.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:69$40.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$19.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$39.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$39.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$39.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$18.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$38.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$38.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$38.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$17.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$37.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$37.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$37.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$16.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$36.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$36.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:69$36.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$15.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$35.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$35.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$35.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$14.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$34.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$34.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:68$34.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:64$13.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:64$33.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:64$33.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+No latch inferred for signal `\vd_determinant_formal.\surd_sub$func$vd_determinant.sv:64$33.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$12.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$32.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$32.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$32.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$11.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$31.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$31.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+No latch inferred for signal `\vd_determinant_formal.\surd_add$func$vd_determinant.sv:64$31.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$10.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:58$30.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$9.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:57$29.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$8.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:56$28.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$7.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:55$27.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$6.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:53$26.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$5.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:52$25.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$4.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:50$24.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$3.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:49$23.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$2.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:47$22.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$1.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.$result' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.a' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.b' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.i1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.s1' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.i2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.s2' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.res_i' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+No latch inferred for signal `\vd_determinant_formal.\surd_mul$func$vd_determinant.sv:46$21.res_s' from process `\vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+
+5.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+
+5.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+5.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:69$298'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:69$291'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:69$284'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:69$277'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:69$270'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:68$263'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:68$256'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:64$249'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:64$242'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:64$235'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:58$217'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:57$199'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:56$181'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:55$163'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:53$145'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:52$127'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:50$109'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:49$91'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:47$73'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:46$55'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:85$52'.
+Removing empty process `vd_determinant_formal.$proc$vd_determinant.sv:71$43'.
+Cleaned up 0 empty switches.
+
+5.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vd_determinant_formal.
+<suppressed ~2 debug messages>
+
+5.3. Executing FUTURE pass.
+
+5.4. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vd_determinant_formal.
+
+5.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \vd_determinant_formal..
+Removed 0 unused cells and 201 unused wires.
+<suppressed ~1 debug messages>
+
+5.6. Executing CHECK pass (checking for obvious problems).
+Checking module vd_determinant_formal...
+Found and reported 0 problems.
+
+5.7. Executing OPT pass (performing simple optimizations).
+
+5.7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vd_determinant_formal.
+
+5.7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\vd_determinant_formal'.
+Computing hashes of 101 cells of `\vd_determinant_formal'.
+Finding duplicate cells in `\vd_determinant_formal'.
+Removed a total of 0 cells.
+
+5.7.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \vd_determinant_formal..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+5.7.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \vd_determinant_formal.
+Performed a total of 0 changes.
+
+5.7.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\vd_determinant_formal'.
+Computing hashes of 101 cells of `\vd_determinant_formal'.
+Finding duplicate cells in `\vd_determinant_formal'.
+Removed a total of 0 cells.
+
+5.7.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \vd_determinant_formal..
+
+5.7.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vd_determinant_formal.
+
+5.7.8. Finished fast OPT passes. (There is nothing left to do.)
+
+5.8. Executing WREDUCE pass (reducing word size of cells).
+Removed top 30 bits (of 32) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:61$41 ($mul).
+Removed top 30 bits (of 32) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:61$42 ($mul).
+Removed top 47 bits (of 64) from port B of cell vd_determinant_formal.$eq$vd_determinant.sv:76$47 ($eq).
+Removed top 15 bits (of 32) from port B of cell vd_determinant_formal.$eq$vd_determinant.sv:80$51 ($eq).
+Removed top 47 bits (of 64) from port B of cell vd_determinant_formal.$eq$vd_determinant.sv:87$54 ($eq).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$66 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$66 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$67 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$67 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$68 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$68 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$68 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$69 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$70 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$70 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$71 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$71 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$72 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$84 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$84 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$85 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$85 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$86 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$86 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$86 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$87 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$88 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$88 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$89 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$89 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$90 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$102 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$102 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$103 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$103 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$104 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$104 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$104 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$105 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$106 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$106 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$107 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$107 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$108 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$120 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$120 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$121 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$121 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$122 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$122 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$122 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$123 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$124 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$124 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$125 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$125 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$126 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$138 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$138 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$139 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$139 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$140 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$140 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$140 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$141 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$142 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$142 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$143 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$143 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$144 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$156 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$156 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$157 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$157 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$158 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$158 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$158 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$159 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$160 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$160 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$161 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$161 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$162 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$174 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$174 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$175 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$175 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$176 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$176 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$176 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$177 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$178 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$178 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$179 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$179 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$180 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$192 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$192 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$193 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$193 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$194 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$194 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$194 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$195 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$196 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$196 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$197 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$197 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$198 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$210 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$210 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$211 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$211 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$212 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$212 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$212 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$213 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$214 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$214 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$215 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$215 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$216 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$228 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$228 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$229 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$229 ($mul).
+Removed top 29 bits (of 32) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:28$230 ($mul).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$mul$vd_determinant.sv:28$230 ($mul).
+Removed top 61 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$230 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add).
+Removed top 61 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add).
+Removed top 19 bits (of 67) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:28$231 ($add).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$232 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$232 ($mul).
+Removed top 96 bits (of 128) from port A of cell vd_determinant_formal.$mul$vd_determinant.sv:29$233 ($mul).
+Removed top 64 bits (of 128) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$233 ($mul).
+Converting cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add) from unsigned to signed.
+Removed top 64 bits (of 128) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add).
+Removed top 64 bits (of 128) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add).
+Removed top 80 bits (of 128) from port Y of cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add).
+Removed top 16 bits (of 64) from port A of cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add).
+Removed top 16 bits (of 64) from port B of cell vd_determinant_formal.$add$vd_determinant.sv:29$234 ($add).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$66 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$68 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$70 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$71 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$84 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$86 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$88 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$89 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$102 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$104 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$106 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$107 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$120 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$122 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$124 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$125 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$138 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$140 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$142 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$143 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$156 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$158 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$160 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$161 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$174 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$176 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$178 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$179 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$192 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$194 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$196 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$197 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$210 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$212 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$214 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$215 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$228 ($mul).
+Removed top 19 bits (of 67) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:28$230 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$232 ($mul).
+Removed top 16 bits (of 64) from port Y of cell vd_determinant_formal.$mul$vd_determinant.sv:29$233 ($mul).
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$84_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:47$22.res_s[127:0]$83.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:47$22.res_i[127:0]$82.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$179_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$176_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$174_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$143_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$142_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:55$27.res_s[127:0]$173.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$140_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$71_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$70_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$138_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$68_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$66_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:46$21.res_s[127:0]$65.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:46$21.res_i[127:0]$64.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:52$25.res_s[127:0]$137.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:52$25.res_i[127:0]$136.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:56$28.res_i[127:0]$190.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:56$28.res_s[127:0]$191.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$192_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:57$29.res_i[127:0]$208.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:57$29.res_s[127:0]$209.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$210_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$212_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$161_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$125_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$124_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$214_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$122_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$120_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:50$24.res_s[127:0]$119.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:50$24.res_i[127:0]$118.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$215_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$160_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$158_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$156_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:53$26.res_s[127:0]$155.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:53$26.res_i[127:0]$154.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$194_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$107_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$106_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:55$27.res_i[127:0]$172.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$104_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$102_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:49$23.res_s[127:0]$101.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:49$23.res_i[127:0]$100.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:58$30.res_i[127:0]$226.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$0\surd_mul$func$vd_determinant.sv:58$30.res_s[127:0]$227.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$228_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$230_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$196_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$232_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$233_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$197_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$89_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$88_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:29$178_Y.
+Removed top 80 bits (of 128) from wire vd_determinant_formal.$mul$vd_determinant.sv:28$86_Y.
+
+5.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \vd_determinant_formal..
+Removed 0 unused cells and 60 unused wires.
+<suppressed ~1 debug messages>
+
+5.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+5.11. Executing OPT pass (performing simple optimizations).
+
+5.11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module vd_determinant_formal.
+
+5.11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\vd_determinant_formal'.
+Computing hashes of 101 cells of `\vd_determinant_formal'.
+Finding duplicate cells in `\vd_determinant_formal'.
+Computing hashes of 98 cells of `\vd_determinant_formal'.
+Finding duplicate cells in `\vd_determinant_formal'.
+<suppressed ~9 debug messages>
+Removed a total of 3 cells.
+
+5.11.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \vd_determinant_formal..
+Removed 0 unused cells and 3 unused wires.
+<suppressed ~1 debug messages>
+
+5.11.4. Finished fast OPT passes.
+
+5.12. Executing SORT pass.
+
+5.13. Printing statistics.
+
+=== vd_determinant_formal ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      197 wires
+    14918 wire bits
+      126 public wires
+     7938 public wire bits
+        5 ports
+      194 port bits
+       98 cells
+       36   $add
+        5   $check
+        3   $eq
+        1   $logic_not
+       49   $mul
+        4   $sub
+
+5.14. Executing CHECK pass (checking for obvious problems).
+Checking module vd_determinant_formal...
+Found and reported 0 problems.
+
+6. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `vd_determinant_formal'. Setting top module to vd_determinant_formal.
+
+6.1. Analyzing design hierarchy..
+Top module:  \vd_determinant_formal
+
+6.2. Analyzing design hierarchy..
+Top module:  \vd_determinant_formal
+Removed 0 unused modules.
+Module vd_determinant_formal directly or indirectly contains formal properties -> setting "keep" attribute.
+
+7. Executing jny backend.
+
+8. Executing RTLIL backend.
+Output filename: ../model/design.il
+
+End of script. Logfile hash: 6d417d4ed8, CPU: user 1.75s system 0.08s, MEM: 34.16 MB peak
+Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
+Time spent: 72% 2x check (1 sec), 9% 4x opt_clean (0 sec), ...

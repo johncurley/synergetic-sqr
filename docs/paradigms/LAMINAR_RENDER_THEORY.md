@@ -20,5 +20,15 @@ We replace standard PBR parameters with **Manifold Invariants**:
 - **Shadows:** Handled via **Lattice Intersection**. If a vector strike is blocked by another node's integer coordinate, the path is dark. 
 - **Anti-Aliasing:** Not required. Since pixels are snapped to the IVM lattice, "edges" are mathematically exact.
 
+### 4. Operational Modes: The Sovereign Bridge
+
+To transition from legacy hardware to the Symmetry Engine, the SPU-13 operates in two primary modes:
+
+-   **Native (Hex Grid): The Sovereign Truth**
+    In this mode, the hardware assumes a physical 60-degree pixel arrangement (Triad or Hexagonal). The $\{a,b,c\}$ coordinates map 1:1 to the physical display resonators. There is zero "math" required for rasterization—the vector *is* the pixel path. This is the zero-entropy state of visual stillness.
+
+-   **Bresenham (Cubic Trash): The Legacy Bridge**
+    Required for standard 90-degree LCD/OLED screens. Standard Bresenham is "Cubic Trash" because it forces a 60-degree truth into a 90-degree lie, creating "jags" and temporal flicker. The SPU-13 "heals" this bridge using the **Laminar Ephemeral Sealant (v1.5)**: a rational parabolic energy projection that nudges sub-pixels to simulate the 60-degree path on a square grid.
+
 ---
-*Status: REIFIED. The light is coherent.*
+*Status: REIFIED. The light is coherent. The bridge is healed.*

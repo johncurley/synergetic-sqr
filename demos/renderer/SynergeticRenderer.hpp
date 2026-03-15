@@ -10,7 +10,9 @@
 #endif
 
 #include "spu/SynergeticsMath.hpp"
+#include "spu/SovereignISA.hpp"
 #include "LithicForge.hpp"
+#include <vector>
 
 namespace Synergetics {
 
@@ -28,8 +30,14 @@ public:
     virtual bool isHarmonic() const = 0;
     virtual void toggleLatticeLock() = 0;
     virtual bool isLatticeLocked() const = 0;
-    virtual void toggleTension() = 0; // NEW: Toggle between Cubic (90) and IVM (60)
-    virtual void cycleBioSecurity() = 0; // NEW: 0=Std, 1=Meditation, 2=Autophagy
+    virtual void toggleTension() = 0; // Toggle between Cubic (90) and IVM (60)
+    virtual bool isCartesian() const = 0; // NEW: Get Knot-Breaker status
+    virtual void cycleBioSecurity() = 0; 
+
+    // --- SOVEREIGN COMMAND INTERFACE ---
+    virtual void dispatchCommand(const SovereignCommand& cmd) = 0;
+    virtual void flushCommands() = 0;
+
     virtual void strike(uint16_t vector) = 0;
     virtual void processGeometric(uint8_t op, uint8_t axis, uint8_t val) = 0;
     virtual bool loadHex(const std::string& path) = 0;
@@ -54,7 +62,12 @@ public:
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
-    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 9; }
+    bool isCartesian() const override { return _tensionToggle; } // NEW
+    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 11; }
+    
+    void dispatchCommand(const SovereignCommand& cmd) override { _commandBuffer.push_back(cmd.compile()); }
+    void flushCommands() override { _commandBuffer.clear(); }
+
     void strike(uint16_t vector) override { 
         if (vector & 0x000F) _forge.processGeometric(0, 0, 10);
         else if (vector & 0x00F0) _forge.processGeometric(0, 1, 10);
@@ -85,7 +98,8 @@ private:
         uint32_t coherence;     
         uint32_t harmonic_mode; 
         uint32_t lattice_lock;  
-        uint32_t bio_security; // 0=Std, 1=Med, 2=Auto, 3=Prob
+        uint32_t bio_security; 
+        uint32_t is_cartesian_display; // NEW: Knot-Breaker Toggle
         float    tau_threshold; 
         float    rotor_bias[4]; 
     };
@@ -95,6 +109,7 @@ private:
     MTL::ComputePipelineState* _computePipeline;
     
     LithicForge _forge;
+    std::vector<uint64_t> _commandBuffer;
     int _janus = 1;
     bool _dssEnabled = false;
     uint64_t _tickCount = 0;
@@ -123,7 +138,17 @@ public:
     bool isHarmonic() const override { return _harmonic; }
     void toggleLatticeLock() override { _latticeLock = !_latticeLock; }
     bool isLatticeLocked() const override { return _latticeLock; }
+    void toggleTension() override;
+    bool isCartesian() const override { return _isCartesian; } // NEW
+    void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 11; }
+
+    void dispatchCommand(const SovereignCommand& cmd) override { _commandBuffer.push_back(cmd.compile()); }
+    void flushCommands() override { _commandBuffer.clear(); }
+
     void strike(uint16_t vector) override { _tickCount++; }
+    void processGeometric(uint8_t op, uint8_t axis, uint8_t val) override {}
+    bool loadHex(const std::string& path) override { return false; }
+    void spawnNode(uint32_t type) override {}
     void ground() override { 
         _layer = -1; _harmonic = false; _latticeLock = true; _dssEnabled = true;
     }
@@ -131,6 +156,7 @@ public:
 private:
     SDL_GPUDevice* _gpuDevice;
     SDL_GPUComputePipeline* _computePipeline;
+    std::vector<uint64_t> _commandBuffer;
     
     int _janus = 1;
     bool _dssEnabled = false;
@@ -138,6 +164,8 @@ private:
     int _layer = 0;
     bool _harmonic = false;
     bool _latticeLock = false;
+    bool _isCartesian = true;
+    uint32_t _bioSecurity = 0;
     CoherenceMonitor _coherence;
 };
 

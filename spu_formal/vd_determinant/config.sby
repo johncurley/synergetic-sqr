@@ -1,0 +1,19 @@
+[options]
+mode prove
+depth 5
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -sv -formal -DFORMAL vd_determinant.sv
+read_verilog -sv -formal -DFORMAL spu_smul.v
+read_verilog -sv -formal -DFORMAL surd_multiplier.v
+read_verilog -sv -formal -DFORMAL spu13_rotor_core.v
+prep -top vd_determinant_formal
+
+[files]
+vd_determinant.sv
+../rtl/spu_smul.v
+../rtl/surd_multiplier.v
+../rtl/spu13_rotor_core.v

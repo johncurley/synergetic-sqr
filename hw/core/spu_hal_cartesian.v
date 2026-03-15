@@ -32,13 +32,21 @@ module spu_hal_cartesian #(
     wire [15:0] target_x = scaled_x[31:16] + (RES_X >> 1);
     wire [15:0] target_y = scaled_y[31:16] + (RES_Y >> 1);
 
-    // --- 2. Temporal Dithering ---
-    // If the point is between pixels, alternate between them on the 61.44kHz pulse.
-    reg dither_bit;
-    always @(posedge clk) if (pulse_61k) dither_bit <= ~dither_bit;
-
-    wire [15:0] final_x = dither_bit ? target_x : target_x + 1;
-    wire [15:0] final_y = dither_bit ? target_y : target_y + 1;
+    // --- 2. Temporal Resonance (Knot-Breaker) ---
+    // Using the spu_hal_controller to "melt" the Cartesian interference knots.
+    wire [15:0] final_x;
+    wire [15:0] final_y;
+    wire [7:0]  final_intensity;
+    
+    spu_hal_controller u_knot_breaker (
+        .clk_61k(pulse_61k),
+        .is_cartesian_display(1'b1), // This is the Cartesian HAL
+        .q_x(target_x),
+        .q_y(target_y),
+        .out_x(final_x),
+        .out_y(final_y),
+        .intensity(final_intensity)
+    );
 
     // --- 3. SPI State Machine ---
     // Drives the physical ST7789 display with 'Lattice Lock' precision.

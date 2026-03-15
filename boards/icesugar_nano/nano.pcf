@@ -1,8 +1,0 @@
-# Lattice Protocol (The Whisper) - Nano Mapping
-# Using current available pins for iCE40LP1K (CM36 package)
-set_io whisper_sync 12
-set_io whisper_out  13
-
-# Aura Status
-set_io rst_phys_n 18
-set_io clk_phys   35

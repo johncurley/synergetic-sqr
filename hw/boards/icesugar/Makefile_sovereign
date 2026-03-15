@@ -1,0 +1,34 @@
+# SPU-13 Sovereign HAL: iCeSugar Makefile (v1.5)
+# Target: iCE40UP5K
+# Objective: PC-to-Display Sovereign Bridge
+
+PROJ = spu13_icesugar_sovereign
+TOP = spu13_icesugar_sovereign
+DEVICE = up5k
+PACKAGE = sg48
+PCF = spu13_sovereign.pcf
+
+# Source Files
+SRCS = spu13_icesugar_sovereign.v \
+       ../../core/spu13_decoder.v \
+       ../../core/vector_to_parabola.v \
+       ../../core/uart_rx_mini.v
+
+all: $(PROJ).bin
+
+$(PROJ).json: $(SRCS)
+	yosys -ql design.log -p "synth_ice40 -top $(TOP) -json $@" $^
+
+$(PROJ).asc: $(PROJ).json $(PCF)
+	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
+
+$(PROJ).bin: $(PROJ).asc
+	icepack $< $@
+
+strike: $(PROJ).bin
+	icesprog $<
+
+clean:
+	rm -f $(PROJ).json $(PROJ).asc $(PROJ).bin design.log
+
+.PHONY: all strike clean

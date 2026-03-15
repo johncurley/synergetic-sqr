@@ -1,14 +1,22 @@
-# Lattice Protocol (The Whisper) - Nano Mapping
-# Using current available pins for iCE40LP1K (CM36 package)
-set_io whisper_sync 12
-set_io whisper_out  13
+# SPU-13 Nano Sentinel Constraints (iCE40LP1K-CM36)
+# Objective: Ephemeralization via CM36 package mapping.
 
-# Aura Status
-set_io rst_phys_n 18
-set_io clk_phys   35
+# --- 1. THE HEART ---
+set_io clk_phys   D1
+set_io rst_phys_n E1
 
-# THE SOUL (SPI Flash)
-set_io flash_cs_n 16
-set_io flash_sck  15
-set_io flash_mosi 14
-set_io flash_miso 17
+# --- 2. THE ARTERY (Whisper) ---
+set_io whisper_sync B1
+set_io whisper_out  C1
+
+# --- 3. THE SOUL (SPI Flash) ---
+set_io flash_cs_n  F1
+set_io flash_sck   G1
+set_io flash_mosi  H1
+set_io flash_miso  J1
+
+# --- 4. THE AURA (RGB LED) ---
+# Note: LP1K-CM36 has limited GPIO, using available pins
+set_io led_sat_red A1
+set_io led_sat_grn A2
+set_io led_sat_blu A3

@@ -14,6 +14,7 @@ struct SPUControl {
     uint harmonic_mode; 
     uint lattice_lock;  
     uint bio_security; 
+    uint is_cartesian_display; // NEW: Knot-Breaker Toggle
     float tau_threshold; 
     float rotor_bias[4]; 
 };

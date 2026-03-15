@@ -17,6 +17,8 @@ MetalRenderer::MetalRenderer(MTL::Device* device) : _device(device) {
     _layer = -1;        // DEFAULT: Mode D (Pure IVM Metric)
     _harmonic = false;
     _latticeLock = true; // DEFAULT: GROUNDED
+    _tensionToggle = true; // EMULATOR DEFAULT: Heal the Cartesian screen
+    _bioSecurity = 9;    // DEFAULT: Mode 9
     buildComputePipeline();
 }
 
@@ -40,11 +42,10 @@ void MetalRenderer::buildComputePipeline() {
     
     // Path list for high-fidelity discovery
     const char* paths[] = {
-        "DQFA.metal",
-        "./DQFA.metal",
-        "../demos/renderer/DQFA.metal",
-        "demos/renderer/DQFA.metal",
-        "src/DQFA.metal"
+        "SovereignKernel.metal",
+        "./SovereignKernel.metal",
+        "../demos/renderer/SovereignKernel.metal",
+        "demos/renderer/SovereignKernel.metal"
     };
 
     std::ifstream file;
@@ -59,23 +60,36 @@ void MetalRenderer::buildComputePipeline() {
     }
 
     if (!finalPath.empty()) {
-        std::cout << "SUCCESS: SPU-13 Kernel (DQFA) Manifested at: " << finalPath << std::endl;
+        std::cout << "SUCCESS: Unified Sovereign Kernel (v1.0) Manifested at: " << finalPath << std::endl;
     } else {
-        std::cerr << "CRITICAL ERROR: DQFA.metal not found in any search path." << std::endl;
+        std::cerr << "CRITICAL ERROR: SovereignKernel.metal not found." << std::endl;
         return;
     }
     std::stringstream buffer;
     buffer << file.rdbuf();
     std::string sourceStr = buffer.str();
+    
+    // SOVEREIGN NUCLEAR CACHE BUSTER: Rename the entry point uniquely on every startup
+    std::string timestamp = std::to_string(std::time(nullptr));
+    std::string entryPoint = "renderSovereign_" + timestamp;
+    
+    // Replace the function name in the source string
+    size_t pos = sourceStr.find("renderSovereign_v1");
+    if (pos != std::string::npos) {
+        sourceStr.replace(pos, 18, entryPoint);
+    }
+
     NS::String* source = NS::String::string(sourceStr.c_str(), NS::UTF8StringEncoding);
+    std::cout << "FORGE: Manifesting Unique Entry Point: " << entryPoint << std::endl;
+    
     MTL::Library* library = _device->newLibrary(source, nullptr, &error);
     if (!library) {
         std::cerr << "Failed to load library: " << (error ? error->localizedDescription()->utf8String() : "Unknown Error") << std::endl;
         return;
     }
-    MTL::Function* function = library->newFunction(NS::String::string("renderDQFA_v1_5", NS::UTF8StringEncoding));
+    MTL::Function* function = library->newFunction(NS::String::string(entryPoint.c_str(), NS::UTF8StringEncoding));
     if (!function) {
-        std::cerr << "CRITICAL ERROR: Function 'renderDQFA_v1_5' not found." << std::endl;
+        std::cerr << "CRITICAL ERROR: Function '" << entryPoint << "' not found." << std::endl;
         return;
     }
     _computePipeline = _device->newComputePipelineState(function, &error);
@@ -133,18 +147,20 @@ void MetalRenderer::draw(void* layerPtr) {
     control.harmonic_mode = _harmonic ? 1u : 0u;
     control.lattice_lock = _latticeLock ? 1u : 0u;
     control.bio_security = _bioSecurity;
+    control.is_cartesian_display = _tensionToggle ? 1u : 0u; 
     control.tau_threshold = forgeControl.tau_threshold;
     for(int i=0; i<4; i++) control.rotor_bias[i] = forgeControl.rotor_bias[i];
 
     encoder->setBytes(&control, sizeof(control), 0);
-
-    SurdRotorFixed gpuRotor = {
-        { SurdFixed64::One, 0 }, 
-        { 0, 0 },                
-        _janus                   
-    };
-
-    encoder->setBytes(&gpuRotor, sizeof(gpuRotor), 1);
+    
+    // Bind the Sovereign Command Buffer (v1.5)
+    if (!_commandBuffer.empty()) {
+        encoder->setBytes(_commandBuffer.data(), _commandBuffer.size() * sizeof(uint64_t), 1);
+    } else {
+        // Fallback: Dispatch an Empty Sovereign Word
+        uint64_t empty = 0;
+        encoder->setBytes(&empty, sizeof(uint64_t), 1);
+    }
     
     MTL::Size gridSize = MTL::Size(drawable->texture()->width(), drawable->texture()->height(), 1);
     MTL::Size threadGroupSizeVec = MTL::Size(8, 8, 1);
@@ -154,7 +170,8 @@ void MetalRenderer::draw(void* layerPtr) {
     cmdBuf->presentDrawable(drawable);
     cmdBuf->commit();
     
-    // 5. Release the Pool
+    // 5. Sovereign Flush
+    flushCommands();
     pool->release();
 }
 
@@ -173,15 +190,14 @@ VulkanRenderer::VulkanRenderer(SDL_Window* window) {
     _layer = -1;        // DEFAULT: Mode D (Pure IVM Metric)
     _harmonic = false;
     _latticeLock = true; // DEFAULT: GROUNDED
+    _isCartesian = true; // EMULATOR: Always true
+    _bioSecurity = 9;    // DEFAULT: Mode 9
     _computePipeline = nullptr;
-    
-    // Shader loading logic would go here (SPIR-V)
-    // For now, we maintain the structural shell for cross-platform parity.
 }
 
 VulkanRenderer::~VulkanRenderer() {
     if (_gpuDevice) {
-        SDL_ReleaseWindowFromGPUDevice(_gpuDevice, nullptr); // Window usually handled by main
+        SDL_ReleaseWindowFromGPUDevice(_gpuDevice, nullptr);
         SDL_DestroyGPUDevice(_gpuDevice);
     }
 }
@@ -196,20 +212,20 @@ void VulkanRenderer::toggleDSS() {
     std::cout << "Optical Damper (Vulkan DSS): " << (_dssEnabled ? "ENABLED" : "DISABLED") << std::endl;
 }
 
+void VulkanRenderer::toggleTension() {
+    _isCartesian = !_isCartesian;
+    std::cout << "Laminar Tension (Vulkan): " << (_isCartesian ? "CUBIC (Healed)" : "SOVEREIGN (Native)") << std::endl;
+}
+
 void VulkanRenderer::draw(void* unused) {
     _tickCount++;
     bool isLocked = _coherence.update(_janus > 0);
     
-    // In a full implementation, we would:
-    // 1. Acquire Command Buffer
-    // 2. Begin Compute Pass
-    // 3. Bind Pipeline & Textures
-    // 4. Update Push Constants (fgh coefficients + coherence)
-    // 5. Dispatch
-    // 6. Submit & Present
+    // In a full implementation, we would bind the SPUControl UBO here.
+    // Ensure is_cartesian_display is passed as 1u to the shader.
     
     if (_tickCount % 600 == 0) {
-        std::cout << "[Vulkan Sync Verification] Tick: " << _tickCount << " | Layer: " << _layer << " | DSS: " << (_dssEnabled ? "ON" : "OFF") << " | Coherence: " << (isLocked ? "LOCKED" : "STALLED") << std::endl;
+        std::cout << "[Vulkan Sync Verification] Tick: " << _tickCount << " | Layer: " << _layer << " | DSS: " << (_dssEnabled ? "ON" : "OFF") << " | Coherence: " << (isLocked ? "LOCKED" : "STALLED") << " | Knot-Breaker: " << (_isCartesian ? "ACTIVE" : "OFF") << std::endl;
     }
 }
 

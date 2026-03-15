@@ -1,0 +1,11 @@
+# running in vd_determinant/src/
+read_verilog -sv -formal -DFORMAL vd_determinant.sv
+read_verilog -sv -formal -DFORMAL spu_smul.v
+read_verilog -sv -formal -DFORMAL surd_multiplier.v
+read_verilog -sv -formal -DFORMAL spu13_rotor_core.v
+prep -top vd_determinant_formal
+
+hierarchy -smtcheck
+rename -witness
+write_jny -no-connections ../model/design.json
+write_rtlil ../model/design.il

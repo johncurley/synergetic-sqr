@@ -115,6 +115,37 @@ struct Quadray4 {
         }
         return q;
     }
+
+    // --- 60-Degree Graphics Acceleration ---
+    
+    // operator* : Rational Scaling (pos * scale)
+    Quadray4 operator*(const SurdFixed64& scale) const {
+        Quadray4 res;
+        for (int i = 0; i < 4; ++i) {
+            SurdFixed64 axis = { data.v[i*2], data.v[i*2+1] };
+            SurdFixed64 scaled = axis.multiply(scale);
+            res.data.v[i*2] = scaled.a;
+            res.data.v[i*2+1] = scaled.b;
+        }
+        return res;
+    }
+
+    // toIVM : Maps 4D Quadray to 2D 60-degree IVM Grid
+    // Logic: Resonant projection onto the display manifold.
+    void toIVM(float& x, float& y) const {
+        // Scalar conversion for each axis
+        float a = (float(data.v[0]) + float(data.v[1]) * 1.73205081f) / 65536.0f;
+        float b = (float(data.v[2]) + float(data.v[3]) * 1.73205081f) / 65536.0f;
+        float c = (float(data.v[4]) + float(data.v[5]) * 1.73205081f) / 65536.0f;
+        float d = (float(data.v[6]) + float(data.v[7]) * 1.73205081f) / 65536.0f;
+
+        // Symmetric projection: 4 vectors pointing to tetrahedron vertices
+        // Projected into 2D:
+        // A = (0, 1), B = (sqrt(3)/2, -1/2), C = (-sqrt(3)/2, -1/2), D = (0, 0)
+        x = (b - c) * 0.8660254f; 
+        y = a - (b + c) * 0.5f;
+        // Vector D maps to origin (0,0), contributing zero to displacement.
+    }
 };
 
 struct SPU_Vector832 { int32_t v[26]; };

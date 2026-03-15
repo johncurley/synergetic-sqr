@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
                         break;
                     case SDLK_T: 
                         renderer->toggleTension(); 
-                        std::cout << "[FORGE] Manifold Tension: " << (renderer->getJanus() > 0 ? "IVM (60)" : "Cubic (90)") << std::endl;
+                        std::cout << "[FORGE] Manifold Tension: " << (renderer->isCartesian() ? "CUBIC (Healed)" : "SOVEREIGN (Native)") << std::endl;
                         break;
                     case SDLK_SPACE: 
                         std::cout << "[STRIKE] Laminar Flush" << std::endl;
@@ -156,6 +156,16 @@ int main(int argc, char* argv[]) {
                         break;
                     case SDLK_1: renderer->setLayer(0); break;
                     case SDLK_2: renderer->setLayer(1); break;
+                    case SDLK_P: {
+                        std::cout << "[SOVEREIGN] Dispatching Point Projection (0x41)" << std::endl;
+                        SovereignCommand cmd;
+                        cmd.opcode = SDRAW_V; // Placeholder for test
+                        cmd.opcode = SPROJ_P;
+                        cmd.q_a = 0; cmd.q_b = 64; cmd.q_c = 0; cmd.q_d = 0; // Center-ish
+                        cmd.energy = 255;
+                        renderer->dispatchCommand(cmd);
+                        break;
+                    }
                 }
             }
         }
