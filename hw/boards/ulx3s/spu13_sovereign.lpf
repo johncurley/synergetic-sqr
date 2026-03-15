@@ -1,0 +1,38 @@
+# SPU-13 Sovereign Constraints: ULX3S (ECP5-85F)
+# v1.5 "End-to-End Laminar Path"
+
+# --- 1. Clock & Reset ---
+LOCATE COMP "clk_25mhz" SITE "G2";
+IOBUF PORT "clk_25mhz" IO_TYPE=LVCMOS33;
+
+# Use button 0 for reset
+LOCATE COMP "btn[0]" SITE "R1";
+IOBUF PORT "btn[0]" IO_TYPE=LVCMOS33;
+
+# --- 2. Command Artery (UART via FTDI) ---
+# ftdi_txd on the ULX3S is the FPGA's RX pin.
+LOCATE COMP "ftdi_txd" SITE "M1";
+IOBUF PORT "ftdi_txd" IO_TYPE=LVCMOS33;
+
+# --- 3. Digital Video (GPDI) ---
+# The ULX3S uses differential pairs for clean video.
+# We map our placeholder intensity output to one of these pairs.
+LOCATE COMP "gpdi_dp[0]" SITE "A4";
+LOCATE COMP "gpdi_dn[0]" SITE "A5";
+IOBUF PORT "gpdi_dp[0]" IO_TYPE=LVDS;
+IOBUF PORT "gpdi_dn[0]" IO_TYPE=LVDS;
+
+LOCATE COMP "gpdi_dp[1]" SITE "A2";
+LOCATE COMP "gpdi_dn[1]" SITE "A3";
+IOBUF PORT "gpdi_dp[1]" IO_TYPE=LVDS;
+IOBUF PORT "gpdi_dn[1]" IO_TYPE=LVDS;
+
+LOCATE COMP "gpdi_dp[2]" SITE "B4";
+LOCATE COMP "gpdi_dn[2]" SITE "B5";
+IOBUF PORT "gpdi_dp[2]" IO_TYPE=LVDS;
+IOBUF PORT "gpdi_dn[2]" IO_TYPE=LVDS;
+
+LOCATE COMP "gpdi_dp[3]" SITE "B2";
+LOCATE COMP "gpdi_dn[3]" SITE "C2";
+IOBUF PORT "gpdi_dp[3]" IO_TYPE=LVDS;
+IOBUF PORT "gpdi_dn[3]" IO_TYPE=LVDS;

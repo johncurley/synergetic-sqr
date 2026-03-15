@@ -1,25 +1,26 @@
-# Binaries
-synergetic-renderer
-synergeticrenderer
-synergetic-sqr
+# Synthesis Artifacts
+*.bin
+*.asc
+*.fs
+*.fs_json
+*.config
+*.bit
 
-# Build and Dependencies
+# Build directories
 build/
-_deps/
+venv/
 
-# Note: metal-cpp is included for a "Batteries Included" build experience
-# metal-cpp/ 
+# Logs
+*.log
+*.vcd
 
-# OS files
+# Tool-specific
+.apio/
+spu_formal/**/engine_*/
+spu_formal/**/model/
+spu_formal/**/*.xml
+spu_formal/**/*.sqlite
+
+# OS-specific
 .DS_Store
-
-# Build artifacts
-*.o
-*.obj
-*.a
-*.dylib
-
-# Python cache
-__pycache__/
-build/
-build/
+*.swp

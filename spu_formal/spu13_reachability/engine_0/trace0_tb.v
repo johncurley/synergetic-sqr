@@ -8,21 +8,21 @@ module testbench(input clock, output reg genclock);
 `endif
   reg genclock = 1;
   reg [31:0] cycle = 0;
-  reg [0:0] PI_fault_detected;
+  reg [127:0] PI_reg_next;
+  reg [0:0] PI_instr_complete;
+  reg [127:0] PI_reg_curr;
   reg [2:0] PI_opcode;
   reg [0:0] PI_reset;
-  reg [0:0] PI_instr_complete;
   wire [0:0] PI_clk = clock;
-  reg [127:0] PI_reg_next;
-  reg [127:0] PI_reg_curr;
+  reg [0:0] PI_fault_detected;
   spu13_formal UUT (
-    .fault_detected(PI_fault_detected),
+    .reg_next(PI_reg_next),
+    .instr_complete(PI_instr_complete),
+    .reg_curr(PI_reg_curr),
     .opcode(PI_opcode),
     .reset(PI_reset),
-    .instr_complete(PI_instr_complete),
     .clk(PI_clk),
-    .reg_next(PI_reg_next),
-    .reg_curr(PI_reg_curr)
+    .fault_detected(PI_fault_detected)
   );
 `ifndef VERILATOR
   initial begin
@@ -41,30 +41,32 @@ module testbench(input clock, output reg genclock);
 `ifndef VERILATOR
     #1;
 `endif
-    // UUT.$auto$async2sync.\cc:107:execute$51  = 1'b0;
-    // UUT.$auto$async2sync.\cc:107:execute$63  = 1'b0;
-    // UUT.$auto$async2sync.\cc:116:execute$49  = 1'b1;
-    // UUT.$auto$async2sync.\cc:116:execute$55  = 1'b1;
-    // UUT.$auto$async2sync.\cc:116:execute$61  = 1'b1;
+    // UUT.$auto$async2sync.\cc:107:execute$133  = 1'b0;
+    // UUT.$auto$async2sync.\cc:107:execute$139  = 1'b0;
+    // UUT.$auto$async2sync.\cc:116:execute$119  = 1'b1;
+    // UUT.$auto$async2sync.\cc:116:execute$125  = 1'b1;
+    // UUT.$auto$async2sync.\cc:116:execute$131  = 1'b1;
+    // UUT.$auto$async2sync.\cc:116:execute$137  = 1'b1;
+    UUT.reset_seen = 1'b0;
     UUT.seq_state = 2'b00;
 
     // state 0
-    PI_fault_detected = 1'b0;
-    PI_opcode = 3'b000;
-    PI_reset = 1'b0;
-    PI_instr_complete = 1'b1;
     PI_reg_next = 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+    PI_instr_complete = 1'b1;
     PI_reg_curr = 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+    PI_opcode = 3'b000;
+    PI_reset = 1'b1;
+    PI_fault_detected = 1'b0;
   end
   always @(posedge clock) begin
     // state 1
     if (cycle == 0) begin
-      PI_fault_detected <= 1'b0;
+      PI_reg_next <= 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+      PI_instr_complete <= 1'b1;
+      PI_reg_curr <= 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
       PI_opcode <= 3'b000;
       PI_reset <= 1'b0;
-      PI_instr_complete <= 1'b1;
-      PI_reg_next <= 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
-      PI_reg_curr <= 128'b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+      PI_fault_detected <= 1'b0;
     end
 
     genclock <= cycle < 1;

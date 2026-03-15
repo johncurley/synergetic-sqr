@@ -79,6 +79,9 @@ void MetalRenderer::buildComputePipeline() {
         sourceStr.replace(pos, 18, entryPoint);
     }
 
+    // Add a unique version comment to bust the cache
+    sourceStr = "// v" + timestamp + "\n" + sourceStr;
+
     NS::String* source = NS::String::string(sourceStr.c_str(), NS::UTF8StringEncoding);
     std::cout << "FORGE: Manifesting Unique Entry Point: " << entryPoint << std::endl;
     
@@ -150,6 +153,7 @@ void MetalRenderer::draw(void* layerPtr) {
     control.is_cartesian_display = _tensionToggle ? 1u : 0u; 
     control.tau_threshold = forgeControl.tau_threshold;
     for(int i=0; i<4; i++) control.rotor_bias[i] = forgeControl.rotor_bias[i];
+    control.anneal_cooling = _annealFactor;
 
     encoder->setBytes(&control, sizeof(control), 0);
     

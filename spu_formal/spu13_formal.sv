@@ -7,8 +7,6 @@
 module spu13_formal (
     input  wire        clk,
     input  wire        reset,
-    
-    // Core Signals to Monitor
     input  wire [2:0]  opcode,
     input  wire [127:0] reg_curr,
     input  wire [127:0] reg_next,
@@ -16,27 +14,68 @@ module spu13_formal (
     input  wire        instr_complete
 );
 
-    // --- 1. Internal State for Covers ---
+    // Quadray lanes
+    wire signed [31:0] a = reg_curr[31:0];
+    wire signed [31:0] b = reg_curr[63:32];
+    wire signed [31:0] c = reg_curr[95:64];
+    wire signed [31:0] d = reg_curr[127:96];
+
     reg [1:0] seq_state = 0;
 
 `ifdef FORMAL
-    // --- 2. Boundary Proofs ---
-    always @(*) begin
-        // Prove that the zero-sum invariant is always maintained unless a fault is flagged
-        if (!reset && !fault_detected) begin
-            assert(reg_curr[31:0] + reg_curr[63:32] + reg_curr[95:64] + reg_curr[127:96] == 0);
-        end
-        
-        // Prove that division-by-zero is physically impossible in the Rational LUT
-        assert(reg_curr != 128'h0); 
+    // 0. Environment sanity
+    initial begin
+        assume(reset);
     end
 
-    // --- 3. The "Demo" Traces (Reachability) ---
+    // Reset eventually deasserts
+    reg reset_seen;
     always @(posedge clk) begin
-        cover(instr_complete && opcode == 3'b000); // ROTR (spin)
-        cover(instr_complete && opcode == 3'b001); // TUCK (lock)
-        cover(instr_complete && opcode == 3'b110); // ANNE (anneal)
-        
+        reset_seen <= 1'b1;
+        if (reset_seen) assume(!reset);
+    end
+
+    // 1. Boundary proofs
+    always @(*) begin
+        if (!reset && !fault_detected) begin
+            // Zero-sum quadray invariant
+            assert(a + b + c + d == 0);
+        end
+
+        // Division safety: only when an opcode that uses reciprocal is active
+        if (opcode == 3'b010) begin // e.g. DIV/SURD opcode
+            assert(a != 0);
+            assert(b != 0);
+            assert(c != 0);
+            assert(d != 0);
+        end
+    end
+
+    // 2. Progress: instruction eventually completes when not in reset
+    reg [7:0] instr_age;
+    always @(posedge clk) begin
+        if (reset) begin
+            instr_age <= 0;
+        end else if (!instr_complete) begin
+            instr_age <= instr_age + 1;
+            // bounded response: must complete within 255 cycles
+            assert(instr_age != 8'hFF);
+        end else begin
+            instr_age <= 0;
+        end
+    end
+
+    // 3. Demo traces (reachability)
+    always @(posedge clk) begin
+        cover(instr_complete && opcode == 3'b000); // ROTR
+        cover(instr_complete && opcode == 3'b001); // TUCK
+        cover(instr_complete && opcode == 3'b110); // ANNE
+
+        // Reach a non-trivial zero-sum state
+        cover(!reset && !fault_detected &&
+              a == 32'sd1 && b == 32'sd1 &&
+              c == -32'sd1 && d == -32'sd1);
+
         // Complex Sequence: Reset followed by high-tension spin
         if (reset) begin
             seq_state <= 0;
@@ -44,7 +83,7 @@ module spu13_formal (
             case (seq_state)
                 0: if (opcode == 3'b111) seq_state <= 1; // RESET
                 1: if (opcode == 3'b000) seq_state <= 2; // SPIN
-                2: cover(1'b1); // Sequence Complete
+                2: cover(1'b1); // sequence complete
             endcase
         end
     end

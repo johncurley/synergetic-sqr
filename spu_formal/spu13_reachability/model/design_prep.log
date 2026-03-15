@@ -23,15 +23,15 @@ Found 0 SCCs.
 
 6. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \spu13_formal..
-Removed 12 unused cells and 12 unused wires.
-<suppressed ~13 debug messages>
+Removed 30 unused cells and 30 unused wires.
+<suppressed ~31 debug messages>
 
 7. Executing FORMALFF pass.
 
 8. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \spu13_formal..
-Removed 10 unused cells and 10 unused wires.
-<suppressed ~11 debug messages>
+Removed 21 unused cells and 21 unused wires.
+<suppressed ~23 debug messages>
 
 9. Executing CHECK pass (checking for obvious problems).
 Checking module spu13_formal...
@@ -43,22 +43,23 @@ Found and reported 0 problems.
 
 11.1. Executing OPT_EXPR pass (perform const folding).
 Optimizing module spu13_formal.
+<suppressed ~1 debug messages>
 
 11.2. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\spu13_formal'.
-Computing hashes of 29 cells of `\spu13_formal'.
+Computing hashes of 48 cells of `\spu13_formal'.
 Finding duplicate cells in `\spu13_formal'.
-Computing hashes of 27 cells of `\spu13_formal'.
+Computing hashes of 45 cells of `\spu13_formal'.
 Finding duplicate cells in `\spu13_formal'.
-<suppressed ~6 debug messages>
-Removed a total of 2 cells.
+<suppressed ~9 debug messages>
+Removed a total of 3 cells.
 
 11.3. Executing OPT_DFF pass (perform DFF optimizations).
-Setting constant 1-bit at position 0 on $auto$async2sync.cc:118:execute$68 ($ff) from module spu13_formal.
+Setting constant 1-bit at position 0 on $auto$async2sync.cc:118:execute$144 ($ff) from module spu13_formal.
 
 11.4. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \spu13_formal..
-Removed 0 unused cells and 3 unused wires.
+Removed 0 unused cells and 5 unused wires.
 <suppressed ~1 debug messages>
 
 11.5. Rerunning OPT passes. (Removed registers in this run.)
@@ -68,7 +69,7 @@ Optimizing module spu13_formal.
 
 11.7. Executing OPT_MERGE pass (detect identical cells).
 Finding identical cells in module `\spu13_formal'.
-Computing hashes of 26 cells of `\spu13_formal'.
+Computing hashes of 44 cells of `\spu13_formal'.
 Finding duplicate cells in `\spu13_formal'.
 Removed a total of 0 cells.
 
@@ -85,6 +86,6 @@ Finding unused cells or wires in module \spu13_formal..
 13. Executing RTLIL backend.
 Output filename: ../model/design_prep.il
 
-End of script. Logfile hash: 92a1a1acf8, CPU: user 0.04s system 0.01s, MEM: 6.43 MB peak
+End of script. Logfile hash: 452ad67046, CPU: user 0.05s system 0.01s, MEM: 6.91 MB peak
 Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
-Time spent: 40% 5x opt_clean (0 sec), 13% 2x opt_expr (0 sec), ...
+Time spent: 41% 5x opt_clean (0 sec), 14% 2x opt_expr (0 sec), ...

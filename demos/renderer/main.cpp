@@ -156,6 +156,9 @@ int main(int argc, char* argv[]) {
                         break;
                     case SDLK_1: renderer->setLayer(0); break;
                     case SDLK_2: renderer->setLayer(1); break;
+                    case SDLK_K:
+                        renderer->cycleAnnealing();
+                        break;
                     case SDLK_P: {
                         std::cout << "[SOVEREIGN] Dispatching Point Projection (0x41)" << std::endl;
                         SovereignCommand cmd;

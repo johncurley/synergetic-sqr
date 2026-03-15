@@ -68,10 +68,20 @@ module spu13_icesugar_sovereign (
         .inst_word(sovereign_word),
         .inst_valid(word_ready),
         .opcode(opcode),
-        .q_a(q_a), .q_b(q_b), .q_c(q_c), .q_d(q_d),
+        .q_a(q_a_raw), .q_b(q_b_raw), .q_c(q_c_raw), .q_d(q_d_raw),
         .energy(energy),
         .trigger_draw(trigger_draw)
     );
+
+    // --- 2.5 Anneal Stabilizer ---
+    wire [11:0] q_a_raw, q_b_raw, q_c_raw, q_d_raw;
+    wire [11:0] q_a, q_b, q_c, q_d;
+
+    spu13_anneal_stabilizer u_anneal_a ( .clk(clk_12mhz), .reset(!rst_n), .raw_coord(q_a_raw), .temp_scale(4'd1), .annealed_coord(q_a) );
+    spu13_anneal_stabilizer u_anneal_b ( .clk(clk_12mhz), .reset(!rst_n), .raw_coord(q_b_raw), .temp_scale(4'd1), .annealed_coord(q_b) );
+    spu13_anneal_stabilizer u_anneal_c ( .clk(clk_12mhz), .reset(!rst_n), .raw_coord(q_c_raw), .temp_scale(4'd1), .annealed_coord(q_c) );
+    spu13_anneal_stabilizer u_anneal_d ( .clk(clk_12mhz), .reset(!rst_n), .raw_coord(q_d_raw), .temp_scale(4'd1), .annealed_coord(q_d) );
+
 
     // --- 3. Scanning & Energy Projection ---
     // Simple 240x240 timing (Slow 12MHz Scanout)

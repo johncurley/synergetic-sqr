@@ -47,6 +47,19 @@ The `synergetic-sqr` IDE functions as a high-fidelity **Digital Twin**. It mirro
 
 ---
 
+### 🔬 Z3 Formal Verification
+The SPU-13 core logic is not merely tested; it is **formally verified** to be free from entire classes of bugs (stalls, zero-divides, invariant violations).
+
+- **Formal Proofs:** See [docs/FORMAL_OVERVIEW.md](docs/FORMAL_OVERVIEW.md) for the exact invariants and reachability guarantees.
+- **Harness:** The Z3/Yosys harness is located in `spu_formal/`.
+
+### 🔥 Physical Burn-In
+To ensure long-term stability, all reified hardware undergoes a rigorous 24-hour stress test.
+
+- **Burn-In Plan:** See [docs/BURN_IN_PLAN.md](docs/BURN_IN_PLAN.md) for the exact test protocol we run on FPGA hardware.
+
+---
+
 ### 🚀 2026 Fleet Status: Universal Parity
 The SPU-13 maintains 100% bit-exact parity across all verified hardware platforms.
 

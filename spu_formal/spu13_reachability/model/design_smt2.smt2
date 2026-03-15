@@ -2,115 +2,160 @@
 ; yosys-smt2-module spu13_formal
 (declare-sort |spu13_formal_s| 0)
 (declare-fun |spu13_formal_is| (|spu13_formal_s|) Bool)
-; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:107:execute$51"], "smtname": 0, "smtoffset": 0, "type": "reg", "width": 1}
-(declare-fun |spu13_formal#0| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:107:execute$51
-; yosys-smt2-register $auto$async2sync.cc:107:execute$51 1
-(define-fun |spu13_formal_n $auto$async2sync.cc:107:execute$51| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))
-; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:107:execute$63"], "smtname": 1, "smtoffset": 0, "type": "reg", "width": 1}
-(declare-fun |spu13_formal#1| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:107:execute$63
-; yosys-smt2-register $auto$async2sync.cc:107:execute$63 1
-(define-fun |spu13_formal_n $auto$async2sync.cc:107:execute$63| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1))
-; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$55"], "smtname": 2, "smtoffset": 0, "type": "reg", "width": 1}
-(declare-fun |spu13_formal#2| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$55
-; yosys-smt2-register $auto$async2sync.cc:116:execute$55 1
-(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$55| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))
-; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$61"], "smtname": 3, "smtoffset": 0, "type": "reg", "width": 1}
-(declare-fun |spu13_formal#3| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$61
-; yosys-smt2-register $auto$async2sync.cc:116:execute$61 1
-(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$61| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1))
-; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$49"], "smtname": 4, "smtoffset": 0, "type": "reg", "width": 1}
-(declare-fun |spu13_formal#4| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$49
-; yosys-smt2-register $auto$async2sync.cc:116:execute$49 1
-(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$49| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1))
-(declare-fun |spu13_formal#5| (|spu13_formal_s|) Bool) ; \clk
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:107:execute$139"], "smtname": 0, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#0| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:107:execute$139
+; yosys-smt2-register $auto$async2sync.cc:107:execute$139 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:107:execute$139| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$131"], "smtname": 1, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#1| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$131
+; yosys-smt2-register $auto$async2sync.cc:116:execute$131 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$131| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:107:execute$133"], "smtname": 2, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#2| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:107:execute$133
+; yosys-smt2-register $auto$async2sync.cc:107:execute$133 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:107:execute$133| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$119"], "smtname": 3, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#3| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$119
+; yosys-smt2-register $auto$async2sync.cc:116:execute$119 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$119| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$137"], "smtname": 4, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#4| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$137
+; yosys-smt2-register $auto$async2sync.cc:116:execute$137 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$137| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["$auto$async2sync.cc:116:execute$125"], "smtname": 5, "smtoffset": 0, "type": "reg", "width": 1}
+(declare-fun |spu13_formal#5| (|spu13_formal_s|) (_ BitVec 1)) ; $auto$async2sync.cc:116:execute$125
+; yosys-smt2-register $auto$async2sync.cc:116:execute$125 1
+(define-fun |spu13_formal_n $auto$async2sync.cc:116:execute$125| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#5| state)) #b1))
+(declare-fun |spu13_formal#6| (|spu13_formal_s|) (_ BitVec 32)) ; \reg_curr [31:0]
+; yosys-smt2-wire a 32
+(define-fun |spu13_formal_n a| ((state |spu13_formal_s|)) (_ BitVec 32) (|spu13_formal#6| state))
+(declare-fun |spu13_formal#7| (|spu13_formal_s|) (_ BitVec 32)) ; \reg_curr [63:32]
+; yosys-smt2-wire b 32
+(define-fun |spu13_formal_n b| ((state |spu13_formal_s|)) (_ BitVec 32) (|spu13_formal#7| state))
+(declare-fun |spu13_formal#8| (|spu13_formal_s|) (_ BitVec 32)) ; \reg_curr [95:64]
+; yosys-smt2-wire c 32
+(define-fun |spu13_formal_n c| ((state |spu13_formal_s|)) (_ BitVec 32) (|spu13_formal#8| state))
+(declare-fun |spu13_formal#9| (|spu13_formal_s|) Bool) ; \clk
 ; yosys-smt2-input clk 1
 ; yosys-smt2-wire clk 1
 ; yosys-smt2-clock clk posedge
 ; yosys-smt2-witness {"offset": 0, "path": ["\\clk"], "smtname": "clk", "smtoffset": 0, "type": "posedge", "width": 1}
 ; yosys-smt2-witness {"offset": 0, "path": ["\\clk"], "smtname": "clk", "smtoffset": 0, "type": "input", "width": 1}
-(define-fun |spu13_formal_n clk| ((state |spu13_formal_s|)) Bool (|spu13_formal#5| state))
-(declare-fun |spu13_formal#6| (|spu13_formal_s|) Bool) ; \fault_detected
+(define-fun |spu13_formal_n clk| ((state |spu13_formal_s|)) Bool (|spu13_formal#9| state))
+(declare-fun |spu13_formal#10| (|spu13_formal_s|) (_ BitVec 32)) ; \reg_curr [127:96]
+; yosys-smt2-wire d 32
+(define-fun |spu13_formal_n d| ((state |spu13_formal_s|)) (_ BitVec 32) (|spu13_formal#10| state))
+(declare-fun |spu13_formal#11| (|spu13_formal_s|) Bool) ; \fault_detected
 ; yosys-smt2-input fault_detected 1
 ; yosys-smt2-wire fault_detected 1
 ; yosys-smt2-witness {"offset": 0, "path": ["\\fault_detected"], "smtname": "fault_detected", "smtoffset": 0, "type": "input", "width": 1}
-(define-fun |spu13_formal_n fault_detected| ((state |spu13_formal_s|)) Bool (|spu13_formal#6| state))
-(declare-fun |spu13_formal#7| (|spu13_formal_s|) Bool) ; \instr_complete
+(define-fun |spu13_formal_n fault_detected| ((state |spu13_formal_s|)) Bool (|spu13_formal#11| state))
+(declare-fun |spu13_formal#12| (|spu13_formal_s|) Bool) ; \instr_complete
 ; yosys-smt2-input instr_complete 1
 ; yosys-smt2-wire instr_complete 1
 ; yosys-smt2-witness {"offset": 0, "path": ["\\instr_complete"], "smtname": "instr_complete", "smtoffset": 0, "type": "input", "width": 1}
-(define-fun |spu13_formal_n instr_complete| ((state |spu13_formal_s|)) Bool (|spu13_formal#7| state))
-(declare-fun |spu13_formal#8| (|spu13_formal_s|) (_ BitVec 3)) ; \opcode
+(define-fun |spu13_formal_n instr_complete| ((state |spu13_formal_s|)) Bool (|spu13_formal#12| state))
+(declare-fun |spu13_formal#13| (|spu13_formal_s|) (_ BitVec 3)) ; \opcode
 ; yosys-smt2-input opcode 3
 ; yosys-smt2-wire opcode 3
 ; yosys-smt2-witness {"offset": 0, "path": ["\\opcode"], "smtname": "opcode", "smtoffset": 0, "type": "input", "width": 3}
-(define-fun |spu13_formal_n opcode| ((state |spu13_formal_s|)) (_ BitVec 3) (|spu13_formal#8| state))
-(declare-fun |spu13_formal#9| (|spu13_formal_s|) (_ BitVec 128)) ; \reg_curr
+(define-fun |spu13_formal_n opcode| ((state |spu13_formal_s|)) (_ BitVec 3) (|spu13_formal#13| state))
 ; yosys-smt2-input reg_curr 128
 ; yosys-smt2-wire reg_curr 128
 ; yosys-smt2-witness {"offset": 0, "path": ["\\reg_curr"], "smtname": "reg_curr", "smtoffset": 0, "type": "input", "width": 128}
-(define-fun |spu13_formal_n reg_curr| ((state |spu13_formal_s|)) (_ BitVec 128) (|spu13_formal#9| state))
-(declare-fun |spu13_formal#10| (|spu13_formal_s|) (_ BitVec 128)) ; \reg_next
+(define-fun |spu13_formal_n reg_curr| ((state |spu13_formal_s|)) (_ BitVec 128) (concat (|spu13_formal#10| state) (concat (|spu13_formal#8| state) (concat (|spu13_formal#7| state) (|spu13_formal#6| state)))))
+(declare-fun |spu13_formal#14| (|spu13_formal_s|) (_ BitVec 128)) ; \reg_next
 ; yosys-smt2-input reg_next 128
 ; yosys-smt2-wire reg_next 128
 ; yosys-smt2-witness {"offset": 0, "path": ["\\reg_next"], "smtname": "reg_next", "smtoffset": 0, "type": "input", "width": 128}
-(define-fun |spu13_formal_n reg_next| ((state |spu13_formal_s|)) (_ BitVec 128) (|spu13_formal#10| state))
-(declare-fun |spu13_formal#11| (|spu13_formal_s|) Bool) ; \reset
+(define-fun |spu13_formal_n reg_next| ((state |spu13_formal_s|)) (_ BitVec 128) (|spu13_formal#14| state))
+(declare-fun |spu13_formal#15| (|spu13_formal_s|) Bool) ; \reset
 ; yosys-smt2-input reset 1
 ; yosys-smt2-wire reset 1
 ; yosys-smt2-witness {"offset": 0, "path": ["\\reset"], "smtname": "reset", "smtoffset": 0, "type": "input", "width": 1}
-(define-fun |spu13_formal_n reset| ((state |spu13_formal_s|)) Bool (|spu13_formal#11| state))
-; yosys-smt2-witness {"offset": 0, "path": ["\\seq_state"], "smtname": 12, "smtoffset": 0, "type": "reg", "width": 2}
-(declare-fun |spu13_formal#12| (|spu13_formal_s|) (_ BitVec 2)) ; \seq_state
+(define-fun |spu13_formal_n reset| ((state |spu13_formal_s|)) Bool (|spu13_formal#15| state))
+; yosys-smt2-anyinit spu13_formal#16 1 spu13_formal.sv:33.5-36.8
+; yosys-smt2-witness {"offset": 0, "path": ["\\reset_seen"], "smtname": 16, "smtoffset": 0, "type": "init", "width": 1}
+(declare-fun |spu13_formal#16| (|spu13_formal_s|) (_ BitVec 1)) ; \reset_seen
+; yosys-smt2-register reset_seen 1
+; yosys-smt2-wire reset_seen 1
+(define-fun |spu13_formal_n reset_seen| ((state |spu13_formal_s|)) Bool (= ((_ extract 0 0) (|spu13_formal#16| state)) #b1))
+; yosys-smt2-witness {"offset": 0, "path": ["\\seq_state"], "smtname": 17, "smtoffset": 0, "type": "reg", "width": 2}
+(declare-fun |spu13_formal#17| (|spu13_formal_s|) (_ BitVec 2)) ; \seq_state
 ; yosys-smt2-register seq_state 2
 ; yosys-smt2-wire seq_state 2
-(define-fun |spu13_formal_n seq_state| ((state |spu13_formal_s|)) (_ BitVec 2) (|spu13_formal#12| state))
-(define-fun |spu13_formal#13| ((state |spu13_formal_s|)) (_ BitVec 1) (bvnot (ite (|spu13_formal#5| state) #b1 #b0))) ; $auto$rtlil.cc:3339:Not$94
-; yosys-smt2-assume 0 $auto$formalff.cc:987:execute$95
-(define-fun |spu13_formal_u 0| ((state |spu13_formal_s|)) Bool (or (= ((_ extract 0 0) (|spu13_formal#13| state)) #b1) (not true))) ; $auto$formalff.cc:987:execute$95
-; yosys-smt2-cover 0 _witness_.check_cover_spu13_formal_sv_36_13 spu13_formal.sv:36.9-36.50
-(define-fun |spu13_formal_c 0| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_36_13
-; yosys-smt2-cover 1 _witness_.check_cover_spu13_formal_sv_37_16 spu13_formal.sv:37.9-37.50
-(define-fun |spu13_formal_c 1| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_37_16
-; yosys-smt2-cover 2 _witness_.check_cover_spu13_formal_sv_38_19 spu13_formal.sv:38.9-38.50
-(define-fun |spu13_formal_c 2| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_38_19
-; yosys-smt2-cover 3 _witness_.check_cover_spu13_formal_sv_47_24 spu13_formal.sv:47.20-47.31
-(define-fun |spu13_formal_c 3| ((state |spu13_formal_s|)) Bool (and true (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_47_24
-(define-fun |spu13_formal#14| ((state |spu13_formal_s|)) Bool (not (or  (= ((_ extract 0 0) (|spu13_formal#8| state)) #b1) (= ((_ extract 1 1) (|spu13_formal#8| state)) #b1) (= ((_ extract 2 2) (|spu13_formal#8| state)) #b1)))) ; $eq$spu13_formal.sv:36$14_Y
-(define-fun |spu13_formal#15| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#14| state) #b10 (|spu13_formal#12| state))) ; $procmux$32_Y
-(define-fun |spu13_formal#16| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#8| state) #b111)) ; $eq$spu13_formal.sv:45$22_Y
-(define-fun |spu13_formal#17| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#16| state) #b01 (|spu13_formal#12| state))) ; $procmux$36_Y
-(define-fun |spu13_formal#18| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#12| state) #b01)) ; $procmux$35_CMP
-(define-fun |spu13_formal#19| ((state |spu13_formal_s|)) Bool (not (or  (= ((_ extract 0 0) (|spu13_formal#12| state)) #b1) (= ((_ extract 1 1) (|spu13_formal#12| state)) #b1)))) ; $procmux$38_CMP
-(define-fun |spu13_formal#20| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#19| state) (|spu13_formal#17| state) (ite (|spu13_formal#18| state) (|spu13_formal#15| state) (|spu13_formal#12| state)))) ; $procmux$34_Y
-(define-fun |spu13_formal#21| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#11| state) #b00 (|spu13_formal#20| state))) ; $0\seq_state[1:0]
-(define-fun |spu13_formal#22| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#7| state) false) (or  (|spu13_formal#14| state) false))) ; $logic_and$spu13_formal.sv:36$15_Y
-(define-fun |spu13_formal#23| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#8| state) #b110)) ; $eq$spu13_formal.sv:38$20_Y
-(define-fun |spu13_formal#24| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#7| state) false) (or  (|spu13_formal#23| state) false))) ; $logic_and$spu13_formal.sv:38$21_Y
-(define-fun |spu13_formal#25| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#8| state) #b001)) ; $eq$spu13_formal.sv:37$17_Y
-(define-fun |spu13_formal#26| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#7| state) false) (or  (|spu13_formal#25| state) false))) ; $logic_and$spu13_formal.sv:37$18_Y
-(define-fun |spu13_formal#27| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#12| state) #b10)) ; $procmux$27_CMP
-(define-fun |spu13_formal#28| ((state |spu13_formal_s|)) (_ BitVec 1) (ite (|spu13_formal#27| state) #b1 #b0)) ; $procmux$26_Y
-(define-fun |spu13_formal#29| ((state |spu13_formal_s|)) (_ BitVec 1) (ite (|spu13_formal#11| state) #b0 (|spu13_formal#28| state))) ; $cover$spu13_formal.sv:47$24_EN
+(define-fun |spu13_formal_n seq_state| ((state |spu13_formal_s|)) (_ BitVec 2) (|spu13_formal#17| state))
+(define-fun |spu13_formal#18| ((state |spu13_formal_s|)) (_ BitVec 1) (bvnot (ite (|spu13_formal#9| state) #b1 #b0))) ; $auto$rtlil.cc:3339:Not$203
+; yosys-smt2-assume 0 $auto$formalff.cc:987:execute$204
+(define-fun |spu13_formal_u 0| ((state |spu13_formal_s|)) Bool (or (= ((_ extract 0 0) (|spu13_formal#18| state)) #b1) (not true))) ; $auto$formalff.cc:987:execute$204
+(define-fun |spu13_formal#19| ((state |spu13_formal_s|)) Bool (|spu13_formal_is| state)) ; $auto$rtlil.cc:3386:And$108
+; yosys-smt2-assume 1 _witness_.check_assume_spu13_formal_sv_28_54 spu13_formal.sv:28.9-28.22
+(define-fun |spu13_formal_u 1| ((state |spu13_formal_s|)) Bool (or (|spu13_formal#15| state) (not (|spu13_formal#19| state)))) ; _witness_.check_assume_spu13_formal_sv_28_54
+(define-fun |spu13_formal#20| ((state |spu13_formal_s|)) Bool (not (or  (|spu13_formal#15| state) false))) ; $logic_not$spu13_formal.sv:35$3_Y
+(define-fun |spu13_formal#21| ((state |spu13_formal_s|)) (_ BitVec 1) (ite (= ((_ extract 0 0) (|spu13_formal#16| state)) #b1) #b1 #b0)) ; $assume$spu13_formal.sv:35$2_EN
+; yosys-smt2-assume 2 _witness_.check_assume_spu13_formal_sv_35_2 spu13_formal.sv:35.25-35.39
+(define-fun |spu13_formal_u 2| ((state |spu13_formal_s|)) Bool (or (|spu13_formal#20| state) (not (= ((_ extract 0 0) (|spu13_formal#21| state)) #b1)))) ; _witness_.check_assume_spu13_formal_sv_35_2
+; yosys-smt2-cover 0 _witness_.check_cover_spu13_formal_sv_70_28 spu13_formal.sv:70.9-70.50
+(define-fun |spu13_formal_c 0| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_70_28
+; yosys-smt2-cover 1 _witness_.check_cover_spu13_formal_sv_71_31 spu13_formal.sv:71.9-71.50
+(define-fun |spu13_formal_c 1| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#5| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_71_31
+; yosys-smt2-cover 2 _witness_.check_cover_spu13_formal_sv_72_34 spu13_formal.sv:72.9-72.50
+(define-fun |spu13_formal_c 2| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_72_34
+; yosys-smt2-cover 3 _witness_.check_cover_spu13_formal_sv_75_37 spu13_formal.sv:75.9-77.44
+(define-fun |spu13_formal_c 3| ((state |spu13_formal_s|)) Bool (and (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1) (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_75_37
+; yosys-smt2-cover 4 _witness_.check_cover_spu13_formal_sv_86_51 spu13_formal.sv:86.20-86.31
+(define-fun |spu13_formal_c 4| ((state |spu13_formal_s|)) Bool (and true (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1))) ; _witness_.check_cover_spu13_formal_sv_86_51
+(define-fun |spu13_formal#22| ((state |spu13_formal_s|)) Bool (not (or  (= ((_ extract 0 0) (|spu13_formal#13| state)) #b1) (= ((_ extract 1 1) (|spu13_formal#13| state)) #b1) (= ((_ extract 2 2) (|spu13_formal#13| state)) #b1)))) ; $eq$spu13_formal.sv:70$29_Y
+(define-fun |spu13_formal#23| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#22| state) #b10 (|spu13_formal#17| state))) ; $procmux$61_Y
+(define-fun |spu13_formal#24| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#13| state) #b111)) ; $eq$spu13_formal.sv:84$49_Y
+(define-fun |spu13_formal#25| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#24| state) #b01 (|spu13_formal#17| state))) ; $procmux$65_Y
+(define-fun |spu13_formal#26| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#17| state) #b01)) ; $procmux$64_CMP
+(define-fun |spu13_formal#27| ((state |spu13_formal_s|)) Bool (not (or  (= ((_ extract 0 0) (|spu13_formal#17| state)) #b1) (= ((_ extract 1 1) (|spu13_formal#17| state)) #b1)))) ; $procmux$67_CMP
+(define-fun |spu13_formal#28| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#27| state) (|spu13_formal#25| state) (ite (|spu13_formal#26| state) (|spu13_formal#23| state) (|spu13_formal#17| state)))) ; $procmux$63_Y
+(define-fun |spu13_formal#29| ((state |spu13_formal_s|)) (_ BitVec 2) (ite (|spu13_formal#15| state) #b00 (|spu13_formal#28| state))) ; $0\seq_state[1:0]
+(define-fun |spu13_formal#30| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#13| state) #b001)) ; $eq$spu13_formal.sv:71$32_Y
+(define-fun |spu13_formal#31| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#12| state) false) (or  (|spu13_formal#30| state) false))) ; $logic_and$spu13_formal.sv:71$33_Y
+(define-fun |spu13_formal#32| ((state |spu13_formal_s|)) Bool (not (or  (|spu13_formal#11| state) false))) ; $logic_not$spu13_formal.sv:40$6_Y
+(define-fun |spu13_formal#33| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#20| state) false) (or  (|spu13_formal#32| state) false))) ; $logic_and$spu13_formal.sv:40$7_Y
+(define-fun |spu13_formal#34| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#6| state) #b00000000000000000000000000000001)) ; $eq$spu13_formal.sv:76$41_Y
+(define-fun |spu13_formal#35| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#33| state) false) (or  (|spu13_formal#34| state) false))) ; $logic_and$spu13_formal.sv:75$42_Y
+(define-fun |spu13_formal#36| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#7| state) #b00000000000000000000000000000001)) ; $eq$spu13_formal.sv:76$43_Y
+(define-fun |spu13_formal#37| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#35| state) false) (or  (|spu13_formal#36| state) false))) ; $logic_and$spu13_formal.sv:75$44_Y
+(define-fun |spu13_formal#38| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#8| state) #b11111111111111111111111111111111)) ; $eq$spu13_formal.sv:77$45_Y
+(define-fun |spu13_formal#39| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#37| state) false) (or  (|spu13_formal#38| state) false))) ; $logic_and$spu13_formal.sv:75$46_Y
+(define-fun |spu13_formal#40| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#10| state) #b11111111111111111111111111111111)) ; $eq$spu13_formal.sv:77$47_Y
+(define-fun |spu13_formal#41| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#39| state) false) (or  (|spu13_formal#40| state) false))) ; $logic_and$spu13_formal.sv:75$48_Y
+(define-fun |spu13_formal#42| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#12| state) false) (or  (|spu13_formal#22| state) false))) ; $logic_and$spu13_formal.sv:70$30_Y
+(define-fun |spu13_formal#43| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#13| state) #b110)) ; $eq$spu13_formal.sv:72$35_Y
+(define-fun |spu13_formal#44| ((state |spu13_formal_s|)) Bool (and (or  (|spu13_formal#12| state) false) (or  (|spu13_formal#43| state) false))) ; $logic_and$spu13_formal.sv:72$36_Y
+(define-fun |spu13_formal#45| ((state |spu13_formal_s|)) Bool (= (|spu13_formal#17| state) #b10)) ; $procmux$56_CMP
+(define-fun |spu13_formal#46| ((state |spu13_formal_s|)) (_ BitVec 1) (ite (|spu13_formal#45| state) #b1 #b0)) ; $procmux$55_Y
+(define-fun |spu13_formal#47| ((state |spu13_formal_s|)) (_ BitVec 1) (ite (|spu13_formal#15| state) #b0 (|spu13_formal#46| state))) ; $cover$spu13_formal.sv:86$51_EN
 (define-fun |spu13_formal_a| ((state |spu13_formal_s|)) Bool true)
-(define-fun |spu13_formal_u| ((state |spu13_formal_s|)) Bool 
+(define-fun |spu13_formal_u| ((state |spu13_formal_s|)) Bool (and
   (|spu13_formal_u 0| state)
-)
+  (|spu13_formal_u 1| state)
+  (|spu13_formal_u 2| state)
+))
 (define-fun |spu13_formal_i| ((state |spu13_formal_s|)) Bool (and
-  (= (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1) false) ; $auto$async2sync.cc:107:execute$51
-  (= (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1) false) ; $auto$async2sync.cc:107:execute$63
-  (= (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1) true) ; $auto$async2sync.cc:116:execute$55
-  (= (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1) true) ; $auto$async2sync.cc:116:execute$61
-  (= (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1) true) ; $auto$async2sync.cc:116:execute$49
-  (= (|spu13_formal#12| state) #b00) ; seq_state
+  (= (= ((_ extract 0 0) (|spu13_formal#0| state)) #b1) false) ; $auto$async2sync.cc:107:execute$139
+  (= (= ((_ extract 0 0) (|spu13_formal#1| state)) #b1) true) ; $auto$async2sync.cc:116:execute$131
+  (= (= ((_ extract 0 0) (|spu13_formal#2| state)) #b1) false) ; $auto$async2sync.cc:107:execute$133
+  (= (= ((_ extract 0 0) (|spu13_formal#3| state)) #b1) true) ; $auto$async2sync.cc:116:execute$119
+  (= (= ((_ extract 0 0) (|spu13_formal#4| state)) #b1) true) ; $auto$async2sync.cc:116:execute$137
+  (= (= ((_ extract 0 0) (|spu13_formal#5| state)) #b1) true) ; $auto$async2sync.cc:116:execute$125
+  (= (|spu13_formal#17| state) #b00) ; seq_state
 ))
 (define-fun |spu13_formal_h| ((state |spu13_formal_s|)) Bool true)
 (define-fun |spu13_formal_t| ((state |spu13_formal_s|) (next_state |spu13_formal_s|)) Bool (and
-  (= (|spu13_formal#21| state) (|spu13_formal#12| next_state)) ; $procdff$44 \seq_state
-  (= (ite (|spu13_formal#22| state) #b1 #b0) (|spu13_formal#4| next_state)) ; $auto$async2sync.cc:118:execute$50 $auto$async2sync.cc:116:execute$49
-  (= (ite (|spu13_formal#24| state) #b1 #b0) (|spu13_formal#3| next_state)) ; $auto$async2sync.cc:118:execute$62 $auto$async2sync.cc:116:execute$61
-  (= (ite (|spu13_formal#26| state) #b1 #b0) (|spu13_formal#2| next_state)) ; $auto$async2sync.cc:118:execute$56 $auto$async2sync.cc:116:execute$55
-  (= (|spu13_formal#29| state) (|spu13_formal#1| next_state)) ; $auto$async2sync.cc:110:execute$65 $auto$async2sync.cc:107:execute$63
-  (= #b1 (|spu13_formal#0| next_state)) ; $auto$async2sync.cc:110:execute$53 $auto$async2sync.cc:107:execute$51
+  (= (|spu13_formal#29| state) (|spu13_formal#17| next_state)) ; $procdff$95 \seq_state
+  (= #b1 (|spu13_formal#16| next_state)) ; $procdff$97 \reset_seen
+  (= (ite (|spu13_formal#31| state) #b1 #b0) (|spu13_formal#5| next_state)) ; $auto$async2sync.cc:118:execute$126 $auto$async2sync.cc:116:execute$125
+  (= (ite (|spu13_formal#41| state) #b1 #b0) (|spu13_formal#4| next_state)) ; $auto$async2sync.cc:118:execute$138 $auto$async2sync.cc:116:execute$137
+  (= (ite (|spu13_formal#42| state) #b1 #b0) (|spu13_formal#3| next_state)) ; $auto$async2sync.cc:118:execute$120 $auto$async2sync.cc:116:execute$119
+  (= #b1 (|spu13_formal#2| next_state)) ; $auto$async2sync.cc:110:execute$135 $auto$async2sync.cc:107:execute$133
+  (= (ite (|spu13_formal#44| state) #b1 #b0) (|spu13_formal#1| next_state)) ; $auto$async2sync.cc:118:execute$132 $auto$async2sync.cc:116:execute$131
+  (= (|spu13_formal#47| state) (|spu13_formal#0| next_state)) ; $auto$async2sync.cc:110:execute$141 $auto$async2sync.cc:107:execute$139
 )) ; end of module spu13_formal
 ; yosys-smt2-topmod spu13_formal
 ; end of yosys output

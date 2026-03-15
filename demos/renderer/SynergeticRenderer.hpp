@@ -33,6 +33,7 @@ public:
     virtual void toggleTension() = 0; // Toggle between Cubic (90) and IVM (60)
     virtual bool isCartesian() const = 0; // NEW: Get Knot-Breaker status
     virtual void cycleBioSecurity() = 0; 
+    virtual void cycleAnnealing() = 0; // NEW: 0.0 to 1.0 
 
     // --- SOVEREIGN COMMAND INTERFACE ---
     virtual void dispatchCommand(const SovereignCommand& cmd) = 0;
@@ -64,6 +65,7 @@ public:
     void toggleTension() override { _tensionToggle = !_tensionToggle; }
     bool isCartesian() const override { return _tensionToggle; } // NEW
     void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 11; }
+    void cycleAnnealing() override { _annealFactor += 0.25f; if (_annealFactor > 1.0f) _annealFactor = 0.0f; }
     
     void dispatchCommand(const SovereignCommand& cmd) override { _commandBuffer.push_back(cmd.compile()); }
     void flushCommands() override { _commandBuffer.clear(); }
@@ -102,6 +104,7 @@ private:
         uint32_t is_cartesian_display; // NEW: Knot-Breaker Toggle
         float    tau_threshold; 
         float    rotor_bias[4]; 
+        float    anneal_cooling; // NEW
     };
 
     MTL::Device* _device;
@@ -118,6 +121,7 @@ private:
     bool _harmonic = false;
     bool _latticeLock = false;
     bool _tensionToggle = false;
+    float _annealFactor = 0.0f;
     uint32_t _bioSecurity = 0;
     CoherenceMonitor _coherence;
 };
@@ -141,6 +145,7 @@ public:
     void toggleTension() override;
     bool isCartesian() const override { return _isCartesian; } // NEW
     void cycleBioSecurity() override { _bioSecurity = (_bioSecurity + 1) % 11; }
+    void cycleAnnealing() override { _annealFactor += 0.25f; if (_annealFactor > 1.0f) _annealFactor = 0.0f; }
 
     void dispatchCommand(const SovereignCommand& cmd) override { _commandBuffer.push_back(cmd.compile()); }
     void flushCommands() override { _commandBuffer.clear(); }
@@ -165,6 +170,7 @@ private:
     bool _harmonic = false;
     bool _latticeLock = false;
     bool _isCartesian = true;
+    float _annealFactor = 0.0f;
     uint32_t _bioSecurity = 0;
     CoherenceMonitor _coherence;
 };

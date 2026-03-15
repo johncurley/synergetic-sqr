@@ -32,20 +32,22 @@ Module spu13_formal directly or indirectly contains formal properties -> setting
 
         +----------Local Count, excluding submodules.
         | 
-       30 wires
-      291 wire bits
-        8 public wires
-      265 public wire bits
+       49 wires
+      434 wire bits
+       13 public wires
+      394 public wire bits
         7 ports
       263 port bits
-       28 cells
-        1   $assume
-        4   $cover
-        5   $eq
-        6   $ff
-        3   $logic_and
-        2   $logic_not
-        5   $mux
+       46 cells
+        1   $anyinit
+        3   $assume
+        5   $cover
+        9   $eq
+        7   $ff
+        1   $initstate
+        8   $logic_and
+        4   $logic_not
+        6   $mux
         1   $not
         1   $pmux
 
@@ -56,6 +58,6 @@ Module spu13_formal directly or indirectly contains formal properties -> setting
 6.2. Executing DEMUXMAP pass.
 Creating SMT-LIBv2 representation of module spu13_formal.
 
-End of script. Logfile hash: 64ff3745f3, CPU: user 0.02s system 0.01s, MEM: 5.67 MB peak
+End of script. Logfile hash: fa18a464c8, CPU: user 0.02s system 0.01s, MEM: 5.82 MB peak
 Yosys 0.63 (git sha1 70a11c6bf0e8dd669f56c7da3587f78b405138e2, clang++ 14.0.0 -fPIC -O3)
-Time spent: 69% 2x write_smt2 (0 sec), 18% 2x read_rtlil (0 sec), ...
+Time spent: 67% 2x write_smt2 (0 sec), 17% 2x read_rtlil (0 sec), ...

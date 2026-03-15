@@ -6,7 +6,7 @@ TOP="spu13_ulx3s_sovereign"
 PROJ="spu13_sovereign_ulx3s"
 DEVICE="LFE5U-85F"
 PACKAGE="CABGA381"
-LPF="ulx3s.lpf"
+LPF="spu13_sovereign.lpf"
 
 # Source Files
 SRC="spu13_ulx3s_sovereign.v \

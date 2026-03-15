@@ -1,10 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// SPU-13 UNIFIED SOVEREIGN KERNEL (v1.5)
-// Objective: "Laminar & Ephemeral" 60-degree resonance.
-// Uses a Rational Parabolic profile (1 - x^2) and a 1.5-pixel width 
-// to bridge the "Cubic Gap" between physical sub-pixel bars.
+// SPU-13 UNIFIED SOVEREIGN KERNEL (v1.7)
+// Objective: "Stillness-Locked" 60-degree resonance.
+// Integrates the Anneal Stabilizer logic to ensure emulator-to-hardware parity.
 
 struct SPUControl {
     uint tick;
@@ -18,40 +17,41 @@ struct SPUControl {
     uint32_t is_cartesian_display;
     float    tau_threshold; 
     float    rotor_bias[4]; 
+    float    anneal_cooling; // NEW: 0.0 (Fluid) to 1.0 (Locked)
 };
 
 struct SovereignCore {
+    // Mimics the spu13_anneal_stabilizer.v logic
+    static float latticeSnap(float val, float cooling) {
+        if (cooling <= 0.0) return val;
+        
+        // Lattice Grid Size (matching the 64-unit hardware grid)
+        float grid = 0.015625; // 1/64
+        float target = round(val / grid) * grid;
+        
+        // Move toward the target based on the cooling factor
+        return mix(val, target, cooling);
+    }
+
     static float getIntensity(float2 uv, SPUControl ctrl, float pixel_w_uv) {
         float t = (ctrl.bio_security == 10) ? 0.0 : float(ctrl.tick) * 0.02;
 
-        // 3-Axis IVM Projection (Normalized 60-degree vectors)
-        float2 axes[3] = { 
-            float2(1.0, 0.0), 
-            float2(-0.5, 0.866), 
-            float2(-0.5, -0.866)
-        };
-        
-        float offsets[3] = { 
-            sin(t) * 0.1, 
-            sin(t + 2.0) * 0.1, 
-            sin(t + 4.0) * 0.1
-        };
+        float2 axes[3] = { float2(1.0, 0.0), float2(-0.5, 0.866), float2(-0.5, -0.866) };
+        float offsets[3] = { sin(t) * 0.1, sin(t + 2.0) * 0.1, sin(t + 4.0) * 0.1 };
 
         float exposure = 0.0;
         float step_size = 0.25;
-        
-        // RATIONAL EPHEMERAL WIDTH: 1.5 physical pixels
-        // This ensures energy is always shared across sub-pixels, killing the "flash."
         float line_w = pixel_w_uv * 1.5f;
 
         for(int a=0; a<3; a++) {
             for(float i=-4.0; i<=4.0; i+=1.0) {
                 float dist = abs(dot(uv, axes[a]) - (i * step_size + offsets[a]));
                 
-                // RATIONAL PARABOLIC PROFILE (1 - x^2)
+                // --- THE ANNEAL SNAP (Hardware Parity) ---
+                dist = latticeSnap(dist, ctrl.anneal_cooling);
+
                 float x = dist / line_w;
                 float intensity = saturate(1.0f - (x * x));
-                
                 exposure = max(exposure, intensity);
             }
         }
@@ -80,41 +80,36 @@ kernel void renderSovereign_v1(
     float pixel_w_uv = (2.0f * aspect) / float(size.x);
     float sub_offset = pixel_w_uv * 0.333f;
 
-    // 1. LAMINAR CORE ENERGY
-    float raw_energy = SovereignCore::getIntensity(uv, control, pixel_w_uv);
+    // 1. ANNEALED SUB-PIXEL SAMPLING
+    float raw_r = SovereignCore::getIntensity(uv - float2(sub_offset, 0), control, pixel_w_uv);
+    float raw_g = SovereignCore::getIntensity(uv, control, pixel_w_uv);
+    float raw_b = SovereignCore::getIntensity(uv + float2(sub_offset, 0), control, pixel_w_uv);
 
-    // 2. SOVEREIGN COMMAND PROCESSING (v1.6)
-    // For the audit, we only check the first instruction in the buffer
+    // 2. SOVEREIGN COMMAND PROCESSING (v1.7)
     uint64_t word = commands[0];
     uint8_t opcode = (word >> 56) & 0xFF;
-    
-    if (opcode == 0x41) { // SPROJ_P (Project Sovereign Point)
-        // Unpack 12-bit signed quadrays
+    if (opcode == 0x41) { // SPROJ_P
         int16_t qa = (word >> 44) & 0x0FFF; if (qa & 0x0800) qa |= 0xF000;
         int16_t qb = (word >> 32) & 0x0FFF; if (qb & 0x0800) qb |= 0xF000;
         int16_t qc = (word >> 12) & 0x0FFF; if (qc & 0x0800) qc |= 0xF000;
-        int16_t qd = word & 0x0FFF;         if (qd & 0x0800) qd |= 0xF000;
         
-        // Map to IVM space
         float a = float(qa) / 64.0f;
         float b = float(qb) / 64.0f;
         float c = float(qc) / 64.0f;
         float2 pos = float2((b - c) * 0.8660254f, a - (b + c) * 0.5f);
         
-        float dist = length(uv - pos);
+        float dist = SovereignCore::latticeSnap(length(uv - pos), control.anneal_cooling);
         float dot_intensity = smoothstep(0.02, 0.0, dist) * (float((word >> 24) & 0xFF) / 255.0f);
-        raw_energy = max(raw_energy, dot_intensity);
+        raw_r = max(raw_r, dot_intensity);
+        raw_g = max(raw_g, dot_intensity);
+        raw_b = max(raw_b, dot_intensity);
     }
 
-    // 3. SUB-PIXEL ADDRESSING (Ephemeral Needle)
-    float raw_r = saturate(raw_energy); // Simplified for v1.6 command test
-    float raw_g = saturate(raw_energy);
-    float raw_b = saturate(raw_energy);
-
-    // 4. SOVEREIGN LINEARIZATION
+    // 3. SOVEREIGN LINEARIZATION
+    float3 energy = saturate(float3(raw_r, raw_g, raw_b));
     float3 background = float3(0.005, 0.005, 0.01); 
     float3 signal = float3(0.0, 1.0, 0.8);          
-    float3 final = pow(mix(background, signal, float3(raw_r, raw_g, raw_b)), 1.0f / 2.2f);
+    float3 final = pow(mix(background, signal, energy), 1.0f / 2.2f);
 
     outTexture.write(float4(final, 1.0f), gid);
 }

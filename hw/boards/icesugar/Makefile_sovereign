@@ -11,6 +11,7 @@ PCF = spu13_sovereign.pcf
 # Source Files
 SRCS = spu13_icesugar_sovereign.v \
        ../../core/spu13_decoder.v \
+       ../../core/spu13_anneal_stabilizer.v \
        ../../core/vector_to_parabola.v \
        ../../core/uart_rx_mini.v
 

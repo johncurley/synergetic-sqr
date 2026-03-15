@@ -12,6 +12,7 @@ enum SDRAW_Opcode : uint8_t {
     SFILL_H = 0x42, // Fill Hexagonal Field
     SET_SOV = 0xA9, // Toggle Global Sovereignty
     SET_LMN = 0xAC, // Set Laminar Stride
+    SET_ANN = 0xAD, // Set Anneal Cooling (0-15)
     LUT_LD  = 0xAF  // Load Inverse-Gamma LUT
 };
 
