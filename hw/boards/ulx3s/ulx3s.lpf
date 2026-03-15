@@ -34,3 +34,9 @@ LOCATE COMP "flash_mosi" SITE "E2";
 IOBUF PORT "flash_mosi" IO_TYPE=LVCMOS33;
 LOCATE COMP "flash_miso" SITE "F2";
 IOBUF PORT "flash_miso" IO_TYPE=LVCMOS33;
+
+# --- 6. Artery Bus (GPIO on PMOD) ---
+LOCATE COMP "artery_out" SITE "C11"; # J1_9
+IOBUF PORT "artery_out" IO_TYPE=LVCMOS33;
+LOCATE COMP "artery_in" SITE "A11"; # J1_10
+IOBUF PORT "artery_in" IO_TYPE=LVCMOS33;
